@@ -1,0 +1,6 @@
+/// <reference types="react" />
+export declare type MarkdownProps = {
+    children?: string;
+    className?: string;
+};
+export default function Markdown({ children, className }: MarkdownProps): JSX.Element;

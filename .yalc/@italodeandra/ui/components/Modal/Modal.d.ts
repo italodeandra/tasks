@@ -1,0 +1,37 @@
+import { ReactElement, ReactNode } from "react";
+declare function Modal({ open, onClose, children, overlayClassName, panelClassName, dialogClassName, dialogOuterPanelClassName, dialogOverflowClassName, }: {
+    open?: boolean;
+    onClose?: () => void;
+    children?: ReactNode;
+    overlayClassName?: string;
+    panelClassName?: string;
+    dialogClassName?: string;
+    dialogOuterPanelClassName?: string;
+    dialogOverflowClassName?: string;
+}): JSX.Element;
+declare namespace Modal {
+    var Container: typeof ModalContainer;
+    var Title: typeof ModalTitle;
+    var Content: typeof ModalContent;
+    var Actions: typeof ModalActions;
+    var Icon: typeof ModalIcon;
+}
+export default Modal;
+declare function ModalContainer({ children }: {
+    children?: ReactNode;
+}): JSX.Element;
+declare function ModalTitle({ children, className, }: {
+    children?: ReactNode;
+    className?: string;
+}): JSX.Element;
+declare function ModalContent({ children, className, }: {
+    children?: ReactNode;
+    className?: string;
+}): JSX.Element;
+declare function ModalActions({ children, className, }: {
+    children?: ReactNode;
+    className?: string;
+}): JSX.Element;
+declare function ModalIcon({ children }: {
+    children?: ReactElement;
+}): JSX.Element;
