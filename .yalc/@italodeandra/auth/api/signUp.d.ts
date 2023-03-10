@@ -8,7 +8,7 @@ export interface AuthSignUpApiError {
 export default function signUpHandler(args: {
     email: string;
     password: string;
-}, req: NextApiRequest, res: NextApiResponse, { connectToDb }: AuthConfig): Promise<void>;
+}, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<void>;
 export declare type AuthSignUpArgs = InferApiArgs<typeof signUpHandler>;
 export declare const useAuthSignUp: (options?: UseMutationOptions<void, AuthSignUpApiError, AuthSignUpArgs>) => import("@tanstack/react-query").UseMutationResult<void, AuthSignUpApiError, {
     email: string;

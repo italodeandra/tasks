@@ -8,7 +8,7 @@ export interface AuthSignInApiError {
 export default function signInHandler(args: {
     email: string;
     password: string;
-}, req: NextApiRequest, res: NextApiResponse, { connectToDb }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
+}, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
     passwordSalt: string;

@@ -62,36 +62,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.userId = void 0;
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
-var User_1 = __importDefault(require("../collections/user/User"));
+var User_1 = __importStar(require("../collections/user/User"));
+var User_service_1 = require("../collections/user/User.service");
 var appEnv = process.env.APP_ENV || "development";
-var userId = (0, isomorphicObjectId_1.default)("62da0f38c6dc21efec2136e6");
+exports.userId = (0, isomorphicObjectId_1.default)("62da0f38c6dc21efec2136e6");
 function authSeed() {
     return __awaiter(this, void 0, void 0, function () {
-        var createUser, UserType;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require("../collections/user/User.service")); })];
+                case 0:
+                    if (!(appEnv === "development")) return [3 /*break*/, 3];
+                    return [4 /*yield*/, User_1.default.countDocuments({ _id: exports.userId })];
                 case 1:
-                    createUser = (_a.sent()).createUser;
-                    return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require("../collections/user/User")); })];
-                case 2:
-                    UserType = (_a.sent()).UserType;
-                    if (!(appEnv === "development")) return [3 /*break*/, 5];
-                    return [4 /*yield*/, User_1.default.countDocuments({ _id: userId })];
-                case 3:
-                    if (!!(_a.sent())) return [3 /*break*/, 5];
-                    return [4 /*yield*/, createUser({
-                            _id: userId,
+                    if (!!(_a.sent())) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, User_service_1.createUser)({
+                            _id: exports.userId,
                             email: "italodeandra@gmail.com",
                             password: "12345678",
-                            type: UserType.ADMIN,
+                            type: User_1.UserType.ADMIN,
                             name: "Ítalo Andrade",
                         })];
-                case 4:
+                case 2:
                     _a.sent();
-                    _a.label = 5;
-                case 5: return [2 /*return*/];
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
             }
         });
     });

@@ -1,8 +1,7 @@
 import Routes from "../Routes";
 import prepareSendMail from "@italodeandra/next/mailer/sendMail";
-import { prepareConnectToDb } from "@italodeandra/next/db";
 export interface AuthConfig {
-    connectToDb: ReturnType<typeof prepareConnectToDb>;
+    connectDb: () => Promise<void>;
     primaryColor: string;
     intl?: Record<string, {
         "Reset your password": string;

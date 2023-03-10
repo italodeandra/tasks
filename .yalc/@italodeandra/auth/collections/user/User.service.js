@@ -74,7 +74,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.translateUserType = exports.userTypeTranslations = exports.setUserPassword = exports.getFullUserFromCookies = exports.getUserFromCookies = exports.createUser = exports.convertToUserType = exports.checkUserType = exports.readResetPasswordToken = exports.generateResetPasswordToken = exports.readToken = exports.generateToken = exports.checkUserPassword = exports.generateSalt = exports.hashPassword = void 0;
+exports.translateUserType = exports.userTypeTranslations = exports.setUserPassword = exports.getFullUserFromCookies = exports.getUserFromCookies = exports.getAuthCookies = exports.createUser = exports.convertToUserType = exports.checkUserType = exports.readResetPasswordToken = exports.generateResetPasswordToken = exports.readToken = exports.generateToken = exports.checkUserPassword = exports.generateSalt = exports.hashPassword = void 0;
 var crypto_1 = __importDefault(require("crypto"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var User_1 = __importStar(require("./User"));
@@ -144,19 +144,25 @@ function createUser(doc) {
     });
 }
 exports.createUser = createUser;
+function getAuthCookies(req, res) {
+    var cookies = (0, cookies_next_1.getCookies)({ req: req, res: res });
+    return cookies.auth;
+}
+exports.getAuthCookies = getAuthCookies;
 function getUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var cookies, userId, user;
+        var authCookies, userId, user;
         return __generator(this, function (_a) {
-            cookies = (0, cookies_next_1.getCookies)({ req: req, res: res });
-            if (!cookies.auth) {
+            authCookies = getAuthCookies(req, res);
+            if (!authCookies) {
                 return [2 /*return*/, null];
             }
             try {
-                userId = readToken(cookies.auth);
+                userId = readToken(authCookies);
                 user = User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } });
                 if (!user) {
-                    throw Error("User not found");
+                    (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
+                    return [2 /*return*/, null];
                 }
                 return [2 /*return*/, user];
             }
@@ -181,7 +187,8 @@ function getFullUserFromCookies(req, res) {
                 userId = readToken(cookies.auth);
                 user = User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1, phoneNumber: 1 } });
                 if (!user) {
-                    throw Error("User not found");
+                    (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
+                    return [2 /*return*/, null];
                 }
                 return [2 /*return*/, user];
             }

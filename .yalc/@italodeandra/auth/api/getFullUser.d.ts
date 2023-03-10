@@ -2,7 +2,7 @@ import { QueryClient } from "@tanstack/react-query";
 import { InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
 import { AuthConfig } from "./index";
 import { OptionsType } from "cookies-next/lib/types";
-export default function getFullUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectToDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+export default function getFullUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
     passwordSalt: string;

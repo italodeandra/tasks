@@ -65,11 +65,11 @@ var getUser_1 = require("../api/getUser");
 var router_1 = require("next/router");
 var User_1 = require("../collections/user/User");
 var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack"));
-var provider_1 = require("../provider");
+var AuthContext_1 = require("../AuthContext");
 function SignInView(_a) {
     var _b;
     var backgroundImage = _a.backgroundImage;
-    var _c = (0, provider_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
+    var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var queryClient = (0, react_query_1.useQueryClient)();
     var router = (0, router_1.useRouter)();
@@ -79,11 +79,10 @@ function SignInView(_a) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
-                        case 0: return [4 /*yield*/, (0, getUser_1.setData_authGetUser)(queryClient, user)];
-                        case 1:
-                            _a.sent();
+                        case 0:
+                            (0, getUser_1.setData_authGetUser)(queryClient, user);
                             return [4 /*yield*/, router.replace((user === null || user === void 0 ? void 0 : user.type) === User_1.UserType.ADMIN ? Routes.Panel : Routes.Home)];
-                        case 2:
+                        case 1:
                             _a.sent();
                             return [2 /*return*/];
                     }

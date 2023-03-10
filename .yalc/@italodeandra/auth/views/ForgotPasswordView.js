@@ -61,11 +61,11 @@ var react_hook_form_1 = require("react-hook-form");
 var emailRegExp_1 = __importDefault(require("@italodeandra/ui/utils/emailRegExp"));
 var requestPasswordReset_1 = require("../api/requestPasswordReset");
 var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack"));
-var provider_1 = require("../provider");
+var AuthContext_1 = require("../AuthContext");
 function ForgotPasswordView(_a) {
     var _b;
     var backgroundImage = _a.backgroundImage;
-    var _c = (0, provider_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
+    var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var _d = (0, react_hook_form_1.useForm)(), register = _d.register, handleSubmit = _d.handleSubmit, errors = _d.formState.errors, setError = _d.setError, watch = _d.watch;
     var _e = (0, requestPasswordReset_1.useAuthRequestPasswordReset)({

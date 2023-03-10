@@ -64,11 +64,11 @@ var getUser_1 = require("../api/getUser");
 var router_1 = require("next/router");
 var signUp_1 = require("../api/signUp");
 var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack"));
-var provider_1 = require("../provider");
+var AuthContext_1 = require("../AuthContext");
 function SignUpView(_a) {
     var _b;
     var backgroundImage = _a.backgroundImage;
-    var _c = (0, provider_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
+    var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var queryClient = (0, react_query_1.useQueryClient)();
     var router = (0, router_1.useRouter)();

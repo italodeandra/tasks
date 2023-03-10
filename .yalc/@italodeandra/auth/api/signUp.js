@@ -48,7 +48,7 @@ var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var cookies_next_1 = require("cookies-next");
 function signUpHandler(args, req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var existingUser, user, token;
         return __generator(this, function (_b) {
@@ -57,7 +57,7 @@ function signUpHandler(args, req, res, _a) {
                     if (!args.email || !args.password) {
                         throw errors_1.badRequest;
                     }
-                    return [4 /*yield*/, connectToDb()];
+                    return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     return [4 /*yield*/, User_1.default.countDocuments({

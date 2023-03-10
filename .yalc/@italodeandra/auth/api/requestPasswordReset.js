@@ -48,7 +48,7 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var appEnv = process.env.APP_ENV || "development";
 function requestPasswordResetHandler(args, req, res, _a) {
     var _b;
-    var routes = _a.routes, connectToDb = _a.connectToDb, intl = _a.intl, fallbackLocale = _a.fallbackLocale, primaryColor = _a.primaryColor, sendMail = _a.sendMail;
+    var routes = _a.routes, connectDb = _a.connectDb, intl = _a.intl, fallbackLocale = _a.fallbackLocale, primaryColor = _a.primaryColor, sendMail = _a.sendMail;
     return __awaiter(this, void 0, void 0, function () {
         var locales, locale, t, user, host, protocol, token, url;
         return __generator(this, function (_c) {
@@ -63,7 +63,7 @@ function requestPasswordResetHandler(args, req, res, _a) {
                     locales = ((_b = req.headers["accept-language"]) === null || _b === void 0 ? void 0 : _b.split(",").map(function (locale) { return locale.split(";")[0]; })) || [];
                     locale = getFirstAvailableLocale(Object.keys(intl), locales, fallbackLocale);
                     t = intl[locale];
-                    return [4 /*yield*/, connectToDb()];
+                    return [4 /*yield*/, connectDb()];
                 case 1:
                     _c.sent();
                     return [4 /*yield*/, User_1.default.findOne({

@@ -53,17 +53,17 @@ var router_1 = require("next/router");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var errors_1 = require("@italodeandra/next/api/errors");
 var User_service_1 = require("../collections/user/User.service");
-var provider_1 = require("../provider");
 var react_1 = require("react");
 var getFullUser_1 = require("./getFullUser");
 var cookies_next_1 = require("cookies-next");
+var AuthContext_1 = require("../AuthContext");
 function getUserHandler(_args, req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var user;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, connectToDb()];
+                case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
@@ -86,9 +86,10 @@ var useAuthGetUser = function (required, options) {
             (0, exports.setData_authGetUser)(queryClient, null);
         }
     }, [queryClient]);
-    return (0, react_query_1.useQuery)([queryKey], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey), __assign(__assign({}, options), { enabled: typeof (options === null || options === void 0 ? void 0 : options.enabled) !== "undefined"
-            ? options === null || options === void 0 ? void 0 : options.enabled
-            : required || !!(0, cookies_next_1.getCookie)("auth"), onError: function (error) {
+    var enabled = typeof (options === null || options === void 0 ? void 0 : options.enabled) !== "undefined"
+        ? options === null || options === void 0 ? void 0 : options.enabled
+        : required || !!(0, cookies_next_1.getCookie)("auth");
+    var query = (0, react_query_1.useQuery)([queryKey], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey), __assign(__assign({}, options), { enabled: enabled, onError: function (error) {
             var _a;
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_b) {
@@ -107,12 +108,13 @@ var useAuthGetUser = function (required, options) {
                 });
             });
         } }));
+    return __assign(__assign({}, query), { isLoading: enabled ? query.isLoading : false });
 };
 exports.useAuthGetUser = useAuthGetUser;
 var useAuthRequiredUserType = function (typesToCheck, redirectTo) {
     var _a = (0, exports.useAuthGetUser)(true), user = _a.data, isLoading = _a.isLoading;
     var router = (0, router_1.useRouter)();
-    var Routes = (0, provider_1.useAuthContext)().Routes;
+    var Routes = (0, AuthContext_1.useAuthContext)().Routes;
     redirectTo = redirectTo || Routes.Home;
     (0, react_1.useEffect)(function () {
         if (!isLoading && !(0, User_service_1.checkUserType)(user, typesToCheck)) {
@@ -125,7 +127,7 @@ exports.useAuthRequiredUserType = useAuthRequiredUserType;
 var useAuthRequiredUser = function (redirectTo) {
     var _a = (0, exports.useAuthGetUser)(true), user = _a.data, isLoading = _a.isLoading;
     var router = (0, router_1.useRouter)();
-    var Routes = (0, provider_1.useAuthContext)().Routes;
+    var Routes = (0, AuthContext_1.useAuthContext)().Routes;
     redirectTo = redirectTo || Routes.Home;
     (0, react_1.useEffect)(function () {
         if (!isLoading && !user) {
@@ -138,7 +140,7 @@ exports.useAuthRequiredUser = useAuthRequiredUser;
 var useAuthUser = function () {
     var user = (0, exports.useAuthGetUser)().data;
     var router = (0, router_1.useRouter)();
-    var Routes = (0, provider_1.useAuthContext)().Routes;
+    var Routes = (0, AuthContext_1.useAuthContext)().Routes;
     (0, react_1.useEffect)(function () {
         if (user) {
             void router.replace(Routes.Home);

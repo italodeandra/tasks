@@ -45,12 +45,12 @@ var react_1 = require("react");
 var getUser_1 = require("./getUser");
 var cookies_next_1 = require("cookies-next");
 function getFullUserHandler(_args, req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var user;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, connectToDb()];
+                case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     return [4 /*yield*/, (0, User_service_1.getFullUserFromCookies)(req, res)];

@@ -25,7 +25,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultTrailingInputClassName = exports.defaultLeadingInputClassName = exports.defaultLeadingClassName = exports.defaultTrailingClassName = exports.defaultHelpTextClassName = exports.defaultInputClassName = exports.defaultLabelClassName = void 0;
+exports.defaultTrailingInputClassName = exports.defaultLeadingInputClassName = exports.defaultLeadingClassName = exports.defaultTrailingClassName = exports.defaultHelpTextClassName = exports.defaultInputClassName = exports.defaultInputClassNameUncolored = exports.defaultLabelClassName = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
 var UnstyledInput_1 = __importDefault(require("../Input/UnstyledInput"));
 var Text_1 = require("../Text/Text");
@@ -34,7 +34,8 @@ var InputIcon_1 = __importDefault(require("./InputIcon"));
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
 exports.defaultLabelClassName = "block ".concat(Text_1.defaultTextStyles.variant.label, " mb-1");
-exports.defaultInputClassName = "block w-full dark:bg-zinc-800 rounded-md border-gray-300 dark:border-zinc-700 shadow-sm focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 sm:text-sm disabled:cursor-not-allowed disabled:border-gray-200 dark:disabled:border-zinc-800 disabled:bg-gray-50 dark:disabled:bg-zinc-900/90 disabled:text-gray-500";
+exports.defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm disabled:cursor-not-allowed dark:bg-zinc-800";
+exports.defaultInputClassName = "".concat(exports.defaultInputClassNameUncolored, " border-gray-300 dark:border-zinc-700 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 disabled:border-gray-200 dark:disabled:border-zinc-800 disabled:bg-gray-50 dark:disabled:bg-zinc-900/90 disabled:text-gray-500");
 exports.defaultHelpTextClassName = "mt-2 ".concat(Text_1.defaultTextStyles.variant.secondary);
 exports.defaultTrailingClassName = "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 text-sm";
 exports.defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 text-sm";
@@ -46,7 +47,7 @@ function Input(_a, ref) {
         trailing ||
             (error ? ((0, jsx_runtime_1.jsx)(InputIcon_1.default, __assign({ className: "text-error-500" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ExclamationCircleIcon, { "aria-hidden": "true" }) }))) : undefined);
     labelClassName = (0, clsx_1.default)(exports.defaultLabelClassName, labelClassName);
-    inputClassName = (0, clsx_1.default)(exports.defaultInputClassName, inputClassName, {
+    inputClassName = (0, clsx_1.default)(error ? exports.defaultInputClassNameUncolored : exports.defaultInputClassName, inputClassName, {
         "animate-pulse": loading,
     });
     helpTextClassName = (0, clsx_1.default)(exports.defaultHelpTextClassName, helpTextClassName);
@@ -56,7 +57,7 @@ function Input(_a, ref) {
     trailingInputClassName = (0, clsx_1.default)(exports.defaultTrailingInputClassName, trailingInputClassName);
     if (error) {
         inputClassName = "".concat(inputClassName, " border-error-300 dark:border-error-500 text-error-900 dark:text-error-500 placeholder-error-300 focus:border-error-500 dark:focus:border-error-500 focus:ring-error-500");
-        helpTextClassName = "".concat(helpTextClassName, " text-error-600 dark:text-error-500");
+        helpTextClassName = "".concat(helpTextClassName, " !text-error-600 dark:!text-error-500");
     }
     if (label && required) {
         label = ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [label, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "text-red-500" }, { children: "*" }))] }));

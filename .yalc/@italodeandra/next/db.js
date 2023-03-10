@@ -1,28 +1,4 @@
 "use strict";
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -63,102 +39,85 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.prepareConnectToDb = exports.connectToDb = void 0;
-var papr_1 = __importDefault(require("papr"));
+exports.connectDb = exports.client = void 0;
 var mongodb_1 = require("mongodb");
+var mongodb_memory_server_1 = require("mongodb-memory-server");
+var papr_1 = __importDefault(require("papr"));
 var isServer_1 = require("./utils/isServer");
-var wait_1 = __importDefault(require("./utils/wait"));
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
+var uri = process.env.MONGODB_URI;
+var options = {};
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-var cached = global.papr;
-if (!cached) {
-    // @ts-ignore
-    cached = global.papr = (0, isServer_1.onlyServer)(function () { return ({
-        papr: new papr_1.default(),
-        promise: null,
-    }); }, {});
-}
-exports.connectToDb = prepareConnectToDb();
-function prepareConnectToDb(args) {
-    var _this = this;
-    var _a = args || {}, seeds = _a.seeds, migrations = _a.migrations, uri = _a.uri;
-    return function () { return __awaiter(_this, void 0, void 0, function () {
-        var _a;
+var papr = (global._papr = (0, isServer_1.onlyServer)(function () { return new papr_1.default(); }));
+function connectDb(afterConnected) {
+    return __awaiter(this, void 0, void 0, function () {
+        var connect;
         var _this = this;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    if (cached.promise) {
-                        return [2 /*return*/, cached.promise];
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    if (global._dbPromise) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        return [2 /*return*/, global._dbPromise];
                     }
-                    cached.promise = new Promise(function (resolve) { return __awaiter(_this, void 0, void 0, function () {
-                        var _a, MONGODB_URI, APP_ENV, MONGODB_MEMORY_SERVER_DBNAME, MongoMemoryServer, mongod, connection;
-                        return __generator(this, function (_b) {
-                            switch (_b.label) {
+                    connect = function () { return __awaiter(_this, void 0, void 0, function () {
+                        var mongod, _i, afterConnected_1, runAfterConnected;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
                                 case 0:
-                                    _a = process.env, MONGODB_URI = _a.MONGODB_URI, APP_ENV = _a.APP_ENV, MONGODB_MEMORY_SERVER_DBNAME = _a.MONGODB_MEMORY_SERVER_DBNAME;
-                                    uri = uri || MONGODB_URI;
-                                    if (!(!uri && APP_ENV !== "production")) return [3 /*break*/, 3];
-                                    return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require("mongodb-memory-server")); })];
+                                    if (!!uri) return [3 /*break*/, 2];
+                                    return [4 /*yield*/, mongodb_memory_server_1.MongoMemoryServer.create({
+                                            instance: {
+                                                port: 5432,
+                                                dbName: process.env.MONGODB_MEMORY_SERVER_DBNAME,
+                                            },
+                                        })];
                                 case 1:
-                                    MongoMemoryServer = (_b.sent()).MongoMemoryServer;
-                                    return [4 /*yield*/, MongoMemoryServer.create(APP_ENV !== "test"
-                                            ? {
-                                                instance: {
-                                                    port: 5432,
-                                                    dbName: MONGODB_MEMORY_SERVER_DBNAME,
-                                                },
-                                            }
-                                            : undefined)];
+                                    mongod = _a.sent();
+                                    uri = "".concat(mongod.getUri()).concat(process.env.MONGODB_MEMORY_SERVER_DBNAME || "test");
+                                    _a.label = 2;
                                 case 2:
-                                    mongod = _b.sent();
-                                    uri = mongod.getUri() + MONGODB_MEMORY_SERVER_DBNAME;
-                                    console.info("[MongoDB] Started a MongoDB Memory Server at \"".concat(uri, "\""));
-                                    _b.label = 3;
+                                    exports.client = new mongodb_1.MongoClient(uri, options);
+                                    return [4 /*yield*/, exports.client.connect()];
                                 case 3:
-                                    if (!uri) {
-                                        throw Error("[MongoDB] Missing URI");
-                                    }
-                                    return [4 /*yield*/, mongodb_1.MongoClient.connect(uri)];
+                                    _a.sent();
+                                    papr.initialize(exports.client.db());
+                                    if (!afterConnected) return [3 /*break*/, 7];
+                                    _i = 0, afterConnected_1 = afterConnected;
+                                    _a.label = 4;
                                 case 4:
-                                    connection = _b.sent();
-                                    console.info("[MongoDB] Connected to \"".concat(uri, "\""));
-                                    cached.papr.initialize(connection.db());
-                                    return [4 /*yield*/, (0, wait_1.default)("2s")];
+                                    if (!(_i < afterConnected_1.length)) return [3 /*break*/, 7];
+                                    runAfterConnected = afterConnected_1[_i];
+                                    return [4 /*yield*/, runAfterConnected()];
                                 case 5:
-                                    _b.sent();
-                                    console.info("[MongoDB] Initialized");
-                                    if (!migrations) return [3 /*break*/, 7];
-                                    return [4 /*yield*/, Promise.all(migrations.map(function (migration) { return migration(cached.papr.db, cached.papr); }))];
+                                    _a.sent();
+                                    _a.label = 6;
                                 case 6:
-                                    _b.sent();
-                                    console.info("[MongoDB] Migrations completed");
-                                    _b.label = 7;
+                                    _i++;
+                                    return [3 /*break*/, 4];
                                 case 7:
-                                    if (!seeds) return [3 /*break*/, 9];
-                                    return [4 /*yield*/, Promise.all(seeds.map(function (seed) { return seed(cached.papr.db, cached.papr); }))];
-                                case 8:
-                                    _b.sent();
-                                    console.info("[MongoDB] Seeds completed");
-                                    _b.label = 9;
-                                case 9:
-                                    resolve(cached.papr);
+                                    console.info("[MongoDB] Connected");
                                     return [2 /*return*/];
                             }
                         });
-                    }); });
-                    _a = cached;
-                    return [4 /*yield*/, cached.promise];
+                    }); };
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    global._dbPromise = connect();
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    return [4 /*yield*/, global._dbPromise];
                 case 1:
-                    _a.papr = _b.sent();
-                    return [2 /*return*/, cached.papr];
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    _a.sent();
+                    return [2 /*return*/];
             }
         });
-    }); };
+    });
 }
-exports.prepareConnectToDb = prepareConnectToDb;
-exports.default = cached.papr;
+exports.connectDb = connectDb;
+exports.default = papr;

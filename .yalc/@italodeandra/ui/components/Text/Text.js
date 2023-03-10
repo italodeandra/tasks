@@ -36,11 +36,19 @@ exports.defaultTextStyles = {
         secondary: "text-sm text-gray-500 dark:text-zinc-400",
         link: "font-medium text-primary-600 hover:text-primary-500",
     },
+    size: {
+        xs: "text-xs",
+        sm: "text-sm",
+        base: "text-base",
+        lg: "text-lg",
+        xl: "text-xl",
+        "2xl": "text-2xl",
+    },
 };
 function Text(_a) {
     var _b;
-    var inline = _a.inline, _c = _a.variant, variant = _c === void 0 ? "default" : _c, className = _a.className, href = _a.href, target = _a.target, props = __rest(_a, ["inline", "variant", "className", "href", "target"]);
-    className = (0, clsx_1.default)(exports.defaultTextStyles.variant[variant], (_b = {},
+    var inline = _a.inline, _c = _a.variant, variant = _c === void 0 ? "default" : _c, className = _a.className, href = _a.href, target = _a.target, _d = _a.size, size = _d === void 0 ? "base" : _d, props = __rest(_a, ["inline", "variant", "className", "href", "target", "size"]);
+    className = (0, clsx_1.default)(exports.defaultTextStyles.variant[variant], exports.defaultTextStyles.size[size], (_b = {},
         _b[exports.defaultTextStyles.variant.link] = !!href && variant === "default",
         _b), className);
     if (href) {

@@ -37,6 +37,7 @@ var styles = {
         light: "shadow-sm",
         outlined: "shadow-sm",
         text: "",
+        custom: "",
     },
     color: {
         primary: "",
@@ -92,12 +93,13 @@ var styles = {
 var Button = function (_a, ref) {
     var _b;
     var _c, _d, _e;
-    var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? ["outlined", "text"].includes(variant) ? "white" : "primary" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leadingIcon = _a.leadingIcon, trailingIcon = _a.trailingIcon, children = _a.children, loading = _a.loading, disabled = _a.disabled, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leadingIcon", "trailingIcon", "children", "loading", "disabled"]);
+    var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? ["outlined", "text"].includes(variant) ? "white" : "primary" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leadingIcon = _a.leadingIcon, trailingIcon = _a.trailingIcon, children = _a.children, loading = _a.loading, disabled = _a.disabled, rounded = _a.rounded, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leadingIcon", "trailingIcon", "children", "loading", "disabled", "rounded"]);
     if (loading) {
         trailingIcon = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "!text-inherit" });
     }
-    return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], styles.color[color], styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, (_b = {},
+    return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, (_b = {},
             _b[styles.disabled] = disabled,
+            _b["rounded-full"] = rounded,
             _b), className), type: type, disabled: disabled }, { children: [leadingIcon &&
                 (0, react_1.cloneElement)(leadingIcon, {
                     className: (0, clsx_1.default)("mr-2 -ml-0.5", styles.size[size].icon, (_c = leadingIcon === null || leadingIcon === void 0 ? void 0 : leadingIcon.props) === null || _c === void 0 ? void 0 : _c.className),

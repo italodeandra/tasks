@@ -35,17 +35,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-function authMigration(db) {
+var db_1 = __importDefault(require("@italodeandra/next/db"));
+function authMigration() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, db.collection("users").createIndex({ email: 1 }, {
-                        unique: true,
-                    })];
+                case 0:
+                    if (!db_1.default.db) {
+                        throw Error("Db not found");
+                    }
+                    return [4 /*yield*/, db_1.default.db.collection("users").createIndex({ email: 1 }, {
+                            unique: true,
+                        })];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, db.collection("users").createIndex({ email: "text", name: "text" })];
+                    return [4 /*yield*/, db_1.default.db.collection("users").createIndex({ email: "text", name: "text" })];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];

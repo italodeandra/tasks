@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+/// <reference types="react" />
 import Routes from "./Routes";
 export declare type IAuthContext = {
     Routes: Routes;
@@ -63,8 +63,5 @@ export declare const authContextDefaultValue: {
         PanelNewUser: string;
     };
 };
-declare const AuthProvider: ({ children, ...props }: {
-    children: ReactNode;
-} & IAuthContext) => JSX.Element;
+export declare const AuthContext: import("react").Context<IAuthContext>;
 export declare function useAuthContext(): IAuthContext;
-export default AuthProvider;

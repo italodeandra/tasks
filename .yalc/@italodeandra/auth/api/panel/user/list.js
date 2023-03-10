@@ -77,13 +77,13 @@ var User_service_1 = require("../../../collections/user/User.service");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 function authPanelUserListHandler(args, req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var user;
         var _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
-                case 0: return [4 /*yield*/, connectToDb()];
+                case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _c.sent();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];

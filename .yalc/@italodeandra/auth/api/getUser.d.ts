@@ -7,7 +7,7 @@ import { OptionsType } from "cookies-next/lib/types";
 export interface AuthUserGetApiError {
     code: 401;
 }
-export default function getUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectToDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+export default function getUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
     passwordSalt: string;
@@ -20,12 +20,141 @@ export default function getUserHandler(_args: void, req: OptionsType["req"], res
     phoneNumber?: string | undefined;
 }, "email" | "type" | "name" | "_id">>>;
 export declare type AuthUserGetApiResponse = InferApiResponse<typeof getUserHandler>;
-export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOptions<AuthUserGetApiResponse | null, AuthUserGetApiError>) => import("@tanstack/react-query").UseQueryResult<{
-    email: string;
-    type?: any;
-    name?: string | undefined;
-    _id: string;
-} | null, AuthUserGetApiError>;
+export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOptions<AuthUserGetApiResponse | null, AuthUserGetApiError>) => {
+    isLoading: boolean;
+    data: {
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null;
+    error: AuthUserGetApiError;
+    isError: true;
+    isLoadingError: false;
+    isRefetchError: true;
+    isSuccess: false;
+    status: "error";
+    dataUpdatedAt: number;
+    errorUpdatedAt: number;
+    failureCount: number;
+    failureReason: AuthUserGetApiError | null;
+    errorUpdateCount: number;
+    isFetched: boolean;
+    isFetchedAfterMount: boolean;
+    isFetching: boolean;
+    isInitialLoading: boolean;
+    isPaused: boolean;
+    isPlaceholderData: boolean;
+    isPreviousData: boolean;
+    isRefetching: boolean;
+    isStale: boolean;
+    refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null, AuthUserGetApiError>>;
+    remove: () => void;
+    fetchStatus: import("@tanstack/react-query").FetchStatus;
+} | {
+    isLoading: boolean;
+    data: {
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null;
+    error: null;
+    isError: false;
+    isLoadingError: false;
+    isRefetchError: false;
+    isSuccess: true;
+    status: "success";
+    dataUpdatedAt: number;
+    errorUpdatedAt: number;
+    failureCount: number;
+    failureReason: AuthUserGetApiError | null;
+    errorUpdateCount: number;
+    isFetched: boolean;
+    isFetchedAfterMount: boolean;
+    isFetching: boolean;
+    isInitialLoading: boolean;
+    isPaused: boolean;
+    isPlaceholderData: boolean;
+    isPreviousData: boolean;
+    isRefetching: boolean;
+    isStale: boolean;
+    refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null, AuthUserGetApiError>>;
+    remove: () => void;
+    fetchStatus: import("@tanstack/react-query").FetchStatus;
+} | {
+    isLoading: boolean;
+    data: undefined;
+    error: AuthUserGetApiError;
+    isError: true;
+    isLoadingError: true;
+    isRefetchError: false;
+    isSuccess: false;
+    status: "error";
+    dataUpdatedAt: number;
+    errorUpdatedAt: number;
+    failureCount: number;
+    failureReason: AuthUserGetApiError | null;
+    errorUpdateCount: number;
+    isFetched: boolean;
+    isFetchedAfterMount: boolean;
+    isFetching: boolean;
+    isInitialLoading: boolean;
+    isPaused: boolean;
+    isPlaceholderData: boolean;
+    isPreviousData: boolean;
+    isRefetching: boolean;
+    isStale: boolean;
+    refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null, AuthUserGetApiError>>;
+    remove: () => void;
+    fetchStatus: import("@tanstack/react-query").FetchStatus;
+} | {
+    isLoading: boolean;
+    data: undefined;
+    error: null;
+    isError: false;
+    isLoadingError: false;
+    isRefetchError: false;
+    isSuccess: false;
+    status: "loading";
+    dataUpdatedAt: number;
+    errorUpdatedAt: number;
+    failureCount: number;
+    failureReason: AuthUserGetApiError | null;
+    errorUpdateCount: number;
+    isFetched: boolean;
+    isFetchedAfterMount: boolean;
+    isFetching: boolean;
+    isInitialLoading: boolean;
+    isPaused: boolean;
+    isPlaceholderData: boolean;
+    isPreviousData: boolean;
+    isRefetching: boolean;
+    isStale: boolean;
+    refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
+        email: string;
+        type?: any;
+        name?: string | undefined;
+        _id: string;
+    } | null, AuthUserGetApiError>>;
+    remove: () => void;
+    fetchStatus: import("@tanstack/react-query").FetchStatus;
+};
 export declare const useAuthRequiredUserType: (typesToCheck: IUser["type"][], redirectTo?: string) => boolean;
 export declare const useAuthRequiredUser: (redirectTo?: string) => boolean;
 export declare const useAuthUser: () => boolean;

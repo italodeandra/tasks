@@ -91,12 +91,12 @@ var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/iso
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var list_1 = require("./list");
 function authPanelUserCreateHandler(args, req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var user, existingNewEmail, _id;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, connectToDb()];
+                case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];

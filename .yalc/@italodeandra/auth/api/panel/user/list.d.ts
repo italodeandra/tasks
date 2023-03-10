@@ -7,7 +7,7 @@ export default function authPanelUserListHandler(args: {
     search?: string;
     sort?: string;
     sortDirection?: "asc" | "desc";
-}, req: OptionsType["req"], res: OptionsType["res"], { connectToDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+}, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
     passwordSalt: string;
@@ -32,7 +32,7 @@ export declare const useAuthPanelUserList: (args?: AuthPanelUserListApiArgs) => 
 export declare const prefetch_authPanelUserList: (queryClient: QueryClient, args_0: {
     search?: string | undefined;
     sort?: string | undefined;
-    sortDirection?: "desc" | "asc" | undefined;
+    sortDirection?: "asc" | "desc" | undefined;
 }, args_1: (import("http").IncomingMessage & {
     cookies?: {
         [key: string]: string;

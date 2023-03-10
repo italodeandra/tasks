@@ -62,11 +62,11 @@ var router_1 = require("next/router");
 var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack"));
 var react_1 = require("react");
 var resetPassword_1 = require("../api/resetPassword");
-var provider_1 = require("../provider");
+var AuthContext_1 = require("../AuthContext");
 function ResetPasswordView(_a) {
     var _b;
     var backgroundImage = _a.backgroundImage;
-    var _c = (0, provider_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
+    var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var router = (0, router_1.useRouter)();
     var token = router.query.token;

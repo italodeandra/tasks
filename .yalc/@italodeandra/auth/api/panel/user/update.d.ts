@@ -7,7 +7,7 @@ import { AuthConfig } from "../..";
 interface UserUpdateError extends Error {
     status: "Existing";
 }
-export default function authPanelUserUpdateHandler(args: Jsonify<Pick<IUser, "_id" | "name" | "email" | "type">>, req: NextApiRequest, res: NextApiResponse, { connectToDb }: AuthConfig): Promise<{
+export default function authPanelUserUpdateHandler(args: Jsonify<Pick<IUser, "_id" | "name" | "email" | "type">>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<{
     _id: import("bson").ObjectID;
 }>;
 export declare type AuthPanelUserCreateResponse = InferApiResponse<typeof authPanelUserUpdateHandler>;

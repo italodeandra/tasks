@@ -47,7 +47,7 @@ var jsonwebtoken_1 = require("jsonwebtoken");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 function resetPasswordHandler(args, _req, res, _a) {
-    var connectToDb = _a.connectToDb;
+    var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
         var email, user, e_1;
         return __generator(this, function (_b) {
@@ -56,7 +56,7 @@ function resetPasswordHandler(args, _req, res, _a) {
                     if (!args.token || !args.newPassword) {
                         throw errors_1.badRequest;
                     }
-                    return [4 /*yield*/, connectToDb()];
+                    return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     _b.label = 2;

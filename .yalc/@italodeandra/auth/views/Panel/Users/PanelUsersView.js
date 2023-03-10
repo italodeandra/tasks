@@ -21,14 +21,14 @@ var User_service_1 = require("../../../collections/user/User.service");
 var Button_1 = __importDefault(require("@italodeandra/ui/components/Button/Button"));
 var react_1 = require("react");
 var router_1 = require("next/router");
-var provider_1 = require("../../../provider");
 var useTranslation_1 = __importDefault(require("@italodeandra/ui/hooks/useTranslation"));
 var Alert_1 = __importDefault(require("@italodeandra/ui/components/Alert/Alert"));
 var dayjs_1 = __importDefault(require("dayjs"));
 var next_seo_1 = require("next-seo");
 var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcrumbs/Breadcrumbs"));
+var AuthContext_1 = require("../../../AuthContext");
 function PanelUsersView() {
-    var _a = (0, provider_1.useAuthContext)(), Routes = _a.Routes, intl = _a.intl;
+    var _a = (0, AuthContext_1.useAuthContext)(), Routes = _a.Routes, intl = _a.intl;
     var router = (0, router_1.useRouter)();
     var _b = (0, list_1.useAuthPanelUserList)({
         sort: "createdAt",

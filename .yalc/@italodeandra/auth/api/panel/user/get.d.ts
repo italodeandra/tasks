@@ -6,7 +6,7 @@ import { AuthConfig } from "../..";
 import { InferApiArgs, InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
 export default function panelUserGetHandler(args: Jsonify<{
     _id: ObjectId;
-}>, req: NextApiRequest, res: NextApiResponse, { connectToDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+}>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
     passwordSalt: string;

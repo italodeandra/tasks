@@ -8,6 +8,7 @@ declare const styles: {
         light: string;
         outlined: string;
         text: string;
+        custom: string;
     };
     color: {
         primary: string;
@@ -69,6 +70,7 @@ export declare type ButtonProps<Href extends string | undefined> = UnstyledButto
     trailingIcon?: ReactElement;
     loading?: boolean;
     disabled?: boolean;
+    rounded?: boolean;
 };
 declare const _default: import("react").ForwardRefExoticComponent<{
     href?: string | undefined;
@@ -102,7 +104,7 @@ declare const _default: import("react").ForwardRefExoticComponent<{
 } & {
     children?: import("react").ReactNode;
 } & import("react").RefAttributes<HTMLAnchorElement>), "ref"> & {
-    variant?: "text" | "light" | "filled" | "outlined" | undefined;
+    variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
     color?: "success" | "error" | "primary" | "gray" | "white" | undefined;
     size?: "sm" | "md" | undefined;
     icon?: boolean | undefined;
@@ -110,5 +112,6 @@ declare const _default: import("react").ForwardRefExoticComponent<{
     trailingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     loading?: boolean | undefined;
     disabled?: boolean | undefined;
+    rounded?: boolean | undefined;
 } & import("react").RefAttributes<HTMLAnchorElement | HTMLButtonElement>>;
 export default _default;

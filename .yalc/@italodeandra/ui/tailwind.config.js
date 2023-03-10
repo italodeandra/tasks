@@ -32,10 +32,10 @@ var plugin = require("tailwindcss/plugin");
 module.exports = {
     darkMode: "class",
     content: [
-        "./lib/**/*.{js,ts,jsx,tsx}",
-        "./src/**/*.{js,ts,jsx,tsx}",
         "./node_modules/@italodeandra/ui/**/*.{js,ts,jsx,tsx}",
         "./node_modules/@italodeandra/auth/**/*.{js,ts,jsx,tsx}",
+        "./lib/**/*.{js,ts,jsx,tsx}",
+        "./src/**/*.{js,ts,jsx,tsx}",
     ],
     theme: {
         extend: {

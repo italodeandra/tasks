@@ -10,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -20,6 +31,8 @@ var react_2 = require("@headlessui/react");
 var Stack_1 = __importDefault(require("../Stack/Stack"));
 var Group_1 = __importDefault(require("../Group/Group"));
 var clsx_1 = __importDefault(require("clsx"));
+var Button_1 = __importDefault(require("../Button/Button"));
+var solid_1 = require("@heroicons/react/24/solid");
 function Modal(_a) {
     var open = _a.open, onClose = _a.onClose, children = _a.children, overlayClassName = _a.overlayClassName, panelClassName = _a.panelClassName, dialogClassName = _a.dialogClassName, dialogOuterPanelClassName = _a.dialogOuterPanelClassName, dialogOverflowClassName = _a.dialogOverflowClassName;
     var handleOnClose = (0, react_1.useCallback)(function () { return onClose === null || onClose === void 0 ? void 0 : onClose(); }, [onClose]);
@@ -34,7 +47,7 @@ function ModalContainer(_a) {
 Modal.Title = ModalTitle;
 function ModalTitle(_a) {
     var children = _a.children, className = _a.className;
-    return ((0, jsx_runtime_1.jsx)(react_2.Dialog.Title, __assign({ as: "h3", className: (0, clsx_1.default)("text-lg font-medium leading-6 text-zinc-900 dark:text-zinc-100", className) }, { children: children })));
+    return ((0, jsx_runtime_1.jsx)(react_2.Dialog.Title, __assign({ as: "h3", className: (0, clsx_1.default)("text-center text-lg font-medium leading-6 text-zinc-900 dark:text-zinc-100", className) }, { children: children })));
 }
 Modal.Content = ModalContent;
 function ModalContent(_a) {
@@ -54,4 +67,9 @@ function ModalIcon(_a) {
                 className: "h-6 w-6 text-green-600 dark:text-green-400",
                 "aria-hidden": "true",
             }) })));
+}
+Modal.CloseButton = ModalCloseButton;
+function ModalCloseButton(_a) {
+    var className = _a.className, props = __rest(_a, ["className"]);
+    return ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ icon: true, className: (0, clsx_1.default)("absolute right-2 top-2", className), variant: "text" }, props, { children: (0, jsx_runtime_1.jsx)(solid_1.XMarkIcon, {}) })));
 }

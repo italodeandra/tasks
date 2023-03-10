@@ -30,6 +30,7 @@ export declare type Request = {
     cookies: NextApiRequestCookies;
 };
 export declare type Response = NextApiResponse | ServerResponse;
+export declare function getAuthCookies(req: OptionsType["req"], res: OptionsType["res"]): string | undefined;
 export declare function getUserFromCookies(req: OptionsType["req"], res: OptionsType["res"]): Promise<import("mongodb").WithId<Pick<{
     email: string;
     password: string;
