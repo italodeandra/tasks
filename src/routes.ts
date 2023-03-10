@@ -1,27 +1,21 @@
 class Routes {
   Home = "/";
   Panel = "/";
-  SignUp = "/criar-conta";
-  ForgotPassword = "/esqueci-minha-senha";
-  SignIn = "/entrar";
-  PanelUsers = "/usuarios";
-  PanelNewUser = "/usuario/novo";
-  PanelAssets = "/bens";
-  PanelNewAsset = "/bem/novo";
+  SignUp = "/sign-up";
+  ForgotPassword = "/forgot-password";
+  SignIn = "/sign-in";
+  PanelUsers = "/users";
+  PanelNewUser = "/user/new";
 
   ResetPassword(token: string) {
-    return `/redefinir-senha/${token}`;
+    return `/reset-password/${token}`;
   }
 
   PanelUser(id: string) {
-    return `/usuario/${id}`;
-  }
-
-  PanelAsset(id: string) {
-    return `/bem/${id}`;
+    return `/user/${id}`;
   }
 }
 
-let routes = new Routes()
+let routes = new Routes();
 
-export default routes
+export default routes;

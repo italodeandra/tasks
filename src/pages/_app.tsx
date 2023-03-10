@@ -1,6 +1,7 @@
 import "@fontsource/inter/variable.css";
 import "@italodeandra/ui/bootstrap/supressConsoleLog";
-import { Hydrate, QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/query-core";
+import { Hydrate, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -10,13 +11,11 @@ import "focus-visible";
 import "../globals.css";
 import AppProps from "@italodeandra/ui/bootstrap/AppProps";
 import routes from "../routes";
-import {
-  hydrateNavigationDrawerState
-} from "@italodeandra/ui/components/NavigationDrawer/navigationDrawer.state";
+import { hydrateNavigationDrawerState } from "@italodeandra/ui/components/NavigationDrawer/navigationDrawer.state";
 import setupNProgress from "@italodeandra/ui/bootstrap/nprogress";
-import AuthProvider, { IAuthContext } from "@italodeandra/auth/provider";
-import "dayjs/locale/pt-br";
+import AuthProvider from "@italodeandra/auth/AuthProvider";
 import { appDescription, appKeywords, appName, primaryColor } from "../consts";
+import { IAuthContext } from "@italodeandra/auth/AuthContext";
 
 dayjs.extend(relativeTime);
 
@@ -72,7 +71,7 @@ const authIntl: IAuthContext["intl"] = {
   User: "Usuário",
   Users: "Usuários",
   "Created at": "Criado em",
-  "Updated at": "Atualizado em"
+  "Updated at": "Atualizado em",
 };
 
 setupNProgress(primaryColor);
@@ -96,63 +95,63 @@ function MyApp({ Component, pageProps }: AppProps) {
               url: "/favicons/android-chrome-512x512.png",
               height: 512,
               width: 512,
-              alt: appName
-            }
-          ]
+              alt: appName,
+            },
+          ],
         }}
         additionalLinkTags={[
           {
             rel: "apple-touch-icon",
             sizes: "180x180",
-            href: "/favicons/apple-touch-icon.png"
+            href: "/favicons/apple-touch-icon.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "32x32",
-            href: "/favicons/favicon-32x32.png"
+            href: "/favicons/favicon-32x32.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "16x16",
-            href: "/favicons/favicon-16x16.png"
+            href: "/favicons/favicon-16x16.png",
           },
           {
             rel: "manifest",
-            href: "/favicons/site.webmanifest"
+            href: "/favicons/site.webmanifest",
           },
           {
             rel: "mask-icon",
             href: "/favicons/safari-pinned-tab.svg",
-            color: primaryColor
-          }
+            color: primaryColor,
+          },
         ]}
         additionalMetaTags={[
           {
             name: "apple-mobile-web-app-title",
-            content: appName
+            content: appName,
           },
           {
             name: "application-name",
-            content: appName
+            content: appName,
           },
           {
             name: "msapplication-TileColor",
-            content: primaryColor
+            content: primaryColor,
           },
           {
             name: "theme-color",
-            content: primaryColor
+            content: primaryColor,
           },
           {
             name: "viewport",
-            content: "initial-scale=1, width=device-width, maximum-scale=1"
+            content: "initial-scale=1, width=device-width, maximum-scale=1",
           },
           {
             name: "keywords",
-            content: appKeywords
-          }
+            content: appKeywords,
+          },
         ]}
       />
       <QueryClientProvider client={queryClient}>

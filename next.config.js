@@ -20,6 +20,15 @@ const nextConfig = {
     }
     return config;
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.imgur.com",
+        pathname: "**",
+      },
+    ],
+  },
 };
 
 module.exports = nextConfig;

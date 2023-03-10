@@ -1,43 +1,84 @@
-import { MongoClient, MongoClientOptions } from "mongodb";
-import { MongoMemoryServer } from "mongodb-memory-server";
-import Papr from "papr";
+import { connectDb as connect } from "@italodeandra/next/db";
+import authMigration from "@italodeandra/auth/db/migration";
+import authSeed, { userId } from "@italodeandra/auth/db/seed";
+import Project, { ProjectColor } from "../collections/project";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import Task, { TaskStatus } from "../collections/task";
 
-let isDev = process.env.NODE_ENV === "development";
-let uri = process.env.MONGODB_URI;
-
-let options: MongoClientOptions = {};
-
-export let client: MongoClient;
-let papr = new Papr();
+let projectId = isomorphicObjectId("64040f191fba7928b4763f66");
+let task1Id = isomorphicObjectId("64041c1b5cb96796f8e82595");
+let task2Id = isomorphicObjectId("64041c2353c286fb13bc69c0");
+let task3Id = isomorphicObjectId("64041c2cfc6cd1c1a0925311");
 
 export async function connectDb() {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (global._dbPromise) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return global._dbPromise;
-  }
+  await connect([
+    authMigration,
+    authSeed,
+    async () => {
+      await Project.findOneAndUpdate(
+        {
+          _id: projectId,
+        },
+        {
+          $set: {
+            name: "Test",
+            color: ProjectColor.BLUE,
+            userId,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
 
-  let connect = async () => {
-    if (!uri) {
-      let mongod = await MongoMemoryServer.create();
-      uri = mongod.getUri();
-    }
-    client = new MongoClient(uri, options);
-    await client.connect();
-
-    papr.initialize(client.db());
-  };
-
-  if (isDev) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    global._dbPromise = connect;
-    await connect();
-  }
-
-  await connect();
+      await Task.findOneAndUpdate(
+        {
+          _id: task1Id,
+        },
+        {
+          $set: {
+            content: "Test 1",
+            status: TaskStatus.TODO,
+            projectId,
+            userId,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+      await Task.findOneAndUpdate(
+        {
+          _id: task2Id,
+        },
+        {
+          $set: {
+            content: "Test 2",
+            status: TaskStatus.TODO,
+            projectId,
+            userId,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+      await Task.findOneAndUpdate(
+        {
+          _id: task3Id,
+        },
+        {
+          $set: {
+            content: "Test 3",
+            status: TaskStatus.DOING,
+            projectId,
+            userId,
+          },
+        },
+        {
+          upsert: true,
+        }
+      );
+    },
+  ]);
 }
-
-export default papr;
