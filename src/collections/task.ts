@@ -13,7 +13,7 @@ const taskSchema = onlyServer(() =>
     {
       content: types.string({ required: true }),
       status: types.enum(Object.values(TaskStatus), { required: true }),
-      projectId: types.objectId({ required: true }),
+      projectId: types.objectId(),
       userId: types.objectId({ required: true }),
       order: types.number({ required: true }),
     },

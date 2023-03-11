@@ -1,7 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { TaskListApiResponse } from "../../../../pages/api/task/list";
 import { Reorder, useDragControls } from "framer-motion";
 import Group from "@italodeandra/ui/components/Group/Group";
 import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
@@ -9,11 +8,23 @@ import { ProjectSelector } from "./ProjectSelector";
 import Button from "@italodeandra/ui/components/Button/Button";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Textarea from "@italodeandra/ui/components/Textarea/Textarea";
+import Badge from "@italodeandra/ui/components/Badge/Badge";
+import { useProjectList } from "../../../../pages/api/project/list";
+import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
+import { ITask } from "../../../../collections/task";
+import Jsonify from "@italodeandra/next/utils/Jsonify";
+import { useTaskUpsert } from "../../../../pages/api/task/upsert";
+import { TaskOptions } from "./TaskOptions";
 
 let cardClassName = "rounded-md border text-sm";
 
-export function Task({ task }: { task: TaskListApiResponse[0] }) {
-  let [isEditing, setEditing] = useState(false);
+export function Task({
+  task,
+}: {
+  task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
+    Pick<Partial<Jsonify<ITask>>, "projectId">;
+}) {
+  let [isEditing, setEditing] = useState(!task.content);
   let controls = useDragControls();
   let [newValue, setNewValue] = useState(task.content);
   let [selectedProjectId, setSelectedProjectId] = useState(
@@ -22,6 +33,27 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
 
   let toggleEditing = useCallback(() => setEditing((v) => !v), []);
 
+  let { data: projects, isLoading: isLoadingProject } = useProjectList();
+  let project = useMemo(
+    () => projects?.find((p) => p._id === task.projectId),
+    [projects, task.projectId]
+  );
+
+  let { mutate: upsert, isLoading: isUpserting } = useTaskUpsert({
+    onSuccess() {
+      setEditing(false);
+    },
+  });
+  let handleSaveClick = useCallback(
+    () =>
+      upsert({
+        _id: task._id,
+        content: newValue,
+        projectId: selectedProjectId || undefined,
+      }),
+    [newValue, selectedProjectId, task._id, upsert]
+  );
+
   return (
     <Reorder.Item value={task} dragListener={false} dragControls={controls}>
       {isEditing ? (
@@ -29,11 +61,9 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
           className={clsx(
             cardClassName,
             "border-zinc-300 bg-zinc-200 ring-1 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600" // default
-            // "flex flex-col border border-gray-5 bg-gray-2 bg-gray-2 ring-1 ring-gray-5"
           )}
         >
           <Textarea
-            // className="w-full rounded-[inherit] !border-0 bg-gray-1 py-2 px-2.5 !outline-0 !ring-0"
             inputClassName="!border-transparent focus:!border-primary-500"
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
@@ -56,7 +86,8 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
                   size="sm"
                   variant="outlined"
                   color="white"
-                  onClick={toggleEditing}
+                  onClick={handleSaveClick}
+                  loading={isUpserting}
                 >
                   <CheckIcon />
                 </Button>
@@ -65,11 +96,11 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
           </Group>
         </Stack>
       ) : (
-        <div
+        <Stack
           tabIndex={0}
           className={clsx(
             cardClassName,
-            "select-none py-2 px-2.5 transition-shadow ",
+            "group relative select-none px-2.5 pt-2 pb-2.5 transition-shadow",
             "border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900", // default
             "hover:shadow hover:shadow-zinc-200 dark:hover:shadow-zinc-800", // hover
             "focus:shadow focus:shadow-zinc-200 focus:outline-none dark:focus:shadow-zinc-800" // focus
@@ -77,8 +108,26 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
           onDoubleClick={toggleEditing}
           onPointerDown={(e) => controls.start(e)}
         >
-          {task.content}
-        </div>
+          <div>{task.content}</div>
+          {(!!project || isLoadingProject) && (
+            <Group>
+              {isLoadingProject ? (
+                <Skeleton className="h-[20px] w-14" />
+              ) : (
+                project && (
+                  <Badge size="sm" className="!rounded">
+                    {project.name}
+                  </Badge>
+                )
+              )}
+            </Group>
+          )}
+          <TaskOptions
+            task={task}
+            className="!absolute right-1 top-1"
+            buttonClassName="opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100 focus:opacity-100"
+          />
+        </Stack>
       )}
     </Reorder.Item>
   );

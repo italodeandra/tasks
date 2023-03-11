@@ -1,9 +1,9 @@
-import { connectDb as connect } from "@italodeandra/next/db";
+import Project, { ProjectColor } from "../collections/project";
+import Task, { TaskStatus } from "../collections/task";
 import authMigration from "@italodeandra/auth/db/migration";
 import authSeed, { userId } from "@italodeandra/auth/db/seed";
-import Project, { ProjectColor } from "../collections/project";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import Task, { TaskStatus } from "../collections/task";
+import { connectDb as connect } from "@italodeandra/next/db";
 
 let projectId = isomorphicObjectId("64040f191fba7928b4763f66");
 let task1Id = isomorphicObjectId("64041c1b5cb96796f8e82595");
@@ -41,6 +41,7 @@ export async function connectDb() {
             status: TaskStatus.TODO,
             projectId,
             userId,
+            order: 0,
           },
         },
         {
@@ -57,6 +58,7 @@ export async function connectDb() {
             status: TaskStatus.TODO,
             projectId,
             userId,
+            order: 1,
           },
         },
         {
@@ -73,6 +75,7 @@ export async function connectDb() {
             status: TaskStatus.DOING,
             projectId,
             userId,
+            order: 0,
           },
         },
         {

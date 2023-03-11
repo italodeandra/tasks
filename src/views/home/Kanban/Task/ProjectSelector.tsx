@@ -50,6 +50,14 @@ export function ProjectSelector({
         position="left"
         buttonProps={{ size: "sm", variant: "filled", color: "white" }}
       >
+        <Menu.Item
+          className={clsx({
+            "!bg-primary-500 !text-onPrimary": !selectedProjectId,
+          })}
+          onClick={() => setSelectedProjectId(null)}
+        >
+          None
+        </Menu.Item>
         {projects?.map((project) => (
           <Menu.Item
             key={project._id}

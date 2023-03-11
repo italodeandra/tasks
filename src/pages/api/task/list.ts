@@ -27,6 +27,11 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
         content: 1,
         status: 1,
         projectId: 1,
+        order: 1,
+      },
+      sort: {
+        status: 1,
+        order: 1,
       },
     }
   );
