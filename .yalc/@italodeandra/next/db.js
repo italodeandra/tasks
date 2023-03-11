@@ -91,7 +91,7 @@ function connectDb(afterConnected) {
                                 case 4:
                                     if (!(_i < afterConnected_1.length)) return [3 /*break*/, 7];
                                     runAfterConnected = afterConnected_1[_i];
-                                    return [4 /*yield*/, runAfterConnected()];
+                                    return [4 /*yield*/, runAfterConnected(exports.client.db())];
                                 case 5:
                                     _a.sent();
                                     _a.label = 6;

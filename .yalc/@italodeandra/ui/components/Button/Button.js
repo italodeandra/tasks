@@ -31,7 +31,7 @@ var clsx_1 = __importDefault(require("clsx"));
 var react_1 = require("react");
 var Loading_1 = __importDefault(require("../Loading/Loading"));
 var styles = {
-    root: "appearance-none select-none border transition-colors inline-flex items-center justify-center rounded-md font-medium leading-4 focus:outline-none focus-visible:ring-2 focus:ring-primary-500 focus:ring-offset-2 ring-offset-gray-100 dark:ring-offset-zinc-900",
+    root: "appearance-none select-none border transition-colors inline-flex items-center justify-center font-medium leading-4 focus:outline-none focus-visible:ring-2 focus:ring-primary-500 focus:ring-offset-2 ring-offset-gray-100 dark:ring-offset-zinc-900",
     variant: {
         filled: "shadow-sm",
         light: "shadow-sm",
@@ -97,9 +97,8 @@ var Button = function (_a, ref) {
     if (loading) {
         trailingIcon = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "!text-inherit" });
     }
-    return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, (_b = {},
+    return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded-md", (_b = {},
             _b[styles.disabled] = disabled,
-            _b["rounded-full"] = rounded,
             _b), className), type: type, disabled: disabled }, { children: [leadingIcon &&
                 (0, react_1.cloneElement)(leadingIcon, {
                     className: (0, clsx_1.default)("mr-2 -ml-0.5", styles.size[size].icon, (_c = leadingIcon === null || leadingIcon === void 0 ? void 0 : leadingIcon.props) === null || _c === void 0 ? void 0 : _c.className),
