@@ -66,7 +66,7 @@ var styles = {
         "text-success": "text-success-500 hover:bg-success-500/10 border-transparent active:border-success-500",
         "text-error": "text-error-500 hover:bg-error-500/10 border-transparent active:border-error-500",
         "text-gray": "text-zinc-500 dark:text-zinc-400 hover:bg-zinc-500/10 border-transparent active:border-zinc-500",
-        "text-white": "dark:text-white hover:bg-zinc-500/5 dark:hover:bg-white/5 border-transparent active:border-zinc-500/50 dark:active:border-white/50",
+        "text-white": "hover:bg-zinc-500/5 dark:hover:bg-white/5 border-transparent active:border-zinc-500/50 dark:active:border-white/50",
     },
     disabled: "opacity-50 pointer-events-none",
     size: {
