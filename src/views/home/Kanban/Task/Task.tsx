@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { Reorder, useDragControls } from "framer-motion";
+import { Reorder } from "framer-motion";
 import Group from "@italodeandra/ui/components/Group/Group";
 import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
 import { ProjectSelector } from "./ProjectSelector";
@@ -27,7 +27,6 @@ export function Task({
     Pick<Partial<Jsonify<ITask>>, "projectId">;
 }) {
   let [isEditing, setEditing] = useState(!task.content);
-  let controls = useDragControls();
   let [newValue, setNewValue] = useState(task.content);
   let [selectedProjectId, setSelectedProjectId] = useState(
     task.projectId || null
@@ -57,7 +56,7 @@ export function Task({
   );
 
   return (
-    <Reorder.Item value={task} dragListener={false} dragControls={controls}>
+    <Reorder.Item value={task}>
       {isEditing ? (
         <Stack
           className={clsx(
@@ -111,11 +110,11 @@ export function Task({
             "focus:shadow focus:shadow-zinc-200 focus:outline-none dark:focus:shadow-zinc-800" // focus
           )}
           onDoubleClick={toggleEditing}
-          onPointerDown={(e) => controls.start(e)}
         >
-          <Markdown className="prose-p:!my-0 prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0">
+          <Markdown className="!text-md !inline prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0">
             {task.content}
           </Markdown>
+
           {(!!project || isLoadingProject) && (
             <Group>
               {isLoadingProject ? (
@@ -129,11 +128,7 @@ export function Task({
               )}
             </Group>
           )}
-          <TaskOptions
-            task={task}
-            className="!absolute right-1 top-1"
-            buttonClassName="opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100 focus:opacity-100"
-          />
+          <TaskOptions task={task} onEditClick={() => setEditing(true)} />
         </Stack>
       )}
     </Reorder.Item>

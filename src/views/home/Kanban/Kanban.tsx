@@ -49,9 +49,9 @@ export function Kanban() {
   }
 
   return (
-    <Group className="sm:flex-row sm:gap-2">
+    <Group className="flex-row gap-2 overflow-auto px-4">
       {columns.map((column) => (
-        <Stack key={column} className="w-full max-w-full sm:w-80">
+        <Stack key={column} className="min-w-[20rem] max-w-[30rem]">
           <ColumnTitle status={column} />
           {isLoading ? (
             <Skeleton className="h-10" />

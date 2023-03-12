@@ -11,14 +11,12 @@ import { columns } from "../columns.const";
 import { translateTaskStatus } from "../translateTaskStatus";
 
 export function TaskOptions({
-  className,
-  buttonClassName,
   task,
+  onEditClick,
 }: {
-  className?: string;
-  buttonClassName?: string;
   task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
     Pick<Partial<Jsonify<ITask>>, "projectId">;
+  onEditClick?: () => void;
 }) {
   let { mutate: taskUpsert } = useTaskUpsert();
   let { data: tasks } = useTaskList();
@@ -41,17 +39,20 @@ export function TaskOptions({
 
   return (
     <Menu
-      className={className}
+      className="!absolute right-1 top-1"
       button={
-        <span>
+        <span className="rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900">
           <Tooltip content="Options">
-            <Button icon variant="text" className={buttonClassName} size="sm">
+            <Button icon variant="text" size="sm">
               <EllipsisVerticalIcon />
             </Button>
           </Tooltip>
         </span>
       }
     >
+      <Menu.Item className="sm:hidden" onClick={onEditClick}>
+        Edit task
+      </Menu.Item>
       {columns
         .filter((c) => c !== task.status)
         .map((status) => (
