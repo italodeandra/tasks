@@ -49,7 +49,7 @@ export function Kanban() {
   }
 
   return (
-    <Group className="flex-row gap-2 overflow-auto px-4">
+    <Group className="flex-row gap-2 px-4">
       {columns.map((column) => (
         <Stack key={column} className="min-w-[20rem] max-w-[30rem]">
           <ColumnTitle status={column} />
