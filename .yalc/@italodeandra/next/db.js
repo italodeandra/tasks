@@ -48,7 +48,7 @@ var uri = process.env.MONGODB_URI;
 var options = {};
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-var papr = (global._papr = (0, isServer_1.onlyServer)(function () { return new papr_1.default(); }));
+var papr = (global._papr = global._papr || (0, isServer_1.onlyServer)(function () { return new papr_1.default(); }));
 function connectDb(afterConnected) {
     return __awaiter(this, void 0, void 0, function () {
         var connect;
@@ -85,22 +85,25 @@ function connectDb(afterConnected) {
                                 case 3:
                                     _a.sent();
                                     papr.initialize(exports.client.db());
-                                    if (!afterConnected) return [3 /*break*/, 7];
-                                    _i = 0, afterConnected_1 = afterConnected;
-                                    _a.label = 4;
+                                    return [4 /*yield*/, papr.updateSchemas()];
                                 case 4:
-                                    if (!(_i < afterConnected_1.length)) return [3 /*break*/, 7];
+                                    _a.sent();
+                                    if (!afterConnected) return [3 /*break*/, 8];
+                                    _i = 0, afterConnected_1 = afterConnected;
+                                    _a.label = 5;
+                                case 5:
+                                    if (!(_i < afterConnected_1.length)) return [3 /*break*/, 8];
                                     runAfterConnected = afterConnected_1[_i];
                                     return [4 /*yield*/, runAfterConnected(exports.client.db())];
-                                case 5:
-                                    _a.sent();
-                                    _a.label = 6;
                                 case 6:
-                                    _i++;
-                                    return [3 /*break*/, 4];
+                                    _a.sent();
+                                    _a.label = 7;
                                 case 7:
+                                    _i++;
+                                    return [3 /*break*/, 5];
+                                case 8:
                                     console.info("[MongoDB] Connected");
-                                    return [2 /*return*/];
+                                    return [2 /*return*/, papr];
                             }
                         });
                     }); };
