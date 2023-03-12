@@ -2,7 +2,7 @@ import { connectDb } from "../db";
 import { GetServerSideProps } from "next";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import routes from "../routes";
-import { getCookies } from "cookies-next";
+import { deleteCookie, getCookies } from "cookies-next";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
 import {
   AuthUserGetApiResponse,
@@ -16,6 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   await connectDb();
   const user = await getUserFromCookies(req, res);
   if (!user) {
+    deleteCookie("auth", { req, res });
     return {
       redirect: {
         destination: routes.SignIn,
