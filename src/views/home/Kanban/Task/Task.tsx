@@ -15,6 +15,8 @@ import { ITask } from "../../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { useTaskUpsert } from "../../../../pages/api/task/upsert";
 import { TaskOptions } from "./TaskOptions";
+import Markdown from "@italodeandra/ui/components/Markdown/Markdown";
+import Loading from "@italodeandra/ui/components/Loading/Loading";
 
 let cardClassName = "rounded-md border text-sm";
 
@@ -87,9 +89,12 @@ export function Task({
                   variant="outlined"
                   color="white"
                   onClick={handleSaveClick}
-                  loading={isUpserting}
                 >
-                  <CheckIcon />
+                  {isUpserting ? (
+                    <Loading className="!h-4 !w-4" />
+                  ) : (
+                    <CheckIcon />
+                  )}
                 </Button>
               </Tooltip>
             </Group>
@@ -108,7 +113,9 @@ export function Task({
           onDoubleClick={toggleEditing}
           onPointerDown={(e) => controls.start(e)}
         >
-          <div>{task.content}</div>
+          <Markdown className="prose-p:!my-0 prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0">
+            {task.content}
+          </Markdown>
           {(!!project || isLoadingProject) && (
             <Group>
               {isLoadingProject ? (
