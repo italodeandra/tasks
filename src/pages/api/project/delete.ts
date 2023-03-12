@@ -34,7 +34,7 @@ async function handler(
   if (
     (await Project.countDocuments({
       _id,
-      usedId: user._id,
+      userId: user._id,
     })) === 0
   ) {
     throw notFound;
@@ -42,7 +42,7 @@ async function handler(
 
   await Project.deleteOne({
     _id,
-    usedId: user._id,
+    userId: user._id,
   });
 }
 
