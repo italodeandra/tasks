@@ -5,7 +5,7 @@ import {
   InferApiResponse,
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import { notFound, unauthorized } from "@italodeandra/next/api/errors";
+import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
   useIsMutating,
@@ -37,37 +37,38 @@ async function handler(
   const _id = isomorphicObjectId(args._id);
   const projectId = args.projectId && isomorphicObjectId(args.projectId);
 
-  const upserted = await Task.findOneAndUpdate(
-    {
-      _id,
-      userId: user._id,
-    },
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      $set: pickBy<any>(
-        {
-          content: args.content,
-          projectId,
-          status: args.status,
-          order: args.order,
-        },
-        (v) => v !== undefined
-      ),
-      $setOnInsert: {
+  if (args.content) {
+    await Task.findOneAndUpdate(
+      {
         _id,
         userId: user._id,
       },
-    },
-    {
-      upsert: true,
-    }
-  );
-
-  if (!upserted) {
-    throw notFound;
+      {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        $set: pickBy<any>(
+          {
+            content: args.content,
+            projectId,
+            status: args.status,
+            order: args.order,
+          },
+          (v) => v !== undefined
+        ),
+        $setOnInsert: {
+          _id,
+          userId: user._id,
+        },
+      },
+      {
+        upsert: true,
+      }
+    );
+  } else {
+    await Task.deleteOne({
+      _id,
+      userId: user._id,
+    });
   }
-
-  return { _id: upserted._id };
 }
 
 export default apiHandlerWrapper(handler);

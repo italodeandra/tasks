@@ -13,10 +13,12 @@ import { translateTaskStatus } from "../translateTaskStatus";
 export function TaskOptions({
   task,
   onEditClick,
+  onDeleteClick,
 }: {
   task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
     Pick<Partial<Jsonify<ITask>>, "projectId">;
   onEditClick?: () => void;
+  onDeleteClick?: () => void;
 }) {
   let { mutate: taskUpsert } = useTaskUpsert();
   let { data: tasks } = useTaskList();
@@ -51,7 +53,7 @@ export function TaskOptions({
       }
     >
       <Menu.Item className="sm:hidden" onClick={onEditClick}>
-        Edit task
+        Edit
       </Menu.Item>
       {columns
         .filter((c) => c !== task.status)
@@ -60,6 +62,7 @@ export function TaskOptions({
             Move to {translateTaskStatus(status)}
           </Menu.Item>
         ))}
+      <Menu.Item onClick={onDeleteClick}>Delete</Menu.Item>
     </Menu>
   );
 }

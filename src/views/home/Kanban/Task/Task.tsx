@@ -55,6 +55,13 @@ export function Task({
     [newValue, selectedProjectId, task._id, upsert]
   );
 
+  let handleDeleteClick = useCallback(() => {
+    upsert({
+      _id: task._id,
+      content: "",
+    });
+  }, [task._id, upsert]);
+
   return (
     <Reorder.Item value={task}>
       {isEditing ? (
@@ -128,7 +135,11 @@ export function Task({
               )}
             </Group>
           )}
-          <TaskOptions task={task} onEditClick={() => setEditing(true)} />
+          <TaskOptions
+            task={task}
+            onEditClick={() => setEditing(true)}
+            onDeleteClick={handleDeleteClick}
+          />
         </Stack>
       )}
     </Reorder.Item>
