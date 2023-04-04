@@ -23,7 +23,7 @@ let cardClassName = "rounded-md border text-sm";
 export function Task({
   task,
 }: {
-  task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
+  task: Pick<Jsonify<ITask>, "_id" | "content" | "status" | "order"> &
     Pick<Partial<Jsonify<ITask>>, "projectId">;
 }) {
   let [isEditing, setEditing] = useState(!task.content);
@@ -51,8 +51,10 @@ export function Task({
         _id: task._id,
         content: newValue,
         projectId: selectedProjectId || undefined,
+        status: task.status,
+        order: task.order,
       }),
-    [newValue, selectedProjectId, task._id, upsert]
+    [newValue, selectedProjectId, task._id, task.order, task.status, upsert]
   );
 
   let handleDeleteClick = useCallback(() => {

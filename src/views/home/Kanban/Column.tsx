@@ -38,7 +38,7 @@ export function Column({
       _id: isomorphicObjectId().toString(),
       content: "",
       status,
-      order: items.length,
+      order: items.length + 1,
     };
     setItems((i) => [...i, newTask]);
     upsert(newTask);

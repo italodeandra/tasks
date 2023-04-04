@@ -15,73 +15,75 @@ export async function connectDb() {
     authMigration,
     authSeed,
     async () => {
-      await Project.findOneAndUpdate(
-        {
-          _id: projectId,
-        },
-        {
-          $set: {
-            name: "Test",
-            color: ProjectColor.BLUE,
-            userId,
+      if (process.env.APP_ENV === "development") {
+        await Project.findOneAndUpdate(
+          {
+            _id: projectId,
           },
-        },
-        {
-          upsert: true,
-        }
-      );
+          {
+            $set: {
+              name: "Test",
+              color: ProjectColor.BLUE,
+              userId,
+            },
+          },
+          {
+            upsert: true,
+          }
+        );
 
-      await Task.findOneAndUpdate(
-        {
-          _id: task1Id,
-        },
-        {
-          $set: {
-            content: "Test 1",
-            status: TaskStatus.TODO,
-            projectId,
-            userId,
-            order: 0,
+        await Task.findOneAndUpdate(
+          {
+            _id: task1Id,
           },
-        },
-        {
-          upsert: true,
-        }
-      );
-      await Task.findOneAndUpdate(
-        {
-          _id: task2Id,
-        },
-        {
-          $set: {
-            content: "Test 2",
-            status: TaskStatus.TODO,
-            projectId,
-            userId,
-            order: 1,
+          {
+            $set: {
+              content: "Test 1",
+              status: TaskStatus.TODO,
+              projectId,
+              userId,
+              order: 0,
+            },
           },
-        },
-        {
-          upsert: true,
-        }
-      );
-      await Task.findOneAndUpdate(
-        {
-          _id: task3Id,
-        },
-        {
-          $set: {
-            content: "Test 3",
-            status: TaskStatus.DOING,
-            projectId,
-            userId,
-            order: 0,
+          {
+            upsert: true,
+          }
+        );
+        await Task.findOneAndUpdate(
+          {
+            _id: task2Id,
           },
-        },
-        {
-          upsert: true,
-        }
-      );
+          {
+            $set: {
+              content: "Test 2",
+              status: TaskStatus.TODO,
+              projectId,
+              userId,
+              order: 1,
+            },
+          },
+          {
+            upsert: true,
+          }
+        );
+        await Task.findOneAndUpdate(
+          {
+            _id: task3Id,
+          },
+          {
+            $set: {
+              content: "Test 3",
+              status: TaskStatus.DOING,
+              projectId,
+              userId,
+              order: 0,
+            },
+          },
+          {
+            upsert: true,
+          }
+        );
+      }
     },
   ]);
 }

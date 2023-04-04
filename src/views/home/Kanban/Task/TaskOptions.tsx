@@ -43,7 +43,7 @@ export function TaskOptions({
     <Menu
       className="!absolute right-1 top-1"
       button={
-        <span className="rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900">
+        <span className="block rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900">
           <Tooltip content="Options">
             <Button icon variant="text" size="sm">
               <EllipsisVerticalIcon />
