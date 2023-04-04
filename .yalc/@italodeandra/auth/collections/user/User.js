@@ -13,12 +13,13 @@ exports.UserType = {
 };
 var userSchema = (0, isServer_1.onlyServer)(function () {
     return (0, papr_1.schema)({
+        _id: papr_1.types.objectId({ required: true }),
         email: papr_1.types.string({
             required: true,
             maxLength: 255,
         }),
         emailVerified: papr_1.types.date(),
-        type: papr_1.types.enum(Object.values(exports.UserType)),
+        type: papr_1.types.string({ required: true }),
         password: papr_1.types.string({
             required: true,
             maxLength: 130,
@@ -31,6 +32,9 @@ var userSchema = (0, isServer_1.onlyServer)(function () {
             maxLength: 100,
         }),
         phoneNumber: papr_1.types.string(),
+        createdAt: papr_1.types.date({ required: true }),
+        updatedAt: papr_1.types.date({ required: true }),
+        customData: papr_1.types.any(),
     }, {
         defaults: {
             type: exports.UserType.NORMAL,

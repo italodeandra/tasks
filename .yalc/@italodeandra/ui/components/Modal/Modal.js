@@ -52,7 +52,7 @@ function ModalTitle(_a) {
 Modal.Content = ModalContent;
 function ModalContent(_a) {
     var children = _a.children, className = _a.className;
-    return ((0, jsx_runtime_1.jsx)("p", __assign({ className: (0, clsx_1.default)("text-center text-sm text-gray-500 dark:text-gray-400", className) }, { children: children })));
+    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("text-center text-sm text-gray-500 dark:text-gray-400", className) }, { children: children })));
 }
 Modal.Actions = ModalActions;
 function ModalActions(_a) {

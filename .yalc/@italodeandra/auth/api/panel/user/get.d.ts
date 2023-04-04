@@ -8,21 +8,22 @@ export default function panelUserGetHandler(args: Jsonify<{
     _id: ObjectId;
 }>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
     _id: ObjectId;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
-}, "email" | "type" | "name" | "_id">>>;
+    customData?: Pick<{}, never> | undefined;
+}, "email" | "type" | "_id" | "name">>>;
 export declare type AuthPanelUserGetApiResponse = InferApiResponse<typeof panelUserGetHandler>;
 export declare type AuthPanelUserGetApiArgs = InferApiArgs<typeof panelUserGetHandler>;
 export declare const useAuthPanelUserGet: (args?: AuthPanelUserGetApiArgs, options?: UseQueryOptions<AuthPanelUserGetApiResponse>) => import("@tanstack/react-query").UseQueryResult<{
     email: string;
-    type?: any;
+    type: string;
     name?: string | undefined;
     _id: string;
 }, unknown>;

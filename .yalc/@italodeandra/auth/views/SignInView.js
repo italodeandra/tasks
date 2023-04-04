@@ -68,7 +68,7 @@ var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack")
 var AuthContext_1 = require("../AuthContext");
 function SignInView(_a) {
     var _b;
-    var backgroundImage = _a.backgroundImage;
+    var backgroundImage = _a.backgroundImage, disableSignUp = _a.disableSignUp;
     var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var queryClient = (0, react_query_1.useQueryClient)();
@@ -112,7 +112,7 @@ function SignInView(_a) {
             signIn(values);
         }
     }
-    return ((0, jsx_runtime_1.jsxs)(AuthLayout_1.default, __assign({ title: t("Sign in to your account"), subtitle: (0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [t("Or"), " ", (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "link", href: Routes.SignUp }, { children: t("create a new account") }))] }), backgroundImage: backgroundImage }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Sign in") }), (0, jsx_runtime_1.jsx)("form", __assign({ onSubmit: handleSubmit(onSubmit) }, { children: (0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: "gap-5" }, { children: [(0, jsx_runtime_1.jsx)(Input_1.default, __assign({ label: t("Email"), type: "email", autoComplete: "email", required: true }, register("email", {
+    return ((0, jsx_runtime_1.jsxs)(AuthLayout_1.default, __assign({ title: t("Sign in to your account"), subtitle: !disableSignUp ? ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [t("Or"), " ", (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "link", href: Routes.SignUp }, { children: t("create a new account") }))] })) : undefined, backgroundImage: backgroundImage }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Sign in") }), (0, jsx_runtime_1.jsx)("form", __assign({ onSubmit: handleSubmit(onSubmit) }, { children: (0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: "gap-5" }, { children: [(0, jsx_runtime_1.jsx)(Input_1.default, __assign({ label: t("Email"), type: "email", autoComplete: "email", required: true }, register("email", {
                             required: t("Please fill with your email"),
                             pattern: {
                                 value: emailRegExp_1.default,

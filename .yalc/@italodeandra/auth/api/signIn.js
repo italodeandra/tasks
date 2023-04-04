@@ -77,7 +77,7 @@ function signInHandler(args, req, res, _a) {
                         throw errors_1.unauthorized;
                     }
                     token = (0, User_service_1.generateToken)(user._id);
-                    (0, cookies_next_1.setCookie)("auth", token, {
+                    (0, cookies_next_1.setCookie)("auth", { token: token }, {
                         req: req,
                         res: res,
                         maxAge: (0, ms_1.default)("30d"),

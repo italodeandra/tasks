@@ -4,7 +4,6 @@ import TableBody from "./TableBody";
 import TableCell from "./TableCell";
 import TableHead from "./TableHead";
 import TableHeader from "./TableHeader";
-import TableRow from "./TableRow";
 import TableFooter from "./TableFooter";
 import TableFooterWithPagination from "./TableFooterWithPagination";
 export declare type TableProps = {
@@ -15,7 +14,7 @@ export declare type TableProps = {
 };
 declare function Table({ children, className, dense, hideBorder, }: TableProps): JSX.Element;
 declare namespace Table {
-    var Row: typeof TableRow;
+    var Row: import("react").ForwardRefExoticComponent<import("./TableRow").TableRowProps & import("react").RefAttributes<HTMLTableRowElement>>;
     var Head: typeof TableHead;
     var Body: typeof TableBody;
     var Cell: typeof TableCell;

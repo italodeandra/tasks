@@ -9,24 +9,25 @@ export default function authPanelUserListHandler(args: {
     sortDirection?: "asc" | "desc";
 }, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
-}, "email" | "type" | "name" | "createdAt" | "updatedAt" | "_id">>[]>;
+    customData?: Pick<{}, never> | undefined;
+}, "email" | "type" | "createdAt" | "updatedAt" | "_id" | "name">>[]>;
 export declare type AuthPanelUserListApiArgs = InferApiArgs<typeof authPanelUserListHandler>;
 export declare type AuthPanelUserListApiResponse = InferApiResponse<typeof authPanelUserListHandler>;
 export declare const useAuthPanelUserList: (args?: AuthPanelUserListApiArgs) => import("@tanstack/react-query").UseQueryResult<{
     email: string;
-    type?: any;
-    name?: string | undefined;
+    type: string;
     createdAt: string;
     updatedAt: string;
+    name?: string | undefined;
     _id: string;
 }[], unknown>;
 export declare const prefetch_authPanelUserList: (queryClient: QueryClient, args_0: {

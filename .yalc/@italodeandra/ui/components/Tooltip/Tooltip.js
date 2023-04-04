@@ -47,6 +47,7 @@ var react_1 = require("react");
 var react_merge_refs_1 = __importDefault(require("react-merge-refs"));
 var react_dom_interactions_1 = require("@floating-ui/react-dom-interactions");
 var framer_motion_1 = require("framer-motion");
+var clsx_1 = __importDefault(require("clsx"));
 function useTooltipState(_a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.initialOpen, initialOpen = _c === void 0 ? false : _c, _d = _b.placement, placement = _d === void 0 ? "bottom" : _d, id = _b.id, delayGroupContext = _b.delayGroupContext, delay = _b.delay;
     var _e = __read((0, react_1.useState)(initialOpen), 2), open = _e[0], setOpen = _e[1];
@@ -88,7 +89,7 @@ exports.TooltipAnchor = (0, react_1.forwardRef)(function TooltipAnchor(_a, propR
 });
 exports.TooltipContent = (0, react_1.forwardRef)(function TooltipContent(_a, propRef) {
     var _b, _c;
-    var state = _a.state, props = __rest(_a, ["state"]);
+    var state = _a.state, className = _a.className, props = __rest(_a, ["state", "className"]);
     var delay = (0, react_dom_interactions_1.useDelayGroupContext)().delay;
     var ref = (0, react_1.useMemo)(function () { return (0, react_merge_refs_1.default)([state.floating, propRef]); }, [state.floating, propRef]);
     return ((0, jsx_runtime_1.jsx)(react_dom_interactions_1.FloatingPortal, { children: (0, jsx_runtime_1.jsx)(framer_motion_1.AnimatePresence, { children: state.open && ((0, jsx_runtime_1.jsx)(framer_motion_1.motion.div, __assign({ initial: { opacity: 0, scale: 0.85 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0 }, transition: 
@@ -96,10 +97,10 @@ exports.TooltipContent = (0, react_1.forwardRef)(function TooltipContent(_a, pro
                 // The open delay becomes 1ms during this phase.
                 typeof delay === "object" && delay.open === 1
                     ? { duration: 0.08 }
-                    : { type: "spring", damping: 20, stiffness: 300 }, className: "z-20 rounded bg-zinc-900/95 px-2 py-1 text-sm text-white", ref: ref, style: __assign({ position: state.strategy, top: (_b = state.y) !== null && _b !== void 0 ? _b : 0, left: (_c = state.x) !== null && _c !== void 0 ? _c : 0 }, props.style) }, state.getFloatingProps(props)))) }) }));
+                    : { type: "spring", damping: 20, stiffness: 300 }, className: (0, clsx_1.default)("z-20 rounded bg-zinc-900/95 px-2 py-1 text-sm text-white", className), ref: ref, style: __assign({ position: state.strategy, top: (_b = state.y) !== null && _b !== void 0 ? _b : 0, left: (_c = state.x) !== null && _c !== void 0 ? _c : 0 }, props.style) }, state.getFloatingProps(props)))) }) }));
 });
 function Tooltip(_a) {
-    var children = _a.children, content = _a.content, placement = _a.placement, delay = _a.delay;
+    var children = _a.children, content = _a.content, placement = _a.placement, delay = _a.delay, className = _a.className;
     var delayGroupContext = (0, react_dom_interactions_1.useDelayGroupContext)();
     var state = useTooltipState({
         delayGroupContext: delayGroupContext,
@@ -111,7 +112,7 @@ function Tooltip(_a) {
     if (!content) {
         return children;
     }
-    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(exports.TooltipAnchor, __assign({ state: state, asChild: true }, { children: children })), (0, jsx_runtime_1.jsx)(exports.TooltipContent, __assign({ state: state }, { children: content }))] }));
+    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(exports.TooltipAnchor, __assign({ state: state, asChild: true }, { children: children })), (0, jsx_runtime_1.jsx)(exports.TooltipContent, __assign({ state: state, className: className }, { children: content }))] }));
 }
 exports.default = Tooltip;
 Tooltip.Group = function TooltipGroup(_a) {

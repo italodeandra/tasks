@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -43,7 +66,7 @@ var errors_1 = require("@italodeandra/next/api/errors");
 var User_service_1 = require("../collections/user/User.service");
 var react_1 = require("react");
 var getUser_1 = require("./getUser");
-var cookies_next_1 = require("cookies-next");
+var auth_state_1 = __importStar(require("../auth.state"));
 function getFullUserHandler(_args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
@@ -68,20 +91,21 @@ exports.default = getFullUserHandler;
 var queryKey = "/api/auth/getFullUser";
 var useAuthGetFullUser = function (required) {
     var queryClient = (0, react_query_1.useQueryClient)();
+    var token = (0, auth_state_1.useAuthSnapshot)().token;
     (0, react_1.useEffect)(function () {
-        if (!(0, cookies_next_1.getCookie)("auth")) {
+        if (!token) {
             (0, getUser_1.setData_authGetUser)(queryClient, null);
         }
-    }, [queryClient]);
+    }, [queryClient, token]);
     return (0, react_query_1.useQuery)([queryKey], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey), {
-        enabled: required || !!(0, cookies_next_1.getCookie)("auth"),
+        enabled: required || !!token,
         onError: function (error) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             if (!(error.code === 401)) return [3 /*break*/, 2];
-                            (0, cookies_next_1.deleteCookie)("auth", { path: "/" });
+                            auth_state_1.default.token = null;
                             return [4 /*yield*/, (0, getUser_1.setData_authGetUser)(queryClient, null)];
                         case 1:
                             _a.sent();

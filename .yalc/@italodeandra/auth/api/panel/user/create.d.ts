@@ -16,7 +16,7 @@ export declare const useAuthPanelUserCreate: (options?: UseMutationOptions<AuthP
     _id: string;
 }, UserCreateError, {
     email: string;
-    type?: any;
+    type: string;
     name?: string | undefined;
 }, unknown>;
 export {};

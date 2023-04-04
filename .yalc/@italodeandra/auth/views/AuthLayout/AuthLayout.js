@@ -17,9 +17,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var image_1 = __importDefault(require("next/image"));
 var link_1 = __importDefault(require("next/link"));
+var AuthContext_1 = require("../../AuthContext");
 var ModeToggle_1 = require("@italodeandra/ui/components/ModeToggle/ModeToggle");
 var GridPattern_1 = __importDefault(require("@italodeandra/ui/components/GridPattern/GridPattern"));
-var AuthContext_1 = require("../../AuthContext");
 function AuthLayout(_a) {
     var title = _a.title, subtitle = _a.subtitle, children = _a.children, _b = _a.backgroundImage, backgroundImage = _b === void 0 ? "https://i.imgur.com/AEFv06G.jpg" : _b, backgroundDescription = _a.backgroundDescription;
     var Routes = (0, AuthContext_1.useAuthContext)().Routes;

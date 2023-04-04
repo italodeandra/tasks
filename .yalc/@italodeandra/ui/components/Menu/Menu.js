@@ -51,7 +51,7 @@ Menu.Label = function MenuLabel(props) {
     return ((0, jsx_runtime_1.jsx)(Text_1.default, __assign({}, props, { variant: "label", className: (0, clsx_1.default)("w-full text-left", "block px-4 py-2 text-sm", props.className) })));
 };
 function Menu(_a) {
-    var className = _a.className, iconClassName = _a.iconClassName, _b = _a.position, position = _b === void 0 ? "right" : _b, children = _a.children, label = _a.label, button = _a.button, buttonProps = _a.buttonProps, unmount = _a.unmount;
+    var className = _a.className, iconClassName = _a.iconClassName, _b = _a.position, position = _b === void 0 ? "right" : _b, children = _a.children, label = _a.label, button = _a.button, buttonProps = _a.buttonProps, unmount = _a.unmount, menuItemsClassName = _a.menuItemsClassName;
     return ((0, jsx_runtime_1.jsxs)(react_2.Menu, __assign({ as: "div", className: (0, clsx_1.default)("relative inline-block text-left", className) }, { children: [(0, jsx_runtime_1.jsx)("div", { children: button ? ((0, jsx_runtime_1.jsx)(react_2.Menu.Button, __assign({ as: react_1.Fragment }, { children: button }))) : ((0, jsx_runtime_1.jsx)(react_2.Menu.Button, __assign({ as: Button_1.default, className: (0, clsx_1.default)("flex w-full", buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.className), trailingIcon: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, { className: iconClassName }) }, buttonProps, { children: label }))) }), (0, jsx_runtime_1.jsx)(react_2.Transition, __assign({ as: react_1.Fragment, enter: "transition ease-out duration-100", enterFrom: "transform opacity-0 scale-95", enterTo: "transform opacity-100 scale-100", leave: "transition ease-in duration-75", leaveFrom: "transform opacity-100 scale-100", leaveTo: "transform opacity-0 scale-95" }, { children: (0, jsx_runtime_1.jsx)(react_2.Menu.Items, __assign({ unmount: unmount, className: (0, clsx_1.default)(exports.defaultMenuItemsClassName, "absolute mt-2 min-w-[14rem]", {
                         "right-0": position.includes("right"),
                         "origin-top-right": position.includes("right") && !position.includes("bottom"),
@@ -60,6 +60,6 @@ function Menu(_a) {
                         "origin-bottom-left": position.includes("left") && position.includes("bottom"),
                         "left-0": position.includes("left"),
                         "bottom-0": position.includes("bottom"),
-                    }) }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: "py-1" }, { children: children })) })) }))] })));
+                    }, menuItemsClassName) }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: "py-1" }, { children: children })) })) }))] })));
 }
 exports.default = Menu;

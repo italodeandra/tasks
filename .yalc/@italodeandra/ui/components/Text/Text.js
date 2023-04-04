@@ -32,7 +32,7 @@ var link_1 = __importDefault(require("next/link"));
 exports.defaultTextStyles = {
     variant: {
         default: "text-gray-700 hover:text-gray-700 dark:text-zinc-200",
-        label: "text-gray-800 text-sm font-medium dark:text-zinc-100",
+        label: "text-gray-800 font-medium dark:text-zinc-100",
         secondary: "text-sm text-gray-500 dark:text-zinc-400",
         link: "font-medium text-primary-600 hover:text-primary-500",
     },
@@ -47,12 +47,11 @@ exports.defaultTextStyles = {
 };
 function Text(_a) {
     var _b;
-    var inline = _a.inline, _c = _a.variant, variant = _c === void 0 ? "default" : _c, className = _a.className, href = _a.href, target = _a.target, _d = _a.size, size = _d === void 0 ? "base" : _d, props = __rest(_a, ["inline", "variant", "className", "href", "target", "size"]);
+    var inline = _a.inline, _c = _a.variant, variant = _c === void 0 ? "default" : _c, className = _a.className, href = _a.href, target = _a.target, _d = _a.size, size = _d === void 0 ? variant !== "label" ? "base" : "sm" : _d, props = __rest(_a, ["inline", "variant", "className", "href", "target", "size"]);
     className = (0, clsx_1.default)(exports.defaultTextStyles.variant[variant], exports.defaultTextStyles.size[size], (_b = {},
         _b[exports.defaultTextStyles.variant.link] = !!href && variant === "default",
         _b), className);
     if (href) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({ href: href, target: target }, props, { className: className })));
     }
     if (inline) {

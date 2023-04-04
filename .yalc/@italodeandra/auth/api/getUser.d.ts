@@ -9,22 +9,23 @@ export interface AuthUserGetApiError {
 }
 export default function getUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
-}, "email" | "type" | "name" | "_id">>>;
+    customData?: Pick<{}, never> | undefined;
+}, "email" | "type" | "_id" | "name">>>;
 export declare type AuthUserGetApiResponse = InferApiResponse<typeof getUserHandler>;
 export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOptions<AuthUserGetApiResponse | null, AuthUserGetApiError>) => {
     isLoading: boolean;
     data: {
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null;
@@ -50,7 +51,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
     isStale: boolean;
     refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
@@ -60,7 +61,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
     isLoading: boolean;
     data: {
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null;
@@ -86,7 +87,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
     isStale: boolean;
     refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
@@ -117,7 +118,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
     isStale: boolean;
     refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
@@ -148,7 +149,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
     isStale: boolean;
     refetch: <TPageData>(options?: (import("@tanstack/react-query").RefetchOptions & import("@tanstack/react-query").RefetchQueryFilters<TPageData>) | undefined) => Promise<import("@tanstack/react-query").QueryObserverResult<{
         email: string;
-        type?: any;
+        type: string;
         name?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
@@ -167,7 +168,7 @@ export declare const prefetch_authGetUser: (queryClient: QueryClient, args_0: vo
 }) | undefined, args_2: import("http").ServerResponse<import("http").IncomingMessage> | undefined, args_3: AuthConfig) => Promise<void>;
 export declare const setData_authGetUser: (queryClient: QueryClient, data: AuthUserGetApiResponse | null) => {
     email: string;
-    type?: any;
+    type: string;
     name?: string | undefined;
     _id: string;
 } | null | undefined;

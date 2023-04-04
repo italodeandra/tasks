@@ -10,6 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -53,10 +76,10 @@ var router_1 = require("next/router");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var errors_1 = require("@italodeandra/next/api/errors");
 var User_service_1 = require("../collections/user/User.service");
+var AuthContext_1 = require("../AuthContext");
 var react_1 = require("react");
 var getFullUser_1 = require("./getFullUser");
-var cookies_next_1 = require("cookies-next");
-var AuthContext_1 = require("../AuthContext");
+var auth_state_1 = __importStar(require("../auth.state"));
 function getUserHandler(_args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
@@ -81,32 +104,22 @@ exports.default = getUserHandler;
 var queryKey = "/api/auth/getUser";
 var useAuthGetUser = function (required, options) {
     var queryClient = (0, react_query_1.useQueryClient)();
+    var token = (0, auth_state_1.useAuthSnapshot)().token;
     (0, react_1.useEffect)(function () {
-        if (!(0, cookies_next_1.getCookie)("auth")) {
+        if (!token) {
             (0, exports.setData_authGetUser)(queryClient, null);
         }
-    }, [queryClient]);
+    }, [queryClient, token]);
     var enabled = typeof (options === null || options === void 0 ? void 0 : options.enabled) !== "undefined"
         ? options === null || options === void 0 ? void 0 : options.enabled
-        : required || !!(0, cookies_next_1.getCookie)("auth");
+        : required || !!token;
     var query = (0, react_query_1.useQuery)([queryKey], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey), __assign(__assign({}, options), { enabled: enabled, onError: function (error) {
             var _a;
-            return __awaiter(this, void 0, void 0, function () {
-                return __generator(this, function (_b) {
-                    switch (_b.label) {
-                        case 0: return [4 /*yield*/, ((_a = options === null || options === void 0 ? void 0 : options.onError) === null || _a === void 0 ? void 0 : _a.call(options, error))];
-                        case 1:
-                            _b.sent();
-                            if (!(error.code === 401)) return [3 /*break*/, 3];
-                            (0, cookies_next_1.deleteCookie)("auth", { path: "/" });
-                            return [4 /*yield*/, (0, exports.setData_authGetUser)(queryClient, null)];
-                        case 2:
-                            _b.sent();
-                            _b.label = 3;
-                        case 3: return [2 /*return*/];
-                    }
-                });
-            });
+            (_a = options === null || options === void 0 ? void 0 : options.onError) === null || _a === void 0 ? void 0 : _a.call(options, error);
+            if (error.code === 401) {
+                auth_state_1.default.token = null;
+                (0, exports.setData_authGetUser)(queryClient, null);
+            }
         } }));
     return __assign(__assign({}, query), { isLoading: enabled ? query.isLoading : false });
 };

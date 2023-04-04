@@ -10,11 +10,15 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
+var Text_1 = __importDefault(require("../Text/Text"));
+var Stack_1 = __importDefault(require("../Stack/Stack"));
 function TableHeader(_a) {
     var title = _a.title, subtitle = _a.subtitle, children = _a.children;
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: "px-4 md:px-0" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "sm:flex sm:items-center" }, { children: [title ||
-                    (subtitle && ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "sm:flex-auto" }, { children: [title && ((0, jsx_runtime_1.jsx)("h1", __assign({ className: "text-xl font-semibold text-gray-900 dark:text-white" }, { children: title }))), subtitle && ((0, jsx_runtime_1.jsx)("p", __assign({ className: "mt-2 text-sm text-zinc-700 dark:text-zinc-300" }, { children: subtitle })))] })))), children && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "mt-4 sm:mt-0 sm:ml-16 sm:flex-none" }, { children: children })))] })) })));
+    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: "px-4 md:px-0" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "sm:flex sm:items-center" }, { children: [(title || subtitle) && ((0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: "sm:flex-auto" }, { children: [title && ((0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "label", size: "lg" }, { children: title }))), subtitle && (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: subtitle }))] }))), children && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "mt-4 sm:mt-0 sm:ml-16 sm:flex-none" }, { children: children })))] })) })));
 }
 exports.default = TableHeader;

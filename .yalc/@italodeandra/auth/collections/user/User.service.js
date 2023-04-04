@@ -74,7 +74,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.translateUserType = exports.userTypeTranslations = exports.setUserPassword = exports.getFullUserFromCookies = exports.getUserFromCookies = exports.getAuthCookies = exports.createUser = exports.convertToUserType = exports.checkUserType = exports.readResetPasswordToken = exports.generateResetPasswordToken = exports.readToken = exports.generateToken = exports.checkUserPassword = exports.generateSalt = exports.hashPassword = void 0;
+exports.translateUserType = exports.userTypeTranslations = exports.setUserPassword = exports.getFullUserFromCookies = exports.getUserFromCookies = exports.getAuthCookieToken = exports.createUser = exports.convertToUserType = exports.checkUserType = exports.readResetPasswordToken = exports.generateResetPasswordToken = exports.readToken = exports.generateToken = exports.checkUserPassword = exports.generateSalt = exports.hashPassword = void 0;
 var crypto_1 = __importDefault(require("crypto"));
 var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var User_1 = __importStar(require("./User"));
@@ -139,26 +139,31 @@ function createUser(doc) {
         var passwordSalt;
         return __generator(this, function (_a) {
             passwordSalt = generateSalt();
-            return [2 /*return*/, User_1.default.insertOne(__assign(__assign({}, doc), { password: hashPassword(doc.password, passwordSalt), passwordSalt: passwordSalt }))];
+            return [2 /*return*/, User_1.default.insertOne(__assign(__assign({}, doc), { email: doc.email.toLowerCase().trim(), password: hashPassword(doc.password, passwordSalt), passwordSalt: passwordSalt }))];
         });
     });
 }
 exports.createUser = createUser;
-function getAuthCookies(req, res) {
+function getAuthCookieToken(req, res) {
     var cookies = (0, cookies_next_1.getCookies)({ req: req, res: res });
-    return cookies.auth;
+    try {
+        return cookies.auth ? JSON.parse(cookies.auth).token : null;
+    }
+    catch (e) {
+        return null;
+    }
 }
-exports.getAuthCookies = getAuthCookies;
+exports.getAuthCookieToken = getAuthCookieToken;
 function getUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var authCookies, userId, user;
+        var token, userId, user;
         return __generator(this, function (_a) {
-            authCookies = getAuthCookies(req, res);
-            if (!authCookies) {
+            token = getAuthCookieToken(req, res);
+            if (!token) {
                 return [2 /*return*/, null];
             }
             try {
-                userId = readToken(authCookies);
+                userId = readToken(token);
                 user = User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } });
                 if (!user) {
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
@@ -177,15 +182,23 @@ function getUserFromCookies(req, res) {
 exports.getUserFromCookies = getUserFromCookies;
 function getFullUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var cookies, userId, user;
+        var token, userId, user;
         return __generator(this, function (_a) {
-            cookies = (0, cookies_next_1.getCookies)({ req: req, res: res });
-            if (!cookies.auth) {
+            token = getAuthCookieToken(req, res);
+            if (!token) {
                 return [2 /*return*/, null];
             }
             try {
-                userId = readToken(cookies.auth);
-                user = User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1, phoneNumber: 1 } });
+                userId = readToken(token);
+                user = User_1.default.findOne({ _id: userId }, {
+                    projection: {
+                        email: 1,
+                        type: 1,
+                        name: 1,
+                        phoneNumber: 1,
+                        customData: 1,
+                    },
+                });
                 if (!user) {
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];

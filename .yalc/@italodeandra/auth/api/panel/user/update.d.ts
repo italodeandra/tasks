@@ -16,8 +16,8 @@ export declare const useAuthPanelUserUpdate: (options?: UseMutationOptions<AuthP
     _id: string;
 }, UserUpdateError, {
     email: string;
-    type?: any;
-    name?: string | undefined;
+    type: string;
     _id: string;
+    name?: string | undefined;
 }, unknown>;
 export {};

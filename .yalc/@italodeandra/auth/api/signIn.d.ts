@@ -10,21 +10,22 @@ export default function signInHandler(args: {
     password: string;
 }, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    customData?: Pick<{}, never> | undefined;
 }, "email" | "type" | "password" | "passwordSalt" | "_id">>, "email" | "type" | "_id">>;
 export declare type AuthSignInApiArgs = InferApiArgs<typeof signInHandler>;
 export declare type AuthSignInApiResponse = InferApiResponse<typeof signInHandler>;
 export declare const useAuthSignIn: (options?: UseMutationOptions<AuthSignInApiResponse, AuthSignInApiError, AuthSignInApiArgs>) => import("@tanstack/react-query").UseMutationResult<{
     email: string;
-    type?: any;
+    type: string;
     _id: string;
 }, AuthSignInApiError, {
     email: string;

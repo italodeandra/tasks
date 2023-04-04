@@ -1,19 +1,23 @@
+import { ObjectId } from "bson";
 export interface IUserType {
     NORMAL: "NORMAL";
     ADMIN: "ADMIN";
 }
 export declare const UserType: IUserType;
+export interface UserCustomData {
+}
 declare const userSchema: [{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: import("bson").ObjectID;
+    _id: ObjectId;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    customData?: UserCustomData | undefined;
 }, {
     defaults: {
         type: "NORMAL";
@@ -22,15 +26,16 @@ declare const userSchema: [{
 }];
 declare const User: import("papr").Model<{
     email: string;
+    type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: import("bson").ObjectID;
+    _id: ObjectId;
     emailVerified?: Date | undefined;
-    type?: any;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    customData?: UserCustomData | undefined;
 }, {
     defaults: {
         type: "NORMAL";

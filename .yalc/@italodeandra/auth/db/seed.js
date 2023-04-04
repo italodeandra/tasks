@@ -74,7 +74,7 @@ function authSeed() {
             switch (_a.label) {
                 case 0:
                     if (!(appEnv === "development")) return [3 /*break*/, 3];
-                    return [4 /*yield*/, User_1.default.countDocuments({ _id: exports.userId })];
+                    return [4 /*yield*/, User_1.default.countDocuments({ email: "italodeandra@gmail.com" })];
                 case 1:
                     if (!!(_a.sent())) return [3 /*break*/, 3];
                     return [4 /*yield*/, (0, User_service_1.createUser)({

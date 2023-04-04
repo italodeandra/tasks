@@ -7,6 +7,7 @@ export declare type MenuProps = {
     className?: string;
     position?: "left" | "right" | "bottom-right" | "bottom-left";
     iconClassName?: string;
+    menuItemsClassName?: string;
     buttonProps?: ComponentPropsWithoutRef<typeof Button>;
     label?: ReactNode;
     children?: ReactNode;
@@ -17,7 +18,7 @@ export declare type MenuItemProps<Href extends string | undefined> = UnstyledBut
     icon?: ReactElement;
 };
 export declare type MenuLabelProps<Inline extends boolean | undefined, Href extends string | undefined> = TextProps<Inline, Href>;
-declare function Menu({ className, iconClassName, position, children, label, button, buttonProps, unmount, }: MenuProps): JSX.Element;
+declare function Menu({ className, iconClassName, position, children, label, button, buttonProps, unmount, menuItemsClassName, }: MenuProps): JSX.Element;
 declare namespace Menu {
     var Item: <Href extends string | undefined>({ className, icon, children, ...props }: MenuItemProps<Href>) => JSX.Element;
     var Label: <Inline extends boolean | undefined, Href extends string | undefined>(props: MenuLabelProps<Inline, Href>) => JSX.Element;

@@ -1,6 +1,18 @@
 import { ReactNode } from "react";
 declare const colorMap: {
+    default: {
+        badge: string;
+        button: string;
+    };
     primary: {
+        badge: string;
+        button: string;
+    };
+    success: {
+        badge: string;
+        button: string;
+    };
+    error: {
         badge: string;
         button: string;
     };
@@ -17,7 +29,7 @@ declare const sizeMap: {
         lg: string;
     };
 };
-export default function Badge({ color, size, className, children, onActionClick, href, shallow, }: {
+export default function Badge({ color, size, className, children, onActionClick, href, shallow, onClick, }: {
     color?: keyof typeof colorMap;
     size?: keyof typeof sizeMap["badge"];
     className?: string;
@@ -25,5 +37,6 @@ export default function Badge({ color, size, className, children, onActionClick,
     onActionClick?: () => void;
     href?: string;
     shallow?: boolean;
+    onClick?: () => void;
 }): JSX.Element;
 export {};

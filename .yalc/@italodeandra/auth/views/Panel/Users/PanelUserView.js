@@ -16,6 +16,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
+var AuthContext_1 = require("../../../AuthContext");
 var useTranslation_1 = __importDefault(require("@italodeandra/ui/hooks/useTranslation"));
 var next_seo_1 = require("next-seo");
 var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcrumbs/Breadcrumbs"));
@@ -31,7 +32,6 @@ var update_1 = require("../../../api/panel/user/update");
 var create_1 = require("../../../api/panel/user/create");
 var react_use_1 = require("react-use");
 var notifications_state_1 = require("@italodeandra/ui/components/Notifications/notifications.state");
-var AuthContext_1 = require("../../../AuthContext");
 function PanelUserView() {
     var _a;
     var _b = (0, AuthContext_1.useAuthContext)(), Routes = _b.Routes, intl = _b.intl;

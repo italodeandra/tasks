@@ -1,2 +1,4 @@
 /// <reference types="react" />
-export default function BottomBlurryPoint(): JSX.Element;
+export default function BottomBlurryPoint({ className, }: {
+    className?: string;
+}): JSX.Element;
