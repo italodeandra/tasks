@@ -37,7 +37,7 @@ async function handler(
   const _id = isomorphicObjectId(args._id);
   const projectId = args.projectId && isomorphicObjectId(args.projectId);
 
-  if (args.content) {
+  if (args.status) {
     await Task.findOneAndUpdate(
       {
         _id,
