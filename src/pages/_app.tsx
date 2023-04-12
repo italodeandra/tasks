@@ -16,6 +16,7 @@ import setupNProgress from "@italodeandra/ui/bootstrap/nprogress";
 import AuthProvider from "@italodeandra/auth/AuthProvider";
 import { appDescription, appKeywords, appName, primaryColor } from "../consts";
 import { IAuthContext } from "@italodeandra/auth/AuthContext";
+import { hydrateAuthState } from "@italodeandra/auth/auth.state";
 
 dayjs.extend(relativeTime);
 
@@ -78,6 +79,7 @@ setupNProgress(primaryColor);
 
 function MyApp({ Component, pageProps }: AppProps) {
   hydrateNavigationDrawerState(pageProps.cookies);
+  hydrateAuthState(pageProps.cookies);
 
   const [queryClient] = useState(() => new QueryClient());
 
