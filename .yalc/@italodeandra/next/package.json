@@ -1,8 +1,5 @@
 {
   "name": "@italodeandra/next",
   "version": "2.0.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "yalcSig": "104442a0cf13c22f0adbc1ca6645f273"
+  "yalcSig": "5c398c8312fa74ccc3e73377eb77c023"
 }

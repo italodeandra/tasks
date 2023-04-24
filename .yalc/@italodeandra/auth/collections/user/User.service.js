@@ -156,60 +156,77 @@ function getAuthCookieToken(req, res) {
 exports.getAuthCookieToken = getAuthCookieToken;
 function getUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, userId, user;
+        var token, userId, user, e_1;
         return __generator(this, function (_a) {
-            token = getAuthCookieToken(req, res);
-            if (!token) {
-                return [2 /*return*/, null];
-            }
-            try {
-                userId = readToken(token);
-                user = User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } });
-                if (!user) {
+            switch (_a.label) {
+                case 0:
+                    token = getAuthCookieToken(req, res);
+                    if (!token) {
+                        return [2 /*return*/, null];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    userId = readToken(token);
+                    return [4 /*yield*/, User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
+                case 2:
+                    user = _a.sent();
+                    if (!user) {
+                        console.error("Deleted here 1");
+                        (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
+                        return [2 /*return*/, null];
+                    }
+                    return [2 /*return*/, user];
+                case 3:
+                    e_1 = _a.sent();
+                    console.error(e_1);
+                    console.error("Deleted here 2");
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
-                }
-                return [2 /*return*/, user];
+                case 4: return [2 /*return*/];
             }
-            catch (e) {
-                (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
-                return [2 /*return*/, null];
-            }
-            return [2 /*return*/];
         });
     });
 }
 exports.getUserFromCookies = getUserFromCookies;
 function getFullUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, userId, user;
+        var token, userId, user, e_2;
         return __generator(this, function (_a) {
-            token = getAuthCookieToken(req, res);
-            if (!token) {
-                return [2 /*return*/, null];
-            }
-            try {
-                userId = readToken(token);
-                user = User_1.default.findOne({ _id: userId }, {
-                    projection: {
-                        email: 1,
-                        type: 1,
-                        name: 1,
-                        phoneNumber: 1,
-                        customData: 1,
-                    },
-                });
-                if (!user) {
+            switch (_a.label) {
+                case 0:
+                    token = getAuthCookieToken(req, res);
+                    if (!token) {
+                        return [2 /*return*/, null];
+                    }
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    userId = readToken(token);
+                    return [4 /*yield*/, User_1.default.findOne({ _id: userId }, {
+                            projection: {
+                                email: 1,
+                                type: 1,
+                                name: 1,
+                                phoneNumber: 1,
+                                customData: 1,
+                            },
+                        })];
+                case 2:
+                    user = _a.sent();
+                    if (!user) {
+                        console.error("Deleted here 3");
+                        (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
+                        return [2 /*return*/, null];
+                    }
+                    return [2 /*return*/, user];
+                case 3:
+                    e_2 = _a.sent();
+                    console.error("Deleted here 4");
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
-                }
-                return [2 /*return*/, user];
+                case 4: return [2 /*return*/];
             }
-            catch (e) {
-                (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
-                return [2 /*return*/, null];
-            }
-            return [2 /*return*/];
         });
     });
 }

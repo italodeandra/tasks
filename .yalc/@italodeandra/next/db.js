@@ -102,7 +102,7 @@ function connectDb(afterConnected) {
                                     _i++;
                                     return [3 /*break*/, 5];
                                 case 8:
-                                    console.info("[MongoDB] Connected");
+                                    console.info("[MongoDB] Connected to \"".concat(uri, "\""));
                                     return [2 /*return*/, papr];
                             }
                         });

@@ -55,7 +55,7 @@ var errors_1 = require("./errors");
 var bsonToJson_1 = __importDefault(require("../utils/bsonToJson"));
 var apiHandlerWrapper = function (handler) {
     return (function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-        var data, e_1;
+        var data, e_1, error;
         var _a, _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
@@ -74,6 +74,7 @@ var apiHandlerWrapper = function (handler) {
                     return [3 /*break*/, 4];
                 case 3:
                     e_1 = _c.sent();
+                    error = e_1;
                     if (typeof e_1 === "function") {
                         e_1(res);
                     }

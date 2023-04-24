@@ -10,6 +10,17 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -48,13 +59,13 @@ var sizeMap = {
         lg: "-mr-1.5",
     },
 };
-function Badge(_a) {
-    var _b = _a.color, color = _b === void 0 ? "default" : _b, _c = _a.size, size = _c === void 0 ? "md" : _c, className = _a.className, children = _a.children, onActionClick = _a.onActionClick, href = _a.href, shallow = _a.shallow, onClick = _a.onClick;
+function Badge(_a, ref) {
+    var _b = _a.color, color = _b === void 0 ? "default" : _b, _c = _a.size, size = _c === void 0 ? "md" : _c, className = _a.className, children = _a.children, onActionClick = _a.onActionClick, href = _a.href, shallow = _a.shallow, onClick = _a.onClick, props = __rest(_a, ["color", "size", "className", "children", "onActionClick", "href", "shallow", "onClick"]);
     var Component = href ? link_1.default : "span";
     var handleActionClick = (0, react_1.useCallback)(function (e) {
         e.preventDefault();
         onActionClick === null || onActionClick === void 0 ? void 0 : onActionClick();
     }, [onActionClick]);
-    return ((0, jsx_runtime_1.jsxs)(Component, __assign({ className: (0, clsx_1.default)("inline-flex items-center py-0.5 font-medium", sizeMap.badge[size], colorMap[color].badge, className), href: href, shallow: shallow, onClick: onClick }, { children: [children, onActionClick && ((0, jsx_runtime_1.jsxs)("button", __assign({ type: "button", className: (0, clsx_1.default)("ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-none", sizeMap.button[size], colorMap[color].button), onClick: handleActionClick }, { children: [(0, jsx_runtime_1.jsx)("span", __assign({ className: "sr-only" }, { children: "Delete" })), (0, jsx_runtime_1.jsx)("svg", __assign({ className: "h-2 w-2", stroke: "currentColor", fill: "none", viewBox: "0 0 8 8" }, { children: (0, jsx_runtime_1.jsx)("path", { strokeLinecap: "round", strokeWidth: "1.5", d: "M1 1l6 6m0-6L1 7" }) }))] })))] })));
+    return ((0, jsx_runtime_1.jsxs)(Component, __assign({ className: (0, clsx_1.default)("inline-flex items-center py-0.5 font-medium", sizeMap.badge[size], colorMap[color].badge, className), href: href, shallow: shallow, onClick: onClick }, props, { ref: ref }, { children: [children, onActionClick && ((0, jsx_runtime_1.jsxs)("button", __assign({ type: "button", className: (0, clsx_1.default)("ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-none", sizeMap.button[size], colorMap[color].button), onClick: handleActionClick }, { children: [(0, jsx_runtime_1.jsx)("span", __assign({ className: "sr-only" }, { children: "Delete" })), (0, jsx_runtime_1.jsx)("svg", __assign({ className: "h-2 w-2", stroke: "currentColor", fill: "none", viewBox: "0 0 8 8" }, { children: (0, jsx_runtime_1.jsx)("path", { strokeLinecap: "round", strokeWidth: "1.5", d: "M1 1l6 6m0-6L1 7" }) }))] })))] })));
 }
-exports.default = Badge;
+exports.default = (0, react_1.forwardRef)(Badge);

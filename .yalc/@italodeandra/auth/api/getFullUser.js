@@ -102,16 +102,11 @@ var useAuthGetFullUser = function (required) {
         onError: function (error) {
             return __awaiter(this, void 0, void 0, function () {
                 return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!(error.code === 401)) return [3 /*break*/, 2];
-                            auth_state_1.default.token = null;
-                            return [4 /*yield*/, (0, getUser_1.setData_authGetUser)(queryClient, null)];
-                        case 1:
-                            _a.sent();
-                            _a.label = 2;
-                        case 2: return [2 /*return*/];
+                    if (error.code === 401) {
+                        auth_state_1.default.token = null;
+                        (0, getUser_1.setData_authGetUser)(queryClient, null);
                     }
+                    return [2 /*return*/];
                 });
             });
         },

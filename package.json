@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "yalc:update": "yalc update && shx rm -rf .next"
   },
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
@@ -59,8 +60,8 @@
     "autoprefixer": "^10.4.13",
     "mongodb-memory-server": "^8.11.5",
     "postcss": "^8.4.21",
-    "prettier": "^2.8.4",
     "prettier-plugin-tailwindcss": "^0.2.4",
+    "shx": "^0.3.4",
     "tailwindcss": "^3.2.7"
   }
 }

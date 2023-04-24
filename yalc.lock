@@ -2,15 +2,15 @@
   "version": "v1",
   "packages": {
     "@italodeandra/ui": {
-      "signature": "0481b478a704054e3a193d2ec6a7ba13",
+      "signature": "11ba231ea7e020a890fee8dbc5bc52fd",
       "file": true
     },
     "@italodeandra/auth": {
-      "signature": "a7dcd727c8a6d219dc136e0edd2ae4b5",
+      "signature": "bdfcbd96fd4482543e789b1a743809b4",
       "file": true
     },
     "@italodeandra/next": {
-      "signature": "104442a0cf13c22f0adbc1ca6645f273",
+      "signature": "5c398c8312fa74ccc3e73377eb77c023",
       "file": true
     }
   }

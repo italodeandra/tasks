@@ -1,8 +1,5 @@
 {
   "name": "@italodeandra/ui",
   "version": "2.0.0",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
-  },
-  "yalcSig": "0481b478a704054e3a193d2ec6a7ba13"
+  "yalcSig": "11ba231ea7e020a890fee8dbc5bc52fd"
 }
