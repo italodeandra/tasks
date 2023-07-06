@@ -10,6 +10,9 @@ import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import Task from "../../../collections/task";
+import showdown from "showdown";
+
+let converter = new showdown.Converter({ simplifiedAutoLink: true });
 
 async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
@@ -18,23 +21,25 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
     throw unauthorized;
   }
 
-  return Task.find(
-    {
-      userId: user._id,
-    },
-    {
-      projection: {
-        content: 1,
-        status: 1,
-        projectId: 1,
-        order: 1,
+  return (
+    await Task.find(
+      {
+        userId: user._id,
       },
-      sort: {
-        status: 1,
-        order: 1,
-      },
-    }
-  );
+      {
+        projection: {
+          content: 1,
+          status: 1,
+          projectId: 1,
+          order: 1,
+        },
+        sort: {
+          status: 1,
+          order: 1,
+        },
+      }
+    )
+  ).map((t) => ({ ...t, html: converter.makeHtml(t.content) }));
 }
 
 export default apiHandlerWrapper(handler);

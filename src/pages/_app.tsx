@@ -1,5 +1,5 @@
 import "@fontsource/inter/variable.css";
-import "@italodeandra/ui/bootstrap/supressConsoleLog";
+import "@italodeandra/ui/bootstrap/suppressConsoleLog";
 import { QueryClient } from "@tanstack/query-core";
 import { Hydrate, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";

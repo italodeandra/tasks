@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
+    "@dnd-kit/sortable": "^7.0.2",
     "@floating-ui/react-dom-interactions": "^0.13.3",
     "@fontsource/inter": "^4.5.15",
     "@headlessui/react": "^1.7.13",
@@ -22,6 +23,7 @@
     "@types/node": "18.14.5",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
+    "axios": "^1.4.0",
     "bson-objectid": "^2.0.4",
     "clsx": "^1.2.1",
     "cookies-next": "^2.1.1",
@@ -47,6 +49,7 @@
     "react-textarea-autosize": "^8.4.0",
     "react-use": "^17.4.0",
     "remark-gfm": "1.0.0",
+    "showdown": "^2.1.0",
     "typescript": "4.9.5",
     "valtio": "^1.10.3"
   },
@@ -55,6 +58,7 @@
     "@tailwindcss/typography": "^0.5.9",
     "@tanstack/react-query-devtools": "4.2.3",
     "@types/lodash": "^4.14.191",
+    "@types/showdown": "^2.0.1",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
     "autoprefixer": "^10.4.13",

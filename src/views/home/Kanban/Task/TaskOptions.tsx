@@ -41,6 +41,7 @@ export function TaskOptions({
 
   return (
     <Menu
+      data-no-dnd="true"
       className="!absolute right-1 top-1"
       button={
         <span className="block rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900">

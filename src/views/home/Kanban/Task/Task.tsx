@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import { Reorder } from "framer-motion";
 import Group from "@italodeandra/ui/components/Group/Group";
 import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
 import { ProjectSelector } from "./ProjectSelector";
@@ -11,21 +10,14 @@ import Textarea from "@italodeandra/ui/components/Textarea/Textarea";
 import Badge from "@italodeandra/ui/components/Badge/Badge";
 import { useProjectList } from "../../../../pages/api/project/list";
 import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
-import { ITask } from "../../../../collections/task";
-import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { useTaskUpsert } from "../../../../pages/api/task/upsert";
 import { TaskOptions } from "./TaskOptions";
-import Markdown from "@italodeandra/ui/components/Markdown/Markdown";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
+import { TaskListApiResponse } from "../../../../pages/api/task/list";
 
 let cardClassName = "rounded-md border text-sm";
 
-export function Task({
-  task,
-}: {
-  task: Pick<Jsonify<ITask>, "_id" | "content" | "status" | "order"> &
-    Pick<Partial<Jsonify<ITask>>, "projectId">;
-}) {
+export function Task({ task }: { task: TaskListApiResponse[0] }) {
   let [isEditing, setEditing] = useState(!task.content);
   let [newValue, setNewValue] = useState(task.content);
   let [selectedProjectId, setSelectedProjectId] = useState(
@@ -65,9 +57,10 @@ export function Task({
   }, [task._id, upsert]);
 
   return (
-    <Reorder.Item value={task}>
+    <>
       {isEditing ? (
         <Stack
+          data-no-dnd="true"
           className={clsx(
             cardClassName,
             "border-zinc-300 bg-zinc-200 ring-1 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600" // default
@@ -120,9 +113,11 @@ export function Task({
           )}
           onDoubleClick={toggleEditing}
         >
-          <Markdown className="!text-md !inline prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0">
-            {task.content}
-          </Markdown>
+          <div
+            data-no-dnd="true"
+            className="markdown !text-md prose !inline prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0"
+            dangerouslySetInnerHTML={{ __html: task.html }}
+          />
 
           {(!!project || isLoadingProject) && (
             <Group>
@@ -144,6 +139,6 @@ export function Task({
           />
         </Stack>
       )}
-    </Reorder.Item>
+    </>
   );
 }

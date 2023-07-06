@@ -8,7 +8,6 @@ import {
 import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
-  useIsMutating,
   useMutation,
   UseMutationOptions,
   useQueryClient,
@@ -16,7 +15,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import Task, { ITask, TaskStatus } from "../../../collections/task";
+import Task, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 
 async function handler(
@@ -45,6 +44,7 @@ async function handler(
         {
           $set: {
             order: args.order,
+            status: args.status,
           },
         }
       );
@@ -62,7 +62,6 @@ export type TaskBatchUpdateOrderArgs = InferApiArgs<typeof handler>;
 const mutationKey = "/api/task/batchUpdateOrder";
 
 export const useTaskBatchUpdateOrder = (
-  status: TaskStatus,
   options?: UseMutationOptions<
     TaskBatchUpdateOrderResponse,
     unknown,
@@ -71,7 +70,7 @@ export const useTaskBatchUpdateOrder = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey, status],
+    [mutationKey],
     mutationFnWrapper<TaskBatchUpdateOrderArgs, TaskBatchUpdateOrderResponse>(
       mutationKey
     ),
@@ -84,6 +83,3 @@ export const useTaskBatchUpdateOrder = (
     }
   );
 };
-
-export const useTaskIsBatchUpdatingOrder = (status: TaskStatus) =>
-  !!useIsMutating([mutationKey, status]);
