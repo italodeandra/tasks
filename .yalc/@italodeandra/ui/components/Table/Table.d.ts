@@ -9,10 +9,10 @@ import TableFooterWithPagination from "./TableFooterWithPagination";
 export declare type TableProps = {
     children?: ReactNode;
     className?: string;
-    dense?: boolean;
     hideBorder?: boolean;
+    autoHeight?: boolean;
 };
-declare function Table({ children, className, dense, hideBorder, }: TableProps): JSX.Element;
+declare function Table({ children, className, hideBorder, autoHeight, }: TableProps): JSX.Element;
 declare namespace Table {
     var Row: import("react").ForwardRefExoticComponent<import("./TableRow").TableRowProps & import("react").RefAttributes<HTMLTableRowElement>>;
     var Head: typeof TableHead;

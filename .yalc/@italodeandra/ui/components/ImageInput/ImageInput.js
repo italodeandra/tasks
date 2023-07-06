@@ -59,10 +59,17 @@ var Button_1 = __importDefault(require("../Button/Button"));
 var FileSelect_1 = __importDefault(require("../FileSelect/FileSelect"));
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
 var solid_1 = require("@heroicons/react/20/solid");
+var lodash_1 = require("lodash");
+var Text_1 = __importDefault(require("../Text/Text"));
 function ImageInput(_a, ref) {
     var _b;
-    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut"]);
-    var _c = __read((0, react_1.useState)([]), 2), value = _c[0], setValue = _c[1];
+    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, readOnly = _a.readOnly, defaultValue = _a.defaultValue, _c = _a.emptyText, emptyText = _c === void 0 ? "No images" : _c, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut", "readOnly", "defaultValue", "emptyText"]);
+    var _d = __read((0, react_1.useState)(defaultValue || []), 2), value = _d[0], setValue = _d[1];
+    (0, react_use_1.useDeepCompareEffect)(function () {
+        if (defaultValue && !(0, lodash_1.isEqual)(defaultValue, value)) {
+            setValue(defaultValue);
+        }
+    }, [defaultValue]);
     var innerRef = (0, react_1.useRef)({
         get value() {
             return value;
@@ -121,6 +128,6 @@ function ImageInput(_a, ref) {
                     "md:grid-cols-2": !!value.length,
                 }) }, { children: [value.map(function (image, i) { return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "relative flex items-center justify-center rounded-md bg-gray-200 dark:bg-zinc-800" }, { children: [(0, jsx_runtime_1.jsx)("img", { src: image.file
                                     ? URL.createObjectURL(image.file)
-                                    : image.url, alt: image.description, className: "max-h-96 rounded-md" }), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ icon: true, variant: "light", color: "white", className: "absolute right-2 top-2", onClick: handleDeleteClick(image) }, { children: (0, jsx_runtime_1.jsx)(solid_1.TrashIcon, {}) }))] }), i)); }), (!limit || value.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - value.length : undefined })))] })), helpText && (0, jsx_runtime_1.jsx)("div", __assign({ className: Input_1.defaultHelpTextClassName }, { children: helpText }))] })));
+                                    : image.url, alt: image.description, className: "max-h-96 rounded-md" }), !readOnly && ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ icon: true, variant: "light", color: "white", className: "absolute right-2 top-2", onClick: handleDeleteClick(image) }, { children: (0, jsx_runtime_1.jsx)(solid_1.TrashIcon, {}) })))] }), i)); }), readOnly && !value.length && ((0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: emptyText }))), !readOnly && (!limit || value.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - value.length : undefined })))] })), helpText && (0, jsx_runtime_1.jsx)("div", __assign({ className: Input_1.defaultHelpTextClassName }, { children: helpText }))] })));
 }
 exports.default = (0, react_1.forwardRef)(ImageInput);

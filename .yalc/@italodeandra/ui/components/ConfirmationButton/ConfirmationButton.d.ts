@@ -4,12 +4,14 @@ import { ButtonProps } from "../Button/Button";
 export declare type ConfirmationButtonProps = {
     confirmation: string;
     label: ReactNode;
+    confirm?: string;
     onConfirm: () => void;
     loading?: boolean;
     className?: string;
     cancel?: string;
     position?: MenuProps["position"];
     buttonClassName?: string;
-    buttonProps?: ButtonProps<undefined>;
+    buttonProps?: Partial<ButtonProps<undefined>>;
+    menuProps?: Partial<MenuProps>;
 };
-export default function ConfirmationButton({ label, confirmation, onConfirm, loading, className, cancel, position, buttonClassName, buttonProps, }: ConfirmationButtonProps): JSX.Element;
+export default function ConfirmationButton({ label, confirm, confirmation, onConfirm, loading, className, cancel, position, buttonClassName, buttonProps, menuProps, }: ConfirmationButtonProps): JSX.Element;

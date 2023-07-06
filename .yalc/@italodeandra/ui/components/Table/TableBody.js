@@ -19,6 +19,6 @@ var react_1 = require("react");
 var TableHeadContext_1 = __importDefault(require("./TableHeadContext"));
 function TableBody(_a) {
     var children = _a.children;
-    return ((0, jsx_runtime_1.jsx)(TableHeadContext_1.default.Provider, __assign({ value: (0, react_1.useMemo)(function () { return ({ isHead: false, sticky: false }); }, []) }, { children: (0, jsx_runtime_1.jsx)("tbody", __assign({ className: "divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800" }, { children: children })) })));
+    return ((0, jsx_runtime_1.jsx)(TableHeadContext_1.default.Provider, __assign({ value: (0, react_1.useMemo)(function () { return ({ isHead: false, sticky: false }); }, []) }, { children: (0, jsx_runtime_1.jsx)("tbody", __assign({ className: "divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800 [&_tr:last-of-type]:!border-b [&_tr:last-of-type]:border-zinc-200 [&_tr:last-of-type]:dark:border-zinc-700" }, { children: children })) })));
 }
 exports.default = TableBody;

@@ -4,5 +4,6 @@ export declare type TableCellProps = {
     className?: string;
     actions?: boolean;
     colSpan?: number;
+    title?: string;
 };
-export default function TableCell({ children, className, actions, colSpan, }: TableCellProps): JSX.Element;
+export default function TableCell({ children, className, actions, colSpan, title, }: TableCellProps): JSX.Element;

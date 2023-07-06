@@ -1,7 +1,7 @@
 /// <reference types="react" />
 export interface TableFooterWithPaginationProps {
     itemsPerPage: number;
-    totalItems: number;
+    totalItems?: number;
     currentPage: number;
     onChangePage?: (page: number) => void;
 }

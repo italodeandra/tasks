@@ -172,7 +172,6 @@ function getUserFromCookies(req, res) {
                 case 2:
                     user = _a.sent();
                     if (!user) {
-                        console.error("Deleted here 1");
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
@@ -180,7 +179,6 @@ function getUserFromCookies(req, res) {
                 case 3:
                     e_1 = _a.sent();
                     console.error(e_1);
-                    console.error("Deleted here 2");
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
                 case 4: return [2 /*return*/];
@@ -215,14 +213,12 @@ function getFullUserFromCookies(req, res) {
                 case 2:
                     user = _a.sent();
                     if (!user) {
-                        console.error("Deleted here 3");
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
                     return [2 /*return*/, user];
                 case 3:
                     e_2 = _a.sent();
-                    console.error("Deleted here 4");
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
                 case 4: return [2 /*return*/];

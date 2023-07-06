@@ -53,7 +53,7 @@ var notificationsState = (0, valtio_1.proxy)({
 });
 function showNotification(notification) {
     var notificationObject = typeof notification === "string" ? { message: notification } : notification;
-    if (notificationObject.supress &&
+    if (notificationObject.suppress &&
         notificationsState.notifications.find(function (n) {
             return n.message === notificationObject.message &&
                 n.title === notificationObject.title;

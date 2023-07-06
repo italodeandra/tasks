@@ -7,7 +7,7 @@ declare type Notification = {
     icon?: "success" | "error" | ReactElement;
     dismissable?: boolean;
     actions?: ReactNode;
-    supress?: boolean;
+    suppress?: boolean;
 };
 declare const notificationsState: {
     rendered: boolean;

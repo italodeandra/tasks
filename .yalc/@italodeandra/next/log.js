@@ -39,53 +39,32 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var connectToFileStorage_1 = __importDefault(require("./connectToFileStorage"));
-var errors_1 = require("../api/errors");
-var handler = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var minio, params, file_1, e_1, err;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                _a.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, (0, connectToFileStorage_1.default)()];
-            case 1:
-                minio = _a.sent();
-                params = req.query.fileStorage;
-                if (!(params === null || params === void 0 ? void 0 : params.length)) {
-                    // noinspection ExceptionCaughtLocallyJS
-                    throw errors_1.badRequest;
-                }
-                if (!process.env.S3_BUCKET_NAME) {
-                    // noinspection ExceptionCaughtLocallyJS
-                    throw Error("Missing S3_BUCKET_NAME env var");
-                }
-                return [4 /*yield*/, minio.getObject(process.env.S3_BUCKET_NAME, params.join("/"))];
-            case 2:
-                file_1 = _a.sent();
-                return [4 /*yield*/, new Promise(function (resolve) {
-                        file_1.pipe(res);
-                        file_1.on("end", function (buffer) { return resolve(buffer); });
-                    })];
-            case 3:
-                _a.sent();
-                return [3 /*break*/, 5];
-            case 4:
-                e_1 = _a.sent();
-                if (typeof e_1 === "function") {
-                    throw e_1;
-                }
-                err = e_1;
-                if (err.code === "NoSuchKey") {
-                    throw errors_1.notFound;
-                }
-                console.error(e_1);
-                (0, errors_1.internalServerError)(res);
-                return [3 /*break*/, 5];
-            case 5: return [2 /*return*/];
-        }
+var axios_1 = __importDefault(require("axios"));
+var safeStringify_1 = __importDefault(require("./utils/safeStringify"));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function log(content) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(process.env.LOG_API_URL && process.env.LOG_APP_ID)) return [3 /*break*/, 2];
+                    return [4 /*yield*/, axios_1.default.post(process.env.LOG_API_URL, {
+                            appId: process.env.LOG_APP_ID,
+                            content: content,
+                        }, {
+                            headers: {
+                                Authorization: "Bearer ".concat(process.env.LOG_TOKEN),
+                            },
+                        })];
+                case 1:
+                    _a.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    console.info((0, safeStringify_1.default)(content));
+                    _a.label = 3;
+                case 3: return [2 /*return*/];
+            }
+        });
     });
-}); };
-var FileStorage = function () {
-    return handler;
-};
-exports.default = FileStorage;
+}
+exports.default = log;

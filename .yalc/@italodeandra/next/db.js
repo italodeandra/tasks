@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.connectDb = exports.client = void 0;
+exports.clearPromise = exports.connectDb = exports.client = void 0;
 var mongodb_1 = require("mongodb");
 var mongodb_memory_server_1 = require("mongodb-memory-server");
 var papr_1 = __importDefault(require("papr"));
@@ -123,4 +123,10 @@ function connectDb(afterConnected) {
     });
 }
 exports.connectDb = connectDb;
+function clearPromise() {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete global._dbPromise;
+}
+exports.clearPromise = clearPromise;
 exports.default = papr;

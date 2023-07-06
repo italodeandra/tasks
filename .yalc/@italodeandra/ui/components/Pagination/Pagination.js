@@ -50,7 +50,9 @@ function Pagination(_a) {
             onChangePage(page);
         }
     }, [onChangePage, page]);
-    var pageCount = Math.floor(totalItems / itemsPerPage) || 1;
+    var pageCount = totalItems !== undefined && itemsPerPage !== undefined
+        ? Math.floor(totalItems / itemsPerPage) || 1
+        : 0;
     var pages = (0, react_1.useMemo)(function () {
         if (pageCount < 7) {
             return (0, lodash_1.range)(1, pageCount + 1);

@@ -10,6 +10,8 @@ export declare type DataTableProps<RowData> = {
         title?: ReactNode;
         accessor?: keyof RowData;
         render?: (item: RowData) => ReactNode;
+        headerClassName?: string;
+        cellClassName?: string;
     }[];
     actions?: {
         title: string;
@@ -34,5 +36,6 @@ export declare type DataTableProps<RowData> = {
     totalItems?: number;
     itemsPerPage?: number;
     className?: string;
+    autoHeight?: boolean;
 };
-export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, }: DataTableProps<RowData>): JSX.Element;
+export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, }: DataTableProps<RowData>): JSX.Element;

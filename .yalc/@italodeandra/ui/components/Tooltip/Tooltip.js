@@ -97,7 +97,7 @@ exports.TooltipContent = (0, react_1.forwardRef)(function TooltipContent(_a, pro
                 // The open delay becomes 1ms during this phase.
                 typeof delay === "object" && delay.open === 1
                     ? { duration: 0.08 }
-                    : { type: "spring", damping: 20, stiffness: 300 }, className: (0, clsx_1.default)("z-20 rounded bg-zinc-900/95 px-2 py-1 text-sm text-white", className), ref: ref, style: __assign({ position: state.strategy, top: (_b = state.y) !== null && _b !== void 0 ? _b : 0, left: (_c = state.x) !== null && _c !== void 0 ? _c : 0 }, props.style) }, state.getFloatingProps(props)))) }) }));
+                    : { type: "spring", damping: 20, stiffness: 300 }, className: (0, clsx_1.default)("z-20 rounded bg-zinc-900/95 px-2 py-1 text-center text-sm text-white", className), ref: ref, style: __assign({ position: state.strategy, top: (_b = state.y) !== null && _b !== void 0 ? _b : 0, left: (_c = state.x) !== null && _c !== void 0 ? _c : 0 }, props.style) }, state.getFloatingProps(props)))) }) }));
 });
 function Tooltip(_a) {
     var children = _a.children, content = _a.content, placement = _a.placement, delay = _a.delay, className = _a.className;

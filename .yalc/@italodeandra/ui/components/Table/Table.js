@@ -25,13 +25,12 @@ var TableRow_1 = __importDefault(require("./TableRow"));
 var TableFooter_1 = __importDefault(require("./TableFooter"));
 var TableFooterWithPagination_1 = __importDefault(require("./TableFooterWithPagination"));
 function Table(_a) {
-    var children = _a.children, className = _a.className, dense = _a.dense, hideBorder = _a.hideBorder;
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("overflow-x-auto", {
-            "dense group": dense,
-            "md:-mx-1 md:px-1": !hideBorder,
-        }) }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: "inline-block min-w-full py-2 align-middle " }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("overflow-hidden", {
-                    "shadow ring-1 ring-black/5 dark:ring-white/10 md:rounded-lg": !hideBorder,
-                }) }, { children: (0, jsx_runtime_1.jsx)("table", __assign({ className: (0, clsx_1.default)("min-w-full divide-y divide-zinc-300 dark:divide-zinc-600", className) }, { children: children })) })) })) })));
+    var children = _a.children, className = _a.className, hideBorder = _a.hideBorder, autoHeight = _a.autoHeight;
+    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("overflow-hidden bg-white dark:bg-zinc-800", autoHeight ? "relative flex-1" : className, {
+            "shadow ring-1 ring-black/5 dark:ring-white/10 md:rounded-lg": !hideBorder,
+        }) }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("overflow-auto", {
+                "absolute inset-0": autoHeight,
+            }) }, { children: (0, jsx_runtime_1.jsx)("table", __assign({ className: (0, clsx_1.default)("w-full max-w-full divide-y divide-zinc-300 dark:divide-zinc-600") }, { children: children })) })) })));
 }
 exports.default = Table;
 Table.Row = TableRow_1.default;

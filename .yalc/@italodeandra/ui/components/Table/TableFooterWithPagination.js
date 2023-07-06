@@ -37,7 +37,9 @@ var react_1 = require("react");
 var Button_1 = __importDefault(require("../Button/Button"));
 function TableFooterWithPagination(_a) {
     var itemsPerPage = _a.itemsPerPage, totalItems = _a.totalItems, currentPage = _a.currentPage, onChangePage = _a.onChangePage;
-    var pageCount = Math.floor(totalItems / itemsPerPage);
+    var pageCount = totalItems !== undefined && itemsPerPage !== undefined
+        ? Math.floor(totalItems / itemsPerPage)
+        : 0;
     var _b = __read((0, react_1.useState)(currentPage), 2), page = _b[0], setPage = _b[1];
     (0, react_1.useEffect)(function () {
         if (page !== currentPage) {
@@ -53,7 +55,9 @@ function TableFooterWithPagination(_a) {
     var handlePageClick = (0, react_1.useCallback)(function (page) { return function () { return setPage(page); }; }, []);
     var start = (page - 1) * itemsPerPage + 1;
     var end = page * itemsPerPage;
-    end = end > totalItems ? totalItems : end;
-    return ((0, jsx_runtime_1.jsxs)(TableFooter_1.default, { children: [(0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex flex-1 justify-between sm:hidden" }, { children: [(0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === 1, onClick: handlePageClick(page - 1) }, { children: "Previous" })), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === pageCount, onClick: handlePageClick(page + 1) }, { children: "Next" }))] })), (0, jsx_runtime_1.jsxs)("div", __assign({ className: "hidden sm:flex sm:flex-1 sm:items-center sm:justify-between" }, { children: [(0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsxs)("p", __assign({ className: "text-sm text-gray-700 dark:text-zinc-100" }, { children: ["Showing ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: start })), " to", " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: end })), " of", " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: totalItems })), " results"] })) }), (0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Pagination_1.default, { itemsPerPage: itemsPerPage, totalItems: totalItems, currentPage: currentPage, onChangePage: onChangePage }) })] }))] }));
+    if (totalItems !== undefined) {
+        end = end > totalItems ? totalItems : end;
+    }
+    return ((0, jsx_runtime_1.jsxs)(TableFooter_1.default, { children: [(0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex flex-1 justify-between sm:hidden" }, { children: [(0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === 1, onClick: handlePageClick(page - 1) }, { children: "Previous" })), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === pageCount, onClick: handlePageClick(page + 1) }, { children: "Next" }))] })), (0, jsx_runtime_1.jsxs)("div", __assign({ className: "hidden sm:flex sm:flex-1 sm:items-center sm:justify-between" }, { children: [(0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsxs)("p", __assign({ className: "text-sm text-gray-700 dark:text-zinc-100" }, { children: ["Showing ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: start })), " to", " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: end })), totalItems !== undefined && itemsPerPage !== undefined && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", "of ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: totalItems })), " results"] }))] })) }), (0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Pagination_1.default, { itemsPerPage: itemsPerPage, totalItems: totalItems, currentPage: currentPage, onChangePage: onChangePage }) })] }))] }));
 }
 exports.default = TableFooterWithPagination;

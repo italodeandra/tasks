@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactElement, ReactNode, Ref } from "react";
 import Button from "../Button/Button";
 import { UnstyledButtonProps } from "../Button/UnstyledButton";
 import { TextProps } from "../Text/Text";
@@ -13,14 +13,14 @@ export declare type MenuProps = {
     children?: ReactNode;
     button?: ReactNode;
     unmount?: boolean;
+    ref?: Ref<HTMLDivElement>;
 };
 export declare type MenuItemProps<Href extends string | undefined> = UnstyledButtonProps<Href> & {
     icon?: ReactElement;
 };
 export declare type MenuLabelProps<Inline extends boolean | undefined, Href extends string | undefined> = TextProps<Inline, Href>;
-declare function Menu({ className, iconClassName, position, children, label, button, buttonProps, unmount, menuItemsClassName, }: MenuProps): JSX.Element;
-declare namespace Menu {
-    var Item: <Href extends string | undefined>({ className, icon, children, ...props }: MenuItemProps<Href>) => JSX.Element;
-    var Label: <Inline extends boolean | undefined, Href extends string | undefined>(props: MenuLabelProps<Inline, Href>) => JSX.Element;
-}
-export default Menu;
+declare const _default: import("react").ForwardRefExoticComponent<Pick<MenuProps, "className" | "children" | "button" | "label" | "unmount" | "position" | "iconClassName" | "buttonProps" | "menuItemsClassName"> & import("react").RefAttributes<HTMLDivElement>> & {
+    Label: <Inline extends boolean | undefined, Href extends string | undefined>(props: MenuLabelProps<Inline, Href>) => JSX.Element;
+    Item: <Href_1 extends string | undefined>({ className, icon, children, ...props }: MenuItemProps<Href_1>) => JSX.Element;
+};
+export default _default;

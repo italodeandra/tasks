@@ -70,7 +70,7 @@ function UnstyledAutocomplete(_a) {
     }, [onChangeQuery, query]);
     var filteredItems = (0, react_2.useMemo)(function () {
         return query === ""
-            ? []
+            ? items
             : items.filter(filterFunction ||
                 (function (item) {
                     return item[filterProperty]

@@ -48,7 +48,7 @@ export declare type IAuthContext = {
         "It was not possible to update the user"?: string;
         "Created at"?: string;
         "Updated at"?: string;
-    };
+    } & Record<string, string>;
 };
 export declare const authContextDefaultValue: {
     Routes: {

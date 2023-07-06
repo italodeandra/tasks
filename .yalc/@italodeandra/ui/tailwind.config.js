@@ -45,9 +45,16 @@ module.exports = {
                 success: colors.green,
                 error: colors.red,
                 warn: colors.yellow,
+                current: "currentColor",
             },
             fontFamily: {
-                sans: __spreadArray(["InterVariable"], __read(defaultTheme.fontFamily.sans), false),
+                sans: __spreadArray(["Inter Variable"], __read(defaultTheme.fontFamily.sans), false),
+            },
+            fontWeight: {
+                inherit: "inherit",
+            },
+            scale: {
+                flip: "-1",
             },
         },
     },

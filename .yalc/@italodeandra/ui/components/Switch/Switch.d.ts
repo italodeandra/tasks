@@ -6,7 +6,8 @@ export interface SwitchProps {
     className?: string;
     rightLabel?: ReactNode;
     onChange?(checked: boolean): void;
+    readOnly?: boolean;
 }
-export default function Switch({ srLabel, checked, onChange, className, rightLabel, }: SwitchProps): JSX.Element;
+export default function Switch({ srLabel, checked, onChange, className, rightLabel, readOnly, }: SwitchProps): JSX.Element;
 export declare type SwitchInputProps = UnstyledInputCommonProps & SwitchProps;
 export declare function SwitchInput({ inputClassName, ...props }: SwitchInputProps): JSX.Element;
