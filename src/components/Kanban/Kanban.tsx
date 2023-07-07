@@ -72,7 +72,10 @@ export function Kanban({
 }: {
   items: Record<string, UniqueIdentifier[]>;
   renderItem?: (id: UniqueIdentifier) => ReactNode;
-  renderColumn?: (id: UniqueIdentifier, children: ReactElement) => ReactNode;
+  renderColumn?: (
+    id: UniqueIdentifier,
+    children: ReactElement | null
+  ) => ReactNode;
   onChange?: (items: Record<string, UniqueIdentifier[]>) => void;
   className?: string;
   containerClassName?: string;
@@ -216,13 +219,15 @@ export function Kanban({
         {map(items, (tasks, id) =>
           renderColumn(
             id,
-            <Container
-              className={containerClassName}
-              key={id}
-              id={id}
-              items={tasks}
-              renderItem={renderItem}
-            />
+            tasks.length ? (
+              <Container
+                className={containerClassName}
+                key={id}
+                id={id}
+                items={tasks}
+                renderItem={renderItem}
+              />
+            ) : null
           )
         )}
         <DragOverlay>

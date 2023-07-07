@@ -49,13 +49,6 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
     [newValue, selectedProjectId, task._id, task.order, task.status, upsert]
   );
 
-  let handleDeleteClick = useCallback(() => {
-    upsert({
-      _id: task._id,
-      content: "",
-    });
-  }, [task._id, upsert]);
-
   return (
     <>
       {isEditing ? (
@@ -132,11 +125,7 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
               )}
             </Group>
           )}
-          <TaskOptions
-            task={task}
-            onEditClick={() => setEditing(true)}
-            onDeleteClick={handleDeleteClick}
-          />
+          <TaskOptions task={task} onEditClick={() => setEditing(true)} />
         </Stack>
       )}
     </>

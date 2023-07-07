@@ -1,8 +1,7 @@
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { ITask, TaskStatus } from "../../../../collections/task";
 import { useTaskUpsert } from "../../../../pages/api/task/upsert";
-import { useTaskList } from "../../../../pages/api/task/list";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import Menu from "@italodeandra/ui/components/Menu/Menu";
 import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
 import Button from "@italodeandra/ui/components/Button/Button";
@@ -13,31 +12,35 @@ import { translateTaskStatus } from "../translateTaskStatus";
 export function TaskOptions({
   task,
   onEditClick,
-  onDeleteClick,
 }: {
   task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
     Pick<Partial<Jsonify<ITask>>, "projectId">;
   onEditClick?: () => void;
-  onDeleteClick?: () => void;
 }) {
   let { mutate: taskUpsert } = useTaskUpsert();
-  let { data: tasks } = useTaskList();
 
   let handleMoveStatusClick = useCallback(
-    (status: TaskStatus) => () => {
-      let firstOrderOfNextStatus = tasks?.find(
-        (t) => t.status === status
-      )?.order;
+    (status: TaskStatus) => () =>
       taskUpsert({
         _id: task._id,
         status: status,
-        order:
-          (firstOrderOfNextStatus !== undefined ? firstOrderOfNextStatus : 1) -
-          1,
-      });
-    },
-    [task._id, taskUpsert, tasks]
+        order: 0,
+      }),
+    [task._id, taskUpsert]
   );
+
+  let handleDeleteClick = useCallback(() => {
+    taskUpsert({
+      _id: task._id,
+      content: "",
+    });
+  }, [task._id, taskUpsert]);
+
+  useEffect(() => {
+    if (!task.content) {
+      handleDeleteClick?.();
+    }
+  }, [handleDeleteClick, task.content]);
 
   return (
     <Menu
@@ -63,7 +66,7 @@ export function TaskOptions({
             Move to {translateTaskStatus(status)}
           </Menu.Item>
         ))}
-      <Menu.Item onClick={onDeleteClick}>Delete</Menu.Item>
+      <Menu.Item onClick={handleDeleteClick}>Delete</Menu.Item>
     </Menu>
   );
 }

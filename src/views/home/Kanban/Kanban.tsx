@@ -10,6 +10,30 @@ import { UniqueIdentifier } from "@dnd-kit/core";
 import { Task } from "./Task/Task";
 import clsx from "clsx";
 import { ColumnTitle } from "./ColumnTitle";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import { useTaskUpsert } from "../../../pages/api/task/upsert";
+
+function AddNewTaskButton({ status }: { status: TaskStatus }) {
+  let { mutate: upsert, isLoading } = useTaskUpsert();
+
+  let handleAddNewClick = useCallback(() => {
+    let newTask = {
+      content: "",
+      status,
+    };
+    upsert(newTask);
+  }, [status, upsert]);
+
+  return (
+    <Button
+      leadingIcon={<PlusIcon />}
+      onClick={handleAddNewClick}
+      loading={isLoading}
+    >
+      New task
+    </Button>
+  );
+}
 
 export function Kanban() {
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
@@ -33,31 +57,29 @@ export function Kanban() {
     };
   }, [tasks]);
   let getTask = useCallback(
-    (id: UniqueIdentifier) =>
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      _(tasks).find({ _id: id.toString() })!,
+    (id: UniqueIdentifier) => _(tasks).find({ _id: id.toString() }),
     [tasks]
   );
   let renderItem = useCallback(
     (id: UniqueIdentifier) => {
       let task = getTask(id);
-      return <Task key={id} task={task} />;
+      return task && <Task key={id} task={task} />;
     },
     [getTask]
   );
+
   let renderColumn = useCallback(
-    (id: UniqueIdentifier, children: ReactElement) => (
-      <div key={id} className="flex flex-col gap-2">
+    (id: UniqueIdentifier, children: ReactElement | null) => (
+      <div key={id} className="flex w-[90%] shrink-0 flex-col gap-2 sm:w-96">
         <ColumnTitle
           status={id as TaskStatus}
           isLoading={isLoading || isUpdating}
         />
-        {cloneElement(children, {
-          className: clsx(
-            "flex w-[30rem] flex-col gap-2",
-            children.props.className
-          ),
-        })}
+        {children &&
+          cloneElement(children, {
+            className: clsx("flex flex-col gap-2", children.props.className),
+          })}
+        <AddNewTaskButton status={id as TaskStatus} />
       </div>
     ),
     [isLoading, isUpdating]
@@ -68,7 +90,8 @@ export function Kanban() {
         let updatedTasks = _(items)
           .map((itemIds, columnId) =>
             itemIds.map((id, index) => ({
-              ...getTask(id),
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              ...getTask(id)!,
               status: columnId as TaskStatus,
               order: index,
             }))

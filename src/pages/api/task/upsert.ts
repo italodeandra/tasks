@@ -18,7 +18,6 @@ import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
 import Task, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
-import { pickBy } from "lodash";
 
 async function handler(
   args: Pick<
@@ -35,7 +34,9 @@ async function handler(
   }
 
   const _id = isomorphicObjectId(args._id);
-  const projectId = args.projectId && isomorphicObjectId(args.projectId);
+  const projectId = args.projectId
+    ? isomorphicObjectId(args.projectId)
+    : undefined;
 
   if (args.status) {
     await Task.findOneAndUpdate(
@@ -44,16 +45,12 @@ async function handler(
         userId: user._id,
       },
       {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        $set: pickBy<any>(
-          {
-            content: args.content,
-            projectId,
-            status: args.status,
-            order: args.order,
-          },
-          (v) => v !== undefined
-        ),
+        $set: {
+          content: args.content,
+          projectId,
+          status: args.status,
+          order: 0,
+        },
         $setOnInsert: {
           _id,
           userId: user._id,
