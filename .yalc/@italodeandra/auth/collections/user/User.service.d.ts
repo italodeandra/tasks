@@ -12,7 +12,7 @@ export declare function generateToken(userId: ObjectId): string;
 export declare function readToken(token: string): ObjectId;
 export declare function generateResetPasswordToken(userEmail: IUser["email"]): string;
 export declare function readResetPasswordToken(token: string): string;
-export declare function checkUserType(user: Pick<IUser, "type"> | undefined | null, typesToCheck: IUser["type"][]): boolean | "" | undefined;
+export declare function checkUserType(user: Pick<IUser, "type"> | undefined | null, typesToCheck: IUser["type"][]): boolean;
 export declare function convertToUserType(userType: string): "NORMAL" | "ADMIN";
 export declare function createUser(doc: Pick<IUser, "email" | "password" | "name"> & Partial<Omit<IUser, "email" | "password" | "name">>): Promise<{
     email: string;

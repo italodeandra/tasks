@@ -10,7 +10,7 @@ export declare type ImageUrl = {
     description?: string;
 };
 export declare type Image = ImageFile | ImageUrl;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "error" | "id" | "onMouseOut" | "onMouseOver" | "label" | "name" | "helpText" | "required"> & Omit<FileSelectProps, "onAcceptFiles"> & {
+declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles"> & {
     readOnly?: boolean | undefined;
     defaultValue?: Image[] | undefined;
     onChange?: ((event: {

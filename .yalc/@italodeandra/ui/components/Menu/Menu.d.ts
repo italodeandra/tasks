@@ -19,7 +19,7 @@ export declare type MenuItemProps<Href extends string | undefined> = UnstyledBut
     icon?: ReactElement;
 };
 export declare type MenuLabelProps<Inline extends boolean | undefined, Href extends string | undefined> = TextProps<Inline, Href>;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<MenuProps, "className" | "children" | "button" | "label" | "unmount" | "position" | "iconClassName" | "buttonProps" | "menuItemsClassName"> & import("react").RefAttributes<HTMLDivElement>> & {
+declare const _default: import("react").ForwardRefExoticComponent<Pick<MenuProps, "className" | "label" | "children" | "button" | "unmount" | "position" | "iconClassName" | "buttonProps" | "menuItemsClassName"> & import("react").RefAttributes<HTMLDivElement>> & {
     Label: <Inline extends boolean | undefined, Href extends string | undefined>(props: MenuLabelProps<Inline, Href>) => JSX.Element;
     Item: <Href_1 extends string | undefined>({ className, icon, children, ...props }: MenuItemProps<Href_1>) => JSX.Element;
 };

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 declare const _default: import("react").ForwardRefExoticComponent<{
-    color?: "success" | "error" | "primary" | "default" | undefined;
-    size?: "sm" | "md" | "lg" | undefined;
+    color?: "default" | "success" | "error" | "primary" | undefined;
+    size?: "sm" | "lg" | "md" | undefined;
     className?: string | undefined;
     children: ReactNode;
     onActionClick?: (() => void) | undefined;

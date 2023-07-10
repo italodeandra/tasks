@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function asyncMap(arr, predicate) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            return [2 /*return*/, Promise.all(arr.map(predicate))];
+            return [2 /*return*/, arr ? Promise.all(arr.map(predicate)) : []];
         });
     });
 }

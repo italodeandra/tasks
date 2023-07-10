@@ -12,5 +12,5 @@ export declare const defaultTrailingClassName = "pointer-events-none absolute in
 export declare const defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 text-sm";
 export declare const defaultLeadingInputClassName = "pl-10";
 export declare const defaultTrailingInputClassName = "pr-10";
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<boolean | undefined>, "error" | "select" | "key" | keyof import("../Input/UnstyledInput").UnstyledInputCommonProps | keyof import("react").InputHTMLAttributes<HTMLInputElement> | "loading"> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
+declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<boolean | undefined>, "select" | "key" | keyof import("react").InputHTMLAttributes<HTMLInputElement> | "error" | keyof import("../Input/UnstyledInput").UnstyledInputCommonProps | "loading"> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
 export default _default;

@@ -1,1 +1,1 @@
-export default function asyncMap<T, R>(arr: T[], predicate: (item: T) => Promise<R>): Promise<R[]>;
+export default function asyncMap<T, R>(arr: T[] | undefined, predicate: (item: T) => Promise<R>): Promise<R[]>;

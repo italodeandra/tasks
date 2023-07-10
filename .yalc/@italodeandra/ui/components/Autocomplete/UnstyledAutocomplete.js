@@ -48,14 +48,15 @@ var react_2 = require("react");
 var UnstyledInput_1 = __importDefault(require("../Input/UnstyledInput"));
 var Input_1 = require("../Input/Input");
 var clsx_1 = __importDefault(require("clsx"));
+var solid_1 = require("@heroicons/react/20/solid");
+var react_use_1 = require("react-use");
 function UnstyledAutocomplete(_a) {
-    var placeholder = _a.placeholder, emptyText = _a.emptyText, _b = _a.items, items = _b === void 0 ? [] : _b, _c = _a.renderProperty, renderProperty = _c === void 0 ? "title" : _c, renderFunction = _a.renderFunction, _d = _a.filterProperty, filterProperty = _d === void 0 ? "title" : _d, filterFunction = _a.filterFunction, onSelect = _a.onSelect, _e = _a.query, defaultQuery = _e === void 0 ? "" : _e, onChangeQuery = _a.onChangeQuery, loading = _a.loading, emptyTextClassName = _a.emptyTextClassName, optionsClassName = _a.optionsClassName, optionClassName = _a.optionClassName, inputInnerClassName = _a.inputInnerClassName, inputElementClassName = _a.inputElementClassName, as = _a.as, trailing = _a.trailing, trailingClassName = _a.trailingClassName, trailingInputClassName = _a.trailingInputClassName, leadingInputClassName = _a.leadingInputClassName, isStatic = _a.static, 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    _f = _a.displayValue, 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    displayValue = _f === void 0 ? function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; } : _f, value = _a.value, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onSelect", "query", "onChangeQuery", "loading", "emptyTextClassName", "optionsClassName", "optionClassName", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value"]);
-    var _g = __read((0, react_2.useState)(defaultQuery), 2), query = _g[0], setQuery = _g[1];
-    var _h = __read((0, react_2.useState)(null), 2), selectedItem = _h[0], setSelectedItem = _h[1];
+    var placeholder = _a.placeholder, emptyText = _a.emptyText, _b = _a.items, items = _b === void 0 ? [] : _b, _c = _a.renderProperty, renderProperty = _c === void 0 ? "title" : _c, renderFunction = _a.renderFunction, _d = _a.filterProperty, filterProperty = _d === void 0 ? "title" : _d, filterFunction = _a.filterFunction, onSelect = _a.onSelect, _e = _a.query, defaultQuery = _e === void 0 ? "" : _e, onChangeQuery = _a.onChangeQuery, loading = _a.loading, emptyTextClassName = _a.emptyTextClassName, optionsClassName = _a.optionsClassName, optionClassName = _a.optionClassName, inputInnerClassName = _a.inputInnerClassName, inputElementClassName = _a.inputElementClassName, as = _a.as, trailing = _a.trailing, trailingClassName = _a.trailingClassName, trailingInputClassName = _a.trailingInputClassName, leadingInputClassName = _a.leadingInputClassName, isStatic = _a.static, displayValue = _a.displayValue, value = _a.value, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onSelect", "query", "onChangeQuery", "loading", "emptyTextClassName", "optionsClassName", "optionClassName", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value"]);
+    displayValue =
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        displayValue || (function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; });
+    var _f = __read((0, react_2.useState)(defaultQuery), 2), query = _f[0], setQuery = _f[1];
+    var _g = __read((0, react_2.useState)(null), 2), selectedItem = _g[0], setSelectedItem = _g[1];
     (0, react_2.useEffect)(function () {
         if (query !== defaultQuery) {
             setQuery(defaultQuery);
@@ -78,12 +79,12 @@ function UnstyledAutocomplete(_a) {
                         .includes(query.toLowerCase());
                 }));
     }, [filterFunction, filterProperty, items, query]);
-    trailing = loading ? (0, jsx_runtime_1.jsx)(Loading_1.default, {}) : trailing;
+    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing || ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))));
     var ComponentInput = as || UnstyledInput_1.default;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction ? renderFunction(item) : item[renderProperty];
     }, [renderFunction, renderProperty]);
-    (0, react_2.useEffect)(function () {
+    (0, react_use_1.useUpdateEffect)(function () {
         onSelect === null || onSelect === void 0 ? void 0 : onSelect(selectedItem);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedItem]);
@@ -95,13 +96,15 @@ function UnstyledAutocomplete(_a) {
     }, [value]);
     return ((0, jsx_runtime_1.jsx)(react_1.Combobox, __assign({ onChange: setSelectedItem, value: selectedItem, nullable: true }, { children: function (_a) {
             var open = _a.open;
-            return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(ComponentInput
-                    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                    , __assign({}, props, { as: react_1.Combobox.Input, placeholder: placeholder, value: query, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue })), filteredItems.length > 0 && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Options, __assign({ static: isStatic, className: optionsClassName }, { children: filteredItems.map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: optionClassName &&
-                                (function (_a) {
-                                    var active = _a.active, selected = _a.selected;
-                                    return optionClassName({ active: active, selected: selected });
-                                }) }, { children: doRender(item) }), item._id)); }) }))), open && emptyText && query !== "" && filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: emptyTextClassName }, { children: emptyText })))] }));
+            return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", __assign({ className: "relative" }, { children: (0, jsx_runtime_1.jsx)(ComponentInput
+                        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                        , __assign({}, props, { as: react_1.Combobox.Input, placeholder: placeholder, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue })) })), filteredItems.length > 0 && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Options, __assign({ static: isStatic, className: optionsClassName }, { children: filteredItems.map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: function (_a) {
+                                var active = _a.active, selected = _a.selected;
+                                return (0, clsx_1.default)("flex gap-2", optionClassName && optionClassName({ active: active, selected: selected }));
+                            } }, { children: function (_a) {
+                                var selected = _a.selected, active = _a.active;
+                                return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [selected ? ((0, jsx_runtime_1.jsx)("span", __assign({ className: (0, clsx_1.default)("flex items-center", active ? "text-white" : "text-primary-500") }, { children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "h-5 w-5", "aria-hidden": "true" }) }))) : null, doRender(item)] }));
+                            } }), item._id)); }) }))), open && emptyText && query !== "" && filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: emptyTextClassName }, { children: emptyText })))] }));
         } })));
 }
 exports.default = UnstyledAutocomplete;

@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 export interface FileSelectProps {
     uploadAFileText?: string;
     orDragAndDropText?: string;
@@ -13,6 +13,7 @@ export interface FileSelectProps {
     helperText?: string;
     className?: string;
     error?: boolean;
+    icon?: ReactElement;
 }
 declare const _default: import("react").ForwardRefExoticComponent<FileSelectProps & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

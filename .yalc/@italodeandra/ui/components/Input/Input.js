@@ -28,7 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultTrailingInputClassName = exports.defaultLeadingInputClassName = exports.defaultLeadingClassName = exports.defaultTrailingClassName = exports.defaultHelpTextClassName = exports.defaultInputClassName = exports.defaultInputClassNameUncolored = exports.defaultLabelClassName = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
 var UnstyledInput_1 = __importDefault(require("../Input/UnstyledInput"));
-var Text_1 = require("../Text/Text");
+var Text_1 = require("../Text");
 var solid_1 = require("@heroicons/react/20/solid");
 var InputIcon_1 = __importDefault(require("./InputIcon"));
 var react_1 = require("react");
@@ -42,7 +42,7 @@ exports.defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0
 exports.defaultLeadingInputClassName = "pl-10";
 exports.defaultTrailingInputClassName = "pr-10";
 function Input(_a, ref) {
-    var error = _a.error, trailing = _a.trailing, labelClassName = _a.labelClassName, inputClassName = _a.inputClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, trailingInputClassName = _a.trailingInputClassName, required = _a.required, label = _a.label, loading = _a.loading, props = __rest(_a, ["error", "trailing", "labelClassName", "inputClassName", "helpTextClassName", "trailingClassName", "leadingClassName", "leadingInputClassName", "trailingInputClassName", "required", "label", "loading"]);
+    var error = _a.error, trailing = _a.trailing, labelClassName = _a.labelClassName, inputClassName = _a.inputClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, trailingInputClassName = _a.trailingInputClassName, required = _a.required, label = _a.label, loading = _a.loading, readOnly = _a.readOnly, props = __rest(_a, ["error", "trailing", "labelClassName", "inputClassName", "helpTextClassName", "trailingClassName", "leadingClassName", "leadingInputClassName", "trailingInputClassName", "required", "label", "loading", "readOnly"]);
     trailing =
         trailing ||
             (error ? ((0, jsx_runtime_1.jsx)(InputIcon_1.default, __assign({ className: "text-error-500" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ExclamationCircleIcon, { "aria-hidden": "true" }) }))) : undefined);
@@ -59,11 +59,14 @@ function Input(_a, ref) {
         inputClassName = "".concat(inputClassName, " border-error-300 dark:border-error-500 text-error-900 dark:text-error-500 placeholder-error-300 focus:border-error-500 dark:focus:border-error-500 focus:ring-error-500");
         helpTextClassName = "".concat(helpTextClassName, " !text-error-600 dark:!text-error-500");
     }
+    if (readOnly) {
+        inputClassName = "".concat(inputClassName, " border-dashed");
+    }
     if (label && required) {
         label = ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [label, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "text-red-500" }, { children: "*" }))] }));
     }
     return ((0, jsx_runtime_1.jsx)(UnstyledInput_1.default
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label })));
+    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label, readOnly: readOnly })));
 }
 exports.default = (0, react_1.forwardRef)(Input);

@@ -43,11 +43,9 @@ declare const styles: {
     size: {
         md: {
             button: string;
-            icon: string;
         };
         sm: {
             button: string;
-            icon: string;
         };
     };
     icon: {
@@ -62,9 +60,9 @@ declare const styles: {
     };
 };
 export declare type ButtonProps<Href extends string | undefined> = UnstyledButtonProps<Href> & {
-    variant?: keyof typeof styles["variant"];
-    color?: keyof typeof styles["color"];
-    size?: keyof typeof styles["size"];
+    variant?: keyof (typeof styles)["variant"];
+    color?: keyof (typeof styles)["color"];
+    size?: keyof (typeof styles)["size"];
     icon?: boolean;
     leadingIcon?: ReactElement;
     trailingIcon?: ReactElement;
@@ -75,7 +73,7 @@ export declare type ButtonProps<Href extends string | undefined> = UnstyledButto
 declare const _default: import("react").ForwardRefExoticComponent<{
     href?: string | undefined;
     target?: string | undefined;
-} & Omit<import("react").DetailedHTMLProps<import("react").ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> | (Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
+} & Omit<(Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
     href: string | import("url").UrlObject;
     as?: (string | import("url").UrlObject) | undefined;
     replace?: boolean | undefined;
@@ -103,7 +101,7 @@ declare const _default: import("react").ForwardRefExoticComponent<{
     onClick?: ((e: any) => void) | undefined;
 } & {
     children?: import("react").ReactNode;
-} & import("react").RefAttributes<HTMLAnchorElement>), "ref"> & {
+} & import("react").RefAttributes<HTMLAnchorElement>) | import("react").DetailedHTMLProps<import("react").ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & {
     variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
     color?: "success" | "error" | "primary" | "gray" | "white" | undefined;
     size?: "sm" | "md" | undefined;

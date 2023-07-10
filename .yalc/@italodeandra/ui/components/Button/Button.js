@@ -72,11 +72,9 @@ var styles = {
     size: {
         md: {
             button: "px-4 py-3 sm:px-3 sm:py-2 sm:text-sm",
-            icon: "w-4 h-4",
         },
         sm: {
             button: "px-3 py-2 sm:px-2 sm:py-1 sm:text-xs",
-            icon: "w-3 h-3",
         },
     },
     icon: {
@@ -95,13 +93,13 @@ var Button = function (_a, ref) {
     var _c, _d, _e;
     var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? ["outlined", "text"].includes(variant) ? "white" : "primary" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leadingIcon = _a.leadingIcon, trailingIcon = _a.trailingIcon, children = _a.children, loading = _a.loading, disabled = _a.disabled, rounded = _a.rounded, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leadingIcon", "trailingIcon", "children", "loading", "disabled", "rounded"]);
     if (loading) {
-        trailingIcon = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "!text-inherit" });
+        trailingIcon = ((0, jsx_runtime_1.jsx)(Loading_1.default, { className: (0, clsx_1.default)(styles.icon[size].icon, "!text-inherit") }));
     }
     return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded-md", (_b = {},
             _b[styles.disabled] = disabled,
             _b), className), type: type, disabled: disabled }, { children: [leadingIcon &&
                 (0, react_1.cloneElement)(leadingIcon, {
-                    className: (0, clsx_1.default)("mr-2 -ml-0.5", styles.size[size].icon, (_c = leadingIcon === null || leadingIcon === void 0 ? void 0 : leadingIcon.props) === null || _c === void 0 ? void 0 : _c.className),
+                    className: (0, clsx_1.default)("mr-2 -ml-0.5", styles.icon[size].icon, (_c = leadingIcon === null || leadingIcon === void 0 ? void 0 : leadingIcon.props) === null || _c === void 0 ? void 0 : _c.className),
                 }), !icon
                 ? children
                 : Array.isArray(children)
@@ -116,7 +114,7 @@ var Button = function (_a, ref) {
                         className: (0, clsx_1.default)(styles.icon[size].icon, (_d = children === null || children === void 0 ? void 0 : children.props) === null || _d === void 0 ? void 0 : _d.className),
                     }), trailingIcon &&
                 (0, react_1.cloneElement)(trailingIcon, {
-                    className: (0, clsx_1.default)("ml-2 -mr-0.5", styles.size[size].icon, (_e = trailingIcon === null || trailingIcon === void 0 ? void 0 : trailingIcon.props) === null || _e === void 0 ? void 0 : _e.className),
+                    className: (0, clsx_1.default)("ml-2 -mr-0.5", styles.icon[size].icon, (_e = trailingIcon === null || trailingIcon === void 0 ? void 0 : trailingIcon.props) === null || _e === void 0 ? void 0 : _e.className),
                 })] })));
 };
 exports.default = (0, react_1.forwardRef)(Button);

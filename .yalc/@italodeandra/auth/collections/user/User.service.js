@@ -127,7 +127,7 @@ function readResetPasswordToken(token) {
 }
 exports.readResetPasswordToken = readResetPasswordToken;
 function checkUserType(user, typesToCheck) {
-    return (user === null || user === void 0 ? void 0 : user.type) && typesToCheck.includes(user.type);
+    return !!(user === null || user === void 0 ? void 0 : user.type) && typesToCheck.includes(user.type);
 }
 exports.checkUserType = checkUserType;
 function convertToUserType(userType) {
