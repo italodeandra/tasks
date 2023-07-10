@@ -14,6 +14,7 @@ import { useTaskUpsert } from "../../../../pages/api/task/upsert";
 import { TaskOptions } from "./TaskOptions";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
+import { Timer } from "./Timer";
 
 let cardClassName = "rounded-md border text-sm";
 
@@ -112,19 +113,19 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
             dangerouslySetInnerHTML={{ __html: task.html }}
           />
 
-          {(!!project || isLoadingProject) && (
-            <Group>
-              {isLoadingProject ? (
-                <Skeleton className="h-[20px] w-14" />
-              ) : (
-                project && (
-                  <Badge size="sm" className="!rounded">
-                    {project.name}
-                  </Badge>
-                )
-              )}
-            </Group>
-          )}
+          <Group>
+            {isLoadingProject ? (
+              <Skeleton className="h-[20px] w-14" />
+            ) : (
+              project && (
+                <Badge size="sm" className="!rounded">
+                  {project.name}
+                </Badge>
+              )
+            )}
+            <div className="flex-grow" />
+            <Timer task={task} />
+          </Group>
           <TaskOptions task={task} onEditClick={() => setEditing(true)} />
         </Stack>
       )}

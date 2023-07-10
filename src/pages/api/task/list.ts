@@ -49,6 +49,8 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
           status: 1,
           projectId: 1,
           order: 1,
+          "timesheet.time": 1,
+          "timesheet.currentClockIn": 1,
         },
         sort: {
           status: 1,
