@@ -1,17 +1,28 @@
 import { useTaskList } from "../../../pages/api/task/list";
-import React, { cloneElement, ReactElement, useCallback, useMemo } from "react";
+import React, {
+  cloneElement,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { TaskStatus } from "../../../collections/task";
 import { useTaskBatchUpdateOrder } from "../../../pages/api/task/batchUpdateOrder";
 import Alert from "@italodeandra/ui/components/Alert/Alert";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { Kanban as UiKanban } from "../../../components/Kanban/Kanban";
-import _, { isEqual } from "lodash";
+import _, { isEqual, xor } from "lodash";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Task } from "./Task/Task";
 import clsx from "clsx";
 import { ColumnTitle } from "./ColumnTitle";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { useTaskUpsert } from "../../../pages/api/task/upsert";
+import Stack from "@italodeandra/ui/components/Stack/Stack";
+import Group from "@italodeandra/ui/components/Group/Group";
+import Text from "@italodeandra/ui/components/Text";
+import { useProjectList } from "../../../pages/api/project/list";
+import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
 
 function AddNewTaskButton({ status }: { status: TaskStatus }) {
   let { mutate: upsert, isLoading } = useTaskUpsert();
@@ -36,6 +47,8 @@ function AddNewTaskButton({ status }: { status: TaskStatus }) {
 }
 
 export function Kanban() {
+  let [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  let { data: projects, isLoading: isLoadingProjects } = useProjectList();
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -43,19 +56,34 @@ export function Kanban() {
   let items = useMemo(() => {
     return {
       [TaskStatus.TODO]: _(tasks)
-        .filter({ status: TaskStatus.TODO })
+        .filter(
+          (task) =>
+            (!selectedProjects.length ||
+              selectedProjects.includes(task.projectId || "")) &&
+            task.status === TaskStatus.TODO
+        )
         .map("_id")
         .value(),
       [TaskStatus.DOING]: _(tasks)
-        .filter({ status: TaskStatus.DOING })
+        .filter(
+          (task) =>
+            (!selectedProjects.length ||
+              selectedProjects.includes(task.projectId || "")) &&
+            task.status === TaskStatus.DOING
+        )
         .map("_id")
         .value(),
       [TaskStatus.DONE]: _(tasks)
-        .filter({ status: TaskStatus.DONE })
+        .filter(
+          (task) =>
+            (!selectedProjects.length ||
+              selectedProjects.includes(task.projectId || "")) &&
+            task.status === TaskStatus.DONE
+        )
         .map("_id")
         .value(),
     };
-  }, [tasks]);
+  }, [selectedProjects, tasks]);
   let getTask = useCallback(
     (id: UniqueIdentifier) => _(tasks).find({ _id: id.toString() }),
     [tasks]
@@ -123,12 +151,34 @@ export function Kanban() {
   }
 
   return (
-    <UiKanban
-      items={items}
-      renderItem={renderItem}
-      renderColumn={renderColumn}
-      className="gap-2 px-4"
-      onChange={handleKanbanChange}
-    />
+    <Stack className="h-screen pt-4">
+      <Stack className="px-4">
+        <Text variant="label">Projects</Text>
+        <Group wrap>
+          {[{ _id: "", name: "None" }, ...(projects || [])]?.map((project) => (
+            <Button
+              size="sm"
+              key={project._id}
+              variant={
+                selectedProjects.includes(project._id) ? "filled" : "outlined"
+              }
+              onClick={() =>
+                setSelectedProjects(xor(selectedProjects, [project._id]))
+              }
+            >
+              {project.name}
+            </Button>
+          ))}
+          {isLoadingProjects && <Skeleton className="w-20" />}
+        </Group>
+      </Stack>
+      <UiKanban
+        items={items}
+        renderItem={renderItem}
+        renderColumn={renderColumn}
+        className="flex-1 gap-2 overflow-x-auto px-4 pb-14"
+        onChange={handleKanbanChange}
+      />
+    </Stack>
   );
 }

@@ -8,7 +8,7 @@ export default function getLayout(children: ReactNode) {
     <>
       <TopBlurryPoint />
       <BottomBlurryPoint />
-      <div className="pb-10">{children}</div>
+      <div>{children}</div>
       <div className="fixed bottom-1 left-1">
         <ModeToggle />
       </div>
