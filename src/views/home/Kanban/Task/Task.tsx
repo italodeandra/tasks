@@ -109,7 +109,7 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
         >
           <div
             data-no-dnd="true"
-            className="markdown !text-md prose !inline prose-p:!leading-normal prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0"
+            className="markdown text-md prose !inline text-inherit prose-p:!leading-normal prose-strong:text-inherit prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0"
             dangerouslySetInnerHTML={{ __html: task.html }}
           />
 
