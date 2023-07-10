@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import ms from "ms";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { useInterval, useUpdate } from "react-use";
+import clsx from "clsx";
 
 export function Timer({
   task,
@@ -42,6 +43,10 @@ export function Timer({
       onClick={handleClick}
       data-no-dnd="true"
       color={task.timesheet?.currentClockIn ? "success" : undefined}
+      className={clsx({
+        "opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100":
+          !time,
+      })}
       {...(time
         ? {
             leadingIcon: <ClockIcon />,
