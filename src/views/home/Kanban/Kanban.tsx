@@ -68,7 +68,7 @@ export function Kanban() {
         .map("_id")
         .value(),
     };
-  }, [selectedProjects, tasks]);
+  }, [tasks]);
   let getTask = useCallback(
     (id: UniqueIdentifier) => _(tasks).find({ _id: id.toString() }),
     [tasks]
@@ -77,7 +77,8 @@ export function Kanban() {
     (id: UniqueIdentifier) => {
       let task = getTask(id);
       return task &&
-        (!selectedProjects.length ||
+        (!task.content ||
+          !selectedProjects.length ||
           selectedProjects.includes(task.projectId || "")) ? (
         <Task key={id} task={task} />
       ) : null;

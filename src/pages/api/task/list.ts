@@ -37,7 +37,7 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
           },
           {
             status: TaskStatus.DONE,
-            updatedAt: {
+            statusUpdatedAt: {
               $gte: dayjs().subtract(1, "week").toDate(),
             },
           },

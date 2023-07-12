@@ -57,14 +57,17 @@ async function handler(
           status: args.status,
           projectUpdatedAt:
             args.projectId === task?.projectId?.toString()
-              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                task!.projectUpdatedAt
+              ? task?.projectUpdatedAt
               : new Date(),
+          statusUpdatedAt:
+            args.status === task?.status ? task?.statusUpdatedAt : new Date(),
         },
         $setOnInsert: {
           _id,
           userId: user._id,
           order: Infinity,
+          projectUpdatedAt: new Date(),
+          statusUpdatedAt: new Date(),
         },
       },
       {

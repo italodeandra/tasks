@@ -33,6 +33,7 @@ const taskSchema = onlyServer(() =>
         ),
       }),
       projectUpdatedAt: types.date(),
+      statusUpdatedAt: types.date(),
     },
     {
       timestamps: true,
