@@ -37,7 +37,7 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
         pipeline: [
           {
             $sort: {
-              updatedAt: -1,
+              projectUpdatedAt: -1,
             },
           },
           {
@@ -45,7 +45,7 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
           },
           {
             $project: {
-              updatedAt: 1,
+              projectUpdatedAt: 1,
             },
           },
         ],
@@ -59,7 +59,7 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
     },
     {
       $sort: {
-        "lastUpdatedTask.updatedAt": -1,
+        "lastUpdatedTask.projectUpdatedAt": -1,
         updatedAt: -1,
       },
     },

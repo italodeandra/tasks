@@ -18,6 +18,7 @@ import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
 import Task, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
+import { invalidate_projectList } from "../project/list";
 
 async function handler(
   args: Pick<
@@ -39,6 +40,11 @@ async function handler(
     : undefined;
 
   if (args.status) {
+    let task = await Task.findOne({
+      _id,
+      userId: user._id,
+    });
+
     await Task.findOneAndUpdate(
       {
         _id,
@@ -49,11 +55,16 @@ async function handler(
           content: args.content,
           projectId,
           status: args.status,
-          order: 0,
+          projectUpdatedAt:
+            args.projectId === task?.projectId?.toString()
+              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                task!.projectUpdatedAt
+              : new Date(),
         },
         $setOnInsert: {
           _id,
           userId: user._id,
+          order: Infinity,
         },
       },
       {
@@ -86,6 +97,7 @@ export const useTaskUpsert = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_projectList(queryClient);
         await options?.onSuccess?.(...params);
       },
     }
