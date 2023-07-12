@@ -12,7 +12,6 @@ import { connectDb } from "../../../db";
 import Task, { TaskStatus } from "../../../collections/task";
 import showdown from "showdown";
 import dayjs from "dayjs";
-import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
 
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
@@ -64,15 +63,20 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
 
 export default apiHandlerWrapper(handler);
 
-export type TaskListApiArgs = InferApiArgs<typeof handler>;
-export type TaskListApiResponse = InferApiResponse<typeof handler>;
+export type TimesheetListFromProjectApiArgs = InferApiArgs<typeof handler>;
+export type TimesheetListFromProjectApiResponse = InferApiResponse<
+  typeof handler
+>;
 
-const queryKey = "/api/task/list";
+const queryKey = "/api/timesheet/list-from-project";
 
-export const useTaskList = (args?: TaskListApiArgs) =>
-  useQuery([queryKey], queryFnWrapper<TaskListApiResponse>(queryKey, args));
+export const useTimesheetListFromProject = (
+  args?: TimesheetListFromProjectApiArgs
+) =>
+  useQuery(
+    [queryKey],
+    queryFnWrapper<TimesheetListFromProjectApiResponse>(queryKey, args)
+  );
 
-export const invalidate_taskList = async (queryClient: QueryClient) => {
-  await invalidate_timesheetListFromProject(queryClient);
-  return queryClient.invalidateQueries([queryKey]);
-};
+export const invalidate_timesheetListFromProject = (queryClient: QueryClient) =>
+  queryClient.invalidateQueries([queryKey]);
