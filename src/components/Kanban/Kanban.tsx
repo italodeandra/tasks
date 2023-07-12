@@ -4,19 +4,19 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  MouseSensor as LibMouseSensor,
   KeyboardSensor as LibKeyboardSensor,
+  MouseSensor as LibMouseSensor,
   UniqueIdentifier,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import React, {
+  KeyboardEvent,
+  MouseEvent,
   ReactElement,
   ReactNode,
   useEffect,
   useState,
-  MouseEvent,
-  KeyboardEvent,
 } from "react";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { isEqual, map } from "lodash";

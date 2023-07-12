@@ -56,30 +56,15 @@ export function Kanban() {
   let items = useMemo(() => {
     return {
       [TaskStatus.TODO]: _(tasks)
-        .filter(
-          (task) =>
-            (!selectedProjects.length ||
-              selectedProjects.includes(task.projectId || "")) &&
-            task.status === TaskStatus.TODO
-        )
+        .filter((task) => task.status === TaskStatus.TODO)
         .map("_id")
         .value(),
       [TaskStatus.DOING]: _(tasks)
-        .filter(
-          (task) =>
-            (!selectedProjects.length ||
-              selectedProjects.includes(task.projectId || "")) &&
-            task.status === TaskStatus.DOING
-        )
+        .filter((task) => task.status === TaskStatus.DOING)
         .map("_id")
         .value(),
       [TaskStatus.DONE]: _(tasks)
-        .filter(
-          (task) =>
-            (!selectedProjects.length ||
-              selectedProjects.includes(task.projectId || "")) &&
-            task.status === TaskStatus.DONE
-        )
+        .filter((task) => task.status === TaskStatus.DONE)
         .map("_id")
         .value(),
     };
@@ -91,14 +76,21 @@ export function Kanban() {
   let renderItem = useCallback(
     (id: UniqueIdentifier) => {
       let task = getTask(id);
-      return task && <Task key={id} task={task} />;
+      return task &&
+        (!selectedProjects.length ||
+          selectedProjects.includes(task.projectId || "")) ? (
+        <Task key={id} task={task} />
+      ) : null;
     },
-    [getTask]
+    [getTask, selectedProjects]
   );
 
   let renderColumn = useCallback(
     (id: UniqueIdentifier, children: ReactElement | null) => (
-      <div key={id} className="flex w-[90%] shrink-0 flex-col gap-2 sm:w-96">
+      <div
+        key={id}
+        className="relative flex w-[90%] shrink-0 flex-col gap-2 sm:w-96"
+      >
         <ColumnTitle
           status={id as TaskStatus}
           isLoading={isLoading || isUpdating}
@@ -172,13 +164,15 @@ export function Kanban() {
           {isLoadingProjects && <Skeleton className="w-20" />}
         </Group>
       </Stack>
-      <UiKanban
-        items={items}
-        renderItem={renderItem}
-        renderColumn={renderColumn}
-        className="flex-1 gap-2 overflow-x-auto px-4 pb-14"
-        onChange={handleKanbanChange}
-      />
+      <div className="relative flex-1 overflow-auto px-4 pb-14">
+        <UiKanban
+          items={items}
+          renderItem={renderItem}
+          renderColumn={renderColumn}
+          onChange={handleKanbanChange}
+          className="gap-2"
+        />
+      </div>
     </Stack>
   );
 }

@@ -2,6 +2,7 @@ import React, { ReactNode } from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { UniqueIdentifier } from "@dnd-kit/core";
+import clsx from "clsx";
 
 export default function SortableItem({
   id,
@@ -20,15 +21,19 @@ export default function SortableItem({
     transition,
   };
 
+  let rendered = renderItem ? renderItem(id) : id;
+
   return (
     <div
       ref={setNodeRef}
-      className={className}
+      className={clsx(className, {
+        "-my-1": !rendered,
+      })}
       style={style}
       {...attributes}
       {...listeners}
     >
-      {renderItem ? renderItem(id) : id}
+      {rendered}
     </div>
   );
 }
