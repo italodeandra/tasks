@@ -144,36 +144,45 @@ export function Kanban() {
   }
 
   return (
-    <Stack className="h-screen pt-4">
-      <Stack className="px-4">
-        <Text variant="label">Projects</Text>
-        <Group wrap>
-          {[{ _id: "", name: "None" }, ...(projects || [])]?.map((project) => (
-            <Button
-              size="sm"
-              key={project._id}
-              variant={
-                selectedProjects.includes(project._id) ? "filled" : "outlined"
-              }
-              onClick={() =>
-                setSelectedProjects(xor(selectedProjects, [project._id]))
-              }
-            >
-              {project.name}
-            </Button>
-          ))}
-          {isLoadingProjects && <Skeleton className="w-20" />}
-        </Group>
+    <Group>
+      <Stack className="mr-auto h-screen pt-4">
+        <Stack className="px-4">
+          <Text variant="label">Projects</Text>
+          <Group wrap>
+            {[{ _id: "", name: "None" }, ...(projects || [])]?.map(
+              (project) => (
+                <Button
+                  size="sm"
+                  key={project._id}
+                  variant={
+                    selectedProjects.includes(project._id)
+                      ? "filled"
+                      : "outlined"
+                  }
+                  onClick={() =>
+                    setSelectedProjects(xor(selectedProjects, [project._id]))
+                  }
+                >
+                  {project.name}
+                </Button>
+              )
+            )}
+            {isLoadingProjects && <Skeleton className="w-20" />}
+          </Group>
+        </Stack>
+        <div className="relative flex-1 overflow-auto px-4 pb-14">
+          <UiKanban
+            items={items}
+            renderItem={renderItem}
+            renderColumn={renderColumn}
+            onChange={handleKanbanChange}
+            className="gap-2"
+          />
+        </div>
       </Stack>
-      <div className="relative flex-1 overflow-auto px-4 pb-14">
-        <UiKanban
-          items={items}
-          renderItem={renderItem}
-          renderColumn={renderColumn}
-          onChange={handleKanbanChange}
-          className="gap-2"
-        />
+      <div className="w-96 border-l border-gray-200 p-4">
+        <Text variant="label">Timesheet</Text>
       </div>
-    </Stack>
+    </Group>
   );
 }

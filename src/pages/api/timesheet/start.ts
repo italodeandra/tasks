@@ -13,9 +13,9 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
-import { connectDb } from "../../../../db";
-import Task from "../../../../collections/task";
-import { invalidate_taskList } from "../list";
+import { connectDb } from "../../../db";
+import Task from "../../../collections/task";
+import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 
 async function handler(
@@ -47,22 +47,22 @@ async function handler(
 
 export default apiHandlerWrapper(handler);
 
-export type TaskTimesheetStartApiResponse = InferApiResponse<typeof handler>;
-export type TaskTimesheetStartApiArgs = InferApiArgs<typeof handler>;
+export type TimesheetStartApiResponse = InferApiResponse<typeof handler>;
+export type TimesheetStartApiArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/task/timesheet/start";
+const mutationKey = "/api/timesheet/start";
 
-export const useTaskTimesheetStart = (
+export const useTimesheetStart = (
   options?: UseMutationOptions<
-    TaskTimesheetStartApiResponse,
+    TimesheetStartApiResponse,
     unknown,
-    TaskTimesheetStartApiArgs
+    TimesheetStartApiArgs
   >
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<TaskTimesheetStartApiArgs, TaskTimesheetStartApiResponse>(
+    mutationFnWrapper<TimesheetStartApiArgs, TimesheetStartApiResponse>(
       mutationKey
     ),
     {

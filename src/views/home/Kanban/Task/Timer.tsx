@@ -1,8 +1,8 @@
 import Button from "@italodeandra/ui/components/Button/Button";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { ITask } from "../../../../collections/task";
-import { useTaskTimesheetStart } from "../../../../pages/api/task/timesheet/start";
-import { useTaskTimesheetStop } from "../../../../pages/api/task/timesheet/stop";
+import { useTimesheetStart } from "../../../../pages/api/timesheet/start";
+import { useTimesheetStop } from "../../../../pages/api/timesheet/stop";
 import { useCallback } from "react";
 import ms from "ms";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
@@ -14,8 +14,8 @@ export function Timer({
 }: {
   task: Jsonify<Pick<ITask, "_id" | "timesheet">>;
 }) {
-  let { mutate: start, isLoading: isStarting } = useTaskTimesheetStart();
-  let { mutate: stop, isLoading: isStopping } = useTaskTimesheetStop();
+  let { mutate: start, isLoading: isStarting } = useTimesheetStart();
+  let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
   let isLoading = isStarting || isStopping;
 
   let handleClick = useCallback(() => {
