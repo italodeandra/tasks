@@ -180,9 +180,9 @@ export function Kanban() {
           />
         </div>
       </Stack>
-      <div className="w-96 shrink-0 border-l border-gray-200 p-4">
-        <Text variant="label">Timesheet</Text>
-      </div>
+      {/*<div className="w-96 shrink-0 border-l border-gray-200 p-4">*/}
+      {/*  <Text variant="label">Timesheet</Text>*/}
+      {/*</div>*/}
     </Group>
   );
 }
