@@ -54,7 +54,11 @@ function TimesheetItem({
   let rerender = useUpdate();
   useInterval(rerender, !timesheet?.time ? ms("1s") : null);
 
-  return <div>{ms(time)}</div>;
+  return (
+    <div className={!timesheet?.time ? "text-green-500" : undefined}>
+      {ms(time)}
+    </div>
+  );
 }
 
 function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
@@ -87,13 +91,15 @@ function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
 
   let { totalClocked, totalPaid, pendingPayment } = useMemo(() => {
     let totalClocked = _(timesheet)
-      .filter((t) =>
-        [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL].includes(t.type)
+      .filter(
+        (t) =>
+          [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL].includes(t.type) &&
+          !!t.time
       )
       .map("time")
       .sum();
     let totalPaid = _(timesheet)
-      .filter((t) => t.type === TimesheetType.PAYMENT)
+      .filter((t) => t.type === TimesheetType.PAYMENT && !!t.time)
       .map("time")
       .sum();
     let pendingPayment = totalClocked - totalPaid;
