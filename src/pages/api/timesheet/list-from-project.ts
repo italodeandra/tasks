@@ -9,56 +9,35 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import Task, { TaskStatus } from "../../../collections/task";
-import showdown from "showdown";
-import dayjs from "dayjs";
+import Timesheet from "../../../collections/timesheet";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
-let converter = new showdown.Converter({
-  simplifiedAutoLink: true,
-  strikethrough: true,
-});
-
-async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
+async function handler(
+  args: { projectId: string },
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   await connectDb();
-  const user = await getUserFromCookies(req, res);
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  return (
-    await Task.find(
-      {
-        userId: user._id,
-        $or: [
-          {
-            status: {
-              $ne: TaskStatus.DONE,
-            },
-          },
-          {
-            status: TaskStatus.DONE,
-            statusUpdatedAt: {
-              $gte: dayjs().subtract(1, "week").toDate(),
-            },
-          },
-        ],
+  let projectId = isomorphicObjectId(args.projectId);
+
+  return Timesheet.find(
+    {
+      userId: user._id,
+      projectId: projectId,
+    },
+    {
+      projection: {
+        time: 1,
+        startedAt: 1,
+        type: 1,
       },
-      {
-        projection: {
-          content: 1,
-          status: 1,
-          projectId: 1,
-          order: 1,
-          "timesheet.time": 1,
-          "timesheet.currentClockIn": 1,
-        },
-        sort: {
-          status: 1,
-          order: 1,
-        },
-      }
-    )
-  ).map((t) => ({ ...t, html: converter.makeHtml(t.content) }));
+    }
+  );
 }
 
 export default apiHandlerWrapper(handler);
@@ -71,10 +50,10 @@ export type TimesheetListFromProjectApiResponse = InferApiResponse<
 const queryKey = "/api/timesheet/list-from-project";
 
 export const useTimesheetListFromProject = (
-  args?: TimesheetListFromProjectApiArgs
+  args: TimesheetListFromProjectApiArgs
 ) =>
   useQuery(
-    [queryKey],
+    [queryKey, args.projectId],
     queryFnWrapper<TimesheetListFromProjectApiResponse>(queryKey, args)
   );
 

@@ -5,7 +5,7 @@ import {
   InferApiResponse,
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import { notFound, unauthorized } from "@italodeandra/next/api/errors";
+import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
   useMutation,
@@ -14,7 +14,6 @@ import {
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import Task from "../../../collections/task";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import Timesheet from "../../../collections/timesheet";
@@ -34,63 +33,30 @@ async function handler(
 
   let _id = isomorphicObjectId(args._id);
 
-  let task = await Task.findById(_id);
-  if (!task) {
-    throw notFound(res, { task: _id });
-  }
-
-  let activeTimesheet = await Timesheet.findOne({
+  await Timesheet.deleteOne({
+    _id,
     userId: user._id,
-    taskId: task._id,
-    startedAt: {
-      $exists: true,
-    },
-    stoppedAt: {
-      $exists: false,
-    },
   });
-  if (!activeTimesheet?.startedAt) {
-    throw notFound(res, {
-      userId: user._id,
-      taskId: task._id,
-      timesheetId: activeTimesheet?._id,
-    });
-  }
-
-  let stoppedAt = new Date();
-  let addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
-
-  await Timesheet.updateOne(
-    {
-      _id: activeTimesheet._id,
-    },
-    {
-      $set: {
-        stoppedAt,
-        time: (activeTimesheet.time || 0) + addedTime,
-      },
-    }
-  );
 }
 
 export default apiHandlerWrapper(handler);
 
-export type TimesheetStopApiResponse = InferApiResponse<typeof handler>;
-export type TimesheetStopApiArgs = InferApiArgs<typeof handler>;
+export type TimesheetDeleteApiResponse = InferApiResponse<typeof handler>;
+export type TimesheetDeleteApiArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/timesheet/stop";
+const mutationKey = "/api/timesheet/delete";
 
-export const useTimesheetStop = (
+export const useTimesheetDelete = (
   options?: UseMutationOptions<
-    TimesheetStopApiResponse,
+    TimesheetDeleteApiResponse,
     unknown,
-    TimesheetStopApiArgs
+    TimesheetDeleteApiArgs
   >
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<TimesheetStopApiArgs, TimesheetStopApiResponse>(
+    mutationFnWrapper<TimesheetDeleteApiArgs, TimesheetDeleteApiResponse>(
       mutationKey
     ),
     {

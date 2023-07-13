@@ -1,4 +1,4 @@
-import "@fontsource/inter/variable.css";
+import "@fontsource-variable/inter";
 import "@italodeandra/ui/bootstrap/suppressConsoleLog";
 import { QueryClient } from "@tanstack/query-core";
 import { Hydrate, QueryClientProvider } from "@tanstack/react-query";

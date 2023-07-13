@@ -5,7 +5,11 @@ import {
   InferApiResponse,
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import { unauthorized } from "@italodeandra/next/api/errors";
+import {
+  badRequest,
+  notFound,
+  unauthorized,
+} from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
   useMutation,
@@ -17,6 +21,7 @@ import { connectDb } from "../../../db";
 import Task from "../../../collections/task";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
+import Timesheet, { TimesheetType } from "../../../collections/timesheet";
 
 async function handler(
   args: {
@@ -26,23 +31,39 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  const user = await getUserFromCookies(req, res);
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  const _id = isomorphicObjectId(args._id);
+  let _id = isomorphicObjectId(args._id);
 
-  await Task.updateOne(
-    {
-      _id,
+  let task = await Task.findById(_id);
+  if (!task) {
+    throw notFound;
+  }
+
+  let activeTimesheet = await Timesheet.countDocuments({
+    userId: user._id,
+    taskId: task._id,
+    startedAt: {
+      $exists: true,
     },
-    {
-      $set: {
-        "timesheet.currentClockIn": new Date(),
-      },
-    }
-  );
+    stoppedAt: {
+      $exists: false,
+    },
+  });
+  if (activeTimesheet) {
+    throw badRequest;
+  }
+
+  await Timesheet.insertOne({
+    taskId: task._id,
+    userId: user._id,
+    projectId: task.projectId,
+    type: TimesheetType.CLOCK_IN_OUT,
+    startedAt: new Date(),
+  });
 }
 
 export default apiHandlerWrapper(handler);

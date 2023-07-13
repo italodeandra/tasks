@@ -13,6 +13,9 @@ import Task, { TaskStatus } from "../../../collections/task";
 import showdown from "showdown";
 import dayjs from "dayjs";
 import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
+import asyncMap from "@italodeandra/next/utils/asyncMap";
+import Timesheet from "../../../collections/timesheet";
+import { sumBy } from "lodash";
 
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
@@ -26,7 +29,7 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
     throw unauthorized;
   }
 
-  return (
+  return asyncMap(
     await Task.find(
       {
         userId: user._id,
@@ -50,16 +53,56 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
           status: 1,
           projectId: 1,
           order: 1,
-          "timesheet.time": 1,
-          "timesheet.currentClockIn": 1,
         },
         sort: {
           status: 1,
           order: 1,
         },
       }
-    )
-  ).map((t) => ({ ...t, html: converter.makeHtml(t.content) }));
+    ),
+    async (t) => ({
+      ...t,
+      timesheet: {
+        currentClockIn: (
+          await Timesheet.findOne(
+            {
+              userId: user._id,
+              taskId: t._id,
+              startedAt: {
+                $exists: true,
+              },
+              stoppedAt: {
+                $exists: false,
+              },
+            },
+            {
+              projection: {
+                startedAt: 1,
+              },
+            }
+          )
+        )?.startedAt,
+        time: sumBy(
+          await Timesheet.find(
+            {
+              userId: user._id,
+              taskId: t._id,
+              time: {
+                $exists: true,
+              },
+            },
+            {
+              projection: {
+                time: 1,
+              },
+            }
+          ),
+          "time"
+        ),
+      },
+      html: converter.makeHtml(t.content),
+    })
+  );
 }
 
 export default apiHandlerWrapper(handler);

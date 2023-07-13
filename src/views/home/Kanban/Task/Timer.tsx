@@ -1,19 +1,14 @@
 import Button from "@italodeandra/ui/components/Button/Button";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import { ITask } from "../../../../collections/task";
 import { useTimesheetStart } from "../../../../pages/api/timesheet/start";
 import { useTimesheetStop } from "../../../../pages/api/timesheet/stop";
 import { useCallback } from "react";
 import ms from "ms";
-import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
+import { TaskListApiResponse } from "../../../../pages/api/task/list";
 
-export function Timer({
-  task,
-}: {
-  task: Jsonify<Pick<ITask, "_id" | "timesheet">>;
-}) {
+export function Timer({ task }: { task: TaskListApiResponse[0] }) {
   let { mutate: start, isLoading: isStarting } = useTimesheetStart();
   let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
   let isLoading = isStarting || isStopping;
@@ -33,7 +28,7 @@ export function Timer({
       : 0);
 
   let rerender = useUpdate();
-  useInterval(rerender, time ? ms(time < ms("1m") ? "1s" : "1m") : null);
+  useInterval(rerender, time ? ms("1s") : null);
 
   return (
     <Button
