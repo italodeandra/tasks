@@ -37,7 +37,7 @@ async function handler(
   await Timesheet.insertOne({
     taskId: args.taskId ? isomorphicObjectId(args.taskId) : undefined,
     userId: user._id,
-    projectId: isomorphicObjectId(args.projectId),
+    projectId: args.projectId ? isomorphicObjectId(args.projectId) : undefined,
     type: args.type,
     time: args.time ? ms(args.time) : undefined,
   });

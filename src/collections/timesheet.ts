@@ -15,7 +15,7 @@ const timesheetSchema = onlyServer(() =>
       startedAt: types.date(),
       stoppedAt: types.date(),
       time: types.number(),
-      projectId: types.objectId({ required: true }),
+      projectId: types.objectId(),
       userId: types.objectId({ required: true }),
       taskId: types.objectId(),
     },
