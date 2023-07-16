@@ -105,13 +105,15 @@ var apiHandlerWrapper = function (handler) {
                         if (typeof e_1 === "function") {
                             error = e_1(res);
                         }
-                        else if (!res.headersSent) {
+                        else {
                             error = JSON.parse((0, safeStringify_1.default)(e_1));
-                            (0, errors_1.internalServerError)(res);
+                            if (!res.headersSent) {
+                                (0, errors_1.internalServerError)(res);
+                            }
                         }
                         void (0, log_1.default)({
                             error: error,
-                            request: (0, lodash_1.pick)(req, ["body", "headers", "url", "method"]),
+                            request: (0, lodash_1.pick)(req, ["body", "headers", "url", "method", "query"]),
                         });
                     }
                     return [3 /*break*/, 4];

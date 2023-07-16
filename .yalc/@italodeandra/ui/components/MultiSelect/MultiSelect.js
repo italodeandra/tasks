@@ -76,7 +76,7 @@ function MultiSelect(_a) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _g = _a.displayValue, 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    displayValue = _g === void 0 ? function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; } : _g, value = _a.value, labelClassName = _a.labelClassName, creatable = _a.creatable, _h = _a.getCreateLabel, getCreateLabel = _h === void 0 ? function (query) { return "+ create \"".concat(query, "\""); } : _h, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onChange", "query", "onChangeQuery", "loading", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value", "labelClassName", "creatable", "getCreateLabel"]);
+    displayValue = _g === void 0 ? function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; } : _g, value = _a.value, labelClassName = _a.labelClassName, creatable = _a.creatable, _h = _a.getCreateLabel, getCreateLabel = _h === void 0 ? function (query) { return "+ create \"".concat(query, "\""); } : _h, itemsRenderLimit = _a.itemsRenderLimit, className = _a.className, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onChange", "query", "onChangeQuery", "loading", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value", "labelClassName", "creatable", "getCreateLabel", "itemsRenderLimit", "className"]);
     var _j = __read((0, react_2.useState)(defaultQuery), 2), query = _j[0], setQuery = _j[1];
     var _k = __read((0, react_2.useState)(value || []), 2), selectedItems = _k[0], setSelectedItems = _k[1];
     // noinspection DuplicatedCode
@@ -104,7 +104,7 @@ function MultiSelect(_a) {
                         .includes(query.toLowerCase());
                 }));
     }, [filterFunction, filterProperty, items, query]);
-    trailing = loading ? (0, jsx_runtime_1.jsx)(Loading_1.default, {}) : trailing;
+    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing || ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))));
     var ComponentInput = as || UnstyledInput_1.default;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction
@@ -126,7 +126,7 @@ function MultiSelect(_a) {
     var removeItem = (0, react_2.useCallback)(function (item) { return function () {
         return setSelectedItems(function (selectedItems) { return __spreadArray([], __read(selectedItems.filter(function (i) { return getValue(i) !== getValue(item); })), false); });
     }; }, []);
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: "relative" }, { children: (0, jsx_runtime_1.jsx)(react_1.Combobox
+    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("relative", className) }, { children: (0, jsx_runtime_1.jsx)(react_1.Combobox
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
         , __assign({ 
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -142,7 +142,9 @@ function MultiSelect(_a) {
                                     } }, { children: function (_a) {
                                         var selected = _a.selected;
                                         return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex" }, { children: [selected && (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "mr-2 w-5" }), selected ? query : getCreateLabel(query)] })));
-                                    } }))), filteredItems.map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: function (_a) {
+                                    } }))), (itemsRenderLimit
+                                    ? (0, lodash_1.take)(filteredItems, itemsRenderLimit)
+                                    : filteredItems).map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: function (_a) {
                                         var active = _a.active;
                                         return (0, clsx_1.default)("cursor-default select-none px-4 py-2", {
                                             "bg-primary-600 text-white": active,

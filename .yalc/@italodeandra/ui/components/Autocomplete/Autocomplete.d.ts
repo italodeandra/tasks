@@ -5,4 +5,4 @@ export declare type AutocompleteProps<T extends {
 }> = UnstyledAutocompleteProps<T>;
 export default function Autocomplete<T extends {
     _id: string;
-}>({ query: defaultQuery, onChangeQuery, emptyText, ...props }: AutocompleteProps<T>): JSX.Element;
+}>({ query: defaultQuery, onChangeQuery, emptyText, className, ...props }: AutocompleteProps<T>): JSX.Element;

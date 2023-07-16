@@ -12,6 +12,7 @@ export declare type DataTableProps<RowData> = {
         render?: (item: RowData) => ReactNode;
         headerClassName?: string;
         cellClassName?: string;
+        sortable?: boolean;
     }[];
     actions?: {
         title: string;
@@ -37,5 +38,7 @@ export declare type DataTableProps<RowData> = {
     itemsPerPage?: number;
     className?: string;
     autoHeight?: boolean;
+    onChangeSort?: (sort: [string, "asc" | "desc"][]) => void;
+    sort?: [string, "asc" | "desc"][];
 };
-export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, }: DataTableProps<RowData>): JSX.Element;
+export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, onChangeSort, sort: defaultSort, }: DataTableProps<RowData>): JSX.Element;

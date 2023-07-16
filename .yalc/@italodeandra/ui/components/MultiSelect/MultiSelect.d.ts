@@ -25,7 +25,8 @@ export interface MultiSelectProps<T extends {
     value?: T[];
     creatable?: boolean;
     getCreateLabel?: (query: string) => string;
+    itemsRenderLimit?: number;
 }
 export default function MultiSelect<T extends {
     _id: string;
-} | string>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onChange, query: defaultQuery, onChangeQuery, loading, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, labelClassName, creatable, getCreateLabel, ...props }: MultiSelectProps<T>): JSX.Element;
+} | string>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onChange, query: defaultQuery, onChangeQuery, loading, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, labelClassName, creatable, getCreateLabel, itemsRenderLimit, className, ...props }: MultiSelectProps<T>): JSX.Element;

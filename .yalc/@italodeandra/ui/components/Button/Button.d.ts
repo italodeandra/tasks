@@ -73,6 +73,7 @@ export declare type ButtonProps<Href extends string | undefined> = UnstyledButto
 declare const _default: import("react").ForwardRefExoticComponent<{
     href?: string | undefined;
     target?: string | undefined;
+    rel?: string | undefined;
 } & Omit<(Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
     href: string | import("url").UrlObject;
     as?: (string | import("url").UrlObject) | undefined;

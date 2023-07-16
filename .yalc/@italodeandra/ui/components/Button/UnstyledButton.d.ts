@@ -4,10 +4,12 @@ import NextLink from "next/link";
 export declare type UnstyledButtonProps<Href extends string | undefined> = {
     href?: Href;
     target?: string;
+    rel?: string;
 } & Omit<Href extends string ? ComponentProps<typeof NextLink> : DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref">;
 declare const _default: import("react").ForwardRefExoticComponent<{
     href?: string | undefined;
     target?: string | undefined;
+    rel?: string | undefined;
 } & Omit<(Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
     href: string | import("url").UrlObject;
     as?: (string | import("url").UrlObject) | undefined;
