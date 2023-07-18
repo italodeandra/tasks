@@ -2,7 +2,6 @@ import {
   TimesheetListFromProjectApiResponse,
   useTimesheetListFromProject,
 } from "../../../../pages/api/timesheet/list-from-project";
-import ms from "ms";
 import React, { useMemo } from "react";
 import { ProjectListApiResponse } from "../../../../pages/api/project/list";
 import { useTimesheetDelete } from "../../../../pages/api/timesheet/delete";
@@ -21,6 +20,7 @@ import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
 import Input from "@italodeandra/ui/components/Input/Input";
 import { useForm } from "react-hook-form";
 import { useTimesheetAdd } from "../../../../pages/api/timesheet/add";
+import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
 interface FieldValues {
   type: TimesheetType;
@@ -172,16 +172,16 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
       <div className="grid grid-cols-2 gap-2">
         <div>
           <Text variant="label">Total clocked</Text>
-          <Text>{ms(totalClocked)}</Text>
+          <Text>{prettyMilliseconds(totalClocked)}</Text>
         </div>
         <div>
           <Text variant="label">Total paid</Text>
-          <Text>{ms(totalPaid)}</Text>
+          <Text>{prettyMilliseconds(totalPaid)}</Text>
         </div>
         <div>
           <Text variant="label">Pending payment</Text>
           <Text>
-            {ms(pendingPayment)} (
+            {prettyMilliseconds(pendingPayment)} (
             {formatMoney((pendingPayment / 3600000) * 150)})
           </Text>
         </div>

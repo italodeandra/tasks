@@ -7,6 +7,7 @@ import ms from "ms";
 import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
+import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
 export function Timer({ task }: { task: TaskListApiResponse[0] }) {
   let { mutate: start, isLoading: isStarting } = useTimesheetStart();
@@ -45,7 +46,7 @@ export function Timer({ task }: { task: TaskListApiResponse[0] }) {
       {...(time
         ? {
             leadingIcon: <ClockIcon />,
-            children: ms(time),
+            children: prettyMilliseconds(time),
           }
         : {
             icon: true,

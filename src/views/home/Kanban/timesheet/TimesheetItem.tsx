@@ -2,6 +2,7 @@ import { TimesheetListFromProjectApiResponse } from "../../../../pages/api/times
 import { useInterval, useUpdate } from "react-use";
 import ms from "ms";
 import React from "react";
+import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
 export function TimesheetItem({
   timesheet,
@@ -19,7 +20,7 @@ export function TimesheetItem({
 
   return (
     <div className={!timesheet?.time ? "text-green-500" : undefined}>
-      {ms(time)}
+      {prettyMilliseconds(time)}
     </div>
   );
 }
