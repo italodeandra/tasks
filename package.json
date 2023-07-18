@@ -9,6 +9,7 @@
     "lint": "next lint",
     "yalc:update": "yalc update && shx rm -rf .next"
   },
+  "cacheDirectories": [".next/cache"],
   "dependencies": {
     "@badrap/bar-of-progress": "^0.2.2",
     "@dnd-kit/sortable": "^7.0.2",
