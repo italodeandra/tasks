@@ -6,6 +6,7 @@ import {
   DragStartEvent,
   KeyboardSensor as LibKeyboardSensor,
   MouseSensor as LibMouseSensor,
+  TouchSensor,
   UniqueIdentifier,
   useSensor,
   useSensors,
@@ -86,6 +87,7 @@ export function Kanban({
 
   let sensors = useSensors(
     useSensor(MouseSensor),
+    useSensor(TouchSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })

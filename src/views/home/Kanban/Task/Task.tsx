@@ -15,6 +15,7 @@ import { TaskOptions } from "./TaskOptions";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
 import { Timer } from "./Timer";
+import { Icon } from "@iconify/react";
 
 let cardClassName = "rounded-md border text-sm";
 
@@ -100,7 +101,7 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
           tabIndex={0}
           className={clsx(
             cardClassName,
-            "group relative select-none px-2.5 pt-2 pb-2.5 transition-shadow",
+            "group relative cursor-default px-2.5 pt-2 pb-2.5 transition-shadow",
             "border-zinc-200 bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-900", // default
             "hover:shadow hover:shadow-zinc-200 dark:hover:shadow-zinc-800", // hover
             "focus:shadow focus:shadow-zinc-200 focus:outline-none dark:focus:shadow-zinc-800" // focus
@@ -108,9 +109,9 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
           onDoubleClick={toggleEditing}
         >
           <div
-            data-no-dnd="true"
-            className="markdown text-md prose !inline text-inherit prose-p:!leading-normal prose-strong:text-inherit prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0"
+            className="markdown text-md prose !inline cursor-text text-inherit prose-p:!leading-normal prose-strong:text-inherit prose-ul:!my-0 prose-ul:!pl-5 prose-li:!my-0 prose-li:!pl-0"
             dangerouslySetInnerHTML={{ __html: task.html }}
+            data-no-dnd="true"
           />
 
           <Group>
@@ -125,6 +126,10 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
             )}
             <div className="flex-grow" />
             <Timer task={task} />
+            <Icon
+              icon="radix-icons:drag-handle-dots-2"
+              className="m-2 h-5 w-5 cursor-grab text-zinc-500 sm:m-1"
+            />
           </Group>
           <TaskOptions task={task} onEditClick={() => setEditing(true)} />
         </Stack>

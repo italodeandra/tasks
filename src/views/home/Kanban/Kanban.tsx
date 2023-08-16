@@ -127,7 +127,7 @@ export function Kanban() {
       <Stack className="h-screen w-full pt-4">
         <Stack className="px-4">
           <Text variant="label">Projects</Text>
-          <Group wrap>
+          <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
             {[{ _id: "", name: "None" }, ...(projects || [])]?.map(
               (project) => (
                 <Button
@@ -155,7 +155,7 @@ export function Kanban() {
             renderItem={renderItem}
             renderColumn={renderColumn}
             onChange={handleKanbanChange}
-            className="gap-2"
+            className="gap-8 sm:gap-2"
           />
         </div>
       </Stack>

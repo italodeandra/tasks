@@ -57,6 +57,7 @@
     "valtio": "^1.10.3"
   },
   "devDependencies": {
+    "@iconify/react": "^4.1.1",
     "@types/lodash": "^4.14.191",
     "@types/ms": "^0.7.31",
     "@types/node": "18.14.5",
