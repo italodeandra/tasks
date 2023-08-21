@@ -20,6 +20,7 @@ import { sumBy } from "lodash";
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
   strikethrough: true,
+  tasklists: true,
 });
 
 async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
