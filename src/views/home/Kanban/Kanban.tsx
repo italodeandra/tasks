@@ -24,6 +24,9 @@ import { useProjectList } from "../../../pages/api/project/list";
 import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
 import { AddNewTaskButton } from "./AddNewTaskButton";
 import { Timesheet } from "./timesheet/Timesheet";
+import { NewProjectModal } from "./Task/new-project/NewProjectModal";
+import { newProjectState } from "./Task/new-project/newProject.state";
+import { PlusIcon } from "@heroicons/react/20/solid";
 
 export function Kanban() {
   let [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -79,7 +82,10 @@ export function Kanban() {
           cloneElement(children, {
             className: clsx("flex flex-col gap-2", children.props.className),
           })}
-        <AddNewTaskButton status={id as TaskStatus} />
+        <AddNewTaskButton
+          status={id as TaskStatus}
+          selectedProjects={selectedProjects}
+        />
       </div>
     ),
     [isLoading, isUpdating]
@@ -124,6 +130,7 @@ export function Kanban() {
 
   return (
     <Group className="gap-0">
+      <NewProjectModal />
       <Stack className="h-screen w-full pt-4">
         <Stack className="px-4">
           <Text variant="label">Projects</Text>
@@ -146,7 +153,18 @@ export function Kanban() {
                 </Button>
               )
             )}
-            {isLoadingProjects && <Skeleton className="w-20" />}
+            {isLoadingProjects ? (
+              <Skeleton className="w-20" />
+            ) : (
+              <Button
+                size="sm"
+                variant="outlined"
+                onClick={() => newProjectState.openModal()}
+                icon
+              >
+                <PlusIcon />
+              </Button>
+            )}
           </Group>
         </Stack>
         <div className="relative w-full flex-1 overflow-auto px-4 pb-14">

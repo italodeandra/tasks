@@ -1,12 +1,15 @@
 import { useProjectList } from "../../../../pages/api/project/list";
 import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
-import { NewProjectModal } from "./NewProjectModal";
+import { NewProjectModal } from "./new-project/NewProjectModal";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
 import Menu from "@italodeandra/ui/components/Menu/Menu";
 import Button from "@italodeandra/ui/components/Button/Button";
 import useModalState from "@italodeandra/ui/components/Modal/useModalState";
+import { TaskListApiResponse } from "../../../../pages/api/task/list";
+import { useSnapshot } from "valtio";
+import { newProjectState } from "./new-project/newProject.state";
 
 export function ProjectSelector({
   value,
@@ -19,8 +22,7 @@ export function ProjectSelector({
   let [selectedProjectId, setSelectedProjectId] = useState<string | null>(
     value || null
   );
-  let newProjectModalState = useModalState();
-  let [, { openModal }] = newProjectModalState;
+  let { openModal } = useSnapshot(newProjectState);
 
   useEffect(() => setSelectedProjectId(value || null), [value]);
   useEffect(
@@ -43,7 +45,6 @@ export function ProjectSelector({
 
   return (
     <>
-      <NewProjectModal state={newProjectModalState} />
       <Menu
         label={selectedProject ? selectedProject.name : "Project"}
         className="mr-auto"
