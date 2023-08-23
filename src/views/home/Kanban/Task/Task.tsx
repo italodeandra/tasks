@@ -119,7 +119,7 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
               "[&_input[type='checkbox']]:!-ml-6.5 [&_input[type='checkbox']:checked]:!bg-primary-500 [&_input[type='checkbox']]:rounded-sm [&_input[type='checkbox']]:border-none [&_input[type='checkbox']]:bg-zinc-400/50 dark:[&_input[type='checkbox']]:bg-zinc-500/50",
               "prose-a:text-primary-500",
               "[&_hr]:mt-1 [&_hr]:mb-3 [&_hr]:h-0 [&_hr]:border-2 [&_hr]:border-white/30 [&_hr_~_*]:hidden",
-              "group-focus:[&_hr]:mb-5 group-focus:[&_hr]:mt-5  group-focus:[&_hr_~_*]:block"
+              "group-focus:[&_hr]:mb-5 group-focus:[&_hr]:mt-5  group-focus:[&_hr]:border-[1px] group-focus:[&_hr_~_*]:block"
             )}
             dangerouslySetInnerHTML={{ __html: task.html }}
             data-no-dnd="true"
