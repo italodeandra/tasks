@@ -15,7 +15,7 @@ type FieldValues = {
 export function NewProjectModal() {
   let { modalOpen, closeModal } = useSnapshot(newProjectState);
   let { mutate: create, isLoading } = useProjectCreate({
-    onSuccess(data) {
+    onSuccess() {
       closeModal();
     },
   });
