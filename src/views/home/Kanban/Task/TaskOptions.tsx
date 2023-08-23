@@ -13,7 +13,7 @@ export function TaskOptions({
   task,
   onEditClick,
 }: {
-  task: Pick<Jsonify<ITask>, "_id" | "content" | "status"> &
+  task: Pick<Jsonify<ITask>, "_id" | "content" | "status" | "order"> &
     Pick<Partial<Jsonify<ITask>>, "projectId">;
   onEditClick?: () => void;
 }) {
@@ -67,6 +67,30 @@ export function TaskOptions({
           </Menu.Item>
         ))}
       <Menu.Item onClick={handleDeleteClick}>Delete</Menu.Item>
+      <Menu.Item
+        onClick={() => {
+          let newTask = {
+            content: "",
+            status: task.status,
+            order: task.order - 1,
+          };
+          taskUpsert(newTask);
+        }}
+      >
+        Create new task above
+      </Menu.Item>
+      <Menu.Item
+        onClick={() => {
+          let newTask = {
+            content: "",
+            status: task.status,
+            order: task.order + 1,
+          };
+          taskUpsert(newTask);
+        }}
+      >
+        Create new task below
+      </Menu.Item>
     </Menu>
   );
 }

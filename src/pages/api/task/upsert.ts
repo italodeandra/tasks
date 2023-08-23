@@ -19,6 +19,7 @@ import { connectDb } from "../../../db";
 import Task, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { invalidate_projectList } from "../project/list";
+import { isNil } from "lodash";
 
 async function handler(
   args: Pick<
@@ -61,11 +62,11 @@ async function handler(
               : new Date(),
           statusUpdatedAt:
             args.status === task?.status ? task?.statusUpdatedAt : new Date(),
+          order: isNil(args.order) ? Infinity : args.order,
         },
         $setOnInsert: {
           _id,
           userId: user._id,
-          order: Infinity,
           projectUpdatedAt: new Date(),
           statusUpdatedAt: new Date(),
         },
