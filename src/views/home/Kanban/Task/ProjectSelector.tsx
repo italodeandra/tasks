@@ -1,13 +1,10 @@
 import { useProjectList } from "../../../../pages/api/project/list";
 import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
-import { NewProjectModal } from "./new-project/NewProjectModal";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
 import Menu from "@italodeandra/ui/components/Menu/Menu";
 import Button from "@italodeandra/ui/components/Button/Button";
-import useModalState from "@italodeandra/ui/components/Modal/useModalState";
-import { TaskListApiResponse } from "../../../../pages/api/task/list";
 import { useSnapshot } from "valtio";
 import { newProjectState } from "./new-project/newProject.state";
 

@@ -16,7 +16,6 @@ export function NewProjectModal() {
   let { modalOpen, closeModal } = useSnapshot(newProjectState);
   let { mutate: create, isLoading } = useProjectCreate({
     onSuccess(data) {
-      console.log(data._id);
       closeModal();
     },
   });
