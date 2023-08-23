@@ -34,7 +34,7 @@ export function ProjectSelector({
   );
 
   if (isLoading) {
-    return <Skeleton className="h-[26px] w-20" />;
+    return <Skeleton className="h-[26px] w-20 dark:bg-zinc-500" />;
   }
 
   if (isError) {
