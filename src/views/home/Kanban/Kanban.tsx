@@ -69,7 +69,11 @@ export function Kanban() {
   );
 
   let renderColumn = useCallback(
-    (id: UniqueIdentifier, children: ReactElement | null) => (
+    (
+      id: UniqueIdentifier,
+      children: ReactElement | null,
+      taskCount: number
+    ) => (
       <div
         key={id}
         className="relative flex w-[90%] shrink-0 flex-col gap-2 sm:w-96"
@@ -78,17 +82,25 @@ export function Kanban() {
           status={id as TaskStatus}
           isLoading={isLoading || isUpdating}
         />
+        <AddNewTaskButton
+          status={id as TaskStatus}
+          selectedProjects={selectedProjects}
+          order={-1}
+        />
         {children &&
           cloneElement(children, {
             className: clsx("flex flex-col gap-2", children.props.className),
           })}
-        <AddNewTaskButton
-          status={id as TaskStatus}
-          selectedProjects={selectedProjects}
-        />
+        {taskCount > 0 && (
+          <AddNewTaskButton
+            className="hidden sm:flex"
+            status={id as TaskStatus}
+            selectedProjects={selectedProjects}
+          />
+        )}
       </div>
     ),
-    [isLoading, isUpdating]
+    [isLoading, isUpdating, selectedProjects]
   );
   let handleKanbanChange = useCallback(
     (items: Record<string, UniqueIdentifier[]>) => {

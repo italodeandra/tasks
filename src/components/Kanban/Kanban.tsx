@@ -60,7 +60,7 @@ function shouldHandleEvent(element: HTMLElement | null) {
   return true;
 }
 
-const defaultRenderColumn = (id: UniqueIdentifier, children: ReactNode) =>
+const defaultRenderColumn = (_id: UniqueIdentifier, children: ReactNode) =>
   children;
 
 export function Kanban({
@@ -75,7 +75,8 @@ export function Kanban({
   renderItem?: (id: UniqueIdentifier) => ReactNode;
   renderColumn?: (
     id: UniqueIdentifier,
-    children: ReactElement | null
+    children: ReactElement | null,
+    taskCount: number
   ) => ReactNode;
   onChange?: (items: Record<string, UniqueIdentifier[]>) => void;
   className?: string;
@@ -229,7 +230,8 @@ export function Kanban({
                 items={tasks}
                 renderItem={renderItem}
               />
-            ) : null
+            ) : null,
+            tasks.filter((t) => !!renderItem?.(t)).length
           )
         )}
         <DragOverlay>
