@@ -116,7 +116,8 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
               "prose-ul:!my-0 prose-ul:!pl-5",
               "prose-li:!my-0 prose-li:!pl-0",
               "[&_.task-list-item]:ml-1.5",
-              "[&_input[type='checkbox']]:!-ml-6.5 [&_input[type='checkbox']:checked]:!bg-primary-500 [&_input[type='checkbox']]:rounded-sm [&_input[type='checkbox']]:border-none [&_input[type='checkbox']]:bg-zinc-400/50 dark:[&_input[type='checkbox']]:bg-zinc-500/50"
+              "[&_input[type='checkbox']]:!-ml-6.5 [&_input[type='checkbox']:checked]:!bg-primary-500 [&_input[type='checkbox']]:rounded-sm [&_input[type='checkbox']]:border-none [&_input[type='checkbox']]:bg-zinc-400/50 dark:[&_input[type='checkbox']]:bg-zinc-500/50",
+              "prose-a:text-primary-500"
             )}
             dangerouslySetInnerHTML={{ __html: task.html }}
             data-no-dnd="true"
