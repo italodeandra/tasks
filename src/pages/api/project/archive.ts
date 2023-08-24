@@ -17,6 +17,7 @@ import { invalidate_projectList } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import Project, { IProject } from "../../../collections/project";
 import { connectDb } from "../../../db";
+import Task from "../../../collections/task";
 
 async function handler(
   args: Jsonify<Pick<IProject, "_id">>,
@@ -40,30 +41,49 @@ async function handler(
     throw notFound;
   }
 
-  await Project.deleteOne({
-    _id,
-    userId: user._id,
-  });
+  if (
+    await Task.countDocuments({
+      userId: user._id,
+      projectId: _id,
+    })
+  ) {
+    await Project.updateOne(
+      {
+        _id,
+        userId: user._id,
+      },
+      {
+        $set: {
+          archived: true,
+        },
+      }
+    );
+  } else {
+    await Project.deleteOne({
+      _id,
+      userId: user._id,
+    });
+  }
 }
 
 export default apiHandlerWrapper(handler);
 
-export type ProjectDeleteResponse = InferApiResponse<typeof handler>;
-export type ProjectDeleteArgs = InferApiArgs<typeof handler>;
+export type ProjectArchiveResponse = InferApiResponse<typeof handler>;
+export type ProjectArchiveArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/project/delete";
+const mutationKey = "/api/project/archive";
 
-export const useProjectDelete = (
+export const useProjectArchive = (
   options?: UseMutationOptions<
-    ProjectDeleteResponse,
+    ProjectArchiveResponse,
     unknown,
-    ProjectDeleteArgs
+    ProjectArchiveArgs
   >
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<ProjectDeleteArgs, ProjectDeleteResponse>(mutationKey),
+    mutationFnWrapper<ProjectArchiveArgs, ProjectArchiveResponse>(mutationKey),
     {
       ...options,
       async onSuccess(...params) {

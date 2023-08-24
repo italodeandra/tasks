@@ -4,18 +4,19 @@ import React, { useCallback } from "react";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { useSnapshot } from "valtio";
+import { selectedProjectsState } from "./selectedProjects.state";
 
 export function AddNewTaskButton({
   status,
-  selectedProjects,
   order,
   className,
 }: {
   status: TaskStatus;
-  selectedProjects: string[];
   order?: number;
   className?: string;
 }) {
+  let { selectedProjects } = useSnapshot(selectedProjectsState);
   let { mutate: upsert, isLoading } = useTaskUpsert();
 
   let handleAddNewClick = useCallback(() => {

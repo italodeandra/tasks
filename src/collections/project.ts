@@ -16,6 +16,7 @@ const projectSchema = onlyServer(() =>
       name: types.string({ required: true }),
       color: types.enum(Object.values(ProjectColor), { required: true }),
       userId: types.objectId({ required: true }),
+      archived: types.boolean(),
     },
     {
       timestamps: true,

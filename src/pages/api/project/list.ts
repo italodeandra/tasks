@@ -26,6 +26,9 @@ async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
     {
       $match: {
         userId: user._id,
+        archived: {
+          $ne: true,
+        },
       },
     },
     {

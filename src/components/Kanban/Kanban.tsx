@@ -222,15 +222,13 @@ export function Kanban({
         {map(items, (tasks, id) =>
           renderColumn(
             id,
-            tasks.length ? (
-              <Container
-                className={containerClassName}
-                key={id}
-                id={id}
-                items={tasks}
-                renderItem={renderItem}
-              />
-            ) : null,
+            <Container
+              className={containerClassName}
+              key={id}
+              id={id}
+              items={tasks}
+              renderItem={renderItem}
+            />,
             tasks.filter((t) => !!renderItem?.(t)).length
           )
         )}

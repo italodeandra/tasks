@@ -5,14 +5,13 @@ import React, {
   ReactElement,
   useCallback,
   useMemo,
-  useState,
 } from "react";
 import { TaskStatus } from "../../../collections/task";
 import { useTaskBatchUpdateOrder } from "../../../pages/api/task/batchUpdateOrder";
 import Alert from "@italodeandra/ui/components/Alert/Alert";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { Kanban as UiKanban } from "../../../components/Kanban/Kanban";
-import _, { isEqual, xor } from "lodash";
+import _, { isEqual } from "lodash";
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { Task } from "./Task/Task";
 import clsx from "clsx";
@@ -27,9 +26,13 @@ import { Timesheet } from "./timesheet/Timesheet";
 import { NewProjectModal } from "./Task/new-project/NewProjectModal";
 import { newProjectState } from "./Task/new-project/newProject.state";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import { ProjectColor } from "../../../collections/project";
+import { useSnapshot } from "valtio";
+import { selectedProjectsState } from "./selectedProjects.state";
+import { Project } from "./Project";
 
 export function Kanban() {
-  let [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  let { selectedProjects } = useSnapshot(selectedProjectsState);
   let { data: projects, isLoading: isLoadingProjects } = useProjectList();
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
@@ -82,25 +85,23 @@ export function Kanban() {
           status={id as TaskStatus}
           isLoading={isLoading || isUpdating}
         />
-        <AddNewTaskButton
-          status={id as TaskStatus}
-          selectedProjects={selectedProjects}
-          order={-1}
-        />
+        <AddNewTaskButton status={id as TaskStatus} order={-1} />
         {children &&
           cloneElement(children, {
-            className: clsx("flex flex-col gap-2", children.props.className),
+            className: clsx(
+              "flex flex-col gap-2 min-h-96",
+              children.props.className
+            ),
           })}
         {taskCount > 0 && (
           <AddNewTaskButton
             className="hidden sm:flex"
             status={id as TaskStatus}
-            selectedProjects={selectedProjects}
           />
         )}
       </div>
     ),
-    [isLoading, isUpdating, selectedProjects]
+    [isLoading, isUpdating]
   );
   let handleKanbanChange = useCallback(
     (items: Record<string, UniqueIdentifier[]>) => {
@@ -147,24 +148,17 @@ export function Kanban() {
         <Stack className="px-4">
           <Text variant="label">Projects</Text>
           <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
-            {[{ _id: "", name: "None" }, ...(projects || [])]?.map(
-              (project) => (
-                <Button
-                  size="sm"
-                  key={project._id}
-                  variant={
-                    selectedProjects.includes(project._id)
-                      ? "filled"
-                      : "outlined"
-                  }
-                  onClick={() =>
-                    setSelectedProjects(xor(selectedProjects, [project._id]))
-                  }
-                >
-                  {project.name}
-                </Button>
-              )
-            )}
+            {[
+              {
+                _id: "",
+                name: "None",
+                lastTaskUpdatedAt: "",
+                color: ProjectColor.BLUE,
+              },
+              ...(projects || []),
+            ]?.map((project) => (
+              <Project key={project._id} project={project} />
+            ))}
             {isLoadingProjects ? (
               <Skeleton className="w-20" />
             ) : (

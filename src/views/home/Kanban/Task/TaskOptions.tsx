@@ -8,6 +8,8 @@ import Button from "@italodeandra/ui/components/Button/Button";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { columns } from "../columns.const";
 import { translateTaskStatus } from "../translateTaskStatus";
+import clsx from "clsx";
+import Loading from "@italodeandra/ui/components/Loading/Loading";
 
 export function TaskOptions({
   task,
@@ -17,7 +19,7 @@ export function TaskOptions({
     Pick<Partial<Jsonify<ITask>>, "projectId">;
   onEditClick?: () => void;
 }) {
-  let { mutate: taskUpsert } = useTaskUpsert();
+  let { mutate: taskUpsert, isLoading } = useTaskUpsert();
 
   let handleMoveStatusClick = useCallback(
     (status: TaskStatus) => () =>
@@ -47,10 +49,17 @@ export function TaskOptions({
       data-no-dnd="true"
       className="!absolute right-2.5 top-2.5"
       button={
-        <span className="block rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900">
+        <span
+          className={clsx(
+            "block rounded bg-white opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100 dark:bg-zinc-900",
+            {
+              "opacity-100": isLoading,
+            }
+          )}
+        >
           <Tooltip content="Options">
             <Button icon variant="text" size="sm">
-              <EllipsisVerticalIcon />
+              {isLoading ? <Loading /> : <EllipsisVerticalIcon />}
             </Button>
           </Tooltip>
         </span>
