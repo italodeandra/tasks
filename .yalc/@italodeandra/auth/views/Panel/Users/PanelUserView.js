@@ -32,30 +32,33 @@ var update_1 = require("../../../api/panel/user/update");
 var create_1 = require("../../../api/panel/user/create");
 var react_use_1 = require("react-use");
 var notifications_state_1 = require("@italodeandra/ui/components/Notifications/notifications.state");
-function PanelUserView() {
-    var _a;
-    var _b = (0, AuthContext_1.useAuthContext)(), Routes = _b.Routes, intl = _b.intl;
+function PanelUserView(_a) {
+    var _b;
+    var customFields = _a.customFields;
+    var _c = (0, AuthContext_1.useAuthContext)(), Routes = _c.Routes, intl = _c.intl;
     var t = (0, useTranslation_1.default)(intl);
     var router = (0, router_1.useRouter)();
     var _id = router.query.id;
     var isNew = ["new", "novo"].includes(_id);
-    var _c = (0, get_1.useAuthPanelUserGet)(!isNew
+    var _d = (0, get_1.useAuthPanelUserGet)(!isNew
         ? {
             _id: _id,
         }
-        : undefined), user = _c.data, isLoading = _c.isLoading, isFetching = _c.isFetching;
+        : undefined), user = _d.data, isLoading = _d.isLoading, isFetching = _d.isFetching;
     var title = isNew ? t("New user") : (user === null || user === void 0 ? void 0 : user.email) || t("User");
     var pages = (0, react_1.useMemo)(function () { return [
         { title: t("Users"), href: Routes.PanelUsers },
         { title: title, loading: !isNew && isLoading },
     ]; }, [Routes.PanelUsers, isLoading, isNew, t, title]);
-    var _d = (0, react_hook_form_1.useForm)(), register = _d.register, handleSubmit = _d.handleSubmit, errors = _d.formState.errors, setError = _d.setError, reset = _d.reset, watch = _d.watch;
+    var form = (0, react_hook_form_1.useForm)();
+    var register = form.register, handleSubmit = form.handleSubmit, errors = form.formState.errors, setError = form.setError, reset = form.reset, watch = form.watch;
     (0, react_1.useEffect)(function () {
         if (user) {
             reset({
                 name: user.name,
                 email: user.email,
                 type: user.type,
+                customData: user.customData,
             });
         }
         else {
@@ -122,6 +125,6 @@ function PanelUserView() {
                                         value: emailRegExp_1.default,
                                         message: t("Please fill with a valid email"),
                                     },
-                                }), { error: !!errors.email, helpText: (_a = errors.email) === null || _a === void 0 ? void 0 : _a.message, loading: isLoadingFields })), (0, jsx_runtime_1.jsx)(Input_1.default, __assign({ label: t("Name") }, register("name"), { loading: isLoadingFields })), (0, jsx_runtime_1.jsx)(Input_1.default, __assign({ select: true, label: t("Type"), required: true }, register("type"), { loading: isLoadingFields }, { children: Object.values(User_1.UserType).map(function (type) { return ((0, jsx_runtime_1.jsx)("option", __assign({ value: type }, { children: t((0, User_service_1.translateUserType)(type)) }), type)); }) })), (0, jsx_runtime_1.jsx)("div", __assign({ className: "col-span-2 grid justify-items-end border-t border-gray-300 pt-4" }, { children: !isSaved ? ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", loading: isSubmitting || isLoadingFields, variant: "filled" }, { children: t("Save") }))) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", loading: isSubmitting || isLoadingFields, variant: "filled", color: "success" }, { children: t("Saved") }))) }))] }))] })) }))] })));
+                                }), { error: !!errors.email, helpText: (_b = errors.email) === null || _b === void 0 ? void 0 : _b.message, loading: isLoadingFields })), (0, jsx_runtime_1.jsx)(Input_1.default, __assign({ label: t("Name") }, register("name"), { loading: isLoadingFields })), (0, jsx_runtime_1.jsx)(Input_1.default, __assign({ select: true, label: t("Type"), required: true }, register("type"), { loading: isLoadingFields }, { children: Object.values(User_1.UserType).map(function (type) { return ((0, jsx_runtime_1.jsx)("option", __assign({ value: type }, { children: t((0, User_service_1.translateUserType)(type)) }), type)); }) })), customFields === null || customFields === void 0 ? void 0 : customFields(form, isLoadingFields), (0, jsx_runtime_1.jsx)("div", __assign({ className: "col-span-2 grid justify-items-end border-t border-gray-300 pt-4" }, { children: !isSaved ? ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", loading: isSubmitting || isLoadingFields, variant: "filled" }, { children: t("Save") }))) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", loading: isSubmitting || isLoadingFields, variant: "filled", color: "success" }, { children: t("Saved") }))) }))] }))] })) }))] })));
 }
 exports.default = PanelUserView;

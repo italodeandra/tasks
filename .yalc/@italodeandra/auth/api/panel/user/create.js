@@ -93,19 +93,20 @@ var list_1 = require("./list");
 function authPanelUserCreateHandler(args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var user, existingNewEmail, _id;
+        var User, user, existingNewEmail, _id;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
+                    User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
                 case 2:
                     user = _b.sent();
                     if (!user && !(0, User_service_1.checkUserType)(user, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
-                    return [4 /*yield*/, User_1.default.countDocuments({
+                    return [4 /*yield*/, User.countDocuments({
                             email: args.email,
                         })];
                 case 3:
@@ -120,6 +121,7 @@ function authPanelUserCreateHandler(args, req, res, _a) {
                             name: args.name,
                             type: args.type,
                             password: Math.random().toString(),
+                            customData: args.customData,
                         })];
                 case 4:
                     _b.sent();

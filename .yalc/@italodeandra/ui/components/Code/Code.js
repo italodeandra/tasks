@@ -43,8 +43,10 @@ var prism_react_renderer_1 = __importStar(require("prism-react-renderer"));
 var clsx_1 = __importDefault(require("clsx"));
 var CopyButton_1 = __importDefault(require("../CopyButton/CopyButton"));
 function Code(_a) {
-    var children = _a.children, language = _a.language, className = _a.className, copy = _a.copy, copyText = _a.copyText, copiedText = _a.copiedText;
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: (0, clsx_1.default)("dark group relative", className) }, { children: [(0, jsx_runtime_1.jsx)("div", __assign({ className: "prose max-w-none" }, { children: (0, jsx_runtime_1.jsx)(prism_react_renderer_1.default, __assign({}, prism_react_renderer_1.defaultProps, { code: children.trimEnd(), language: language, theme: undefined }, { children: function (_a) {
+    var children = _a.children, language = _a.language, className = _a.className, copy = _a.copy, copyText = _a.copyText, copiedText = _a.copiedText, theme = _a.theme;
+    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: (0, clsx_1.default)("group relative", className, {
+            dark: !theme,
+        }) }, { children: [(0, jsx_runtime_1.jsx)("div", __assign({ className: "prose max-w-none" }, { children: (0, jsx_runtime_1.jsx)(prism_react_renderer_1.default, __assign({}, prism_react_renderer_1.defaultProps, { code: children.trimEnd(), language: language, theme: theme }, { children: function (_a) {
                         var className = _a.className, style = _a.style, tokens = _a.tokens, getTokenProps = _a.getTokenProps;
                         return ((0, jsx_runtime_1.jsx)("pre", __assign({ className: className, style: style }, { children: (0, jsx_runtime_1.jsx)("code", { children: tokens.map(function (line, lineIndex) { return ((0, jsx_runtime_1.jsxs)(react_1.Fragment, { children: [line
                                             .filter(function (token) { return !token.empty; })

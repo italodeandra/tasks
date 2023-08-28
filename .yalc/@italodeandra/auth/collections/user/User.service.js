@@ -136,10 +136,11 @@ function convertToUserType(userType) {
 exports.convertToUserType = convertToUserType;
 function createUser(doc) {
     return __awaiter(this, void 0, void 0, function () {
-        var passwordSalt;
+        var User, passwordSalt;
         return __generator(this, function (_a) {
+            User = (0, User_1.default)();
             passwordSalt = generateSalt();
-            return [2 /*return*/, User_1.default.insertOne(__assign(__assign({}, doc), { email: doc.email.toLowerCase().trim(), password: hashPassword(doc.password, passwordSalt), passwordSalt: passwordSalt }))];
+            return [2 /*return*/, User.insertOne(__assign(__assign({}, doc), { email: doc.email.toLowerCase().trim(), password: hashPassword(doc.password, passwordSalt), passwordSalt: passwordSalt }))];
         });
     });
 }
@@ -156,10 +157,11 @@ function getAuthCookieToken(req, res) {
 exports.getAuthCookieToken = getAuthCookieToken;
 function getUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, userId, user, e_1;
+        var User, token, userId, user, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    User = (0, User_1.default)();
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
@@ -168,7 +170,7 @@ function getUserFromCookies(req, res) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User_1.default.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
+                    return [4 /*yield*/, User.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
                 case 2:
                     user = _a.sent();
                     if (!user) {
@@ -189,10 +191,11 @@ function getUserFromCookies(req, res) {
 exports.getUserFromCookies = getUserFromCookies;
 function getFullUserFromCookies(req, res) {
     return __awaiter(this, void 0, void 0, function () {
-        var token, userId, user, e_2;
+        var User, token, userId, user, e_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    User = (0, User_1.default)();
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
@@ -201,7 +204,7 @@ function getFullUserFromCookies(req, res) {
                 case 1:
                     _a.trys.push([1, 3, , 4]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User_1.default.findOne({ _id: userId }, {
+                    return [4 /*yield*/, User.findOne({ _id: userId }, {
                             projection: {
                                 email: 1,
                                 type: 1,
@@ -229,12 +232,13 @@ function getFullUserFromCookies(req, res) {
 exports.getFullUserFromCookies = getFullUserFromCookies;
 function setUserPassword(userId, plainPassword) {
     return __awaiter(this, void 0, void 0, function () {
-        var passwordSalt;
+        var User, passwordSalt;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    User = (0, User_1.default)();
                     passwordSalt = generateSalt();
-                    return [4 /*yield*/, User_1.default.updateOne({
+                    return [4 /*yield*/, User.updateOne({
                             _id: userId,
                         }, {
                             $set: {

@@ -9,12 +9,12 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import Task, { TaskStatus } from "../../../collections/task";
+import getTask, { TaskStatus } from "../../../collections/task";
 import showdown from "showdown";
 import dayjs from "dayjs";
 import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
-import Timesheet from "../../../collections/timesheet";
+import getTimesheet from "../../../collections/timesheet";
 import { sumBy } from "lodash";
 
 let converter = new showdown.Converter({
@@ -23,8 +23,10 @@ let converter = new showdown.Converter({
   tasklists: true,
 });
 
-async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
+async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
+  let Task = getTask();
+  let Timesheet = getTimesheet();
   const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

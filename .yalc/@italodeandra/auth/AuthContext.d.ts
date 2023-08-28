@@ -51,6 +51,7 @@ export declare type IAuthContext = {
         Click?: string;
         here?: string;
         "to sign in"?: string;
+        Impersonate?: string;
     } & Record<string, string>;
 };
 export declare const authContextDefaultValue: {

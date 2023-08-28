@@ -40,5 +40,11 @@ export declare type DataTableProps<RowData> = {
     autoHeight?: boolean;
     onChangeSort?: (sort: [string, "asc" | "desc"][]) => void;
     sort?: [string, "asc" | "desc"][];
+    previousText?: string;
+    nextText?: string;
+    showingText?: string;
+    toText?: string;
+    ofText?: string;
+    resultsText?: string;
 };
-export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, onChangeSort, sort: defaultSort, }: DataTableProps<RowData>): JSX.Element;
+export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, onChangeSort, sort: defaultSort, previousText, nextText, showingText, toText, ofText, resultsText, }: DataTableProps<RowData>): JSX.Element;

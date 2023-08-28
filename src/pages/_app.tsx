@@ -10,7 +10,7 @@ import { useState } from "react";
 import "focus-visible";
 import "../globals.css";
 import AppProps from "@italodeandra/ui/bootstrap/AppProps";
-import routes from "../routes";
+import routes from "../Routes";
 import { hydrateNavigationDrawerState } from "@italodeandra/ui/components/NavigationDrawer/navigationDrawer.state";
 import setupNProgress from "@italodeandra/ui/bootstrap/nprogress";
 import AuthProvider from "@italodeandra/auth/AuthProvider";
@@ -18,8 +18,10 @@ import { appDescription, appKeywords, appName, primaryColor } from "../consts";
 import { hydrateAuthState } from "@italodeandra/auth/auth.state";
 import Notifications from "@italodeandra/ui/components/Notifications/Notifications";
 import Dialogs from "@italodeandra/ui/components/Dialog";
+import localizedFormat from "dayjs/plugin/localizedFormat";
 
 dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 setupNProgress(primaryColor);
 

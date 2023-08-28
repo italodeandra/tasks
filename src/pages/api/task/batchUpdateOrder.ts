@@ -15,7 +15,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import Task, { ITask } from "../../../collections/task";
+import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 
 async function handler(
@@ -27,6 +27,7 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
+  let Task = getTask();
   const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

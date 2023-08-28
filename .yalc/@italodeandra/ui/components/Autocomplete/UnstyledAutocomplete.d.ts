@@ -29,7 +29,8 @@ export interface UnstyledAutocompleteProps<T extends {
     static?: boolean;
     displayValue?: (item: T | null) => string;
     value?: T | null;
+    itemsRenderLimit?: number;
 }
 export default function UnstyledAutocomplete<T extends {
     _id: string;
-}>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onSelect, query: defaultQuery, onChangeQuery, loading, emptyTextClassName, optionsClassName, optionClassName, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, ...props }: UnstyledAutocompleteProps<T>): JSX.Element;
+}>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onSelect, query: defaultQuery, onChangeQuery, loading, emptyTextClassName, optionsClassName, optionClassName, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, readOnly, itemsRenderLimit, ...props }: UnstyledAutocompleteProps<T>): JSX.Element;

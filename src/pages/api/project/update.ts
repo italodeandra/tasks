@@ -16,7 +16,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ProjectCreateArgs } from "./create";
 import { invalidate_projectList } from "./list";
 import { connectDb } from "../../../db";
-import Project from "../../../collections/project";
+import getProject from "../../../collections/project";
 
 async function handler(
   args: { _id: string } & ProjectCreateArgs,
@@ -24,7 +24,8 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  const user = await getUserFromCookies(req, res);
+  let Project = getProject();
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }

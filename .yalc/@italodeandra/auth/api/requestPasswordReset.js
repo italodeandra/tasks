@@ -46,11 +46,11 @@ var react_query_1 = require("@tanstack/react-query");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var appEnv = process.env.APP_ENV || "development";
-function requestPasswordResetHandler(args, req, res, _a) {
+function requestPasswordResetHandler(args, req, _res, _a) {
     var _b;
     var routes = _a.routes, connectDb = _a.connectDb, intl = _a.intl, fallbackLocale = _a.fallbackLocale, primaryColor = _a.primaryColor, sendMail = _a.sendMail;
     return __awaiter(this, void 0, void 0, function () {
-        var locales, locale, t, user, host, protocol, token, url;
+        var locales, locale, t, User, user, host, protocol, token, url;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0:
@@ -61,12 +61,17 @@ function requestPasswordResetHandler(args, req, res, _a) {
                         throw errors_1.badRequest;
                     }
                     locales = ((_b = req.headers["accept-language"]) === null || _b === void 0 ? void 0 : _b.split(",").map(function (locale) { return locale.split(";")[0]; })) || [];
-                    locale = getFirstAvailableLocale(Object.keys(intl), locales, fallbackLocale);
+                    locale = getFirstAvailableLocale(
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    Object.keys(intl), locales, 
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    fallbackLocale);
                     t = intl[locale];
                     return [4 /*yield*/, connectDb()];
                 case 1:
                     _c.sent();
-                    return [4 /*yield*/, User_1.default.findOne({
+                    User = (0, User_1.default)();
+                    return [4 /*yield*/, User.findOne({
                             email: args.email.toLowerCase().trim(),
                         }, {
                             projection: {

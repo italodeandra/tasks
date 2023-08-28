@@ -50,8 +50,14 @@ function Pagination(_a) {
             onChangePage(page);
         }
     }, [onChangePage, page]);
-    var pageCount = totalItems !== undefined && itemsPerPage !== undefined
-        ? Math.floor(totalItems / itemsPerPage) || 1
+    var _c = __read((0, react_1.useState)(totalItems || 0), 2), previousTotalItems = _c[0], setPreviousTotalItems = _c[1];
+    (0, react_1.useEffect)(function () {
+        if (totalItems) {
+            setPreviousTotalItems(totalItems);
+        }
+    }, [totalItems]);
+    var pageCount = itemsPerPage !== undefined
+        ? Math.ceil(previousTotalItems / itemsPerPage) || 1
         : 0;
     var pages = (0, react_1.useMemo)(function () {
         if (pageCount < 7) {

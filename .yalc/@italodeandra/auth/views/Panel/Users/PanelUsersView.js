@@ -27,6 +27,8 @@ var Alert_1 = __importDefault(require("@italodeandra/ui/components/Alert/Alert")
 var dayjs_1 = __importDefault(require("dayjs"));
 var next_seo_1 = require("next-seo");
 var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcrumbs/Breadcrumbs"));
+var solid_1 = require("@heroicons/react/20/solid");
+var impersonate_1 = require("../../../api/panel/user/impersonate");
 function PanelUsersView() {
     var _a = (0, AuthContext_1.useAuthContext)(), Routes = _a.Routes, intl = _a.intl;
     var router = (0, router_1.useRouter)();
@@ -69,7 +71,14 @@ function PanelUsersView() {
     var handleRowClick = (0, react_1.useCallback)(function (item) {
         return router.push(Routes.PanelUser(item._id));
     }, [router, Routes]);
+    var _c = (0, impersonate_1.useAuthPanelUserImpersonate)(), impersonate = _c.mutate, isImpersonating = _c.isLoading;
     var pages = (0, react_1.useMemo)(function () { return [{ title: t("Users") }]; }, [t]);
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages, className: "mb-5" }), (0, jsx_runtime_1.jsx)(DataTable_1.default, { title: t("Users"), columns: columns, data: data, isLoading: isFetching, headerContent: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ href: Routes.PanelNewUser }, { children: t("Add user") })), onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: refetch }, { children: t("Try again") })) })) : (t("No records")) })] })));
+    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages, className: "mb-5" }), (0, jsx_runtime_1.jsx)(DataTable_1.default, { title: t("Users"), columns: columns, data: data, isLoading: isFetching || isImpersonating, headerContent: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ href: Routes.PanelNewUser }, { children: t("Add user") })), onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: refetch }, { children: t("Try again") })) })) : (t("No records")), actions: [
+                    {
+                        icon: (0, jsx_runtime_1.jsx)(solid_1.IdentificationIcon, {}),
+                        title: t("Impersonate"),
+                        onClick: impersonate,
+                    },
+                ] })] })));
 }
 exports.default = PanelUsersView;

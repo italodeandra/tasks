@@ -42,5 +42,5 @@ var userSchema = (0, isServer_1.onlyServer)(function () {
         timestamps: true,
     });
 });
-var User = (0, isServer_1.onlyServer)(function () { return db_1.default.model("users", userSchema); });
-exports.default = User;
+var getUser = function () { return (0, isServer_1.onlyServer)(function () { return db_1.default.model("users", userSchema); }); };
+exports.default = getUser;

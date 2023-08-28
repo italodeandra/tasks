@@ -15,9 +15,9 @@ import {
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { invalidate_projectList } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
-import Project, { IProject } from "../../../collections/project";
+import getProject, { IProject } from "../../../collections/project";
 import { connectDb } from "../../../db";
-import Task from "../../../collections/task";
+import getTask from "../../../collections/task";
 
 async function handler(
   args: Jsonify<Pick<IProject, "_id">>,
@@ -25,6 +25,8 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
+  let Project = getProject();
+  let Task = getTask();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

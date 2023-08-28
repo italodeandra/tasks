@@ -26,6 +26,6 @@ const projectSchema = onlyServer(() =>
 
 export type IProject = (typeof projectSchema)[0];
 
-const Project = onlyServer(() => db.model("projects", projectSchema));
+const getProject = () => onlyServer(() => db.model("projects", projectSchema));
 
-export default Project;
+export default getProject;

@@ -30,6 +30,8 @@ import { ProjectColor } from "../../../collections/project";
 import { useSnapshot } from "valtio";
 import { selectedProjectsState } from "./selectedProjects.state";
 import { Project } from "./Project";
+import { ModeToggle } from "@italodeandra/ui/components/ModeToggle/ModeToggle";
+import UserMenu from "../../panel/layout/UserMenu";
 
 export function Kanban() {
   let { selectedProjects } = useSnapshot(selectedProjectsState);
@@ -145,34 +147,42 @@ export function Kanban() {
     <Group className="gap-0">
       <NewProjectModal />
       <Stack className="h-screen w-full pt-4">
-        <Stack className="px-4">
-          <Text variant="label">Projects</Text>
-          <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
-            {[
-              {
-                _id: "",
-                name: "None",
-                lastTaskUpdatedAt: "",
-                color: ProjectColor.BLUE,
-              },
-              ...(projects || []),
-            ]?.map((project) => (
-              <Project key={project._id} project={project} />
-            ))}
-            {isLoadingProjects ? (
-              <Skeleton className="w-20" />
-            ) : (
-              <Button
-                size="sm"
-                variant="outlined"
-                onClick={() => newProjectState.openModal()}
-                icon
-              >
-                <PlusIcon />
-              </Button>
-            )}
+        <Group className="px-4">
+          <Stack>
+            <Text variant="label">Projects</Text>
+            <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
+              {[
+                {
+                  _id: "",
+                  name: "None",
+                  lastTaskUpdatedAt: "",
+                  color: ProjectColor.BLUE,
+                },
+                ...(projects || []),
+              ]?.map((project) => (
+                <Project key={project._id} project={project} />
+              ))}
+              {isLoadingProjects ? (
+                <Skeleton className="w-20" />
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  onClick={() => newProjectState.openModal()}
+                  icon
+                >
+                  <PlusIcon />
+                </Button>
+              )}
+            </Group>
+          </Stack>
+          <div className="flex-grow" />
+          <Group className="mb-auto pb-0">
+            <ModeToggle />
+            <UserMenu />
           </Group>
-        </Stack>
+        </Group>
+
         <div className="relative w-full flex-1 overflow-auto px-4 pb-14">
           <UiKanban
             items={items}

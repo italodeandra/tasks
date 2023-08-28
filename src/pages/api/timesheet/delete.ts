@@ -16,7 +16,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
-import Timesheet from "../../../collections/timesheet";
+import getTimesheet from "../../../collections/timesheet";
 
 async function handler(
   args: {
@@ -26,6 +26,7 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
+  let Timesheet = getTimesheet();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

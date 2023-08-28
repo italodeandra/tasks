@@ -7,7 +7,7 @@ import { AuthConfig } from "../..";
 interface UserCreateError extends Error {
     status: "Existing";
 }
-export default function authPanelUserCreateHandler(args: Jsonify<Pick<IUser, "name" | "email" | "type">>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<{
+export default function authPanelUserCreateHandler(args: Jsonify<Pick<IUser, "name" | "email" | "type" | "customData">>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<{
     _id: import("bson").ObjectID;
 }>;
 export declare type AuthPanelUserCreateResponse = InferApiResponse<typeof authPanelUserCreateHandler>;
@@ -18,5 +18,6 @@ export declare const useAuthPanelUserCreate: (options?: UseMutationOptions<AuthP
     email: string;
     type: string;
     name?: string | undefined;
+    customData?: {} | undefined;
 }, unknown>;
 export {};

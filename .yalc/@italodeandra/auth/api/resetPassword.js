@@ -49,7 +49,7 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 function resetPasswordHandler(args, _req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var email, user, e_1;
+        var User, email, user, e_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -59,11 +59,12 @@ function resetPasswordHandler(args, _req, res, _a) {
                     return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
+                    User = (0, User_1.default)();
                     _b.label = 2;
                 case 2:
                     _b.trys.push([2, 5, , 6]);
                     email = (0, User_service_1.readResetPasswordToken)(args.token);
-                    return [4 /*yield*/, User_1.default.findOne({
+                    return [4 /*yield*/, User.findOne({
                             email: email,
                         }, {
                             projection: {},

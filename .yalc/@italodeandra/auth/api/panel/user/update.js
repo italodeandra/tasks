@@ -94,12 +94,13 @@ var get_1 = require("./get");
 function authPanelUserUpdateHandler(args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var user, _id, existingNewEmail;
+        var User, user, _id, existingNewEmail;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
+                    User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
                 case 2:
                     user = _b.sent();
@@ -107,7 +108,7 @@ function authPanelUserUpdateHandler(args, req, res, _a) {
                         throw errors_1.unauthorized;
                     }
                     _id = (0, isomorphicObjectId_1.default)(args._id);
-                    return [4 /*yield*/, User_1.default.countDocuments({
+                    return [4 /*yield*/, User.countDocuments({
                             _id: { $ne: _id },
                             email: args.email,
                         })];
@@ -116,13 +117,14 @@ function authPanelUserUpdateHandler(args, req, res, _a) {
                     if (existingNewEmail) {
                         throw (0, errors_1.conflict)(res, { status: "Existing" });
                     }
-                    return [4 /*yield*/, User_1.default.updateOne({
+                    return [4 /*yield*/, User.updateOne({
                             _id: _id,
                         }, {
                             $set: {
                                 email: args.email,
                                 name: args.name,
                                 type: args.type,
+                                customData: args.customData,
                             },
                         })];
                 case 4:

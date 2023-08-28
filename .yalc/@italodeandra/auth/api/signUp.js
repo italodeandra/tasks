@@ -50,7 +50,7 @@ var cookies_next_1 = require("cookies-next");
 function signUpHandler(args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var existingUser, user, token;
+        var User, existingUser, user, token;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -60,7 +60,8 @@ function signUpHandler(args, req, res, _a) {
                     return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
-                    return [4 /*yield*/, User_1.default.countDocuments({
+                    User = (0, User_1.default)();
+                    return [4 /*yield*/, User.countDocuments({
                             email: args.email.toLowerCase().trim(),
                         })];
                 case 2:

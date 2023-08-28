@@ -15,7 +15,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import { invalidate_taskList } from "../task/list";
-import Timesheet, { ITimesheet } from "../../../collections/timesheet";
+import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import ms from "ms";
 
@@ -29,6 +29,7 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
+  let Timesheet = getTimesheet();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

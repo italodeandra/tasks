@@ -83,7 +83,7 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 function panelUserGetHandler(args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var signedInUser, user;
+        var User, signedInUser, user;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -93,19 +93,21 @@ function panelUserGetHandler(args, req, res, _a) {
                     return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
+                    User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
                 case 2:
                     signedInUser = _b.sent();
                     if (!(0, User_service_1.checkUserType)(signedInUser, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
-                    return [4 /*yield*/, User_1.default.findOne({
+                    return [4 /*yield*/, User.findOne({
                             _id: (0, isomorphicObjectId_1.default)(args._id),
                         }, {
                             projection: {
                                 email: 1,
                                 name: 1,
                                 type: 1,
+                                customData: 1,
                             },
                         })];
                 case 3:

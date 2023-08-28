@@ -27,12 +27,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
-var react_2 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
 function UnstyledInput(_a, ref) {
     var _b, _c;
     var id = _a.id, label = _a.label, className = _a.className, inputClassName = _a.inputClassName, labelClassName = _a.labelClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, trailingInputClassName = _a.trailingInputClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, helpText = _a.helpText, _d = _a.type, type = _d === void 0 ? "text" : _d, leading = _a.leading, trailing = _a.trailing, select = _a.select, children = _a.children, as = _a.as, innerClassName = _a.innerClassName, props = __rest(_a, ["id", "label", "className", "inputClassName", "labelClassName", "helpTextClassName", "trailingClassName", "trailingInputClassName", "leadingClassName", "leadingInputClassName", "helpText", "type", "leading", "trailing", "select", "children", "as", "innerClassName"]);
-    var innerId = (0, react_2.useId)();
+    var innerId = (0, react_1.useId)();
     id = id || innerId;
     var Component = as || (select ? "select" : "input");
     return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: className }, { children: [label && ((0, jsx_runtime_1.jsx)("label", __assign({ htmlFor: id, className: labelClassName }, { children: label }))), (0, jsx_runtime_1.jsxs)("div", __assign({ style: { position: "relative" }, className: innerClassName }, { children: [leading && (0, jsx_runtime_1.jsx)("div", __assign({ className: leadingClassName }, { children: leading })), (0, jsx_runtime_1.jsx)(Component

@@ -24,7 +24,7 @@ declare const userSchema: [{
     };
     timestamps: true;
 }];
-declare const User: import("papr").Model<{
+declare const getUser: () => import("papr").Model<{
     email: string;
     type: string;
     password: string;
@@ -42,5 +42,5 @@ declare const User: import("papr").Model<{
     };
     timestamps: true;
 }>;
-export declare type IUser = typeof userSchema[0];
-export default User;
+export declare type IUser = (typeof userSchema)[0];
+export default getUser;

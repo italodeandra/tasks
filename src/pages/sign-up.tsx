@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import { getAuthCookieToken } from "@italodeandra/auth/collections/user/User.service";
-import routes from "../routes";
+import routes from "../Routes";
 import { getCookies } from "cookies-next";
 import SignUpView from "@italodeandra/auth/views/SignUpView";
 

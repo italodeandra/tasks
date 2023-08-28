@@ -79,20 +79,21 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 function authPanelUserListHandler(args, req, res, _a) {
     var connectDb = _a.connectDb;
     return __awaiter(this, void 0, void 0, function () {
-        var user;
+        var User, user;
         var _b;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _c.sent();
+                    User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
                 case 2:
                     user = _c.sent();
                     if (!(0, User_service_1.checkUserType)(user, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
-                    return [2 /*return*/, User_1.default.find(__assign({}, ((args === null || args === void 0 ? void 0 : args.search) ? { $text: { $search: args.search } } : {})), {
+                    return [2 /*return*/, User.find(__assign({}, ((args === null || args === void 0 ? void 0 : args.search) ? { $text: { $search: args.search } } : {})), {
                             projection: {
                                 email: 1,
                                 name: 1,

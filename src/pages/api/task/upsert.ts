@@ -16,7 +16,7 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import Task, { ITask } from "../../../collections/task";
+import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { invalidate_projectList } from "../project/list";
 import { isNil } from "lodash";
@@ -30,7 +30,8 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  const user = await getUserFromCookies(req, res);
+  let Task = getTask();
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }

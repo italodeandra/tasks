@@ -70,11 +70,13 @@ var appEnv = process.env.APP_ENV || "development";
 exports.userId = (0, isomorphicObjectId_1.default)("62da0f38c6dc21efec2136e6");
 function authSeed() {
     return __awaiter(this, void 0, void 0, function () {
+        var User;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    User = (0, User_1.default)();
                     if (!(appEnv === "development")) return [3 /*break*/, 3];
-                    return [4 /*yield*/, User_1.default.countDocuments({ email: "italodeandra@gmail.com" })];
+                    return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
                 case 1:
                     if (!!(_a.sent())) return [3 /*break*/, 3];
                     return [4 /*yield*/, (0, User_service_1.createUser)({

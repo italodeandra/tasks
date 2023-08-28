@@ -1,7 +1,7 @@
 import { connectDb } from "../db";
 import { GetServerSideProps } from "next";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import routes from "../routes";
+import routes from "../Routes";
 import { deleteCookie, getCookies } from "cookies-next";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
 import {

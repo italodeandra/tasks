@@ -45,19 +45,7 @@ export declare function getUserFromCookies(req: OptionsType["req"], res: Options
     phoneNumber?: string | undefined;
     customData?: Pick<{}, never> | undefined;
 }, "email" | "type" | "_id" | "name">> | null>;
-export declare function getFullUserFromCookies(req: OptionsType["req"], res: OptionsType["res"]): Promise<import("mongodb").WithId<Pick<{
-    email: string;
-    type: string;
-    password: string;
-    passwordSalt: string;
-    createdAt: Date;
-    updatedAt: Date;
-    _id: ObjectId;
-    emailVerified?: Date | undefined;
-    name?: string | undefined;
-    phoneNumber?: string | undefined;
-    customData?: Pick<{}, never> | undefined;
-}, "email" | "type" | "_id" | "name" | "phoneNumber" | "customData">> | null>;
+export declare function getFullUserFromCookies(req: OptionsType["req"], res: OptionsType["res"]): Promise<null | Pick<IUser, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData">>;
 export declare function setUserPassword(userId: IUser["_id"], plainPassword: string): Promise<void>;
 export declare const userTypeTranslations: Record<keyof IUserType, string>;
 export declare function translateUserType(userType: string): string;

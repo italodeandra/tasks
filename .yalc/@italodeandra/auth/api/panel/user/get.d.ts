@@ -18,13 +18,14 @@ export default function panelUserGetHandler(args: Jsonify<{
     name?: string | undefined;
     phoneNumber?: string | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "email" | "type" | "_id" | "name">>>;
+}, "email" | "type" | "_id" | "name" | "customData">>>;
 export declare type AuthPanelUserGetApiResponse = InferApiResponse<typeof panelUserGetHandler>;
 export declare type AuthPanelUserGetApiArgs = InferApiArgs<typeof panelUserGetHandler>;
 export declare const useAuthPanelUserGet: (args?: AuthPanelUserGetApiArgs, options?: UseQueryOptions<AuthPanelUserGetApiResponse>) => import("@tanstack/react-query").UseQueryResult<{
     email: string;
     type: string;
     name?: string | undefined;
+    customData?: {} | undefined;
     _id: string;
 }, unknown>;
 export declare const prefetch_authPanelUserGet: (queryClient: QueryClient, args_0: {

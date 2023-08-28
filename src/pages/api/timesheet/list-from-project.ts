@@ -9,7 +9,7 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import Timesheet from "../../../collections/timesheet";
+import getTimesheet from "../../../collections/timesheet";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
 async function handler(
@@ -18,6 +18,7 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
+  let Timesheet = getTimesheet();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

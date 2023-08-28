@@ -8,12 +8,13 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import Project, { IProject } from "../../../collections/project";
+import getProject, { IProject } from "../../../collections/project";
 import { ITask } from "../../../collections/task";
 
 async function handler(args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
-  const user = await getUserFromCookies(req, res);
+  let Project = getProject();
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }

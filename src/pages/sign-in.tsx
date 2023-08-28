@@ -1,7 +1,7 @@
 import { GetServerSideProps } from "next";
 import { getAuthCookieToken } from "@italodeandra/auth/collections/user/User.service";
 import SignInView from "@italodeandra/auth/views/SignInView";
-import routes from "../routes";
+import routes from "../Routes";
 import { getCookies } from "cookies-next";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

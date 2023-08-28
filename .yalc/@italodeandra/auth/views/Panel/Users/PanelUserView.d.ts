@@ -1,2 +1,6 @@
-/// <reference types="react" />
-export default function PanelUserView(): JSX.Element;
+import { ReactNode } from "react";
+import { UseFormReturn } from "react-hook-form";
+import { PanelUserFieldValues } from "./PanelUserFieldValues";
+export default function PanelUserView({ customFields, }: {
+    customFields?: (form: UseFormReturn<PanelUserFieldValues>, isLoadingFields: boolean) => ReactNode;
+}): JSX.Element;
