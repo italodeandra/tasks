@@ -48,12 +48,21 @@ function waitFor(asyncFunction, interval, timeout) {
             start = Date.now();
             return [2 /*return*/, new Promise(function (resolve, reject) {
                     var intervalId = setInterval(function () { return __awaiter(_this, void 0, void 0, function () {
-                        var result;
+                        var result, e_1;
                         return __generator(this, function (_a) {
                             switch (_a.label) {
-                                case 0: return [4 /*yield*/, asyncFunction()];
+                                case 0:
+                                    _a.trys.push([0, 2, , 3]);
+                                    return [4 /*yield*/, asyncFunction()];
                                 case 1:
                                     result = _a.sent();
+                                    return [3 /*break*/, 3];
+                                case 2:
+                                    e_1 = _a.sent();
+                                    clearInterval(intervalId);
+                                    reject(e_1);
+                                    return [2 /*return*/];
+                                case 3:
                                     if (result) {
                                         clearInterval(intervalId);
                                         resolve(result);
