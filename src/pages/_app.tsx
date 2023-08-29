@@ -68,13 +68,13 @@ function MyApp({ Component, pageProps }: AppProps) {
             href: "/favicons/favicon-16x16.png",
           },
           {
-            rel: "manifest",
-            href: "/favicons/site.webmanifest",
-          },
-          {
             rel: "mask-icon",
             href: "/favicons/safari-pinned-tab.svg",
             color: primaryColor,
+          },
+          {
+            rel: "manifest",
+            href: "/favicons/site.webmanifest",
           },
         ]}
         additionalMetaTags={[
@@ -89,6 +89,10 @@ function MyApp({ Component, pageProps }: AppProps) {
           {
             name: "msapplication-TileColor",
             content: primaryColor,
+          },
+          {
+            name: "msapplication-config",
+            content: "/favicons/browserconfig.xml",
           },
           {
             name: "theme-color",
