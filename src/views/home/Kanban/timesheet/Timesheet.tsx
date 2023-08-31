@@ -13,7 +13,6 @@ import _ from "lodash";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
-import { formatMoney } from "../../../../utils/formatMoney";
 import { TimesheetItem } from "./TimesheetItem";
 import Text from "@italodeandra/ui/components/Text";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
@@ -180,10 +179,7 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
         </div>
         <div>
           <Text variant="label">Pending payment</Text>
-          <Text>
-            {prettyMilliseconds(pendingPayment)} (
-            {formatMoney((pendingPayment / 3600000) * 150)})
-          </Text>
+          <Text>{prettyMilliseconds(pendingPayment)}</Text>
         </div>
       </div>
     </Stack>
