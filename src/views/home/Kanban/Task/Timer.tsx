@@ -45,7 +45,7 @@ export function Timer({ task }: { task: TaskListApiResponse[0] }) {
       })}
       {...(time
         ? {
-            leadingIcon: <ClockIcon />,
+            leading: <ClockIcon />,
             children: prettyMilliseconds(time),
           }
         : {

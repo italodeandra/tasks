@@ -20,6 +20,7 @@ export function Project({ project }: { project: ProjectListApiResponse[0] }) {
           variant={
             selectedProjects.includes(project._id) ? "filled" : "outlined"
           }
+          color={selectedProjects.includes(project._id) ? "primary" : undefined}
           onClick={() =>
             (selectedProjectsState.selectedProjects = xor(selectedProjects, [
               project._id,

@@ -49,6 +49,7 @@ export function NewProjectModal() {
             <Modal.CloseButton onClick={closeModal} />
             <Button
               variant="filled"
+              color="primary"
               className="w-full"
               type="submit"
               loading={isLoading}

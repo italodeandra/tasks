@@ -71,7 +71,7 @@ export function ProjectSelector({
         <Button
           variant="text"
           className="w-full !justify-start rounded-none"
-          leadingIcon={<PlusIcon />}
+          leading={<PlusIcon />}
           size="sm"
           onClick={openModal}
         >

@@ -86,7 +86,7 @@ function TimesheetAddDialog({
           error={!!errors.time}
           helpText={errors.time?.message}
         />
-        <Button variant="filled" type="submit">
+        <Button variant="filled" color="primary" type="submit">
           Save
         </Button>
       </Stack>

@@ -33,7 +33,7 @@ export function AddNewTaskButton({
   return (
     <Button
       className={clsx("opacity-50 transition-all hover:opacity-100", className)}
-      leadingIcon={<PlusIcon />}
+      leading={<PlusIcon />}
       onClick={handleAddNewClick}
       loading={isLoading}
     >
