@@ -2,107 +2,42 @@ import {
   TimesheetListFromProjectApiResponse,
   useTimesheetListFromProject,
 } from "../../../../pages/api/timesheet/list-from-project";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { ProjectListApiResponse } from "../../../../pages/api/project/list";
 import { useTimesheetDelete } from "../../../../pages/api/timesheet/delete";
 import DataTable, {
   DataTableProps,
 } from "@italodeandra/ui/components/Table/DataTable";
-import { TimesheetType } from "../../../../collections/timesheet";
-import _ from "lodash";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Button from "@italodeandra/ui/components/Button/Button";
-import { ClipboardIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ClipboardIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { TimesheetItem } from "./TimesheetItem";
 import Text from "@italodeandra/ui/components/Text";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
-import Input from "@italodeandra/ui/components/Input/Input";
-import { useForm } from "react-hook-form";
-import { useTimesheetAdd } from "../../../../pages/api/timesheet/add";
 import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 import dayjs from "dayjs";
 import copy2DToClipboard from "@italodeandra/ui/utils/copy2DToClipboard";
 import { translateTimesheetType } from "../../../../utils/translateTimesheetType";
-
-interface FieldValues {
-  type: TimesheetType;
-  time: string;
-}
-
-function TimesheetAddDialog({
-  projectId,
-  onSubmit: onSubmitDialog,
-}: {
-  projectId: string;
-  onSubmit: () => void;
-}) {
-  let { mutate, isLoading } = useTimesheetAdd({
-    onSuccess() {
-      onSubmitDialog();
-    },
-  });
-
-  let {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<FieldValues>({
-    defaultValues: {
-      type: TimesheetType.MANUAL,
-    },
-  });
-
-  function onSubmit(values: FieldValues) {
-    if (!isLoading) {
-      mutate({
-        ...values,
-        projectId,
-      });
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack className="text-left">
-        <Input
-          label="Type"
-          select
-          {...register("type", {
-            required: "Select the type",
-          })}
-          required
-          error={!!errors.type}
-          helpText={errors.type?.message}
-        >
-          <option value={TimesheetType.MANUAL}>Manual</option>
-          <option value={TimesheetType.PAYMENT}>Payment</option>
-        </Input>
-        <Input
-          label="Time"
-          required
-          {...register("time", {
-            required: "Fill with the time",
-          })}
-          error={!!errors.time}
-          helpText={errors.time?.message}
-        />
-        <Button variant="filled" color="primary" type="submit">
-          Save
-        </Button>
-      </Stack>
-    </form>
-  );
-}
+import Group from "@italodeandra/ui/components/Group/Group";
+import { TimesheetAddDialog } from "./TimesheetAddDialog";
 
 export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
+  let [startDate, setStartDate] = useState(() => new Date());
   let { data: timesheet, isLoading } = useTimesheetListFromProject({
     projectId: project._id,
+    startDate,
   });
 
   let { mutate: deleteTimesheet, isLoading: isDeleting } = useTimesheetDelete();
 
   let columns = useMemo<
-    DataTableProps<TimesheetListFromProjectApiResponse[0]>["columns"]
+    DataTableProps<TimesheetListFromProjectApiResponse["data"][0]>["columns"]
   >(
     () => [
       {
@@ -127,18 +62,8 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
   );
 
   let { totalClocked, totalPaid, pendingPayment } = useMemo(() => {
-    let totalClocked = _(timesheet)
-      .filter(
-        (t) =>
-          [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL].includes(t.type) &&
-          !!t.time
-      )
-      .map("time")
-      .sum();
-    let totalPaid = _(timesheet)
-      .filter((t) => t.type === TimesheetType.PAYMENT && !!t.time)
-      .map("time")
-      .sum();
+    let totalClocked = timesheet?.timeClocked || 0;
+    let totalPaid = timesheet?.timePaid || 0;
     let pendingPayment = totalClocked - totalPaid;
     return { totalClocked, totalPaid, pendingPayment };
   }, [timesheet]);
@@ -156,11 +81,39 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
   };
 
   return (
-    <Stack>
+    <Stack className="w-full p-4">
       <DataTable
-        title={`Timesheet ${project.name}`}
-        data={timesheet}
+        title={
+          <Group className="items-center gap-4">
+            <span>Timesheet {project.name}</span>
+            <Group className="mx-auto items-center">
+              <Button
+                icon
+                size="sm"
+                onClick={() =>
+                  setStartDate(dayjs(startDate).subtract(1, "month").toDate())
+                }
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <Text className="w-[8rem] text-center text-sm">
+                {dayjs(startDate).format("MMMM YYYY")}
+              </Text>
+              <Button
+                icon
+                size="sm"
+                onClick={() =>
+                  setStartDate(dayjs(startDate).add(1, "month").toDate())
+                }
+              >
+                <ChevronRightIcon />
+              </Button>
+            </Group>
+          </Group>
+        }
+        data={timesheet?.data}
         columns={columns}
+        autoHeight
         headerContent={
           <Button icon onClick={handleAddClick}>
             <PlusIcon />

@@ -1,11 +1,5 @@
 import { useTaskList } from "../../../pages/api/task/list";
-import React, {
-  cloneElement,
-  Fragment,
-  ReactElement,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { cloneElement, ReactElement, useCallback, useMemo } from "react";
 import { TaskStatus } from "../../../collections/task";
 import { useTaskBatchUpdateOrder } from "../../../pages/api/task/batchUpdateOrder";
 import Alert from "@italodeandra/ui/components/Alert/Alert";
@@ -146,7 +140,12 @@ export function Kanban() {
   return (
     <Group className="gap-0">
       <NewProjectModal />
-      <Stack className="h-screen w-full pt-4">
+      <Stack
+        className={clsx(
+          "h-screen pt-4",
+          selectedProjects.length === 1 ? "w-1/2" : "w-full"
+        )}
+      >
         <Group className="px-4">
           <Stack>
             <Text variant="label">Projects</Text>
@@ -193,17 +192,13 @@ export function Kanban() {
           />
         </div>
       </Stack>
-      {!!selectedProjects.length && (
-        <Stack className="w-[51rem] max-w-full shrink-0 border-l border-gray-200 p-4">
-          {projects
-            ?.filter((project) => selectedProjects.includes(project._id))
-            .map((project) => (
-              <Fragment key={project._id}>
-                <Timesheet project={project} />
-                <div className="my-2 h-px bg-gray-200 last:hidden" />
-              </Fragment>
-            ))}
-        </Stack>
+      {projects && selectedProjects.length === 1 && (
+        <Timesheet
+          project={
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            projects.find((project) => selectedProjects.includes(project._id))!
+          }
+        />
       )}
     </Group>
   );
