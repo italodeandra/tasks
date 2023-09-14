@@ -32,7 +32,7 @@ function NavigationItem(_a) {
         : router.pathname.includes(href) ||
             (alternativeActiveHrefs === null || alternativeActiveHrefs === void 0 ? void 0 : alternativeActiveHrefs.some(function (href) { return router.pathname.includes(href); }));
     var isMobile = (0, react_use_1.useMedia)("(max-width: ".concat(defaultTheme_1.default.screens.lg, ")"), false);
-    return ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: active ? "light" : "text", className: (0, clsx_1.default)("w-full !justify-start !border-transparent"), leadingIcon: icon &&
+    return ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: active ? "light" : "text", className: (0, clsx_1.default)("w-full !justify-start !border-transparent"), leading: icon &&
             (0, react_1.cloneElement)(icon, {
                 className: (0, clsx_1.default)((_b = icon.props) === null || _b === void 0 ? void 0 : _b.className, "!w-5 mr-3"),
             }), href: href, onClick: isMobile ? navigationDrawer_state_1.default.close : undefined }, { children: children })));

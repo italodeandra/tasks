@@ -31,7 +31,7 @@ export declare type IAuthContext = {
         "Create a new account"?: string;
         "Sign up"?: string;
         Users?: string;
-        "Add user"?: string;
+        New?: string;
         Name?: string;
         Type?: string;
         Administrator?: string;

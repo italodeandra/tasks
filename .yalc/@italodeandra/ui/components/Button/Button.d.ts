@@ -15,57 +15,90 @@ declare const styles: {
         success: string;
         error: string;
         gray: string;
-        white: string;
+        default: string;
     };
     variantColor: {
         "filled-primary": string;
         "filled-success": string;
         "filled-error": string;
         "filled-gray": string;
-        "filled-white": string;
+        "filled-default": string;
         "light-primary": string;
         "light-success": string;
         "light-error": string;
         "light-gray": string;
-        "light-white": string;
+        "light-default": string;
         "outlined-primary": string;
         "outlined-success": string;
         "outlined-error": string;
         "outlined-gray": string;
-        "outlined-white": string;
+        "outlined-default": string;
         "text-primary": string;
         "text-success": string;
         "text-error": string;
         "text-gray": string;
-        "text-white": string;
+        "text-default": string;
     };
     disabled: string;
     size: {
-        md: {
+        xs: {
             button: string;
         };
         sm: {
+            button: string;
+        };
+        md: {
+            button: string;
+        };
+        lg: {
+            button: string;
+        };
+        xl: {
             button: string;
         };
     };
     icon: {
-        md: {
+        xs: {
             button: string;
             icon: string;
+            leading: string;
+            trailing: string;
         };
         sm: {
             button: string;
             icon: string;
+            leading: string;
+            trailing: string;
+        };
+        md: {
+            button: string;
+            icon: string;
+            leading: string;
+            trailing: string;
+        };
+        lg: {
+            button: string;
+            icon: string;
+            leading: string;
+            trailing: string;
+        };
+        xl: {
+            button: string;
+            icon: string;
+            leading: string;
+            trailing: string;
         };
     };
 };
-export declare type ButtonProps<Href extends string | undefined> = UnstyledButtonProps<Href> & {
+export declare type ButtonProps<Href extends string | undefined = undefined> = UnstyledButtonProps<Href> & {
     variant?: keyof (typeof styles)["variant"];
-    color?: keyof (typeof styles)["color"];
+    color?: keyof (typeof styles)["color"] | "white";
     size?: keyof (typeof styles)["size"];
     icon?: boolean;
     leadingIcon?: ReactElement;
+    leading?: ReactElement;
     trailingIcon?: ReactElement;
+    trailing?: ReactElement;
     loading?: boolean;
     disabled?: boolean;
     rounded?: boolean;
@@ -104,11 +137,13 @@ declare const _default: import("react").ForwardRefExoticComponent<{
     children?: import("react").ReactNode;
 } & import("react").RefAttributes<HTMLAnchorElement>) | import("react").DetailedHTMLProps<import("react").ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & {
     variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
-    color?: "success" | "error" | "primary" | "gray" | "white" | undefined;
-    size?: "sm" | "md" | undefined;
+    color?: "default" | "success" | "error" | "primary" | "gray" | "white" | undefined;
+    size?: "xs" | "sm" | "lg" | "xl" | "md" | undefined;
     icon?: boolean | undefined;
     leadingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
+    leading?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     trailingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
+    trailing?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     loading?: boolean | undefined;
     disabled?: boolean | undefined;
     rounded?: boolean | undefined;

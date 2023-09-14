@@ -95,6 +95,6 @@ function ForgotPasswordView(_a) {
                                 value: emailRegExp_1.default,
                                 message: t("Please fill with a valid email"),
                             },
-                        }), { error: !!errors.email, helpText: (_b = errors.email) === null || _b === void 0 ? void 0 : _b.message })), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", variant: "filled", className: "w-full", loading: isRequestingToResetPassword }, { children: t("Reset password") }))] })) }))] })));
+                        }), { error: !!errors.email, helpText: (_b = errors.email) === null || _b === void 0 ? void 0 : _b.message })), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", variant: "filled", color: "primary", className: "w-full", loading: isRequestingToResetPassword }, { children: t("Reset password") }))] })) }))] })));
 }
 exports.default = ForgotPasswordView;

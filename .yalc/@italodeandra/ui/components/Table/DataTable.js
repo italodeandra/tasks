@@ -49,7 +49,7 @@ var Table_1 = __importDefault(require("./Table"));
 var clsx_1 = __importDefault(require("clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
 function DataTable(_a) {
-    var title = _a.title, subtitle = _a.subtitle, headerContent = _a.headerContent, data = _a.data, _b = _a.idAccessor, idAccessor = _b === void 0 ? "_id" : _b, actions = _a.actions, columns = _a.columns, isLoading = _a.isLoading, _c = _a.noRecords, noRecordsText = _c === void 0 ? "No records" : _c, onRowClick = _a.onRowClick, rowWrapper = _a.rowWrapper, pagination = _a.pagination, _d = _a.currentPage, currentPage = _d === void 0 ? 0 : _d, onChangePage = _a.onChangePage, totalItems = _a.totalItems, _e = _a.itemsPerPage, itemsPerPage = _e === void 0 ? 0 : _e, className = _a.className, autoHeight = _a.autoHeight, onChangeSort = _a.onChangeSort, _f = _a.sort, defaultSort = _f === void 0 ? [] : _f, previousText = _a.previousText, nextText = _a.nextText, showingText = _a.showingText, toText = _a.toText, ofText = _a.ofText, resultsText = _a.resultsText;
+    var title = _a.title, subtitle = _a.subtitle, headerContent = _a.headerContent, data = _a.data, _b = _a.idAccessor, idAccessor = _b === void 0 ? "_id" : _b, actions = _a.actions, columns = _a.columns, isLoading = _a.isLoading, _c = _a.noRecords, noRecordsText = _c === void 0 ? "No records" : _c, onRowClick = _a.onRowClick, rowWrapper = _a.rowWrapper, pagination = _a.pagination, _d = _a.currentPage, currentPage = _d === void 0 ? 0 : _d, onChangePage = _a.onChangePage, totalItems = _a.totalItems, _e = _a.itemsPerPage, itemsPerPage = _e === void 0 ? 0 : _e, className = _a.className, autoHeight = _a.autoHeight, onChangeSort = _a.onChangeSort, _f = _a.sort, defaultSort = _f === void 0 ? [] : _f, previousText = _a.previousText, nextText = _a.nextText, showingText = _a.showingText, toText = _a.toText, ofText = _a.ofText, resultsText = _a.resultsText, tableClassName = _a.tableClassName;
     var _g = __read((0, react_1.useState)(defaultSort), 2), sort = _g[0], setSort = _g[1];
     var _h = __read((0, react_1.useState)(currentPage), 2), page = _h[0], setPage = _h[1];
     (0, react_1.useEffect)(function () {
@@ -103,7 +103,7 @@ function DataTable(_a) {
     }, [sort]);
     return ((0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: (0, clsx_1.default)({
             "flex flex-1 flex-col": autoHeight,
-        }, className) }, { children: [(title || subtitle || headerContent) && ((0, jsx_runtime_1.jsx)(Table_1.default.Header, __assign({ title: title, subtitle: subtitle }, { children: headerContent }))), (0, jsx_runtime_1.jsxs)(Table_1.default, __assign({ autoHeight: autoHeight }, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Head, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) {
+        }, className) }, { children: [(title || subtitle || headerContent) && ((0, jsx_runtime_1.jsx)(Table_1.default.Header, __assign({ title: title, subtitle: subtitle }, { children: headerContent }))), (0, jsx_runtime_1.jsxs)(Table_1.default, __assign({ autoHeight: autoHeight, className: tableClassName }, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Head, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) {
                                         var id = column.id ||
                                             (typeof column.title === "string"
                                                 ? column.title

@@ -120,6 +120,6 @@ function SignUpView(_a) {
                             },
                         }), { error: !!errors.email, helpText: (_b = errors.email) === null || _b === void 0 ? void 0 : _b.message })), (0, jsx_runtime_1.jsx)(Input_1.default, __assign({ label: t("Password"), type: "password", autoComplete: "current-password", required: true }, register("password", {
                             required: t("Please fill with your password"),
-                        }))), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", variant: "filled", className: "w-full", loading: isCreatingAccount }, { children: t("Sign up") }))] })) }))] })));
+                        }))), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ type: "submit", variant: "filled", color: "primary", className: "w-full", loading: isCreatingAccount }, { children: t("Sign up") }))] })) }))] })));
 }
 exports.default = SignUpView;

@@ -23,7 +23,7 @@ declare const styles: {
 };
 export declare type AlertProps = {
     title: ReactNode;
-    variant?: keyof typeof styles["variants"];
+    variant?: keyof (typeof styles)["variants"];
     children?: ReactNode;
     actions?: ReactNode;
 } & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "title">;
