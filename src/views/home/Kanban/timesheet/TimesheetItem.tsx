@@ -7,7 +7,7 @@ import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 export function TimesheetItem({
   timesheet,
 }: {
-  timesheet: TimesheetListFromProjectApiResponse[0];
+  timesheet: TimesheetListFromProjectApiResponse["data"][0];
 }) {
   let time =
     timesheet?.time ||
