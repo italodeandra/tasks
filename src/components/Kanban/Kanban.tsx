@@ -211,7 +211,7 @@ export function Kanban({
   };
 
   return (
-    <div className={clsx("flex", className)}>
+    <div className={clsx("inline-flex", className)}>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCorners}

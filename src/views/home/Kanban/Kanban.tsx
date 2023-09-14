@@ -207,13 +207,13 @@ export function Kanban() {
           </Group>
         </div>
 
-        <div className="relative w-full flex-1 overflow-auto px-4 pb-14">
+        <div className="relative flex-1 overflow-auto pb-4">
           <UiKanban
             items={items}
             renderItem={renderItem}
             renderColumn={renderColumn}
             onChange={handleKanbanChange}
-            className="gap-8 sm:gap-2"
+            className="mx-4 gap-8 sm:gap-2"
           />
         </div>
       </Stack>
