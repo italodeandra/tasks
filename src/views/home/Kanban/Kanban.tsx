@@ -26,6 +26,29 @@ import { selectedProjectsState } from "./selectedProjects.state";
 import { Project } from "./Project";
 import { ModeToggle } from "@italodeandra/ui/components/ModeToggle/ModeToggle";
 import UserMenu from "../../panel/layout/UserMenu";
+import { useTimesheetStatus } from "../../../pages/api/timesheet/status";
+import Loading from "@italodeandra/ui/components/Loading/Loading";
+import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
+import { Timer } from "./Task/Timer";
+
+function TimesheetStatus() {
+  let { data, isLoading } = useTimesheetStatus();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <Group className="items-center">
+      {data.currentClock && <Timer task={data.currentClock} />}
+      <div>Today: {prettyMilliseconds(data.todayClockedTime)}</div>
+    </Group>
+  );
+}
 
 export function Kanban() {
   let { selectedProjects } = useSnapshot(selectedProjectsState);
@@ -177,6 +200,7 @@ export function Kanban() {
           </Stack>
           <div className="flex-grow" />
           <Group className="mb-auto pb-0">
+            <TimesheetStatus />
             <ModeToggle />
             <UserMenu />
           </Group>
@@ -193,12 +217,16 @@ export function Kanban() {
         </div>
       </Stack>
       {projects && selectedProjects.length === 1 && (
-        <Timesheet
-          project={
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            projects.find((project) => selectedProjects.includes(project._id))!
-          }
-        />
+        <Stack className="w-1/2 shrink-0 border-l border-zinc-200 p-4 dark:border-zinc-700">
+          <Timesheet
+            project={
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              projects.find((project) =>
+                selectedProjects.includes(project._id)
+              )!
+            }
+          />
+        </Stack>
       )}
     </Group>
   );

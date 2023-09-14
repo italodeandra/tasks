@@ -9,14 +9,18 @@ import clsx from "clsx";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
-export function Timer({ task }: { task: TaskListApiResponse[0] }) {
+export function Timer({
+  task,
+}: {
+  task: Pick<TaskListApiResponse[0], "_id" | "timesheet">;
+}) {
   let { mutate: start, isLoading: isStarting } = useTimesheetStart();
   let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
   let isLoading = isStarting || isStopping;
 
   let handleClick = useCallback(() => {
     if (task.timesheet?.currentClockIn) {
-      stop(task);
+      stop();
     } else {
       start(task);
     }
@@ -41,7 +45,7 @@ export function Timer({ task }: { task: TaskListApiResponse[0] }) {
         "opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100":
           !time,
       })}
-      {...(time
+      {...(time >= 1000
         ? {
             leading: <ClockIcon />,
             children: prettyMilliseconds(time),

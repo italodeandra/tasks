@@ -22,6 +22,7 @@ import getTask from "../../../collections/task";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
+import { stopClock } from "./stop";
 
 async function handler(
   args: {
@@ -58,6 +59,8 @@ async function handler(
   if (activeTimesheet) {
     throw badRequest;
   }
+
+  await stopClock(user._id);
 
   await Timesheet.insertOne({
     taskId: task._id,

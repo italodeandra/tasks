@@ -5,8 +5,7 @@ import {
   InferApiResponse,
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import { notFound, unauthorized } from "@italodeandra/next/api/errors";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import { unauthorized } from "@italodeandra/next/api/errors";
 import {
   useMutation,
   UseMutationOptions,
@@ -14,36 +13,15 @@ import {
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import getTask from "../../../collections/task";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
 
-async function handler(
-  args: {
-    _id: string | ObjectId;
-  },
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await connectDb();
-  let Task = getTask();
+export async function stopClock(userId: ObjectId) {
   let Timesheet = getTimesheet();
-  let user = await getUserFromCookies(req, res);
-  if (!user) {
-    throw unauthorized;
-  }
-
-  let _id = isomorphicObjectId(args._id);
-
-  let task = await Task.findById(_id);
-  if (!task) {
-    throw notFound(res, { task: _id });
-  }
-
   let activeTimesheet = await Timesheet.findOne({
-    userId: user._id,
-    taskId: task._id,
+    userId: userId,
+    // taskId: task._id,
     startedAt: {
       $exists: true,
     },
@@ -51,28 +29,32 @@ async function handler(
       $exists: false,
     },
   });
-  if (!activeTimesheet?.startedAt) {
-    throw notFound(res, {
-      userId: user._id,
-      taskId: task._id,
-      timesheetId: activeTimesheet?._id,
-    });
+  if (activeTimesheet?.startedAt) {
+    let stoppedAt = new Date();
+    let addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
+
+    await Timesheet.updateOne(
+      {
+        _id: activeTimesheet._id,
+      },
+      {
+        $set: {
+          stoppedAt,
+          time: (activeTimesheet.time || 0) + addedTime,
+        },
+      }
+    );
+  }
+}
+
+async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
+  await connectDb();
+  let user = await getUserFromCookies(req, res);
+  if (!user) {
+    throw unauthorized;
   }
 
-  let stoppedAt = new Date();
-  let addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
-
-  await Timesheet.updateOne(
-    {
-      _id: activeTimesheet._id,
-    },
-    {
-      $set: {
-        stoppedAt,
-        time: (activeTimesheet.time || 0) + addedTime,
-      },
-    }
-  );
+  await stopClock(user._id);
 }
 
 export default apiHandlerWrapper(handler);

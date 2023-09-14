@@ -81,7 +81,7 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
   };
 
   return (
-    <Stack className="w-full p-4">
+    <Stack className="h-full w-full">
       <DataTable
         title={
           <Group className="items-center gap-4">
@@ -140,20 +140,22 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
           },
         ]}
       />
-      <div className="grid grid-cols-2 gap-2">
-        <div>
-          <Text variant="label">Total clocked</Text>
-          <Text>{prettyMilliseconds(totalClocked)}</Text>
+      {!!totalClocked && (
+        <div className="grid grid-cols-2 gap-2">
+          <div>
+            <Text variant="label">Total clocked</Text>
+            <Text>{prettyMilliseconds(totalClocked)}</Text>
+          </div>
+          <div>
+            <Text variant="label">Total paid</Text>
+            <Text>{prettyMilliseconds(totalPaid)}</Text>
+          </div>
+          <div>
+            <Text variant="label">Pending payment</Text>
+            <Text>{prettyMilliseconds(pendingPayment)}</Text>
+          </div>
         </div>
-        <div>
-          <Text variant="label">Total paid</Text>
-          <Text>{prettyMilliseconds(totalPaid)}</Text>
-        </div>
-        <div>
-          <Text variant="label">Pending payment</Text>
-          <Text>{prettyMilliseconds(pendingPayment)}</Text>
-        </div>
-      </div>
+      )}
     </Stack>
   );
 }
