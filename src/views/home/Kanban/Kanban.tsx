@@ -227,7 +227,7 @@ export function Kanban() {
           />
         </div>
         {projects && selectedProjects.length === 1 && (
-          <div className="px-4 pb-1">
+          <div className="px-4 pb-1 sm:hidden">
             <Button
               className="w-full"
               onClick={() => setMobileTimesheetOpen(true)}
