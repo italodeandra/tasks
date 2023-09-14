@@ -12,7 +12,7 @@ import { TimesheetType } from "../../../../collections/timesheet";
 import _ from "lodash";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Button from "@italodeandra/ui/components/Button/Button";
-import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { ClipboardIcon, PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { TimesheetItem } from "./TimesheetItem";
 import Text from "@italodeandra/ui/components/Text";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
@@ -20,6 +20,9 @@ import Input from "@italodeandra/ui/components/Input/Input";
 import { useForm } from "react-hook-form";
 import { useTimesheetAdd } from "../../../../pages/api/timesheet/add";
 import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
+import dayjs from "dayjs";
+import copy2DToClipboard from "@italodeandra/ui/utils/copy2DToClipboard";
+import { translateTimesheetType } from "../../../../utils/translateTimesheetType";
 
 interface FieldValues {
   type: TimesheetType;
@@ -108,12 +111,16 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
       },
       {
         title: "Type",
-        render: (item) =>
-          ({
-            [TimesheetType.CLOCK_IN_OUT]: "Clock in/out",
-            [TimesheetType.MANUAL]: "Manual",
-            [TimesheetType.PAYMENT]: "Payment",
-          }[item.type]),
+        render: (item) => translateTimesheetType(item.type),
+      },
+      {
+        title: "Descrição",
+        render: (item) => item.task?.content,
+        cellClassName: "max-w-[300px] truncate",
+      },
+      {
+        title: "Data",
+        render: (item) => dayjs(item.createdAt).format("lll"),
       },
     ],
     []
@@ -161,6 +168,18 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
         }
         isLoading={isLoading || isDeleting}
         actions={[
+          {
+            title: "Copy",
+            icon: <ClipboardIcon />,
+            onClick: (item) =>
+              copy2DToClipboard([
+                [
+                  item.time ? prettyMilliseconds(item.time) : "",
+                  item.task?.content || "",
+                  dayjs(item.createdAt).format("lll"),
+                ],
+              ]),
+          },
           {
             title: "Delete",
             icon: <TrashIcon />,

@@ -9,8 +9,10 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { QueryClient, useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import getTimesheet from "../../../collections/timesheet";
+import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import { ITask } from "../../../collections/task";
+import removeMd from "remove-markdown";
 
 async function handler(
   args: { projectId: string },
@@ -26,19 +28,61 @@ async function handler(
 
   let projectId = isomorphicObjectId(args.projectId);
 
-  return Timesheet.find(
-    {
-      userId: user._id,
-      projectId: projectId,
-    },
-    {
-      projection: {
-        time: 1,
-        startedAt: 1,
-        type: 1,
+  return (
+    await Timesheet.aggregate<
+      Pick<ITimesheet, "_id" | "time" | "startedAt" | "type" | "createdAt"> & {
+        task?: Pick<ITask, "_id" | "content">;
+      }
+    >([
+      {
+        $match: {
+          userId: user._id,
+          projectId: projectId,
+        },
       },
-    }
-  );
+      {
+        $lookup: {
+          from: "tasks",
+          localField: "taskId",
+          foreignField: "_id",
+          as: "task",
+          pipeline: [
+            {
+              $project: {
+                content: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$task",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $project: {
+          time: 1,
+          startedAt: 1,
+          createdAt: 1,
+          type: 1,
+          task: 1,
+        },
+      },
+      {
+        $sort: {
+          createdAt: 1,
+        },
+      },
+    ])
+  ).map((t) => ({
+    ...t,
+    task: t.task && {
+      ...t.task,
+      content: removeMd(t.task?.content).split("\n")[0],
+    },
+  }));
 }
 
 export default apiHandlerWrapper(handler);

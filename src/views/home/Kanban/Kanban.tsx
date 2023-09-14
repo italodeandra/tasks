@@ -194,7 +194,7 @@ export function Kanban() {
         </div>
       </Stack>
       {!!selectedProjects.length && (
-        <Stack className="w-96 shrink-0 border-l border-gray-200 p-4">
+        <Stack className="w-[51rem] max-w-full shrink-0 border-l border-gray-200 p-4">
           {projects
             ?.filter((project) => selectedProjects.includes(project._id))
             .map((project) => (
