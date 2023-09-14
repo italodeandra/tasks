@@ -22,11 +22,9 @@ export function Timer({ task }: { task: TaskListApiResponse[0] }) {
     }
   }, [start, stop, task]);
 
-  let time =
-    (task.timesheet?.time || 0) +
-    (task.timesheet?.currentClockIn
-      ? Date.now() - new Date(task.timesheet.currentClockIn).getTime()
-      : 0);
+  let time = task.timesheet?.currentClockIn
+    ? Date.now() - new Date(task.timesheet.currentClockIn).getTime()
+    : task.timesheet?.time || 0;
 
   let rerender = useUpdate();
   useInterval(rerender, time ? ms("1s") : null);
