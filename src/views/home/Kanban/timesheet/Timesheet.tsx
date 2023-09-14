@@ -84,7 +84,7 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
     <Stack className="h-full w-full">
       <DataTable
         title={
-          <Group className="items-center gap-4">
+          <div className="flex flex-col items-center gap-4 sm:flex-row">
             <span>Timesheet {project.name}</span>
             <Group className="mx-auto items-center">
               <Button
@@ -109,15 +109,21 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
                 <ChevronRightIcon />
               </Button>
             </Group>
-          </Group>
+          </div>
         }
         data={timesheet?.data}
         columns={columns}
         autoHeight
         headerContent={
-          <Button icon onClick={handleAddClick}>
-            <PlusIcon />
-          </Button>
+          <div className="flex">
+            <Button
+              leading={<PlusIcon />}
+              onClick={handleAddClick}
+              className="ml-auto sm:ml-0"
+            >
+              Add
+            </Button>
+          </div>
         }
         isLoading={isLoading || isDeleting}
         actions={[

@@ -1,5 +1,11 @@
 import { useTaskList } from "../../../pages/api/task/list";
-import React, { cloneElement, ReactElement, useCallback, useMemo } from "react";
+import React, {
+  cloneElement,
+  ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { TaskStatus } from "../../../collections/task";
 import { useTaskBatchUpdateOrder } from "../../../pages/api/task/batchUpdateOrder";
 import Alert from "@italodeandra/ui/components/Alert/Alert";
@@ -56,6 +62,7 @@ export function Kanban() {
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
+  let [mobileTimesheetOpen, setMobileTimesheetOpen] = useState(false);
 
   let items = useMemo(() => {
     return {
@@ -161,12 +168,15 @@ export function Kanban() {
   }
 
   return (
-    <Group className="gap-0">
+    <Group className="h-screen gap-0">
       <NewProjectModal />
       <Stack
         className={clsx(
-          "h-screen pt-4",
-          selectedProjects.length === 1 ? "w-full sm:w-1/2" : "w-full"
+          "pt-4",
+          selectedProjects.length === 1 ? "w-full sm:w-1/2" : "w-full",
+          {
+            "hidden sm:flex": mobileTimesheetOpen,
+          }
         )}
       >
         <div className="flex flex-col-reverse gap-2 px-4 sm:flex-row">
@@ -216,9 +226,32 @@ export function Kanban() {
             className="mx-4 gap-8 sm:gap-2"
           />
         </div>
+        {projects && selectedProjects.length === 1 && (
+          <div className="px-4 pb-1">
+            <Button
+              className="w-full"
+              onClick={() => setMobileTimesheetOpen(true)}
+            >
+              Open timesheet
+            </Button>
+          </div>
+        )}
       </Stack>
       {projects && selectedProjects.length === 1 && (
-        <Stack className="hidden w-1/2 shrink-0 border-l border-zinc-200 p-4 dark:border-zinc-700 sm:flex">
+        <Stack
+          className={clsx(
+            "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
+            {
+              hidden: !mobileTimesheetOpen,
+            }
+          )}
+        >
+          <Button
+            onClick={() => setMobileTimesheetOpen(false)}
+            className="sm:hidden"
+          >
+            Close timesheet
+          </Button>
           <Timesheet
             project={
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
