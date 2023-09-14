@@ -46,7 +46,7 @@ export function ProjectSelector({
         label={selectedProject ? selectedProject.name : "Project"}
         className="mr-auto"
         position="left"
-        buttonProps={{ size: "sm", variant: "filled", color: "white" }}
+        buttonProps={{ size: "sm", variant: "filled", color: "default" }}
       >
         <Menu.Item
           className={clsx({

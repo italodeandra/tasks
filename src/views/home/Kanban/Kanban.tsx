@@ -84,7 +84,7 @@ export function Kanban() {
         (!task.content ||
           !selectedProjects.length ||
           selectedProjects.includes(task.projectId || "")) ? (
-        <Task key={id} task={task} />
+        <Task key={id} task={task} id={id} />
       ) : null;
     },
     [getTask, selectedProjects]
@@ -166,10 +166,10 @@ export function Kanban() {
       <Stack
         className={clsx(
           "h-screen pt-4",
-          selectedProjects.length === 1 ? "w-1/2" : "w-full"
+          selectedProjects.length === 1 ? "w-full sm:w-1/2" : "w-full"
         )}
       >
-        <Group className="px-4">
+        <div className="flex flex-col-reverse gap-2 px-4 sm:flex-row">
           <Stack>
             <Text variant="label">Projects</Text>
             <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
@@ -201,10 +201,11 @@ export function Kanban() {
           <div className="flex-grow" />
           <Group className="mb-auto pb-0">
             <TimesheetStatus />
+            <div className="flex-grow sm:hidden"></div>
             <ModeToggle />
             <UserMenu />
           </Group>
-        </Group>
+        </div>
 
         <div className="relative w-full flex-1 overflow-auto px-4 pb-14">
           <UiKanban
@@ -217,7 +218,7 @@ export function Kanban() {
         </div>
       </Stack>
       {projects && selectedProjects.length === 1 && (
-        <Stack className="w-1/2 shrink-0 border-l border-zinc-200 p-4 dark:border-zinc-700">
+        <Stack className="hidden w-1/2 shrink-0 border-l border-zinc-200 p-4 dark:border-zinc-700 sm:flex">
           <Timesheet
             project={
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

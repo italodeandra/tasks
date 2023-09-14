@@ -16,15 +16,24 @@ import Loading from "@italodeandra/ui/components/Loading/Loading";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
 import { Timer } from "./Timer";
 import { Icon } from "@iconify/react";
+import { useSortable } from "@dnd-kit/sortable";
+import { UniqueIdentifier } from "@dnd-kit/core";
 
 let cardClassName = "rounded-md border text-sm";
 
-export function Task({ task }: { task: TaskListApiResponse[0] }) {
+export function Task({
+  task,
+  id,
+}: {
+  task: TaskListApiResponse[0];
+  id: UniqueIdentifier;
+}) {
   let [isEditing, setEditing] = useState(!task.content);
   let [newValue, setNewValue] = useState(task.content);
   let [selectedProjectId, setSelectedProjectId] = useState(
     task.projectId || null
   );
+  const { setActivatorNodeRef, listeners } = useSortable({ id });
 
   let toggleEditing = useCallback(() => setEditing((v) => !v), []);
 
@@ -55,7 +64,6 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
     <>
       {isEditing ? (
         <Stack
-          data-no-dnd="true"
           className={clsx(
             cardClassName,
             "border-zinc-300 bg-zinc-200 ring-1 ring-zinc-300 dark:border-zinc-600 dark:bg-zinc-700 dark:ring-zinc-600" // default
@@ -83,7 +91,7 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
                   icon
                   size="sm"
                   variant="outlined"
-                  color="white"
+                  color="default"
                   onClick={handleSaveClick}
                 >
                   {isUpserting ? (
@@ -122,7 +130,6 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
               "group-focus:[&_hr]:hidden group-focus:[&_hr_~_*]:block"
             )}
             dangerouslySetInnerHTML={{ __html: task.html }}
-            data-no-dnd="true"
           />
 
           <Group>
@@ -137,10 +144,27 @@ export function Task({ task }: { task: TaskListApiResponse[0] }) {
             )}
             <div className="flex-grow" />
             <Timer task={task} />
-            <Icon
-              icon="radix-icons:drag-handle-dots-2"
-              className="m-2 h-5 w-5 cursor-grab text-zinc-500 sm:m-1"
-            />
+            <div
+              tabIndex={0}
+              ref={setActivatorNodeRef}
+              {...listeners}
+              className="outline-none"
+            >
+              <Icon
+                icon="radix-icons:drag-handle-dots-2"
+                className="m-2 h-5 w-5 cursor-grab text-zinc-500 sm:m-1"
+                // onClick={(e) => {
+                //   e.preventDefault();
+                //   e.stopPropagation();
+                //   return false;
+                // }}
+                // onDoubleClick={(e) => {
+                //   e.preventDefault();
+                //   e.stopPropagation();
+                //   return false;
+                // }}
+              />
+            </div>
           </Group>
           <TaskOptions task={task} onEditClick={() => setEditing(true)} />
         </Stack>

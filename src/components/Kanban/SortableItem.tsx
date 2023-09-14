@@ -13,8 +13,7 @@ export default function SortableItem({
   className?: string;
   renderItem?: (id: UniqueIdentifier) => ReactNode;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id });
+  const { attributes, setNodeRef, transform, transition } = useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -31,7 +30,6 @@ export default function SortableItem({
       })}
       style={style}
       {...attributes}
-      {...listeners}
     >
       {rendered}
     </div>
