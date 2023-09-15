@@ -38,10 +38,13 @@ import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import { Timer } from "./Task/Timer";
 
 function TimesheetStatus() {
-  let { data, isLoading } = useTimesheetStatus();
+  let [today] = useState(() => new Date());
+  let { data, isLoading } = useTimesheetStatus({
+    today,
+  });
 
   if (isLoading) {
-    return <Loading />;
+    return <Loading className="my-auto" />;
   }
 
   if (!data) {
@@ -51,7 +54,7 @@ function TimesheetStatus() {
   return (
     <Group className="items-center">
       {data.currentClock && <Timer task={data.currentClock} />}
-      <div>Today: {prettyMilliseconds(data.todayClockedTime)}</div>
+      <Text size="sm">Today: {prettyMilliseconds(data.todayClockedTime)}</Text>
     </Group>
   );
 }
