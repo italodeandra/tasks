@@ -16,6 +16,7 @@ import { invalidate_timesheetListFromProject } from "../timesheet/list-from-proj
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getTimesheet from "../../../collections/timesheet";
 import { sumBy } from "lodash";
+import { invalidate_timesheetStatus } from "../timesheet/status";
 
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
@@ -120,5 +121,6 @@ export const useTaskList = (args?: TaskListApiArgs) =>
 
 export const invalidate_taskList = async (queryClient: QueryClient) => {
   await invalidate_timesheetListFromProject(queryClient);
+  await invalidate_timesheetStatus(queryClient);
   return queryClient.invalidateQueries([queryKey]);
 };
