@@ -41,13 +41,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CarouselSlide = exports.Carousel = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
 var solid_1 = require("@heroicons/react/20/solid");
 var embla_carousel_react_1 = __importDefault(require("embla-carousel-react"));
 var clsx_1 = __importDefault(require("clsx"));
 var react_1 = require("react");
-var Button_1 = __importDefault(require("../Button/Button"));
+var Button_1 = __importDefault(require("../Button"));
 var react_use_1 = require("react-use");
 var react_merge_refs_1 = __importDefault(require("react-merge-refs"));
 function Carousel(_a) {
@@ -82,10 +81,9 @@ function Carousel(_a) {
                             hidden: !canScrollNext,
                         }), disabled: !canScrollNext, onClick: function () { return embla === null || embla === void 0 ? void 0 : embla.scrollNext(); } }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronRightIcon, {}) }))] })))] })));
 }
-exports.Carousel = Carousel;
+exports.default = Carousel;
 Carousel.Slide = CarouselSlide;
 function CarouselSlide(_a) {
     var children = _a.children, className = _a.className;
     return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("min-w-0 flex-[0_0_auto]", className) }, { children: children })));
 }
-exports.CarouselSlide = CarouselSlide;

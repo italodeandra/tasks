@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { UnstyledAutocompleteProps } from "../Autocomplete/UnstyledAutocomplete";
+import { UnstyledAutocompleteProps } from "../Autocomplete";
 export interface SpotlightProps<T extends {
     _id: string;
 }> extends UnstyledAutocompleteProps<T> {

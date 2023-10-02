@@ -10,6 +10,29 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -34,11 +57,10 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var valtio_1 = require("valtio");
 var dialogs_state_1 = __importDefault(require("./dialogs.state"));
 var react_1 = require("react");
-var Modal_1 = __importDefault(require("../Modal/Modal"));
-var useModalState_1 = __importDefault(require("../Modal/useModalState"));
+var Modal_1 = __importStar(require("../Modal"));
 function Dialog(_a) {
-    var icon = _a.icon, open = _a.open, title = _a.title, content = _a.content, actions = _a.actions, _id = _a._id;
-    var _b = __read((0, useModalState_1.default)(), 2), modalOpen = _b[0], _c = _b[1], openModal = _c.openModal, closeModal = _c.closeModal;
+    var icon = _a.icon, open = _a.open, title = _a.title, content = _a.content, actions = _a.actions, _id = _a._id, hideCloseButton = _a.hideCloseButton, containerClassName = _a.containerClassName, panelClassName = _a.panelClassName;
+    var _b = __read((0, Modal_1.useModalState)(), 2), modalOpen = _b[0], _c = _b[1], openModal = _c.openModal, closeModal = _c.closeModal;
     (0, react_1.useEffect)(function () {
         if (open) {
             openModal();
@@ -47,20 +69,21 @@ function Dialog(_a) {
             closeModal();
         }
     }, [closeModal, open, openModal]);
-    return ((0, jsx_runtime_1.jsx)(Modal_1.default, __assign({ open: modalOpen, onClose: closeModal }, { children: (0, jsx_runtime_1.jsxs)(Modal_1.default.Container, { children: [(0, jsx_runtime_1.jsx)(Modal_1.default.CloseButton, { onClick: closeModal }), icon && (0, jsx_runtime_1.jsx)(Modal_1.default.Icon, { children: icon }), title && (0, jsx_runtime_1.jsx)(Modal_1.default.Title, { children: title }), content && ((0, jsx_runtime_1.jsx)(Modal_1.default.Content, { children: typeof content === "function"
+    return ((0, jsx_runtime_1.jsx)(Modal_1.default, __assign({ open: modalOpen, onClose: closeModal, panelClassName: panelClassName }, { children: (0, jsx_runtime_1.jsxs)(Modal_1.default.Container, __assign({ className: containerClassName }, { children: [!hideCloseButton && (0, jsx_runtime_1.jsx)(Modal_1.default.CloseButton, { onClick: closeModal }), icon && (0, jsx_runtime_1.jsx)(Modal_1.default.Icon, { children: icon }), title && (0, jsx_runtime_1.jsx)(Modal_1.default.Title, { children: title }), content && ((0, jsx_runtime_1.jsx)(Modal_1.default.Content, { children: typeof content === "function"
                         ? content(_id)
                         : content })), actions && ((0, jsx_runtime_1.jsx)(Modal_1.default.Actions, { children: typeof actions === "function"
                         ? actions(_id)
-                        : actions }))] }) })));
+                        : actions }))] })) })));
 }
-function Dialogs() {
-    var _a = (0, valtio_1.useSnapshot)(dialogs_state_1.default), dialogs = _a.dialogs, setRendered = _a.setRendered;
+function Dialogs(_a) {
+    var containerClassName = _a.containerClassName, panelClassName = _a.panelClassName;
+    var _b = (0, valtio_1.useSnapshot)(dialogs_state_1.default), dialogs = _b.dialogs, setRendered = _b.setRendered;
     (0, react_1.useEffect)(function () {
         setRendered(true);
         return function () {
             setRendered(false);
         };
     }, [setRendered]);
-    return ((0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: dialogs.map(function (dialog) { return ((0, jsx_runtime_1.jsx)(Dialog, __assign({}, dialog), dialog._id)); }) }));
+    return ((0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: dialogs.map(function (dialog) { return ((0, jsx_runtime_1.jsx)(Dialog, __assign({}, dialog, { containerClassName: containerClassName, panelClassName: panelClassName }), dialog._id)); }) }));
 }
 exports.default = Dialogs;

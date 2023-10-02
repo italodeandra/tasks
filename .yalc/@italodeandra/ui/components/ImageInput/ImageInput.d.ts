@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { InputProps } from "../Input/Input";
-import { FileSelectProps } from "../FileSelect/FileSelect";
+import { InputProps } from "../Input";
+import { FileSelectProps } from "../FileSelect";
 export declare type ImageFile = {
     file: File;
     description?: string;
@@ -8,6 +8,7 @@ export declare type ImageFile = {
 export declare type ImageUrl = {
     url: string;
     description?: string;
+    name: string;
 };
 export declare type Image = ImageFile | ImageUrl;
 declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles"> & {

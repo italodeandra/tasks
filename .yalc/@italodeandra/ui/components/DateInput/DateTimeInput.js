@@ -30,7 +30,7 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var date_fns_1 = require("date-fns");
 var pt_BR_1 = __importDefault(require("date-fns/locale/pt-BR"));
-var Input_1 = __importDefault(require("../Input/Input"));
+var Input_1 = __importDefault(require("../Input"));
 var solid_1 = require("@heroicons/react/20/solid");
 function parseDate(value) {
     try {

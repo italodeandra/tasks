@@ -41,10 +41,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
-var Loading_1 = __importDefault(require("../Loading/Loading"));
-var Skeleton_1 = require("../Skeleton/Skeleton");
-var Stack_1 = __importDefault(require("../Stack/Stack"));
-var Text_1 = __importDefault(require("../Text/Text"));
+var Loading_1 = __importDefault(require("../Loading"));
+var Skeleton_1 = __importDefault(require("../Skeleton"));
+var Stack_1 = __importDefault(require("../Stack"));
+var Text_1 = __importDefault(require("../Text"));
 var Table_1 = __importDefault(require("./Table"));
 var clsx_1 = __importDefault(require("clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
@@ -140,7 +140,7 @@ function DataTable(_a) {
                                                                 ? (_a = action.href) === null || _a === void 0 ? void 0 : _a.call(action, item)
                                                                 : action.href }, { children: action.icon })) }), i));
                                                 }) })))] })) }), item[idAccessor]));
-                            }), isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) { return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.Skeleton, { className: "h-3" }) }, column.id ||
-                                        (typeof column.title === "string" ? column.title : i))); }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ actions: true }, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.Skeleton, { className: "inline-block h-3 w-6" }) })))] })), !isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsx)(Table_1.default.Row, { children: (0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ colSpan: columns.length + (actions ? 1 : 0) }, { children: (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: noRecordsText })) })) }))] })] })), pagination ? ((0, jsx_runtime_1.jsx)(Table_1.default.FooterWithPagination, { totalItems: totalItems, itemsPerPage: itemsPerPage, currentPage: currentPage, onChangePage: onChangePage, previousText: previousText, nextText: nextText, showingText: showingText, toText: toText, ofText: ofText, resultsText: resultsText })) : undefined] })));
+                            }), isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) { return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "h-3" }) }, column.id ||
+                                        (typeof column.title === "string" ? column.title : i))); }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ actions: true }, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "inline-block h-3 w-6" }) })))] })), !isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsx)(Table_1.default.Row, { children: (0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ colSpan: columns.length + (actions ? 1 : 0) }, { children: (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: noRecordsText })) })) }))] })] })), pagination ? ((0, jsx_runtime_1.jsx)(Table_1.default.FooterWithPagination, { totalItems: totalItems, itemsPerPage: itemsPerPage, currentPage: currentPage, onChangePage: onChangePage, previousText: previousText, nextText: nextText, showingText: showingText, toText: toText, ofText: ofText, resultsText: resultsText })) : undefined] })));
 }
 exports.default = DataTable;

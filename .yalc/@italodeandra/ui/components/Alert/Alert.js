@@ -28,7 +28,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var solid_1 = require("@heroicons/react/20/solid");
 var clsx_1 = __importDefault(require("clsx"));
-var Group_1 = __importDefault(require("../Group/Group"));
+var Group_1 = __importDefault(require("../Group"));
 var styles = {
     variants: {
         default: {

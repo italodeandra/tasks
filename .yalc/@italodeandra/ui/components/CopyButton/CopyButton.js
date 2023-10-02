@@ -34,7 +34,7 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
 var outline_1 = require("@heroicons/react/24/outline");
-var Button_1 = __importDefault(require("../Button/Button"));
+var Button_1 = __importDefault(require("../Button"));
 function CopyButton(_a) {
     var text = _a.text, _b = _a.copyText, copyText = _b === void 0 ? "Copy" : _b, _c = _a.copiedText, copiedText = _c === void 0 ? "Copied!" : _c;
     var _d = __read((0, react_1.useState)(0), 2), copyCount = _d[0], setCopyCount = _d[1];

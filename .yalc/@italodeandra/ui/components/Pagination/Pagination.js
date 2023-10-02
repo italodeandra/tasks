@@ -35,7 +35,7 @@ var solid_1 = require("@heroicons/react/20/solid");
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
 var lodash_1 = require("lodash");
-var Button_1 = __importDefault(require("../Button/Button"));
+var Button_1 = __importDefault(require("../Button"));
 function Pagination(_a) {
     var totalItems = _a.totalItems, itemsPerPage = _a.itemsPerPage, currentPage = _a.currentPage, onChangePage = _a.onChangePage, className = _a.className;
     var _b = __read((0, react_1.useState)(currentPage), 2), page = _b[0], setPage = _b[1];

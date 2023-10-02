@@ -28,10 +28,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var react_2 = require("@headlessui/react");
-var Stack_1 = __importDefault(require("../Stack/Stack"));
-var Group_1 = __importDefault(require("../Group/Group"));
+var Stack_1 = __importDefault(require("../Stack"));
+var Group_1 = __importDefault(require("../Group"));
 var clsx_1 = __importDefault(require("clsx"));
-var Button_1 = __importDefault(require("../Button/Button"));
+var Button_1 = __importDefault(require("../Button"));
 var solid_1 = require("@heroicons/react/24/solid");
 function Modal(_a) {
     var open = _a.open, onClose = _a.onClose, children = _a.children, overlayClassName = _a.overlayClassName, panelClassName = _a.panelClassName, dialogClassName = _a.dialogClassName, dialogOuterPanelClassName = _a.dialogOuterPanelClassName, dialogOverflowClassName = _a.dialogOverflowClassName;
@@ -41,8 +41,8 @@ function Modal(_a) {
 exports.default = Modal;
 Modal.Container = ModalContainer;
 function ModalContainer(_a) {
-    var children = _a.children;
-    return (0, jsx_runtime_1.jsx)(Stack_1.default, __assign({ className: "!gap-4 px-4 pt-5 pb-4 sm:p-6" }, { children: children }));
+    var children = _a.children, className = _a.className;
+    return ((0, jsx_runtime_1.jsx)(Stack_1.default, __assign({ className: (0, clsx_1.default)("!gap-4 px-4 pt-5 pb-4 sm:p-6", className) }, { children: children })));
 }
 Modal.Title = ModalTitle;
 function ModalTitle(_a) {

@@ -1,6 +1,6 @@
 /// <reference types="react" />
-import { InputProps } from "../Input/Input";
+import { InputProps } from "../Input";
 export declare function parseDate(value: string): string;
 export declare function formatDate(value: string): string;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "select" | "key" | keyof import("react").InputHTMLAttributes<HTMLInputElement> | "error" | keyof import("../Input/UnstyledInput").UnstyledInputCommonProps | "loading"> & import("react").RefAttributes<HTMLInputElement>>;
+declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "select" | "key" | keyof import("react").InputHTMLAttributes<HTMLInputElement> | "error" | keyof import("../Input").UnstyledInputCommonProps | "loading"> & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

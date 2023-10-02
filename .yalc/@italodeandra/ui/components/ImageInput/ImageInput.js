@@ -90,9 +90,9 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var clsx_1 = __importDefault(require("clsx"));
 var react_1 = require("react");
 var react_use_1 = require("react-use");
-var Input_1 = require("../Input/Input");
-var Button_1 = __importDefault(require("../Button/Button"));
-var FileSelect_1 = __importDefault(require("../FileSelect/FileSelect"));
+var Input_1 = require("../Input");
+var Button_1 = __importDefault(require("../Button"));
+var FileSelect_1 = __importDefault(require("../FileSelect"));
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
 var solid_1 = require("@heroicons/react/20/solid");
 var lodash_1 = require("lodash");
@@ -186,6 +186,7 @@ function ImageInput(_a, ref) {
                             ? URL.createObjectURL(image.file)
                             : image.url,
                         description: image.description,
+                        name: image.name,
                     }); }),
                 },
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any

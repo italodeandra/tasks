@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from "react";
+import { CSSProperties, ReactElement, ReactNode } from "react";
 declare type Notification = {
     _id: string;
     message: string;
@@ -8,6 +8,7 @@ declare type Notification = {
     dismissable?: boolean;
     actions?: ReactNode;
     suppress?: boolean;
+    style?: CSSProperties;
 };
 declare const notificationsState: {
     rendered: boolean;

@@ -5,4 +5,4 @@ export interface ModeToggleProps {
     iconClassName?: string;
 }
 declare const ModeToggle: import("react").ForwardRefExoticComponent<ModeToggleProps & import("react").RefAttributes<HTMLButtonElement>>;
-export { ModeToggle };
+export default ModeToggle;

@@ -52,15 +52,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("@headlessui/react");
-var Loading_1 = __importDefault(require("../Loading/Loading"));
+var Loading_1 = __importDefault(require("../Loading"));
 var react_2 = require("react");
-var UnstyledInput_1 = __importDefault(require("../Input/UnstyledInput"));
-var Input_1 = require("../Input/Input");
+var Input_1 = require("../Input");
 var clsx_1 = __importDefault(require("clsx"));
-var Menu_1 = require("../Menu/Menu");
 var lodash_1 = require("lodash");
 var solid_1 = require("@heroicons/react/20/solid");
-var Badge_1 = __importDefault(require("../Badge/Badge"));
+var Badge_1 = __importDefault(require("../Badge"));
+var defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
 function getValue(item) {
     return typeof item === "string" ? item : item._id;
 }
@@ -105,7 +104,7 @@ function MultiSelect(_a) {
                 }));
     }, [filterFunction, filterProperty, items, query]);
     trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing || ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))));
-    var ComponentInput = as || UnstyledInput_1.default;
+    var ComponentInput = as || Input_1.UnstyledInput;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction
             ? renderFunction(item)
@@ -134,7 +133,7 @@ function MultiSelect(_a) {
                 var open = _a.open;
                 return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(ComponentInput
                         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        , __assign({}, props, { as: MultiSelectInput, placeholder: placeholder, value: query, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, "bg-white dark:bg-zinc-800", inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, labelClassName: (0, clsx_1.default)(Input_1.defaultLabelClassName, labelClassName), selectedItems: selectedItems, doRender: doRender, removeItem: removeItem })), ((creatable && query) || filteredItems.length > 0) && ((0, jsx_runtime_1.jsxs)(react_1.Combobox.Options, __assign({ static: isStatic, className: (0, clsx_1.default)(Menu_1.defaultMenuItemsClassName, "absolute z-10 mt-1 max-h-72 w-full scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800 dark:text-zinc-200") }, { children: [creatable && !filteredItems.length && !!query && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: query, className: function (_a) {
+                        , __assign({}, props, { as: MultiSelectInput, placeholder: placeholder, value: query, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, "bg-white dark:bg-zinc-800", inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, labelClassName: (0, clsx_1.default)(Input_1.defaultLabelClassName, labelClassName), selectedItems: selectedItems, doRender: doRender, removeItem: removeItem })), ((creatable && query) || filteredItems.length > 0) && ((0, jsx_runtime_1.jsxs)(react_1.Combobox.Options, __assign({ static: isStatic, className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute z-10 mt-1 max-h-72 w-full scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800 dark:text-zinc-200") }, { children: [creatable && !filteredItems.length && !!query && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: query, className: function (_a) {
                                         var active = _a.active;
                                         return (0, clsx_1.default)("cursor-default select-none px-4 py-2", {
                                             "bg-primary-600 text-white": active,
@@ -156,7 +155,7 @@ function MultiSelect(_a) {
                             open &&
                             emptyText &&
                             query !== "" &&
-                            filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: (0, clsx_1.default)(Menu_1.defaultMenuItemsClassName, "absolute mt-1 w-full p-4 text-sm text-gray-500 dark:text-zinc-400") }, { children: emptyText })))] }));
+                            filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute mt-1 w-full p-4 text-sm text-gray-500 dark:text-zinc-400") }, { children: emptyText })))] }));
             } })) })));
 }
 exports.default = MultiSelect;

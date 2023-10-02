@@ -6,6 +6,7 @@ export declare type IDialog = {
     content: ReactNode | ((_id: string) => ReactNode);
     icon?: ReactElement;
     open?: boolean;
+    hideCloseButton?: boolean;
 };
 declare const dialogsState: {
     rendered: boolean;

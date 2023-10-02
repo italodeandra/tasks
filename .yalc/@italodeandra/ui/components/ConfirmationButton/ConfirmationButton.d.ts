@@ -1,6 +1,6 @@
 import { MenuProps } from "../Menu/Menu";
 import { ReactNode } from "react";
-import { ButtonProps } from "../Button/Button";
+import { ButtonProps } from "../Button";
 export declare type ConfirmationButtonProps = {
     confirmation: string;
     label: ReactNode;

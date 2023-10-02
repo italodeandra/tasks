@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
-import { UnstyledInputProps } from "../Input/UnstyledInput";
-import Input from "../Input/Input";
+import Input, { UnstyledInputProps } from "../Input";
 export interface UnstyledAutocompleteProps<T extends {
     _id: string;
 }> extends Omit<UnstyledInputProps<false>, "as" | "onSelect" | "inputClassName" | "innerClassName" | "value"> {

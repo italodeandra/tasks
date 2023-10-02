@@ -17,10 +17,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var solid_1 = require("@heroicons/react/20/solid");
 var clsx_1 = __importDefault(require("clsx"));
-var Text_1 = __importDefault(require("../Text/Text"));
+var Text_1 = __importDefault(require("../Text"));
 var link_1 = __importDefault(require("next/link"));
-var Loading_1 = __importDefault(require("../Loading/Loading"));
-var Skeleton_1 = require("../Skeleton/Skeleton");
+var Loading_1 = __importDefault(require("../Loading"));
+var Skeleton_1 = __importDefault(require("../Skeleton"));
 function Breadcrumbs(_a) {
     var pages = _a.pages, _b = _a.homeHref, homeHref = _b === void 0 ? "/" : _b, className = _a.className, loading = _a.loading;
     if (!(pages === null || pages === void 0 ? void 0 : pages.length)) {
@@ -31,7 +31,7 @@ function Breadcrumbs(_a) {
                     return ((0, jsx_runtime_1.jsx)("li", __assign({ className: "flex" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex items-center" }, { children: [(0, jsx_runtime_1.jsx)("svg", __assign({ className: "h-full w-6 flex-shrink-0 text-gray-200 dark:text-zinc-800", viewBox: "0 0 24 44", preserveAspectRatio: "none", fill: "currentColor", xmlns: "http://www.w3.org/2000/svg", "aria-hidden": "true" }, { children: (0, jsx_runtime_1.jsx)("path", { d: "M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" }) })), (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ href: !isLast ? page.href : undefined, className: (0, clsx_1.default)("ml-4 text-sm font-medium !text-gray-500 dark:!text-gray-400", {
                                         "cursor-default": isLast,
                                         "hover:!text-gray-700 dark:hover:!text-gray-200": !isLast,
-                                    }), "aria-current": isLast ? "page" : undefined }, { children: page.loading ? ((0, jsx_runtime_1.jsx)(Skeleton_1.Skeleton, { className: "h-3 w-10" })) : (page.title) }))] })) }), page.title));
+                                    }), "aria-current": isLast ? "page" : undefined }, { children: page.loading ? ((0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "h-3 w-10" })) : (page.title) }))] })) }), page.title));
                 }), loading && ((0, jsx_runtime_1.jsx)("li", __assign({ className: "!ml-auto mt-3" }, { children: (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "ml-4 -mr-3" }) })))] })) })));
 }
 exports.default = Breadcrumbs;

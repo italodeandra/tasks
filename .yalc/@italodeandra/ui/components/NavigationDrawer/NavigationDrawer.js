@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var Drawer_1 = __importDefault(require("../Drawer/Drawer"));
+var Drawer_1 = __importDefault(require("../Drawer"));
 var navigationDrawer_state_1 = __importDefault(require("./navigationDrawer.state"));
 var valtio_1 = require("valtio");
 var react_1 = require("@headlessui/react");

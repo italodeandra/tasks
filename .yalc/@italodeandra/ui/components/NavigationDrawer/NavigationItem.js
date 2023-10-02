@@ -19,7 +19,7 @@ var clsx_1 = __importDefault(require("clsx"));
 var router_1 = require("next/dist/client/router");
 var react_1 = require("react");
 var react_use_1 = require("react-use");
-var Button_1 = __importDefault(require("../Button/Button"));
+var Button_1 = __importDefault(require("../Button"));
 var navigationDrawer_state_1 = __importDefault(require("./navigationDrawer.state"));
 var defaultTheme_1 = __importDefault(require("tailwindcss/defaultTheme"));
 function NavigationItem(_a) {

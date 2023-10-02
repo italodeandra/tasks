@@ -43,10 +43,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("@headlessui/react");
-var Loading_1 = __importDefault(require("../Loading/Loading"));
+var Loading_1 = __importDefault(require("../Loading"));
 var react_2 = require("react");
-var UnstyledInput_1 = __importDefault(require("../Input/UnstyledInput"));
-var Input_1 = require("../Input/Input");
+var Input_1 = require("../Input");
 var clsx_1 = __importDefault(require("clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
 var react_use_1 = require("react-use");
@@ -81,7 +80,7 @@ function UnstyledAutocomplete(_a) {
                 }));
     }, [filterFunction, filterProperty, items, query]);
     trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : trailing || !readOnly ? ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))) : undefined;
-    var ComponentInput = as || UnstyledInput_1.default;
+    var ComponentInput = as || Input_1.UnstyledInput;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction ? renderFunction(item) : item[renderProperty];
     }, [renderFunction, renderProperty]);

@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useModeToggle = void 0;
 function useModeToggle() {
     function disableTransitionsTemporarily() {
         document.documentElement.classList.add("[&_*]:!transition-none");
@@ -22,4 +21,4 @@ function useModeToggle() {
     }
     return toggleMode;
 }
-exports.useModeToggle = useModeToggle;
+exports.default = useModeToggle;

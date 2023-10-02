@@ -136,8 +136,8 @@ declare const _default: import("react").ForwardRefExoticComponent<{
 } & {
     children?: import("react").ReactNode;
 } & import("react").RefAttributes<HTMLAnchorElement>) | import("react").DetailedHTMLProps<import("react").ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & {
-    variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
-    color?: "default" | "success" | "error" | "primary" | "gray" | "white" | undefined;
+    variant?: "text" | "custom" | "light" | "filled" | "outlined" | undefined;
+    color?: "default" | "success" | "error" | "gray" | "white" | "primary" | undefined;
     size?: "xs" | "sm" | "lg" | "xl" | "md" | undefined;
     icon?: boolean | undefined;
     leadingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;

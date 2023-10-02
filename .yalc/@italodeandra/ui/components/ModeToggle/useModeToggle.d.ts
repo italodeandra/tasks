@@ -1,1 +1,1 @@
-export declare function useModeToggle(): () => void;
+export default function useModeToggle(): () => void;

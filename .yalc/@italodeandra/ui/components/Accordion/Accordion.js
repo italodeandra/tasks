@@ -17,7 +17,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var solid_1 = require("@heroicons/react/20/solid");
 var react_1 = require("@headlessui/react");
-var Stack_1 = __importDefault(require("../Stack/Stack"));
+var Stack_1 = __importDefault(require("../Stack"));
 function Accordion(_a) {
     var children = _a.children;
     return (0, jsx_runtime_1.jsx)(Stack_1.default, { children: children });

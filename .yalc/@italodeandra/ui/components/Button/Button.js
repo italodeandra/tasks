@@ -29,7 +29,7 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var UnstyledButton_1 = __importDefault(require("./UnstyledButton"));
 var clsx_1 = __importDefault(require("clsx"));
 var react_1 = require("react");
-var Loading_1 = __importDefault(require("../Loading/Loading"));
+var Loading_1 = __importDefault(require("../Loading"));
 var styles = {
     root: (0, clsx_1.default)("appearance-none select-none border transition-colors inline-flex items-center justify-center font-medium leading-4 focus:outline-none", "ring-offset-zinc-100 focus-visible:ring-2 focus:ring-primary-500 focus:ring-offset-2", "dark:ring-offset-zinc-900"),
     variant: {

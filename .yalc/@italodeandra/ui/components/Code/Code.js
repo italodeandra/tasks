@@ -41,7 +41,7 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var prism_react_renderer_1 = __importStar(require("prism-react-renderer"));
 var clsx_1 = __importDefault(require("clsx"));
-var CopyButton_1 = __importDefault(require("../CopyButton/CopyButton"));
+var CopyButton_1 = __importDefault(require("../CopyButton"));
 function Code(_a) {
     var children = _a.children, language = _a.language, className = _a.className, copy = _a.copy, copyText = _a.copyText, copiedText = _a.copiedText, theme = _a.theme;
     return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: (0, clsx_1.default)("group relative", className, {
