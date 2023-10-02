@@ -22,6 +22,7 @@ let converter = new showdown.Converter({
   simplifiedAutoLink: true,
   strikethrough: true,
   tasklists: true,
+  openLinksInNewWindow: true,
 });
 
 async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {

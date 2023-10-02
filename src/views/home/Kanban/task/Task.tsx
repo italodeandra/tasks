@@ -28,6 +28,7 @@ export function Task({
   task: TaskListApiResponse[0];
   id: UniqueIdentifier;
 }) {
+  let [expanded, setExpanded] = useState(false);
   let [isEditing, setEditing] = useState(!task.content);
   let [newValue, setNewValue] = useState(task.content);
   let [selectedProjectId, setSelectedProjectId] = useState(
@@ -115,6 +116,11 @@ export function Task({
             "focus:shadow focus:shadow-zinc-200 focus:outline-none dark:focus:shadow-zinc-800" // focus
           )}
           onDoubleClick={toggleEditing}
+          onClick={(e) => {
+            if ((e.target as HTMLAnchorElement).tagName !== "A") {
+              setExpanded(!expanded);
+            }
+          }}
         >
           <div
             className={clsx(
@@ -126,8 +132,11 @@ export function Task({
               "[&_.task-list-item]:ml-1.5",
               "[&_input[type='checkbox']]:!-ml-6.5 [&_input[type='checkbox']:checked]:!bg-primary-500 [&_input[type='checkbox']]:rounded-sm [&_input[type='checkbox']]:border-none [&_input[type='checkbox']]:bg-zinc-400/50 dark:[&_input[type='checkbox']]:bg-zinc-500/50",
               "prose-a:text-primary-500",
-              "[&_hr]:-mt-5 [&_hr]:mb-0 [&_hr]:h-auto [&_hr]:border-none [&_hr]:after:text-zinc-400 [&_hr]:after:content-['[...]'] dark:[&_hr]:after:text-zinc-600 [&_hr_~_*]:hidden",
-              "group-focus:[&_hr]:hidden group-focus:[&_hr_~_*]:block"
+              "[&_hr]:-mt-5 [&_hr]:mb-0 [&_hr]:h-auto [&_hr]:border-none [&_hr]:after:text-zinc-400 [&_hr]:after:content-['[...]'] dark:[&_hr]:after:text-zinc-600",
+              {
+                "[&_hr]:hidden [&_hr_~_*]:block": expanded,
+                "[&_hr_~_*]:hidden": !expanded,
+              }
             )}
             dangerouslySetInnerHTML={{ __html: task.html }}
           />
