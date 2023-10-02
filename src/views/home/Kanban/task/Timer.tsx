@@ -45,7 +45,7 @@ export function Timer({
         "opacity-0 transition-opacity focus:opacity-100 group-hover:opacity-100 group-focus:opacity-100":
           !time,
       })}
-      {...(time >= 1000
+      {...(time > 0
         ? {
             leading: <ClockIcon />,
             children: prettyMilliseconds(time),

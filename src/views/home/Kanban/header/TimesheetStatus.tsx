@@ -16,7 +16,7 @@ export function TimesheetStatus() {
     return <Loading className="my-auto" />;
   }
 
-  if (!data) {
+  if (!data || (!data.todayClockedTime && !data.currentClock)) {
     return null;
   }
 

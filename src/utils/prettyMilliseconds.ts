@@ -19,5 +19,5 @@ export function prettyMilliseconds(milliseconds: number) {
   const minutesStr = m > 0 ? `${m}m` : "";
   const secondsStr = h === 0 && m === 0 && s > 0 ? `${s}s` : "";
 
-  return `${hoursStr} ${minutesStr}${secondsStr}`.trim();
+  return `${hoursStr} ${minutesStr}${secondsStr}`.trim() || "0s";
 }
