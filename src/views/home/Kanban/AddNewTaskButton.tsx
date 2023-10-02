@@ -5,7 +5,7 @@ import Button from "@italodeandra/ui/components/Button/Button";
 import { PlusIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { useSnapshot } from "valtio";
-import { selectedProjectsState } from "./selectedProjects.state";
+import { state } from "./state";
 
 export function AddNewTaskButton({
   status,
@@ -16,7 +16,7 @@ export function AddNewTaskButton({
   order?: number;
   className?: string;
 }) {
-  let { selectedProjects } = useSnapshot(selectedProjectsState);
+  let { selectedProjects } = useSnapshot(state);
   let { mutate: upsert, isLoading } = useTaskUpsert();
 
   let handleAddNewClick = useCallback(() => {

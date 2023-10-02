@@ -1,6 +1,6 @@
 import { ProjectListApiResponse } from "../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
-import { selectedProjectsState } from "./selectedProjects.state";
+import { state } from "./state";
 import { useProjectArchive } from "../../../pages/api/project/archive";
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import Button from "@italodeandra/ui/components/Button/Button";
@@ -9,7 +9,7 @@ import clsx from "clsx";
 import React from "react";
 
 export function Project({ project }: { project: ProjectListApiResponse[0] }) {
-  let { selectedProjects } = useSnapshot(selectedProjectsState);
+  let { selectedProjects } = useSnapshot(state);
   let { mutate: archive, isLoading } = useProjectArchive();
 
   return (
@@ -22,9 +22,7 @@ export function Project({ project }: { project: ProjectListApiResponse[0] }) {
           }
           color={selectedProjects.includes(project._id) ? "primary" : undefined}
           onClick={() =>
-            (selectedProjectsState.selectedProjects = xor(selectedProjects, [
-              project._id,
-            ]))
+            (state.selectedProjects = xor(selectedProjects, [project._id]))
           }
           loading={isLoading}
         >

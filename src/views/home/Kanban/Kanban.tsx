@@ -3,7 +3,9 @@ import React, {
   cloneElement,
   ReactElement,
   useCallback,
+  useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import { TaskStatus } from "../../../collections/task";
@@ -13,55 +15,102 @@ import Button from "@italodeandra/ui/components/Button/Button";
 import { Kanban as UiKanban } from "../../../components/Kanban/Kanban";
 import _, { isEqual } from "lodash";
 import { UniqueIdentifier } from "@dnd-kit/core";
-import { Task } from "./Task/Task";
+import { Task } from "./task/Task";
 import clsx from "clsx";
 import { ColumnTitle } from "./ColumnTitle";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Group from "@italodeandra/ui/components/Group/Group";
-import Text from "@italodeandra/ui/components/Text";
 import { useProjectList } from "../../../pages/api/project/list";
-import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
 import { AddNewTaskButton } from "./AddNewTaskButton";
 import { Timesheet } from "./timesheet/Timesheet";
-import { NewProjectModal } from "./Task/new-project/NewProjectModal";
-import { newProjectState } from "./Task/new-project/newProject.state";
-import { PlusIcon } from "@heroicons/react/20/solid";
-import { ProjectColor } from "../../../collections/project";
+import { NewProjectModal } from "./task/new-project/NewProjectModal";
 import { useSnapshot } from "valtio";
-import { selectedProjectsState } from "./selectedProjects.state";
-import { Project } from "./Project";
-import { ModeToggle } from "@italodeandra/ui/components/ModeToggle/ModeToggle";
-import UserMenu from "../../panel/layout/UserMenu";
-import { useTimesheetStatus } from "../../../pages/api/timesheet/status";
-import Loading from "@italodeandra/ui/components/Loading/Loading";
-import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
-import { Timer } from "./Task/Timer";
+import { state } from "./state";
+import { Header } from "./header/Header";
+import { useLatest } from "react-use";
 
-function TimesheetStatus() {
-  let [today] = useState(() => new Date());
-  let { data, isLoading } = useTimesheetStatus({
-    today,
+function Resizable({
+  children,
+  minWidth,
+  maxWidth,
+  width,
+  onResize,
+}: {
+  children: ReactElement;
+  minWidth?: number;
+  maxWidth?: number;
+  width?: number;
+  onResize: (width?: number) => void;
+}) {
+  let [internalWidth, setInternalWidth] = useState(width);
+  let [isResizing, setResizing] = useState(false);
+  let isResizingRef = useLatest(isResizing);
+  let initialMouseXPos = useRef(0);
+  let initialWidth = useRef(0);
+
+  useEffect(() => {
+    onResize(internalWidth);
+  }, [internalWidth, onResize]);
+
+  let onMouseDown = (e: React.MouseEvent) => {
+    let parent = e.currentTarget?.parentNode as HTMLDivElement;
+    let rect = parent.getBoundingClientRect();
+    initialWidth.current = rect.width;
+    initialMouseXPos.current = e.clientX;
+    setResizing(true);
+  };
+
+  useEffect(() => {
+    let onMouseMove = (e: MouseEvent) => {
+      if (isResizingRef.current) {
+        let newWidth =
+          initialWidth.current - (e.clientX - initialMouseXPos.current);
+        if (minWidth !== undefined && newWidth < minWidth) {
+          newWidth = minWidth;
+        }
+        if (maxWidth !== undefined && newWidth > maxWidth) {
+          newWidth = maxWidth;
+        }
+        setInternalWidth(newWidth);
+      }
+    };
+
+    let onMouseUp = () => {
+      setResizing(false);
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("mouseup", onMouseUp);
+
+    return () => {
+      window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseup", onMouseUp);
+    };
+  }, [isResizingRef, maxWidth, minWidth, onResize]);
+
+  return cloneElement(children, {
+    className: clsx("relative", children.props.className),
+    style: { width: internalWidth },
+    children: (
+      <>
+        <div
+          className={clsx(
+            "absolute left-0 top-0 bottom-0 z-10 w-1 cursor-e-resize select-none transition-colors hover:bg-zinc-700",
+            {
+              "bg-zinc-700": isResizing,
+            }
+          )}
+          onMouseDown={onMouseDown}
+        />
+        {children.props.children}
+      </>
+    ),
   });
-
-  if (isLoading) {
-    return <Loading className="my-auto" />;
-  }
-
-  if (!data) {
-    return null;
-  }
-
-  return (
-    <Group className="items-center">
-      {data.currentClock && <Timer task={data.currentClock} />}
-      <Text size="sm">Today: {prettyMilliseconds(data.todayClockedTime)}</Text>
-    </Group>
-  );
 }
 
 export function Kanban() {
-  let { selectedProjects } = useSnapshot(selectedProjectsState);
-  let { data: projects, isLoading: isLoadingProjects } = useProjectList();
+  let { selectedProjects, timesheetWidth } = useSnapshot(state);
+  let { data: projects } = useProjectList();
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -175,50 +224,14 @@ export function Kanban() {
       <NewProjectModal />
       <Stack
         className={clsx(
-          "pt-4",
-          selectedProjects.length === 1 ? "w-full sm:w-1/2" : "w-full",
+          "overflow-auto pt-4",
+          selectedProjects.length === 1 ? "" : "w-full",
           {
             "hidden sm:flex": mobileTimesheetOpen,
           }
         )}
       >
-        <div className="flex flex-col-reverse gap-2 px-4 sm:flex-row">
-          <Stack>
-            <Text variant="label">Projects</Text>
-            <Group className="-mx-4 overflow-x-auto px-4 sm:flex-wrap">
-              {[
-                {
-                  _id: "",
-                  name: "None",
-                  lastTaskUpdatedAt: "",
-                  color: ProjectColor.BLUE,
-                },
-                ...(projects || []),
-              ]?.map((project) => (
-                <Project key={project._id} project={project} />
-              ))}
-              {isLoadingProjects ? (
-                <Skeleton className="w-20" />
-              ) : (
-                <Button
-                  size="sm"
-                  variant="outlined"
-                  onClick={() => newProjectState.openModal()}
-                  icon
-                >
-                  <PlusIcon />
-                </Button>
-              )}
-            </Group>
-          </Stack>
-          <div className="flex-grow" />
-          <Group className="mb-auto pb-0">
-            <TimesheetStatus />
-            <div className="flex-grow sm:hidden"></div>
-            <ModeToggle />
-            <UserMenu />
-          </Group>
-        </div>
+        <Header />
 
         <div className="relative flex-1 overflow-auto pb-4">
           <UiKanban
@@ -241,29 +254,36 @@ export function Kanban() {
         )}
       </Stack>
       {projects && selectedProjects.length === 1 && (
-        <Stack
-          className={clsx(
-            "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
-            {
-              hidden: !mobileTimesheetOpen,
-            }
-          )}
+        <Resizable
+          minWidth={560}
+          maxWidth={1060}
+          width={timesheetWidth}
+          onResize={(width) => (state.timesheetWidth = width)}
         >
-          <Button
-            onClick={() => setMobileTimesheetOpen(false)}
-            className="sm:hidden"
+          <Stack
+            className={clsx(
+              "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
+              {
+                hidden: !mobileTimesheetOpen,
+              }
+            )}
           >
-            Close timesheet
-          </Button>
-          <Timesheet
-            project={
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              projects.find((project) =>
-                selectedProjects.includes(project._id)
-              )!
-            }
-          />
-        </Stack>
+            <Button
+              onClick={() => setMobileTimesheetOpen(false)}
+              className="sm:hidden"
+            >
+              Close timesheet
+            </Button>
+            <Timesheet
+              project={
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                projects.find((project) =>
+                  selectedProjects.includes(project._id)
+                )!
+              }
+            />
+          </Stack>
+        </Resizable>
       )}
     </Group>
   );
