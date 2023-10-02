@@ -3,9 +3,7 @@ import React, {
   cloneElement,
   ReactElement,
   useCallback,
-  useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { TaskStatus } from "../../../collections/task";
@@ -27,86 +25,7 @@ import { NewProjectModal } from "./task/new-project/NewProjectModal";
 import { useSnapshot } from "valtio";
 import { state } from "./state";
 import { Header } from "./header/Header";
-import { useLatest } from "react-use";
-
-function Resizable({
-  children,
-  minWidth,
-  maxWidth,
-  width,
-  onResize,
-}: {
-  children: ReactElement;
-  minWidth?: number;
-  maxWidth?: number;
-  width?: number;
-  onResize: (width?: number) => void;
-}) {
-  let [internalWidth, setInternalWidth] = useState(width);
-  let [isResizing, setResizing] = useState(false);
-  let isResizingRef = useLatest(isResizing);
-  let initialMouseXPos = useRef(0);
-  let initialWidth = useRef(0);
-
-  useEffect(() => {
-    onResize(internalWidth);
-  }, [internalWidth, onResize]);
-
-  let onMouseDown = (e: React.MouseEvent) => {
-    let parent = e.currentTarget?.parentNode as HTMLDivElement;
-    let rect = parent.getBoundingClientRect();
-    initialWidth.current = rect.width;
-    initialMouseXPos.current = e.clientX;
-    setResizing(true);
-  };
-
-  useEffect(() => {
-    let onMouseMove = (e: MouseEvent) => {
-      if (isResizingRef.current) {
-        let newWidth =
-          initialWidth.current - (e.clientX - initialMouseXPos.current);
-        if (minWidth !== undefined && newWidth < minWidth) {
-          newWidth = minWidth;
-        }
-        if (maxWidth !== undefined && newWidth > maxWidth) {
-          newWidth = maxWidth;
-        }
-        setInternalWidth(newWidth);
-      }
-    };
-
-    let onMouseUp = () => {
-      setResizing(false);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }, [isResizingRef, maxWidth, minWidth, onResize]);
-
-  return cloneElement(children, {
-    className: clsx("relative", children.props.className),
-    style: { width: internalWidth },
-    children: (
-      <>
-        <div
-          className={clsx(
-            "absolute left-0 top-0 bottom-0 z-10 w-1 cursor-e-resize select-none transition-colors hover:bg-zinc-700",
-            {
-              "bg-zinc-700": isResizing,
-            }
-          )}
-          onMouseDown={onMouseDown}
-        />
-        {children.props.children}
-      </>
-    ),
-  });
-}
+import { Resizable } from "./Resizable";
 
 export function Kanban() {
   let { selectedProjects, timesheetWidth } = useSnapshot(state);
@@ -253,38 +172,40 @@ export function Kanban() {
           </div>
         )}
       </Stack>
-      {projects && selectedProjects.length === 1 && (
-        <Resizable
-          minWidth={560}
-          maxWidth={1060}
-          width={timesheetWidth}
-          onResize={(width) => (state.timesheetWidth = width)}
-        >
-          <Stack
-            className={clsx(
-              "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
-              {
-                hidden: !mobileTimesheetOpen,
-              }
-            )}
+      {projects &&
+        selectedProjects.length === 1 &&
+        selectedProjects[0] !== "" && (
+          <Resizable
+            minWidth={560}
+            maxWidth={1060}
+            width={timesheetWidth}
+            onResize={(width) => (state.timesheetWidth = width)}
           >
-            <Button
-              onClick={() => setMobileTimesheetOpen(false)}
-              className="sm:hidden"
+            <Stack
+              className={clsx(
+                "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
+                {
+                  hidden: !mobileTimesheetOpen,
+                }
+              )}
             >
-              Close timesheet
-            </Button>
-            <Timesheet
-              project={
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                projects.find((project) =>
-                  selectedProjects.includes(project._id)
-                )!
-              }
-            />
-          </Stack>
-        </Resizable>
-      )}
+              <Button
+                onClick={() => setMobileTimesheetOpen(false)}
+                className="sm:hidden"
+              >
+                Close timesheet
+              </Button>
+              <Timesheet
+                project={
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  projects.find((project) =>
+                    selectedProjects.includes(project._id)
+                  )!
+                }
+              />
+            </Stack>
+          </Resizable>
+        )}
     </Group>
   );
 }
