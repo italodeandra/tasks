@@ -130,6 +130,7 @@ function checkUserType(user, typesToCheck) {
     return !!(user === null || user === void 0 ? void 0 : user.type) && typesToCheck.includes(user.type);
 }
 exports.checkUserType = checkUserType;
+// noinspection JSUnusedGlobalSymbols
 function convertToUserType(userType) {
     return User_1.UserType[userType];
 }

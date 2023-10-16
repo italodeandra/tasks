@@ -84,5 +84,7 @@ var Select = {
     Group: RSelect.Group,
     Label: SelectLabel,
     Separator: SelectSeparator,
+    Icon: RSelect.Icon,
+    Value: RSelect.Value,
 };
 exports.default = Select;

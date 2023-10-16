@@ -116,6 +116,7 @@ var useAuthPanelUserList = function (args) {
     return (0, react_query_1.useQuery)([queryKey, args === null || args === void 0 ? void 0 : args.search, args === null || args === void 0 ? void 0 : args.sort, args === null || args === void 0 ? void 0 : args.sortDirection], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey, args));
 };
 exports.useAuthPanelUserList = useAuthPanelUserList;
+// noinspection JSUnusedGlobalSymbols
 var prefetch_authPanelUserList = function (queryClient) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {

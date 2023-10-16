@@ -33,6 +33,7 @@ var solid_1 = require("@heroicons/react/20/solid");
 var InputIcon_1 = __importDefault(require("./InputIcon"));
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
+var recursiveChildrenMap_1 = __importDefault(require("../../utils/recursiveChildrenMap"));
 exports.defaultLabelClassName = "block ".concat(Text_1.defaultTextStyles.variant.label, " mb-1");
 exports.defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm disabled:cursor-not-allowed dark:bg-zinc-800";
 exports.defaultInputClassName = "".concat(exports.defaultInputClassNameUncolored, " border-gray-300 dark:border-zinc-700 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 disabled:border-gray-200 dark:disabled:border-zinc-800 disabled:bg-gray-50 dark:disabled:bg-zinc-900/90 disabled:text-gray-500");
@@ -42,7 +43,7 @@ exports.defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0
 exports.defaultLeadingInputClassName = "pl-10";
 exports.defaultTrailingInputClassName = "pr-10";
 function Input(_a, ref) {
-    var error = _a.error, trailing = _a.trailing, labelClassName = _a.labelClassName, inputClassName = _a.inputClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, trailingInputClassName = _a.trailingInputClassName, required = _a.required, label = _a.label, loading = _a.loading, readOnly = _a.readOnly, props = __rest(_a, ["error", "trailing", "labelClassName", "inputClassName", "helpTextClassName", "trailingClassName", "leadingClassName", "leadingInputClassName", "trailingInputClassName", "required", "label", "loading", "readOnly"]);
+    var error = _a.error, trailing = _a.trailing, labelClassName = _a.labelClassName, inputClassName = _a.inputClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, trailingInputClassName = _a.trailingInputClassName, required = _a.required, label = _a.label, loading = _a.loading, readOnly = _a.readOnly, children = _a.children, props = __rest(_a, ["error", "trailing", "labelClassName", "inputClassName", "helpTextClassName", "trailingClassName", "leadingClassName", "leadingInputClassName", "trailingInputClassName", "required", "label", "loading", "readOnly", "children"]);
     trailing =
         trailing ||
             (error ? ((0, jsx_runtime_1.jsx)(InputIcon_1.default, __assign({ className: "text-error-500" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ExclamationCircleIcon, { "aria-hidden": "true" }) }))) : undefined);
@@ -67,6 +68,8 @@ function Input(_a, ref) {
     }
     return ((0, jsx_runtime_1.jsx)(UnstyledInput_1.default
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label, readOnly: readOnly })));
+    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label, readOnly: readOnly }, { children: (0, recursiveChildrenMap_1.default)(children, function (child) {
+            return (0, react_1.cloneElement)(child, { disabled: readOnly });
+        }) })));
 }
 exports.default = (0, react_1.forwardRef)(Input);

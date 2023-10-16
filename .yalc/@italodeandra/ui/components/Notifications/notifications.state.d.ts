@@ -1,7 +1,7 @@
 import { CSSProperties, ReactElement, ReactNode } from "react";
 declare type Notification = {
     _id: string;
-    message: string;
+    message: string | ReactElement;
     title?: string;
     timeout?: number | string;
     icon?: "success" | "error" | ReactElement;
@@ -9,6 +9,7 @@ declare type Notification = {
     actions?: ReactNode;
     suppress?: boolean;
     style?: CSSProperties;
+    className?: string;
 };
 declare const notificationsState: {
     rendered: boolean;

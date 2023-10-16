@@ -126,6 +126,7 @@ var useAuthPanelUserGet = function (args, options) {
     return (0, react_query_1.useQuery)([queryKey, args === null || args === void 0 ? void 0 : args._id], (0, apiHandlerWrapper_1.queryFnWrapper)(queryKey, args), __assign(__assign({}, options), { enabled: !!(args === null || args === void 0 ? void 0 : args._id) }));
 };
 exports.useAuthPanelUserGet = useAuthPanelUserGet;
+// noinspection JSUnusedGlobalSymbols
 var prefetch_authPanelUserGet = function (queryClient) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {
@@ -138,5 +139,6 @@ var prefetch_authPanelUserGet = function (queryClient) {
 exports.prefetch_authPanelUserGet = prefetch_authPanelUserGet;
 var invalidate_authPanelUserGet = function (queryClient, args) { return queryClient.invalidateQueries([queryKey, args._id]); };
 exports.invalidate_authPanelUserGet = invalidate_authPanelUserGet;
+// noinspection JSUnusedGlobalSymbols
 var remove_authPanelUserGet = function (queryClient, args) { return queryClient.removeQueries([queryKey, args._id]); };
 exports.remove_authPanelUserGet = remove_authPanelUserGet;

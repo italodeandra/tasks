@@ -38,6 +38,7 @@ var react_dnd_1 = require("react-dnd");
 var react_dnd_html5_backend_1 = require("react-dnd-html5-backend");
 var numeral_1 = __importDefault(require("numeral"));
 var solid_1 = require("@heroicons/react/24/solid");
+var outline_1 = require("@heroicons/react/24/outline");
 var translateAllowedType = function (type) {
     return ({
         "image/png": "PNG",
@@ -47,14 +48,12 @@ var translateAllowedType = function (type) {
         ".jpeg": "JPG",
         ".gif": "GIF",
         "image/gif": "GIF",
-        image: "Image",
-        video: "Video",
         "video/mp4": "MP4",
         ".mp4": "MP4",
         ".csv": "CSV",
     }[type]);
 };
-var defaultIcon = ((0, jsx_runtime_1.jsx)("svg", __assign({ stroke: "currentColor", fill: "none", viewBox: "0 0 48 48", "aria-hidden": "true" }, { children: (0, jsx_runtime_1.jsx)("path", { d: "M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }) })));
+var defaultIcon = (0, jsx_runtime_1.jsx)(outline_1.DocumentIcon, {});
 function FileSelect(_a, ref) {
     var maxFileSize = _a.maxFileSize, allowedFileTypes = _a.allowedFileTypes, id = _a.id, limit = _a.limit, onAcceptFiles = _a.onAcceptFiles, className = _a.className, _b = _a.uploadAFileText, uploadAFileText = _b === void 0 ? "Upload a file" : _b, _c = _a.orDragAndDropText, orDragAndDropText = _c === void 0 ? "or drag and drop" : _c, _d = _a.upToText, upToText = _d === void 0 ? "up to" : _d, _e = _a.anyFileText, anyFileText = _e === void 0 ? "Any file" : _e, _f = _a.dropFilesHereText, dropFilesHereText = _f === void 0 ? "Drop files here" : _f, _g = _a.icon, icon = _g === void 0 ? defaultIcon : _g;
     var innerId = (0, react_1.useId)();

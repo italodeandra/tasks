@@ -1,6 +1,6 @@
-import { ComponentPropsWithoutRef, ReactElement, ReactNode } from "react";
+import { ComponentPropsWithoutRef, CSSProperties, ReactElement, ReactNode } from "react";
 import Button from "../Button";
-declare function Modal({ open, onClose, children, overlayClassName, panelClassName, dialogClassName, dialogOuterPanelClassName, dialogOverflowClassName, }: {
+declare function Modal({ open, onClose, children, overlayClassName, panelClassName, dialogClassName, dialogOuterPanelClassName, dialogOverflowClassName, style, }: {
     open?: boolean;
     onClose?: () => void;
     children?: ReactNode;
@@ -9,6 +9,7 @@ declare function Modal({ open, onClose, children, overlayClassName, panelClassNa
     dialogClassName?: string;
     dialogOuterPanelClassName?: string;
     dialogOverflowClassName?: string;
+    style?: CSSProperties;
 }): JSX.Element;
 declare namespace Modal {
     var Container: typeof ModalContainer;

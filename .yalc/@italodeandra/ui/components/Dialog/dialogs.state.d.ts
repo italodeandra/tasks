@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from "react";
+import { CSSProperties, ReactElement, ReactNode } from "react";
 export declare type IDialog = {
     _id: string;
     actions?: ReactNode | ((_id: string) => ReactNode);
@@ -7,6 +7,8 @@ export declare type IDialog = {
     icon?: ReactElement;
     open?: boolean;
     hideCloseButton?: boolean;
+    panelClassName?: string;
+    style?: CSSProperties;
 };
 declare const dialogsState: {
     rendered: boolean;

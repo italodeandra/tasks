@@ -2,11 +2,11 @@
   "version": "v1",
   "packages": {
     "@italodeandra/ui": {
-      "signature": "75dc9a5f2b0fe710cc735fceeb41f647",
+      "signature": "c19cf59f124508badc47c4f92af4dce5",
       "file": true
     },
     "@italodeandra/auth": {
-      "signature": "4594630d587a555790e8bc83ab4f92ec",
+      "signature": "9965080bc213d9962854a5051fc33051",
       "file": true
     },
     "@italodeandra/next": {

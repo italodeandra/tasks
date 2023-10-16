@@ -18,17 +18,18 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var list_1 = require("../../../api/panel/user/list");
 var DataTable_1 = __importDefault(require("@italodeandra/ui/components/Table/DataTable"));
 var User_service_1 = require("../../../collections/user/User.service");
-var Button_1 = __importDefault(require("@italodeandra/ui/components/Button/Button"));
+var Button_1 = __importDefault(require("@italodeandra/ui/components/Button"));
 var react_1 = require("react");
 var router_1 = require("next/router");
 var AuthContext_1 = require("../../../AuthContext");
 var useTranslation_1 = __importDefault(require("@italodeandra/ui/hooks/useTranslation"));
-var Alert_1 = __importDefault(require("@italodeandra/ui/components/Alert/Alert"));
+var Alert_1 = __importDefault(require("@italodeandra/ui/components/Alert"));
 var dayjs_1 = __importDefault(require("dayjs"));
 var next_seo_1 = require("next-seo");
-var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcrumbs/Breadcrumbs"));
+var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcrumbs"));
 var solid_1 = require("@heroicons/react/20/solid");
 var impersonate_1 = require("../../../api/panel/user/impersonate");
+var Group_1 = __importDefault(require("@italodeandra/ui/components/Group"));
 function PanelUsersView() {
     var _a = (0, AuthContext_1.useAuthContext)(), Routes = _a.Routes, intl = _a.intl;
     var router = (0, router_1.useRouter)();
@@ -73,7 +74,7 @@ function PanelUsersView() {
     }, [router, Routes]);
     var _c = (0, impersonate_1.useAuthPanelUserImpersonate)(), impersonate = _c.mutate, isImpersonating = _c.isLoading;
     var pages = (0, react_1.useMemo)(function () { return [{ title: t("Users") }]; }, [t]);
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages, className: "mb-5" }), (0, jsx_runtime_1.jsx)(DataTable_1.default, { title: t("Users"), columns: columns, data: data, isLoading: isFetching || isImpersonating, headerContent: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ leading: (0, jsx_runtime_1.jsx)(solid_1.PlusIcon, {}), href: Routes.PanelNewUser }, { children: t("New") })), onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: refetch }, { children: t("Try again") })) })) : (t("No records")), actions: [
+    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "mb-2 flex flex-1 flex-col md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsxs)(Group_1.default, __assign({ className: "mb-2" }, { children: [(0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages }), (0, jsx_runtime_1.jsx)("div", { className: "flex-grow" }), (0, jsx_runtime_1.jsx)(Group_1.default, __assign({ className: "items-end" }, { children: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ leading: (0, jsx_runtime_1.jsx)(solid_1.PlusIcon, {}), href: Routes.PanelNewUser }, { children: t("New") })) }))] })), (0, jsx_runtime_1.jsx)(DataTable_1.default, { className: "flex-1", autoHeight: true, columns: columns, data: data, isLoading: isFetching || isImpersonating, onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: refetch }, { children: t("Try again") })) })) : (t("No records")), actions: [
                     {
                         icon: (0, jsx_runtime_1.jsx)(solid_1.IdentificationIcon, {}),
                         title: t("Impersonate"),

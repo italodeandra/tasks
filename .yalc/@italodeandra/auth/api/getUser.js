@@ -137,6 +137,7 @@ var useAuthRequiredUserType = function (typesToCheck, redirectTo) {
     return !!user;
 };
 exports.useAuthRequiredUserType = useAuthRequiredUserType;
+// noinspection JSUnusedGlobalSymbols
 var useAuthRequiredUser = function (redirectTo) {
     var _a = (0, exports.useAuthGetUser)(true), user = _a.data, isLoading = _a.isLoading;
     var router = (0, router_1.useRouter)();
@@ -162,6 +163,7 @@ var useAuthUser = function () {
     return !!user;
 };
 exports.useAuthUser = useAuthUser;
+// noinspection JSUnusedGlobalSymbols
 var prefetch_authGetUser = function (queryClient) {
     var args = [];
     for (var _i = 1; _i < arguments.length; _i++) {

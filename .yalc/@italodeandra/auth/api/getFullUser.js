@@ -89,6 +89,7 @@ function getFullUserHandler(_args, req, res, _a) {
 }
 exports.default = getFullUserHandler;
 var queryKey = "/api/auth/getFullUser";
+// noinspection JSUnusedGlobalSymbols
 var useAuthGetFullUser = function (required) {
     var queryClient = (0, react_query_1.useQueryClient)();
     var token = (0, auth_state_1.useAuthSnapshot)().token;

@@ -1,24 +1,13 @@
 /// <reference types="react" />
-import { InputProps } from "../Input";
-import { FileSelectProps } from "../FileSelect";
-export declare type ImageFile = {
-    file: File;
-    description?: string;
-};
-export declare type ImageUrl = {
-    url: string;
-    description?: string;
-    name: string;
-};
-export declare type Image = ImageFile | ImageUrl;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles"> & {
+declare const _default: import("react").ForwardRefExoticComponent<Pick<Pick<import("../Input").InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<import("../FileSelect").FileSelectProps, "onAcceptFiles"> & {
     readOnly?: boolean | undefined;
-    defaultValue?: Image[] | undefined;
+    defaultValue?: import("../FileInput").FileInputFile[] | undefined;
     onChange?: ((event: {
         target: {
-            value: Image[];
+            value: import("../FileInput").FileInputFile[];
         };
     }) => void) | undefined;
     emptyText?: string | undefined;
-} & import("react").RefAttributes<HTMLInputElement>>;
+    downloadText?: string | undefined;
+} & import("react").RefAttributes<HTMLInputElement>, "className" | "label" | "defaultValue" | "id" | "onChange" | "onMouseOut" | "onMouseOver" | "key" | "name" | "readOnly" | "required" | "icon" | "error" | "helpText" | "emptyText" | "maxFileSize" | "allowedFileTypes" | "limit" | "uploadAFileText" | "orDragAndDropText" | "upToText" | "anyFileText" | "dropFilesHereText" | "helperText" | "downloadText"> & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

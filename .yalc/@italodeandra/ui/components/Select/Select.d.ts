@@ -14,5 +14,7 @@ declare const Select: {
     Group: React.ForwardRefExoticComponent<RSelect.SelectGroupProps & React.RefAttributes<HTMLDivElement>>;
     Label: typeof SelectLabel;
     Separator: typeof SelectSeparator;
+    Icon: React.ForwardRefExoticComponent<RSelect.SelectIconProps & React.RefAttributes<HTMLSpanElement>>;
+    Value: React.ForwardRefExoticComponent<RSelect.SelectValueProps & React.RefAttributes<HTMLSpanElement>>;
 };
 export default Select;

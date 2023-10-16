@@ -23,8 +23,9 @@ var solid_1 = require("@heroicons/react/20/solid");
 var Button_1 = __importDefault(require("../Button"));
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("clsx"));
-function Notifications() {
-    var _a = (0, valtio_1.useSnapshot)(notifications_state_1.default), notifications = _a.notifications, remove = _a.remove, setRendered = _a.setRendered;
+function Notifications(_a) {
+    var notificationClassName = _a.notificationClassName;
+    var _b = (0, valtio_1.useSnapshot)(notifications_state_1.default), notifications = _b.notifications, remove = _b.remove, setRendered = _b.setRendered;
     (0, react_1.useEffect)(function () {
         setRendered(true);
         return function () {
@@ -33,7 +34,7 @@ function Notifications() {
     }, [setRendered]);
     return ((0, jsx_runtime_1.jsx)("ul", __assign({ className: "pointer-events-none fixed inset-0 z-30 flex flex-col items-center justify-end gap-3 px-4 py-6 sm:items-end sm:justify-start sm:p-6" }, { children: (0, jsx_runtime_1.jsx)(framer_motion_1.AnimatePresence, __assign({ initial: false }, { children: notifications.map(function (_a) {
                 var _b;
-                var _id = _a._id, dismissable = _a.dismissable, title = _a.title, message = _a.message, icon = _a.icon, actions = _a.actions, style = _a.style;
+                var _id = _a._id, dismissable = _a.dismissable, title = _a.title, message = _a.message, icon = _a.icon, actions = _a.actions, style = _a.style, className = _a.className;
                 // noinspection SuspiciousTypeOfGuard
                 if (typeof icon === "string") {
                     icon = {
@@ -42,7 +43,7 @@ function Notifications() {
                     }[icon];
                 }
                 // noinspection SuspiciousTypeOfGuard
-                return ((0, jsx_runtime_1.jsx)(framer_motion_1.motion.li, __assign({ layout: true, initial: { opacity: 0, y: 50, scale: 0.3 }, animate: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, scale: 0.5, transition: { duration: 0.2 } }, className: "pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5 dark:bg-zinc-800 dark:ring-white/10", style: style }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: "p-4" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex items-start" }, { children: [icon && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "mr-2 flex-shrink-0 " }, { children: typeof icon === "string"
+                return ((0, jsx_runtime_1.jsx)(framer_motion_1.motion.li, __assign({ layout: true, initial: { opacity: 0, y: 50, scale: 0.3 }, animate: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 0, scale: 0.5, transition: { duration: 0.2 } }, className: (0, clsx_1.default)("pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5 dark:bg-zinc-800 dark:ring-white/10", notificationClassName, className), style: style }, { children: (0, jsx_runtime_1.jsx)("div", __assign({ className: "p-4" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex items-start" }, { children: [icon && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "mr-2 flex-shrink-0 " }, { children: typeof icon === "string"
                                         ? icon
                                         : (0, react_1.cloneElement)(icon, {
                                             className: (0, clsx_1.default)("h-6 w-6 text-zinc-400 dark:text-zinc-600", (_b = icon.props) === null || _b === void 0 ? void 0 : _b.className),

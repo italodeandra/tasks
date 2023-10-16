@@ -51,9 +51,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var Button_1 = __importDefault(require("@italodeandra/ui/components/Button/Button"));
-var Input_1 = __importDefault(require("@italodeandra/ui/components/Input/Input"));
-var Text_1 = __importDefault(require("@italodeandra/ui/components/Text/Text"));
+var Button_1 = __importDefault(require("@italodeandra/ui/components/Button"));
+var Input_1 = __importDefault(require("@italodeandra/ui/components/Input"));
+var Text_1 = __importDefault(require("@italodeandra/ui/components/Text"));
 var AuthLayout_1 = __importDefault(require("./AuthLayout/AuthLayout"));
 var useTranslation_1 = __importDefault(require("@italodeandra/ui/hooks/useTranslation"));
 var next_seo_1 = require("next-seo");
@@ -63,7 +63,7 @@ var react_query_1 = require("@tanstack/react-query");
 var getUser_1 = require("../api/getUser");
 var router_1 = require("next/router");
 var signUp_1 = require("../api/signUp");
-var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack/Stack"));
+var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack"));
 var AuthContext_1 = require("../AuthContext");
 function SignUpView(_a) {
     var _b;

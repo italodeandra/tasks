@@ -17,12 +17,13 @@ export declare type DataTableProps<RowData> = {
     actions?: {
         title: string;
         icon: ReactElement;
-        href?: string | ((item: RowData) => string);
+        href?: string | ((item: RowData) => string | null | undefined);
         onClick?: (item: RowData) => void;
         wrapper?: ComponentType<{
             item: RowData;
             children: ReactNode;
         }>;
+        target?: string;
     }[];
     isLoading?: boolean;
     noRecords?: ReactNode;

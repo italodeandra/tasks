@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useAuthContext = exports.AuthContext = exports.authContextDefaultValue = void 0;
 var react_1 = require("react");
+// noinspection JSUnusedGlobalSymbols
 exports.authContextDefaultValue = {
     Routes: {
         SignUp: "/sign-up",
