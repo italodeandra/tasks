@@ -1,15 +1,15 @@
 import { useCallback, useMemo, useState } from "react";
 import clsx from "clsx";
 import { CheckIcon, XMarkIcon } from "@heroicons/react/20/solid";
-import Group from "@italodeandra/ui/components/Group/Group";
-import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
+import Group from "@italodeandra/ui/components/Group";
+import Tooltip from "@italodeandra/ui/components/Tooltip";
 import { ProjectSelector } from "./ProjectSelector";
-import Button from "@italodeandra/ui/components/Button/Button";
-import Stack from "@italodeandra/ui/components/Stack/Stack";
-import Textarea from "@italodeandra/ui/components/Textarea/Textarea";
-import Badge from "@italodeandra/ui/components/Badge/Badge";
+import Button from "@italodeandra/ui/components/Button";
+import Stack from "@italodeandra/ui/components/Stack";
+import Textarea from "@italodeandra/ui/components/Textarea";
+import Badge from "@italodeandra/ui/components/Badge";
 import { useProjectList } from "../../../../pages/api/project/list";
-import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { useTaskUpsert } from "../../../../pages/api/task/upsert";
 import { TaskOptions } from "./TaskOptions";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
@@ -132,6 +132,7 @@ export function Task({
               "[&_.task-list-item]:ml-1.5",
               "[&_input[type='checkbox']]:!-ml-6.5 [&_input[type='checkbox']:checked]:!bg-primary-500 [&_input[type='checkbox']]:rounded-sm [&_input[type='checkbox']]:border-none [&_input[type='checkbox']]:bg-zinc-400/50 dark:[&_input[type='checkbox']]:bg-zinc-500/50",
               "prose-a:text-primary-500",
+              "prose-blockquote:not-italic prose-blockquote:text-zinc-500 dark:prose-blockquote:text-zinc-400",
               "[&_hr]:-mt-5 [&_hr]:mb-0 [&_hr]:h-auto [&_hr]:border-none [&_hr]:after:text-zinc-400 [&_hr]:after:content-['[...]'] dark:[&_hr]:after:text-zinc-600",
               {
                 "[&_hr]:hidden [&_hr_~_*]:block": expanded,

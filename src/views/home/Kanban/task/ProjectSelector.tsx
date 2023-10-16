@@ -2,9 +2,9 @@ import { useProjectList } from "../../../../pages/api/project/list";
 import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 import Menu from "@italodeandra/ui/components/Menu/Menu";
-import Button from "@italodeandra/ui/components/Button/Button";
+import Button from "@italodeandra/ui/components/Button";
 import { useSnapshot } from "valtio";
 import { newProjectState } from "./new-project/newProject.state";
 

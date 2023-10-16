@@ -1,15 +1,15 @@
 import React from "react";
-import Group from "@italodeandra/ui/components/Group/Group";
+import Group from "@italodeandra/ui/components/Group";
 import Text from "@italodeandra/ui/components/Text";
 import { useProjectList } from "../../../../pages/api/project/list";
-import Stack from "@italodeandra/ui/components/Stack/Stack";
+import Stack from "@italodeandra/ui/components/Stack";
 import { ProjectColor } from "../../../../collections/project";
 import { Project } from "../Project";
-import { Skeleton } from "@italodeandra/ui/components/Skeleton/Skeleton";
-import Button from "@italodeandra/ui/components/Button/Button";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
+import Button from "@italodeandra/ui/components/Button";
 import { newProjectState } from "../task/new-project/newProject.state";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { ModeToggle } from "@italodeandra/ui/components/ModeToggle/ModeToggle";
+import ModeToggle from "@italodeandra/ui/components/ModeToggle";
 import UserMenu from "../../../panel/layout/UserMenu";
 import { TimesheetStatus } from "./TimesheetStatus";
 
