@@ -5,7 +5,7 @@ import {
   queryFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getProject, { IProject } from "../../../collections/project";
@@ -82,8 +82,14 @@ export type ProjectListApiResponse = InferApiResponse<typeof handler>;
 
 const queryKey = "/api/project/list";
 
-export const useProjectList = () =>
-  useQuery([queryKey], queryFnWrapper<ProjectListApiResponse>(queryKey));
+export const useProjectList = (
+  options?: UseQueryOptions<ProjectListApiResponse>
+) =>
+  useQuery<ProjectListApiResponse>(
+    [queryKey],
+    queryFnWrapper(queryKey),
+    options
+  );
 
 export const invalidate_projectList = (queryClient: QueryClient) =>
   queryClient.invalidateQueries([queryKey]);

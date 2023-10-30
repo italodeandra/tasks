@@ -29,7 +29,13 @@ import { Resizable } from "./Resizable";
 
 export function Kanban() {
   let { selectedProjects, timesheetWidth } = useSnapshot(state);
-  let { data: projects } = useProjectList();
+  let { data: projects } = useProjectList({
+    onSuccess(projects) {
+      state.selectedProjects = state.selectedProjects.filter((pId) =>
+        projects.some((p) => p._id === pId)
+      );
+    },
+  });
   let { data: tasks, isError, isLoading, refetch } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -138,6 +144,10 @@ export function Kanban() {
     );
   }
 
+  let firstSelectedProject = projects?.find((project) =>
+    selectedProjects.includes(project._id)
+  );
+
   return (
     <Group className="h-screen gap-0">
       <NewProjectModal />
@@ -172,40 +182,31 @@ export function Kanban() {
           </div>
         )}
       </Stack>
-      {projects &&
-        selectedProjects.length === 1 &&
-        selectedProjects[0] !== "" && (
-          <Resizable
-            minWidth={560}
-            maxWidth={1060}
-            width={timesheetWidth}
-            onResize={(width) => (state.timesheetWidth = width)}
+      {firstSelectedProject && (
+        <Resizable
+          minWidth={560}
+          maxWidth={1060}
+          width={timesheetWidth}
+          onResize={(width) => (state.timesheetWidth = width)}
+        >
+          <Stack
+            className={clsx(
+              "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
+              {
+                hidden: !mobileTimesheetOpen,
+              }
+            )}
           >
-            <Stack
-              className={clsx(
-                "w-full shrink-0 gap-4 border-zinc-200 p-4 dark:border-zinc-700 sm:flex sm:w-1/2 sm:border-l",
-                {
-                  hidden: !mobileTimesheetOpen,
-                }
-              )}
+            <Button
+              onClick={() => setMobileTimesheetOpen(false)}
+              className="sm:hidden"
             >
-              <Button
-                onClick={() => setMobileTimesheetOpen(false)}
-                className="sm:hidden"
-              >
-                Close timesheet
-              </Button>
-              <Timesheet
-                project={
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  projects.find((project) =>
-                    selectedProjects.includes(project._id)
-                  )!
-                }
-              />
-            </Stack>
-          </Resizable>
-        )}
+              Close timesheet
+            </Button>
+            <Timesheet project={firstSelectedProject} />
+          </Stack>
+        </Resizable>
+      )}
     </Group>
   );
 }
