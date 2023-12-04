@@ -5,6 +5,7 @@ import db from "@italodeandra/next/db";
 export enum TaskStatus {
   TODO = "TODO",
   DOING = "DOING",
+  BLOCKED = "BLOCKED",
   DONE = "DONE",
 }
 

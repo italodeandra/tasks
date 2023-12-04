@@ -26,6 +26,7 @@ import { useSnapshot } from "valtio";
 import { state } from "./state";
 import { Header } from "./header/Header";
 import { Resizable } from "./Resizable";
+import { columns } from "./columns.const";
 
 export function Kanban() {
   let { selectedProjects, timesheetWidth } = useSnapshot(state);
@@ -42,20 +43,14 @@ export function Kanban() {
   let [mobileTimesheetOpen, setMobileTimesheetOpen] = useState(false);
 
   let items = useMemo(() => {
-    return {
-      [TaskStatus.TODO]: _(tasks)
-        .filter((task) => task.status === TaskStatus.TODO)
+    let items: Record<string, string[]> = {};
+    for (let column of columns) {
+      items[column] = _(tasks)
+        .filter((task) => task.status === column)
         .map("_id")
-        .value(),
-      [TaskStatus.DOING]: _(tasks)
-        .filter((task) => task.status === TaskStatus.DOING)
-        .map("_id")
-        .value(),
-      [TaskStatus.DONE]: _(tasks)
-        .filter((task) => task.status === TaskStatus.DONE)
-        .map("_id")
-        .value(),
-    };
+        .value();
+    }
+    return items;
   }, [tasks]);
   let getTask = useCallback(
     (id: UniqueIdentifier) => _(tasks).find({ _id: id.toString() }),
