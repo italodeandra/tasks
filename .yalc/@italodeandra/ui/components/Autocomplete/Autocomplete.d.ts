@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { UnstyledAutocompleteProps } from "../Autocomplete/UnstyledAutocomplete";
-export declare type AutocompleteProps<T extends {
+export type AutocompleteProps<T extends {
     _id: string;
 }> = UnstyledAutocompleteProps<T>;
 export default function Autocomplete<T extends {

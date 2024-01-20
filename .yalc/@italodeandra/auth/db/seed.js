@@ -75,7 +75,7 @@ function authSeed() {
             switch (_a.label) {
                 case 0:
                     User = (0, User_1.default)();
-                    if (!(appEnv === "development")) return [3 /*break*/, 3];
+                    if (!(appEnv === "development")) return [3 /*break*/, 6];
                     return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
                 case 1:
                     if (!!(_a.sent())) return [3 /*break*/, 3];
@@ -89,7 +89,19 @@ function authSeed() {
                 case 2:
                     _a.sent();
                     _a.label = 3;
-                case 3: return [2 /*return*/];
+                case 3: return [4 /*yield*/, User.countDocuments({ email: "italodeandra+b@gmail.com" })];
+                case 4:
+                    if (!!(_a.sent())) return [3 /*break*/, 6];
+                    return [4 /*yield*/, (0, User_service_1.createUser)({
+                            email: "italodeandra+b@gmail.com",
+                            password: "12345678",
+                            type: User_1.UserType.ADMIN,
+                            name: "Ítalo Andrade B",
+                        })];
+                case 5:
+                    _a.sent();
+                    _a.label = 6;
+                case 6: return [2 /*return*/];
             }
         });
     });

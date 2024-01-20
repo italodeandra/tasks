@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -58,6 +47,6 @@ function TableFooterWithPagination(_a) {
     if (totalItems !== undefined) {
         end = end > totalItems ? totalItems : end;
     }
-    return ((0, jsx_runtime_1.jsxs)(TableFooter_1.default, { children: [(0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex flex-1 justify-between sm:hidden" }, { children: [(0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === 1, onClick: handlePageClick(page - 1) }, { children: previousText })), (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ disabled: page === pageCount, onClick: handlePageClick(page + 1) }, { children: nextText }))] })), (0, jsx_runtime_1.jsxs)("div", __assign({ className: "hidden sm:flex sm:flex-1 sm:items-center sm:justify-between" }, { children: [(0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsxs)("p", __assign({ className: "text-sm text-gray-700 dark:text-zinc-100" }, { children: [showingText, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: start })), " ", toText, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: end })), totalItems !== undefined && itemsPerPage !== undefined && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", ofText, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "font-medium" }, { children: totalItems })), " ", resultsText] }))] })) }), (0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Pagination_1.default, { itemsPerPage: itemsPerPage, totalItems: totalItems, currentPage: currentPage, onChangePage: onChangePage }) })] }))] }));
+    return ((0, jsx_runtime_1.jsxs)(TableFooter_1.default, { children: [(0, jsx_runtime_1.jsxs)("div", { className: "flex flex-1 justify-between sm:hidden", children: [(0, jsx_runtime_1.jsx)(Button_1.default, { disabled: page === 1, onClick: handlePageClick(page - 1), children: previousText }), (0, jsx_runtime_1.jsx)(Button_1.default, { disabled: page === pageCount, onClick: handlePageClick(page + 1), children: nextText })] }), (0, jsx_runtime_1.jsxs)("div", { className: "hidden sm:flex sm:flex-1 sm:items-center sm:justify-between", children: [(0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsxs)("p", { className: "text-sm text-zinc-700 dark:text-zinc-100", children: [showingText, " ", (0, jsx_runtime_1.jsx)("span", { className: "font-medium", children: start }), " ", toText, " ", (0, jsx_runtime_1.jsx)("span", { className: "font-medium", children: end }), totalItems !== undefined && itemsPerPage !== undefined && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", ofText, " ", (0, jsx_runtime_1.jsx)("span", { className: "font-medium", children: totalItems }), " ", resultsText] }))] }) }), (0, jsx_runtime_1.jsx)("div", { children: (0, jsx_runtime_1.jsx)(Pagination_1.default, { itemsPerPage: itemsPerPage, totalItems: totalItems, currentPage: currentPage, onChangePage: onChangePage }) })] })] }));
 }
 exports.default = TableFooterWithPagination;

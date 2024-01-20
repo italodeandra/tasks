@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from "react";
-export declare type FooterProps = {
+export type FooterProps = {
     main?: {
         name: string;
         href: string;

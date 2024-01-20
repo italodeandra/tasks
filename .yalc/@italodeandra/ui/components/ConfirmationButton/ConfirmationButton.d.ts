@@ -1,7 +1,7 @@
 import { MenuProps } from "../Menu/Menu";
 import { ReactNode } from "react";
 import { ButtonProps } from "../Button";
-export declare type ConfirmationButtonProps = {
+export type ConfirmationButtonProps = {
     confirmation: string;
     label: ReactNode;
     confirm?: string;
@@ -11,7 +11,7 @@ export declare type ConfirmationButtonProps = {
     cancel?: string;
     position?: MenuProps["position"];
     buttonClassName?: string;
-    buttonProps?: Partial<ButtonProps<undefined>>;
+    buttonProps?: Partial<ButtonProps>;
     menuProps?: Partial<MenuProps>;
 };
 export default function ConfirmationButton({ label, confirm, confirmation, onConfirm, loading, className, cancel, position, buttonClassName, buttonProps, menuProps, }: ConfirmationButtonProps): JSX.Element;

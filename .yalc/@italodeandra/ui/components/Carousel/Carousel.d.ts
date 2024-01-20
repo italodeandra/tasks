@@ -1,12 +1,13 @@
-import { EmblaOptionsType } from "embla-carousel";
+import { EmblaOptionsType, EmblaPluginType } from "embla-carousel-react";
 import { ReactNode } from "react";
-export declare type CarouselProps = {
+export type CarouselProps = {
     children?: ReactNode;
     carouselClassName?: string;
     className?: string;
     navigation?: boolean;
+    plugins?: EmblaPluginType[];
 } & EmblaOptionsType;
-declare function Carousel({ children, className, carouselClassName, navigation, ...options }: CarouselProps): JSX.Element;
+declare function Carousel({ children, className, carouselClassName, navigation, plugins, ...options }: CarouselProps): JSX.Element;
 declare namespace Carousel {
     var Slide: typeof CarouselSlide;
 }

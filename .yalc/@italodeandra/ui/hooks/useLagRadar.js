@@ -9,10 +9,10 @@ function useLagRadar() {
     var _a = (0, react_use_1.useWindowSize)(), width = _a.width, height = _a.height;
     react_1.default.useEffect(function () {
         return lagRadar({
-            frames: 60,
-            speed: 0.0017,
-            size: Math.min(width, height) / 3,
-            inset: 3,
+            frames: 60, // number of frames to draw, more = worse performance
+            speed: 0.0017, // how fast the sweep moves (rads per ms)
+            size: Math.min(width, height) / 3, // outer frame px
+            inset: 3, // circle inset px
             parent: document.body, // DOM node to attach to
         });
     }, [width, height]);

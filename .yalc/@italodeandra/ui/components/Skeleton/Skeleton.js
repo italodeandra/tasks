@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 function Skeleton(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("animate-pulse rounded bg-zinc-300 dark:bg-zinc-700", className) }, props)));

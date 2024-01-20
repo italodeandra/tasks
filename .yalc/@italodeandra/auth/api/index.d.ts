@@ -15,5 +15,6 @@ export interface AuthConfig {
     routes: Routes;
     fallbackLocale?: string;
     sendMail: ReturnType<typeof prepareSendMail>;
+    disableImpersonate?: boolean;
 }
 export default function Auth(config: AuthConfig): import("next").NextApiHandler<any>;

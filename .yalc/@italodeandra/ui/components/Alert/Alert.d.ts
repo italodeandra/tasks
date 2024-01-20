@@ -21,7 +21,7 @@ declare const styles: {
         };
     };
 };
-export declare type AlertProps = {
+export type AlertProps = {
     title: ReactNode;
     variant?: keyof (typeof styles)["variants"];
     children?: ReactNode;

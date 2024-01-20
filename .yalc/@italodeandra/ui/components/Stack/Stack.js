@@ -26,12 +26,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
 var react_1 = require("react");
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 function Stack(_a, ref) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)("div", __assign({}, props, { className: (0, clsx_1.default)("flex flex-col", {
-            "gap-2": !(className === null || className === void 0 ? void 0 : className.includes("gap-")),
-        }, className), ref: ref })));
+    return ((0, jsx_runtime_1.jsx)("div", __assign({}, props, { className: (0, clsx_1.default)("flex flex-col gap-2", className), ref: ref })));
 }
 exports.default = (0, react_1.forwardRef)(Stack);

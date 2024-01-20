@@ -26,12 +26,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 function Group(_a) {
     var wrap = _a.wrap, className = _a.className, props = __rest(_a, ["wrap", "className"]);
-    return ((0, jsx_runtime_1.jsx)("div", __assign({}, props, { className: (0, clsx_1.default)("flex", {
-            "gap-2": !(className === null || className === void 0 ? void 0 : className.includes("gap-")),
-        }, {
+    return ((0, jsx_runtime_1.jsx)("div", __assign({}, props, { className: (0, clsx_1.default)("flex gap-2", {
             "flex-wrap": wrap,
         }, className) })));
 }

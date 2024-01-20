@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-export declare type ErrorProps = {
+export type ErrorProps = {
     error: number;
     background?: string;
     title: string;

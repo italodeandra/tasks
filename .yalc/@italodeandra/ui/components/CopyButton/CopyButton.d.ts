@@ -1,5 +1,5 @@
 /// <reference types="react" />
-export declare type CopyButtonProps = {
+export type CopyButtonProps = {
     text: string;
     copyText?: string;
     copiedText?: string;

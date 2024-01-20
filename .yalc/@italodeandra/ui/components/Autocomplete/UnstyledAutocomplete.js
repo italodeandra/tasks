@@ -46,7 +46,7 @@ var react_1 = require("@headlessui/react");
 var Loading_1 = __importDefault(require("../Loading"));
 var react_2 = require("react");
 var Input_1 = require("../Input");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
 var react_use_1 = require("react-use");
 var lodash_1 = require("lodash");
@@ -79,7 +79,8 @@ function UnstyledAutocomplete(_a) {
                         .includes(query.toLowerCase());
                 }));
     }, [filterFunction, filterProperty, items, query]);
-    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : trailing || !readOnly ? ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))) : undefined;
+    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing ||
+        (!readOnly ? ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, { className: "pointer-events-auto -mr-1 flex items-center", children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-zinc-400", "aria-hidden": "true" }) })) : undefined));
     var ComponentInput = as || Input_1.UnstyledInput;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction ? renderFunction(item) : item[renderProperty];
@@ -94,19 +95,19 @@ function UnstyledAutocomplete(_a) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
-    return ((0, jsx_runtime_1.jsx)(react_1.Combobox, __assign({ onChange: setSelectedItem, value: selectedItem, nullable: true }, { children: function (_a) {
+    return ((0, jsx_runtime_1.jsx)(react_1.Combobox, { onChange: setSelectedItem, value: selectedItem, nullable: true, children: function (_a) {
             var open = _a.open;
-            return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", __assign({ className: "relative" }, { children: (0, jsx_runtime_1.jsx)(ComponentInput
+            return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)("div", { className: "relative", children: (0, jsx_runtime_1.jsx)(ComponentInput
                         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        , __assign({}, props, { as: react_1.Combobox.Input, placeholder: placeholder, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, readOnly: readOnly })) })), filteredItems.length > 0 && !readOnly && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Options, __assign({ static: isStatic, className: optionsClassName }, { children: (itemsRenderLimit
+                        , __assign({}, props, { as: react_1.Combobox.Input, placeholder: placeholder, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, readOnly: readOnly })) }), filteredItems.length > 0 && !readOnly && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Options, { static: isStatic, className: optionsClassName, children: (itemsRenderLimit
                             ? (0, lodash_1.take)(filteredItems, itemsRenderLimit)
-                            : filteredItems).map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: function (_a) {
+                            : filteredItems).map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, { value: item, className: function (_a) {
                                 var active = _a.active, selected = _a.selected;
                                 return (0, clsx_1.default)("flex gap-2", optionClassName && optionClassName({ active: active, selected: selected }));
-                            } }, { children: function (_a) {
+                            }, children: function (_a) {
                                 var selected = _a.selected, active = _a.active;
-                                return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [selected ? ((0, jsx_runtime_1.jsx)("span", __assign({ className: (0, clsx_1.default)("flex items-center", active ? "text-white" : "text-primary-500") }, { children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "h-5 w-5", "aria-hidden": "true" }) }))) : null, doRender(item)] }));
-                            } }), item._id)); }) }))), open && emptyText && query !== "" && filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: emptyTextClassName }, { children: emptyText })))] }));
-        } })));
+                                return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [selected ? ((0, jsx_runtime_1.jsx)("span", { className: (0, clsx_1.default)("flex items-center", active ? "text-white" : "text-primary-500"), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "h-5 w-5", "aria-hidden": "true" }) })) : null, doRender(item)] }));
+                            } }, item._id)); }) })), open && emptyText && query !== "" && filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", { className: emptyTextClassName, children: emptyText }))] }));
+        } }));
 }
 exports.default = UnstyledAutocomplete;

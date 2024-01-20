@@ -1,5 +1,5 @@
 import { CSSProperties, ReactElement, ReactNode } from "react";
-export declare type IDialog = {
+export type IDialog = {
     _id: string;
     actions?: ReactNode | ((_id: string) => ReactNode);
     title?: ReactNode;
@@ -8,6 +8,7 @@ export declare type IDialog = {
     open?: boolean;
     hideCloseButton?: boolean;
     panelClassName?: string;
+    dialogClassName?: string;
     style?: CSSProperties;
 };
 declare const dialogsState: {

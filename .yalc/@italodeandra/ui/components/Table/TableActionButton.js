@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_1 = require("react");
 var Button_1 = __importDefault(require("../Button/Button"));
 var Tooltip_1 = __importDefault(require("../Tooltip/Tooltip"));
@@ -41,7 +41,7 @@ function TableActionButton(_a) {
             className: (0, clsx_1.default)("!h-[20px] !w-[20px]", (_b = children === null || children === void 0 ? void 0 : children.props) === null || _b === void 0 ? void 0 : _b.className),
         }) })));
     if (title) {
-        return (0, jsx_runtime_1.jsx)(Tooltip_1.default, __assign({ content: title }, { children: button }));
+        return (0, jsx_runtime_1.jsx)(Tooltip_1.default, { content: title, children: button });
     }
     return button;
 }

@@ -30,13 +30,14 @@ var Breadcrumbs_1 = __importDefault(require("@italodeandra/ui/components/Breadcr
 var solid_1 = require("@heroicons/react/20/solid");
 var impersonate_1 = require("../../../api/panel/user/impersonate");
 var Group_1 = __importDefault(require("@italodeandra/ui/components/Group"));
-function PanelUsersView() {
-    var _a = (0, AuthContext_1.useAuthContext)(), Routes = _a.Routes, intl = _a.intl;
+function PanelUsersView(_a) {
+    var disableImpersonate = _a.disableImpersonate;
+    var _b = (0, AuthContext_1.useAuthContext)(), Routes = _b.Routes, intl = _b.intl;
     var router = (0, router_1.useRouter)();
-    var _b = (0, list_1.useAuthPanelUserList)({
+    var _c = (0, list_1.useAuthPanelUserList)({
         sort: "createdAt",
         sortDirection: "desc",
-    }), data = _b.data, isFetching = _b.isFetching, isError = _b.isError, refetch = _b.refetch;
+    }), data = _c.data, isFetching = _c.isFetching, isError = _c.isError, refetch = _c.refetch;
     var t = (0, useTranslation_1.default)(intl);
     var columns = (0, react_1.useMemo)(function () { return [
         {
@@ -72,14 +73,16 @@ function PanelUsersView() {
     var handleRowClick = (0, react_1.useCallback)(function (item) {
         return router.push(Routes.PanelUser(item._id));
     }, [router, Routes]);
-    var _c = (0, impersonate_1.useAuthPanelUserImpersonate)(), impersonate = _c.mutate, isImpersonating = _c.isLoading;
+    var _d = (0, impersonate_1.useAuthPanelUserImpersonate)(), impersonate = _d.mutate, isImpersonating = _d.isLoading;
     var pages = (0, react_1.useMemo)(function () { return [{ title: t("Users") }]; }, [t]);
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "mb-2 flex flex-1 flex-col md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsxs)(Group_1.default, __assign({ className: "mb-2" }, { children: [(0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages }), (0, jsx_runtime_1.jsx)("div", { className: "flex-grow" }), (0, jsx_runtime_1.jsx)(Group_1.default, __assign({ className: "items-end" }, { children: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ leading: (0, jsx_runtime_1.jsx)(solid_1.PlusIcon, {}), href: Routes.PanelNewUser }, { children: t("New") })) }))] })), (0, jsx_runtime_1.jsx)(DataTable_1.default, { className: "flex-1", autoHeight: true, columns: columns, data: data, isLoading: isFetching || isImpersonating, onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: refetch }, { children: t("Try again") })) })) : (t("No records")), actions: [
-                    {
-                        icon: (0, jsx_runtime_1.jsx)(solid_1.IdentificationIcon, {}),
-                        title: t("Impersonate"),
-                        onClick: impersonate,
-                    },
-                ] })] })));
+    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "mb-2 flex flex-1 flex-col md:px-2" }, { children: [(0, jsx_runtime_1.jsx)(next_seo_1.NextSeo, { title: t("Users") }), (0, jsx_runtime_1.jsxs)(Group_1.default, __assign({ className: "mb-2" }, { children: [(0, jsx_runtime_1.jsx)(Breadcrumbs_1.default, { pages: pages }), (0, jsx_runtime_1.jsx)("div", { className: "flex-grow" }), (0, jsx_runtime_1.jsx)(Group_1.default, __assign({ className: "items-end" }, { children: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ leading: (0, jsx_runtime_1.jsx)(solid_1.PlusIcon, {}), href: Routes.PanelNewUser }, { children: t("New") })) }))] })), (0, jsx_runtime_1.jsx)(DataTable_1.default, { className: "flex-1", autoHeight: true, columns: columns, data: data, isLoading: isFetching || isImpersonating, onRowClick: handleRowClick, noRecords: !isFetching && isError ? ((0, jsx_runtime_1.jsx)(Alert_1.default, { title: t("There was an unexpected error trying to list the users"), variant: "error", className: "m-2", actions: (0, jsx_runtime_1.jsx)(Button_1.default, __assign({ variant: "text", color: "error", onClick: function () { return refetch(); } }, { children: t("Try again") })) })) : (t("No records")), actions: !disableImpersonate
+                    ? [
+                        {
+                            icon: (0, jsx_runtime_1.jsx)(solid_1.IdentificationIcon, {}),
+                            title: t("Impersonate"),
+                            onClick: impersonate,
+                        },
+                    ]
+                    : undefined })] })));
 }
 exports.default = PanelUsersView;

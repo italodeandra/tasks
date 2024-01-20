@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_1 = require("react");
 function TableRow(_a, ref) {
     var children = _a.children, onClick = _a.onClick, props = __rest(_a, ["children", "onClick"]);

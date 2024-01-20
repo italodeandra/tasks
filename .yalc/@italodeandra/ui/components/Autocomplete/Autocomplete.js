@@ -43,7 +43,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var UnstyledAutocomplete_1 = __importDefault(require("../Autocomplete/UnstyledAutocomplete"));
 var Input_1 = __importDefault(require("../Input"));
 var defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
@@ -62,9 +62,9 @@ function Autocomplete(_a) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onChangeQuery, query]);
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("relative", className) }, { children: (0, jsx_runtime_1.jsx)(UnstyledAutocomplete_1.default, __assign({}, props, { as: Input_1.default, query: query, onChangeQuery: setQuery, emptyTextClassName: (0, clsx_1.default)(defaultMenuItemsClassName, "p-4 text-sm text-gray-500 dark:text-zinc-400 mt-1 absolute w-full"), optionsClassName: (0, clsx_1.default)(defaultMenuItemsClassName, "max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800 dark:text-zinc-200 absolute z-10 mt-1 w-full"), optionClassName: function (_a) {
+    return ((0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("relative", className), children: (0, jsx_runtime_1.jsx)(UnstyledAutocomplete_1.default, __assign({}, props, { as: Input_1.default, query: query, onChangeQuery: setQuery, emptyTextClassName: (0, clsx_1.default)(defaultMenuItemsClassName, "p-4 text-sm text-zinc-500 dark:text-zinc-400 mt-1 absolute w-full"), optionsClassName: (0, clsx_1.default)(defaultMenuItemsClassName, "max-h-72 scroll-py-2 overflow-y-auto py-2 text-sm text-zinc-800 dark:text-zinc-200 absolute z-10 mt-1 w-full"), optionClassName: function (_a) {
                 var active = _a.active;
                 return (0, clsx_1.default)("cursor-default select-none px-4 py-2", active && "bg-primary-600 text-white");
-            }, emptyText: emptyText })) })));
+            }, emptyText: emptyText })) }));
 }
 exports.default = Autocomplete;

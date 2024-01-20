@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var UnstyledButton_1 = __importDefault(require("./UnstyledButton"));
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_1 = require("react");
 var Loading_1 = __importDefault(require("../Loading"));
 var styles = {
@@ -145,7 +145,7 @@ var Button = function (_a, ref) {
     }
     return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded", (_b = {},
             _b[styles.disabled] = disabled,
-            _b), className), type: type, disabled: disabled }, { children: [leading &&
+            _b), className), type: type, disabled: disabled, children: [leading &&
                 (0, react_1.cloneElement)(leading, {
                     className: (0, clsx_1.default)("", styles.icon[size].icon, styles.icon[size].leading, (_c = leading === null || leading === void 0 ? void 0 : leading.props) === null || _c === void 0 ? void 0 : _c.className),
                 }), !icon

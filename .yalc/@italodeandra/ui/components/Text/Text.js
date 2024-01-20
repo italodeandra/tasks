@@ -27,13 +27,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defaultTextStyles = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var react_1 = require("react");
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var link_1 = __importDefault(require("next/link"));
 exports.defaultTextStyles = {
     variant: {
-        default: "text-gray-700 hover:text-gray-700 dark:text-zinc-200",
-        label: "text-gray-800 font-medium dark:text-zinc-100",
-        secondary: "text-sm text-gray-500 dark:text-zinc-400",
+        default: "text-zinc-700 dark:text-zinc-200",
+        label: "text-zinc-800 font-medium dark:text-zinc-100",
+        secondary: "text-sm text-zinc-500 dark:text-zinc-400",
         link: "font-medium text-primary-500 hover:decoration-primary-500 underline decoration-2 decoration-primary-500/40 transition-colors",
     },
     size: {
@@ -45,16 +46,16 @@ exports.defaultTextStyles = {
         "2xl": "text-2xl",
     },
 };
-function Text(_a) {
+function Text(_a, ref) {
     var inline = _a.inline, _b = _a.variant, variant = _b === void 0 ? "default" : _b, className = _a.className, href = _a.href, target = _a.target, _c = _a.size, size = _c === void 0 ? variant !== "label" ? "base" : "sm" : _c, props = __rest(_a, ["inline", "variant", "className", "href", "target", "size"]);
     className = (0, clsx_1.default)(exports.defaultTextStyles.variant[variant], exports.defaultTextStyles.size[size], className);
     if (href) {
-        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({ href: href, target: target }, props, { className: className })));
+        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({ ref: ref, href: href, target: target }, props, { className: className })));
     }
     if (inline) {
-        return (0, jsx_runtime_1.jsx)("span", __assign({}, props, { className: className }));
+        return (0, jsx_runtime_1.jsx)("span", __assign({ ref: ref }, props, { className: className }));
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return (0, jsx_runtime_1.jsx)("div", __assign({}, props, { className: className }));
+    return (0, jsx_runtime_1.jsx)("div", __assign({ ref: ref }, props, { className: className }));
 }
-exports.default = Text;
+exports.default = (0, react_1.forwardRef)(Text);

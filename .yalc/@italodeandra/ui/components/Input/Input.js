@@ -32,11 +32,11 @@ var Text_1 = require("../Text");
 var solid_1 = require("@heroicons/react/20/solid");
 var InputIcon_1 = __importDefault(require("./InputIcon"));
 var react_1 = require("react");
-var clsx_1 = __importDefault(require("clsx"));
 var recursiveChildrenMap_1 = __importDefault(require("../../utils/recursiveChildrenMap"));
-exports.defaultLabelClassName = "block ".concat(Text_1.defaultTextStyles.variant.label, " mb-1");
+var clsx_1 = __importDefault(require("../../utils/clsx"));
+exports.defaultLabelClassName = "ui-input-label block ".concat(Text_1.defaultTextStyles.variant.label, " mb-1");
 exports.defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm disabled:cursor-not-allowed dark:bg-zinc-800";
-exports.defaultInputClassName = "".concat(exports.defaultInputClassNameUncolored, " border-gray-300 dark:border-zinc-700 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 disabled:border-gray-200 dark:disabled:border-zinc-800 disabled:bg-gray-50 dark:disabled:bg-zinc-900/90 disabled:text-gray-500");
+exports.defaultInputClassName = "ui-input-input ".concat(exports.defaultInputClassNameUncolored, " border-zinc-300 dark:border-zinc-700 focus:border-primary-500 dark:focus:border-primary-500 focus:ring-primary-500 disabled:border-zinc-200 dark:disabled:border-zinc-800 disabled:bg-zinc-50 dark:disabled:bg-zinc-900/90 disabled:text-zinc-500");
 exports.defaultHelpTextClassName = "mt-2 ".concat(Text_1.defaultTextStyles.variant.secondary);
 exports.defaultTrailingClassName = "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 text-sm";
 exports.defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 text-sm";
@@ -46,7 +46,7 @@ function Input(_a, ref) {
     var error = _a.error, trailing = _a.trailing, labelClassName = _a.labelClassName, inputClassName = _a.inputClassName, helpTextClassName = _a.helpTextClassName, trailingClassName = _a.trailingClassName, leadingClassName = _a.leadingClassName, leadingInputClassName = _a.leadingInputClassName, trailingInputClassName = _a.trailingInputClassName, required = _a.required, label = _a.label, loading = _a.loading, readOnly = _a.readOnly, children = _a.children, props = __rest(_a, ["error", "trailing", "labelClassName", "inputClassName", "helpTextClassName", "trailingClassName", "leadingClassName", "leadingInputClassName", "trailingInputClassName", "required", "label", "loading", "readOnly", "children"]);
     trailing =
         trailing ||
-            (error ? ((0, jsx_runtime_1.jsx)(InputIcon_1.default, __assign({ className: "text-error-500" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ExclamationCircleIcon, { "aria-hidden": "true" }) }))) : undefined);
+            (error ? ((0, jsx_runtime_1.jsx)(InputIcon_1.default, { className: "text-error-500", children: (0, jsx_runtime_1.jsx)(solid_1.ExclamationCircleIcon, { "aria-hidden": "true" }) })) : undefined);
     labelClassName = (0, clsx_1.default)(exports.defaultLabelClassName, labelClassName);
     inputClassName = (0, clsx_1.default)(error ? exports.defaultInputClassNameUncolored : exports.defaultInputClassName, inputClassName, {
         "animate-pulse": loading,
@@ -64,11 +64,11 @@ function Input(_a, ref) {
         inputClassName = "".concat(inputClassName, " border-dashed");
     }
     if (label && required) {
-        label = ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [label, " ", (0, jsx_runtime_1.jsx)("span", __assign({ className: "text-red-500" }, { children: "*" }))] }));
+        label = ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [label, " ", (0, jsx_runtime_1.jsx)("span", { className: "text-red-500", children: "*" })] }));
     }
     return ((0, jsx_runtime_1.jsx)(UnstyledInput_1.default
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label, readOnly: readOnly }, { children: (0, recursiveChildrenMap_1.default)(children, function (child) {
+    , __assign({}, props, { trailing: trailing, labelClassName: labelClassName, inputClassName: inputClassName, helpTextClassName: helpTextClassName, trailingClassName: trailingClassName, leadingClassName: leadingClassName, leadingInputClassName: leadingInputClassName, trailingInputClassName: trailingInputClassName, ref: ref, required: required, label: label, readOnly: readOnly, children: (0, recursiveChildrenMap_1.default)(children, function (child) {
             return (0, react_1.cloneElement)(child, { disabled: readOnly });
         }) })));
 }

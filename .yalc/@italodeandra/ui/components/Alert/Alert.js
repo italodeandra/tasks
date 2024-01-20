@@ -27,7 +27,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var solid_1 = require("@heroicons/react/20/solid");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var Group_1 = __importDefault(require("../Group"));
 var styles = {
     variants: {
@@ -59,6 +59,6 @@ var icons = {
 function Alert(_a) {
     var _b = _a.variant, variant = _b === void 0 ? "default" : _b, title = _a.title, children = _a.children, className = _a.className, actions = _a.actions, props = __rest(_a, ["variant", "title", "children", "className", "actions"]);
     var Icon = icons[variant];
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("rounded-md p-4", styles.variants[variant].root, className) }, props, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex" }, { children: [(0, jsx_runtime_1.jsx)("div", __assign({ className: "flex-shrink-0" }, { children: (0, jsx_runtime_1.jsx)(Icon, { className: (0, clsx_1.default)("h-5 w-5", styles.variants[variant].icon), "aria-hidden": "true" }) })), (0, jsx_runtime_1.jsxs)("div", __assign({ className: "ml-3 flex w-full flex-col items-start justify-between sm:flex-row" }, { children: [(0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("h3", __assign({ className: (0, clsx_1.default)("text-sm font-medium", styles.variants[variant].title) }, { children: title })), children && ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("mt-2 text-sm", styles.variants[variant].content) }, { children: children })))] }), actions && ((0, jsx_runtime_1.jsx)(Group_1.default, __assign({ className: (0, clsx_1.default)("-mx-4 mt-1 -mb-2 sm:-mx-2 sm:-my-2", styles.variants[variant].content) }, { children: actions })))] }))] })) })));
+    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("rounded-md p-4", styles.variants[variant].root, className) }, props, { children: (0, jsx_runtime_1.jsxs)("div", { className: "flex", children: [(0, jsx_runtime_1.jsx)("div", { className: "flex-shrink-0", children: (0, jsx_runtime_1.jsx)(Icon, { className: (0, clsx_1.default)("h-5 w-5", styles.variants[variant].icon), "aria-hidden": "true" }) }), (0, jsx_runtime_1.jsxs)("div", { className: "ml-3 flex w-full flex-col items-start justify-between sm:flex-row", children: [(0, jsx_runtime_1.jsxs)("div", { children: [(0, jsx_runtime_1.jsx)("h3", { className: (0, clsx_1.default)("text-sm font-medium", styles.variants[variant].title), children: title }), children && ((0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("mt-2 text-sm", styles.variants[variant].content), children: children }))] }), actions && ((0, jsx_runtime_1.jsx)(Group_1.default, { className: (0, clsx_1.default)("-mx-4 mt-1 -mb-2 sm:-mx-2 sm:-my-2", styles.variants[variant].content), children: actions }))] })] }) })));
 }
 exports.default = Alert;

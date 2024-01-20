@@ -1,4 +1,4 @@
-export declare type Intl<T> = {
+export type Intl<T = string> = {
     [key: string]: Intl<T> | T;
 };
-export default function useTranslation(intl?: Intl<string>, prePath?: string): (sentence: string, path?: string) => string;
+export default function useTranslation<K extends string>(intl?: Intl, prePath?: string): (sentence: K, path?: string) => string;

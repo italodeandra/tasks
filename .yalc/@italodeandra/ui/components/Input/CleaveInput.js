@@ -47,8 +47,8 @@ var react_2 = __importDefault(require("cleave.js/react"));
 var Input_1 = __importDefault(require("./Input"));
 function CleaveInput(_a, ref) {
     var onChange = _a.onChange, name = _a.name, _b = _a.value, defaultValue = _b === void 0 ? "" : _b, options = _a.options, props = __rest(_a, ["onChange", "name", "value", "options"]);
-    var _c = __read((0, react_1.useState)(defaultValue), 2), value = _c[0], setValue = _c[1];
-    var valueRef = (0, react_1.useRef)(defaultValue);
+    var _c = __read((0, react_1.useState)(defaultValue === null || defaultValue === void 0 ? void 0 : defaultValue.toString().replace(".", ",")), 2), value = _c[0], setValue = _c[1];
+    var valueRef = (0, react_1.useRef)(defaultValue === null || defaultValue === void 0 ? void 0 : defaultValue.toString().replace(".", ","));
     var innerRef = (0, react_1.useRef)({
         get value() {
             return valueRef.current;
@@ -74,7 +74,7 @@ function CleaveInput(_a, ref) {
     }, [ref]);
     var handleOnChange = function (event) {
         if (onChange) {
-            valueRef.current = +event.target.rawValue;
+            valueRef.current = event.target.rawValue;
             onChange({
                 target: {
                     name: name,
@@ -84,6 +84,9 @@ function CleaveInput(_a, ref) {
             });
         }
     };
+    (0, react_1.useEffect)(function () {
+        setValue(defaultValue === null || defaultValue === void 0 ? void 0 : defaultValue.toString().replace(".", ","));
+    }, [defaultValue]);
     return ((0, jsx_runtime_1.jsx)(Input_1.default
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     , __assign({}, props, { as: react_2.default, name: name, onChange: handleOnChange, options: options, value: value })));

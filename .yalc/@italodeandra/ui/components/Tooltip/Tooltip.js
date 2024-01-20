@@ -47,7 +47,7 @@ var react_1 = require("react");
 var react_merge_refs_1 = __importDefault(require("react-merge-refs"));
 var react_dom_interactions_1 = require("@floating-ui/react-dom-interactions");
 var framer_motion_1 = require("framer-motion");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 function useTooltipState(_a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.initialOpen, initialOpen = _c === void 0 ? false : _c, _d = _b.placement, placement = _d === void 0 ? "bottom" : _d, id = _b.id, delayGroupContext = _b.delayGroupContext, delay = _b.delay;
     var _e = __read((0, react_1.useState)(initialOpen), 2), open = _e[0], setOpen = _e[1];
@@ -112,10 +112,10 @@ function Tooltip(_a) {
     if (!content) {
         return children;
     }
-    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(exports.TooltipAnchor, __assign({ state: state, asChild: true }, { children: children })), (0, jsx_runtime_1.jsx)(exports.TooltipContent, __assign({ state: state, className: className }, { children: content }))] }));
+    return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(exports.TooltipAnchor, { state: state, asChild: true, children: children }), (0, jsx_runtime_1.jsx)(exports.TooltipContent, { state: state, className: className, children: content })] }));
 }
 exports.default = Tooltip;
 Tooltip.Group = function TooltipGroup(_a) {
     var children = _a.children, _b = _a.delay, delay = _b === void 0 ? 200 : _b;
-    return (0, jsx_runtime_1.jsx)(react_dom_interactions_1.FloatingDelayGroup, __assign({ delay: delay }, { children: children }));
+    return (0, jsx_runtime_1.jsx)(react_dom_interactions_1.FloatingDelayGroup, { delay: delay, children: children });
 };

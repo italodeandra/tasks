@@ -1,44 +1,16 @@
-/// <reference types="node" />
-import type { ButtonHTMLAttributes, ComponentProps, DetailedHTMLProps } from "react";
-import NextLink from "next/link";
-export declare type UnstyledButtonProps<Href extends string | undefined> = {
-    href?: Href;
+import type { HTMLProps } from "react";
+export type UnstyledButtonProps<T extends HTMLElement = HTMLButtonElement> = {
+    href?: string | null;
     target?: string;
     rel?: string;
     download?: string;
-} & Omit<Href extends string ? ComponentProps<typeof NextLink> : DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref">;
+    as?: string;
+} & Omit<HTMLProps<T>, "ref" | "href">;
 declare const _default: import("react").ForwardRefExoticComponent<{
-    href?: string | undefined;
+    href?: string | null | undefined;
     target?: string | undefined;
     rel?: string | undefined;
     download?: string | undefined;
-} & Omit<(Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
-    href: string | import("url").UrlObject;
-    as?: (string | import("url").UrlObject) | undefined;
-    replace?: boolean | undefined;
-    scroll?: boolean | undefined;
-    shallow?: boolean | undefined;
-    passHref?: boolean | undefined;
-    prefetch?: boolean | undefined;
-    locale?: string | false | undefined;
-    legacyBehavior?: boolean | undefined;
-    onMouseEnter?: ((e: any) => void) | undefined;
-    onTouchStart?: ((e: any) => void) | undefined;
-    onClick?: ((e: any) => void) | undefined;
-}> & {
-    href: string | import("url").UrlObject;
-    as?: (string | import("url").UrlObject) | undefined;
-    replace?: boolean | undefined;
-    scroll?: boolean | undefined;
-    shallow?: boolean | undefined;
-    passHref?: boolean | undefined;
-    prefetch?: boolean | undefined;
-    locale?: string | false | undefined;
-    legacyBehavior?: boolean | undefined;
-    onMouseEnter?: ((e: any) => void) | undefined;
-    onTouchStart?: ((e: any) => void) | undefined;
-    onClick?: ((e: any) => void) | undefined;
-} & {
-    children?: import("react").ReactNode;
-} & import("react").RefAttributes<HTMLAnchorElement>) | DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & import("react").RefAttributes<HTMLAnchorElement | HTMLButtonElement>>;
+    as?: string | undefined;
+} & Omit<HTMLProps<HTMLElement>, "href" | "ref"> & import("react").RefAttributes<HTMLElement>>;
 export default _default;

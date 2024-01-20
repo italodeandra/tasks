@@ -55,29 +55,31 @@ var react_1 = require("@headlessui/react");
 var Loading_1 = __importDefault(require("../Loading"));
 var react_2 = require("react");
 var Input_1 = require("../Input");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var lodash_1 = require("lodash");
 var solid_1 = require("@heroicons/react/20/solid");
 var Badge_1 = __importDefault(require("../Badge"));
 var defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
-function getValue(item) {
-    return typeof item === "string" ? item : item._id;
+function getValue(id, item) {
+    return typeof item === "string"
+        ? item
+        : item[id];
 }
 function MultiSelectInput(_a) {
-    var className = _a.className, selectedItems = _a.selectedItems, doRender = _a.doRender, removeItem = _a.removeItem, props = __rest(_a, ["className", "selectedItems", "doRender", "removeItem"]);
+    var className = _a.className, selectedItems = _a.selectedItems, doRender = _a.doRender, removeItem = _a.removeItem, id = _a.id, readOnly = _a.readOnly, props = __rest(_a, ["className", "selectedItems", "doRender", "removeItem", "id", "readOnly"]);
     var ref = (0, react_2.useRef)(null);
-    return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: (0, clsx_1.default)("flex flex-wrap border focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 dark:focus-within:border-primary-500", className), onClick: function () { var _a; return (_a = ref.current) === null || _a === void 0 ? void 0 : _a.focus(); } }, { children: [!!selectedItems.length && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "flex flex-wrap items-center gap-1 p-1.5" }, { children: selectedItems.map(function (item) { return ((0, jsx_runtime_1.jsx)(Badge_1.default, __assign({ onActionClick: removeItem(item) }, { children: doRender(item) }), getValue(item))); }) }))), (0, jsx_runtime_1.jsx)(react_1.Combobox.Input
+    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("flex flex-wrap border focus-within:border-primary-500 focus-within:ring-1 focus-within:ring-primary-500 dark:focus-within:border-primary-500", className), onClick: function () { var _a; return (_a = ref.current) === null || _a === void 0 ? void 0 : _a.focus(); }, children: [!!selectedItems.length && ((0, jsx_runtime_1.jsx)("div", { className: "flex flex-wrap items-center gap-1 p-1.5", children: selectedItems.map(function (item) { return ((0, jsx_runtime_1.jsx)(Badge_1.default, { onActionClick: !readOnly ? removeItem(item) : undefined, children: doRender(item) }, getValue(id, item))); }) })), (0, jsx_runtime_1.jsx)(react_1.Combobox.Input
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-            , __assign({}, props, { ref: ref, className: "rounded-md border-none !ring-transparent disabled:cursor-not-allowed disabled:text-gray-500 dark:bg-zinc-800 dark:disabled:bg-zinc-900/90 sm:text-sm" }))] })));
+            , __assign({}, props, { ref: ref, className: "rounded-md border-none !ring-transparent disabled:cursor-not-allowed disabled:text-zinc-500 sm:text-sm dark:bg-zinc-800 dark:disabled:bg-zinc-900/90", readOnly: readOnly }))] }));
 }
 function MultiSelect(_a) {
     var placeholder = _a.placeholder, _b = _a.emptyText, emptyText = _b === void 0 ? "No item found." : _b, _c = _a.items, items = _c === void 0 ? [] : _c, _d = _a.renderProperty, renderProperty = _d === void 0 ? "title" : _d, renderFunction = _a.renderFunction, _e = _a.filterProperty, filterProperty = _e === void 0 ? "title" : _e, filterFunction = _a.filterFunction, onChange = _a.onChange, _f = _a.query, defaultQuery = _f === void 0 ? "" : _f, onChangeQuery = _a.onChangeQuery, loading = _a.loading, inputInnerClassName = _a.inputInnerClassName, inputElementClassName = _a.inputElementClassName, as = _a.as, trailing = _a.trailing, trailingClassName = _a.trailingClassName, trailingInputClassName = _a.trailingInputClassName, leadingInputClassName = _a.leadingInputClassName, isStatic = _a.static, 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     _g = _a.displayValue, 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    displayValue = _g === void 0 ? function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; } : _g, value = _a.value, labelClassName = _a.labelClassName, creatable = _a.creatable, _h = _a.getCreateLabel, getCreateLabel = _h === void 0 ? function (query) { return "+ create \"".concat(query, "\""); } : _h, itemsRenderLimit = _a.itemsRenderLimit, className = _a.className, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onChange", "query", "onChangeQuery", "loading", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value", "labelClassName", "creatable", "getCreateLabel", "itemsRenderLimit", "className"]);
-    var _j = __read((0, react_2.useState)(defaultQuery), 2), query = _j[0], setQuery = _j[1];
-    var _k = __read((0, react_2.useState)(value || []), 2), selectedItems = _k[0], setSelectedItems = _k[1];
+    displayValue = _g === void 0 ? function (item) { return (item === null || item === void 0 ? void 0 : item[renderProperty]) || ""; } : _g, value = _a.value, labelClassName = _a.labelClassName, creatable = _a.creatable, _h = _a.getCreateLabel, getCreateLabel = _h === void 0 ? function (query) { return "+ create \"".concat(query, "\""); } : _h, itemsRenderLimit = _a.itemsRenderLimit, className = _a.className, _j = _a.valueProperty, valueProperty = _j === void 0 ? "_id" : _j, label = _a.label, required = _a.required, readOnly = _a.readOnly, props = __rest(_a, ["placeholder", "emptyText", "items", "renderProperty", "renderFunction", "filterProperty", "filterFunction", "onChange", "query", "onChangeQuery", "loading", "inputInnerClassName", "inputElementClassName", "as", "trailing", "trailingClassName", "trailingInputClassName", "leadingInputClassName", "static", "displayValue", "value", "labelClassName", "creatable", "getCreateLabel", "itemsRenderLimit", "className", "valueProperty", "label", "required", "readOnly"]);
+    var _k = __read((0, react_2.useState)(defaultQuery), 2), query = _k[0], setQuery = _k[1];
+    var _l = __read((0, react_2.useState)(value || []), 2), selectedItems = _l[0], setSelectedItems = _l[1];
     // noinspection DuplicatedCode
     (0, react_2.useEffect)(function () {
         if (query !== defaultQuery) {
@@ -103,7 +105,8 @@ function MultiSelect(_a) {
                         .includes(query.toLowerCase());
                 }));
     }, [filterFunction, filterProperty, items, query]);
-    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing || ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, __assign({ className: "pointer-events-auto -mr-1 flex items-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-gray-400", "aria-hidden": "true" }) }))));
+    trailing = loading ? ((0, jsx_runtime_1.jsx)(Loading_1.default, {})) : (trailing ||
+        (!readOnly ? ((0, jsx_runtime_1.jsx)(react_1.Combobox.Button, { className: "pointer-events-auto -mr-1 flex items-center", children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpDownIcon, { className: "h-5 w-5 text-zinc-400", "aria-hidden": "true" }) })) : undefined));
     var ComponentInput = as || Input_1.UnstyledInput;
     var doRender = (0, react_2.useCallback)(function (item) {
         return renderFunction
@@ -123,39 +126,46 @@ function MultiSelect(_a) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [value]);
     var removeItem = (0, react_2.useCallback)(function (item) { return function () {
-        return setSelectedItems(function (selectedItems) { return __spreadArray([], __read(selectedItems.filter(function (i) { return getValue(i) !== getValue(item); })), false); });
-    }; }, []);
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: (0, clsx_1.default)("relative", className) }, { children: (0, jsx_runtime_1.jsx)(react_1.Combobox
+        return setSelectedItems(function (selectedItems) { return __spreadArray([], __read(selectedItems.filter(function (i) { return getValue(valueProperty, i) !== getValue(valueProperty, item); })), false); });
+    }; }, [valueProperty]);
+    if (label && required) {
+        label = ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [label, " ", (0, jsx_runtime_1.jsx)("span", { className: "text-red-500", children: "*" })] }));
+    }
+    return ((0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("relative", className), children: (0, jsx_runtime_1.jsx)(react_1.Combobox
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        , __assign({ 
+        , { 
             /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-            onChange: setSelectedItems, value: selectedItems, multiple: true }, { children: function (_a) {
+            onChange: setSelectedItems, value: selectedItems, multiple: true, children: function (_a) {
                 var open = _a.open;
                 return ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [(0, jsx_runtime_1.jsx)(ComponentInput
                         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                        , __assign({}, props, { as: MultiSelectInput, placeholder: placeholder, value: query, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, "bg-white dark:bg-zinc-800", inputElementClassName), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, labelClassName: (0, clsx_1.default)(Input_1.defaultLabelClassName, labelClassName), selectedItems: selectedItems, doRender: doRender, removeItem: removeItem })), ((creatable && query) || filteredItems.length > 0) && ((0, jsx_runtime_1.jsxs)(react_1.Combobox.Options, __assign({ static: isStatic, className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute z-10 mt-1 max-h-72 w-full scroll-py-2 overflow-y-auto py-2 text-sm text-gray-800 dark:text-zinc-200") }, { children: [creatable && !filteredItems.length && !!query && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: query, className: function (_a) {
+                        , __assign({}, props, { as: MultiSelectInput, placeholder: !readOnly ? placeholder : undefined, value: query, onChange: function (event) { return setQuery(event.target.value); }, trailing: trailing, trailingClassName: (0, clsx_1.default)(Input_1.defaultTrailingClassName, trailingClassName), inputClassName: (0, clsx_1.default)(Input_1.defaultInputClassName, "bg-white dark:bg-zinc-800", inputElementClassName, {
+                                "border-dashed": readOnly,
+                            }), innerClassName: inputInnerClassName, trailingInputClassName: (0, clsx_1.default)(Input_1.defaultTrailingInputClassName, trailingInputClassName), leadingInputClassName: (0, clsx_1.default)(Input_1.defaultLeadingInputClassName, leadingInputClassName), displayValue: displayValue, labelClassName: (0, clsx_1.default)(Input_1.defaultLabelClassName, labelClassName), selectedItems: selectedItems, doRender: doRender, removeItem: removeItem, required: required && !selectedItems.length, label: label, readOnly: readOnly })), !readOnly &&
+                            ((creatable && query) || filteredItems.length > 0) && ((0, jsx_runtime_1.jsxs)(react_1.Combobox.Options, { static: isStatic, className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute z-10 mt-1 max-h-72 w-full scroll-py-2 overflow-y-auto py-2 text-sm text-zinc-800 dark:text-zinc-200"), children: [creatable && !filteredItems.length && !!query && ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, { value: query, className: function (_a) {
                                         var active = _a.active;
                                         return (0, clsx_1.default)("cursor-default select-none px-4 py-2", {
                                             "bg-primary-600 text-white": active,
                                         });
-                                    } }, { children: function (_a) {
+                                    }, children: function (_a) {
                                         var selected = _a.selected;
-                                        return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex" }, { children: [selected && (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "mr-2 w-5" }), selected ? query : getCreateLabel(query)] })));
-                                    } }))), (itemsRenderLimit
+                                        return ((0, jsx_runtime_1.jsxs)("div", { className: "flex", children: [selected && (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "mr-2 w-5" }), selected ? query : getCreateLabel(query)] }));
+                                    } })), (itemsRenderLimit
                                     ? (0, lodash_1.take)(filteredItems, itemsRenderLimit)
-                                    : filteredItems).map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, __assign({ value: item, className: function (_a) {
+                                    : filteredItems).map(function (item) { return ((0, jsx_runtime_1.jsx)(react_1.Combobox.Option, { value: item, className: function (_a) {
                                         var active = _a.active;
                                         return (0, clsx_1.default)("cursor-default select-none px-4 py-2", {
                                             "bg-primary-600 text-white": active,
                                         });
-                                    } }, { children: function (_a) {
+                                    }, children: function (_a) {
                                         var selected = _a.selected;
-                                        return ((0, jsx_runtime_1.jsxs)("div", __assign({ className: "flex" }, { children: [selected && (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "mr-2 w-5" }), doRender(item)] })));
-                                    } }), getValue(item))); })] }))), !creatable &&
+                                        return ((0, jsx_runtime_1.jsxs)("div", { className: "flex", children: [selected && (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "mr-2 w-5" }), doRender(item)] }));
+                                    } }, getValue(valueProperty, item))); })] })), !readOnly &&
+                            !creatable &&
                             open &&
                             emptyText &&
                             query !== "" &&
-                            filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", __assign({ className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute mt-1 w-full p-4 text-sm text-gray-500 dark:text-zinc-400") }, { children: emptyText })))] }));
-            } })) })));
+                            filteredItems.length === 0 && ((0, jsx_runtime_1.jsx)("p", { className: (0, clsx_1.default)(defaultMenuItemsClassName, "absolute mt-1 w-full p-4 text-sm text-zinc-500 dark:text-zinc-400"), children: emptyText }))] }));
+            } }) }));
 }
 exports.default = MultiSelect;

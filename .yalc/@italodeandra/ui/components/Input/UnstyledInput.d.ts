@@ -1,6 +1,6 @@
 import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
 import { Combobox } from "@headlessui/react";
-export declare type UnstyledInputCommonProps = {
+export type UnstyledInputCommonProps = {
     label?: ReactNode;
     inputClassName?: string;
     labelClassName?: string;
@@ -14,8 +14,9 @@ export declare type UnstyledInputCommonProps = {
     leading?: ReactNode;
     as?: typeof Combobox.Input;
     innerClassName?: string;
+    error?: boolean;
 };
-export declare type UnstyledInputProps<Select extends boolean | undefined> = UnstyledInputCommonProps & {
+export type UnstyledInputProps<Select extends boolean | undefined> = UnstyledInputCommonProps & {
     select?: Select;
 } & (Select extends string ? DetailedHTMLProps<InputHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> : DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>);
 declare const _default: import("react").ForwardRefExoticComponent<Pick<UnstyledInputProps<boolean | undefined>, "select" | "key" | keyof InputHTMLAttributes<HTMLInputElement> | keyof UnstyledInputCommonProps> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;

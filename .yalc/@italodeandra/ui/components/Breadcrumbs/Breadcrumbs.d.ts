@@ -1,5 +1,5 @@
 /// <reference types="react" />
-export declare type BreadcrumbsProps = {
+export type BreadcrumbsProps = {
     pages?: {
         title: string;
         href?: string;

@@ -26,7 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var link_1 = __importDefault(require("next/link"));
 var react_1 = require("react");
 var colorMap = {
@@ -66,6 +66,6 @@ function Badge(_a, ref) {
         e.preventDefault();
         onActionClick === null || onActionClick === void 0 ? void 0 : onActionClick();
     }, [onActionClick]);
-    return ((0, jsx_runtime_1.jsxs)(Component, __assign({ className: (0, clsx_1.default)("inline-flex items-center py-0.5 font-medium", sizeMap.badge[size], colorMap[color].badge, className), href: href, shallow: shallow, onClick: onClick }, props, { ref: ref }, { children: [children, onActionClick && ((0, jsx_runtime_1.jsxs)("button", __assign({ type: "button", className: (0, clsx_1.default)("ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-none", sizeMap.button[size], colorMap[color].button), onClick: handleActionClick }, { children: [(0, jsx_runtime_1.jsx)("span", __assign({ className: "sr-only" }, { children: "Delete" })), (0, jsx_runtime_1.jsx)("svg", __assign({ className: "h-2 w-2", stroke: "currentColor", fill: "none", viewBox: "0 0 8 8" }, { children: (0, jsx_runtime_1.jsx)("path", { strokeLinecap: "round", strokeWidth: "1.5", d: "M1 1l6 6m0-6L1 7" }) }))] })))] })));
+    return ((0, jsx_runtime_1.jsxs)(Component, __assign({ className: (0, clsx_1.default)("inline-flex items-center py-0.5 font-medium", sizeMap.badge[size], colorMap[color].badge, className), href: href, shallow: shallow, onClick: onClick }, props, { ref: ref, children: [children, onActionClick && ((0, jsx_runtime_1.jsxs)("button", { type: "button", className: (0, clsx_1.default)("ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full focus:text-white focus:outline-none", sizeMap.button[size], colorMap[color].button), onClick: handleActionClick, children: [(0, jsx_runtime_1.jsx)("span", { className: "sr-only", children: "Delete" }), (0, jsx_runtime_1.jsx)("svg", { className: "h-2 w-2", stroke: "currentColor", fill: "none", viewBox: "0 0 8 8", children: (0, jsx_runtime_1.jsx)("path", { strokeLinecap: "round", strokeWidth: "1.5", d: "M1 1l6 6m0-6L1 7" }) })] }))] })));
 }
 exports.default = (0, react_1.forwardRef)(Badge);

@@ -1,5 +1,5 @@
 import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
-export declare type CheckboxProps = {
+export type CheckboxProps = {
     label?: ReactNode;
     description?: ReactNode;
     labelClassName?: string;

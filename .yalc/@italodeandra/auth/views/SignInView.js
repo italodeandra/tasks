@@ -63,7 +63,6 @@ var signIn_1 = require("../api/signIn");
 var react_query_1 = require("@tanstack/react-query");
 var getUser_1 = require("../api/getUser");
 var router_1 = require("next/router");
-var User_1 = require("../collections/user/User");
 var Stack_1 = __importDefault(require("@italodeandra/ui/components/Stack"));
 var AuthContext_1 = require("../AuthContext");
 function SignInView(_a) {
@@ -81,7 +80,7 @@ function SignInView(_a) {
                     switch (_a.label) {
                         case 0:
                             (0, getUser_1.setData_authGetUser)(queryClient, user);
-                            return [4 /*yield*/, router.replace((user === null || user === void 0 ? void 0 : user.type) === User_1.UserType.ADMIN ? Routes.Panel : Routes.Home)];
+                            return [4 /*yield*/, router.replace(Routes.Home)];
                         case 1:
                             _a.sent();
                             return [2 /*return*/];

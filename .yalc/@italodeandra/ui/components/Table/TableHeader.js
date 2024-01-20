@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -19,6 +8,6 @@ var Text_1 = __importDefault(require("../Text/Text"));
 var Stack_1 = __importDefault(require("../Stack/Stack"));
 function TableHeader(_a) {
     var title = _a.title, subtitle = _a.subtitle, children = _a.children;
-    return ((0, jsx_runtime_1.jsx)("div", __assign({ className: "px-4 md:px-0" }, { children: (0, jsx_runtime_1.jsxs)("div", __assign({ className: "sm:flex sm:items-center" }, { children: [(title || subtitle) && ((0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: "sm:flex-auto" }, { children: [title && ((0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "label", size: "lg" }, { children: title }))), subtitle && (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: subtitle }))] }))), children && ((0, jsx_runtime_1.jsx)("div", __assign({ className: "mt-4 sm:mt-0 sm:ml-16 sm:flex-none" }, { children: children })))] })) })));
+    return ((0, jsx_runtime_1.jsx)("div", { className: "px-4 md:px-0", children: (0, jsx_runtime_1.jsxs)("div", { className: "sm:flex sm:items-center", children: [(title || subtitle) && ((0, jsx_runtime_1.jsxs)(Stack_1.default, { className: "sm:flex-auto", children: [title && ((0, jsx_runtime_1.jsx)(Text_1.default, { variant: "label", size: "lg", children: title })), subtitle && (0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: subtitle })] })), children && ((0, jsx_runtime_1.jsx)("div", { className: "mt-4 sm:mt-0 sm:ml-16 sm:flex-none", children: children }))] }) }));
 }
 exports.default = TableHeader;

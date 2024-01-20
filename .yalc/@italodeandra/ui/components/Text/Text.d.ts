@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import { DetailedHTMLProps, HTMLAttributes } from "react";
 import { ComponentProps } from "react";
 import NextLink from "next/link";
 export declare const defaultTextStyles: {
@@ -17,7 +17,7 @@ export declare const defaultTextStyles: {
         "2xl": string;
     };
 };
-export declare type TextProps<Inline extends boolean | undefined, Href extends string | undefined> = {
+export type TextProps<Inline extends boolean | undefined, Href extends string | undefined> = {
     variant?: keyof (typeof defaultTextStyles)["variant"];
     size?: keyof (typeof defaultTextStyles)["size"];
     inline?: Inline;
@@ -25,4 +25,19 @@ export declare type TextProps<Inline extends boolean | undefined, Href extends s
     target?: string;
     rel?: string;
 } & (Href extends true ? ComponentProps<typeof NextLink> : Inline extends true ? DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> : DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>);
-export default function Text<Inline extends boolean | undefined, Href extends string | undefined>({ inline, variant, className, href, target, size, ...props }: TextProps<Inline, Href>): JSX.Element;
+declare const _default: import("react").ForwardRefExoticComponent<(Pick<{
+    variant?: "default" | "label" | "secondary" | "link" | undefined;
+    size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | undefined;
+    inline?: boolean | undefined;
+    href?: string | undefined;
+    target?: string | undefined;
+    rel?: string | undefined;
+} & import("react").ClassAttributes<HTMLSpanElement> & HTMLAttributes<HTMLSpanElement>, "size" | "variant" | "href" | "rel" | "target" | "inline" | "key" | keyof HTMLAttributes<HTMLSpanElement>> | Pick<{
+    variant?: "default" | "label" | "secondary" | "link" | undefined;
+    size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | undefined;
+    inline?: boolean | undefined;
+    href?: string | undefined;
+    target?: string | undefined;
+    rel?: string | undefined;
+} & import("react").ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>, "size" | "variant" | "href" | "rel" | "target" | "inline" | "key" | keyof HTMLAttributes<HTMLDivElement>>) & import("react").RefAttributes<HTMLDivElement>>;
+export default _default;

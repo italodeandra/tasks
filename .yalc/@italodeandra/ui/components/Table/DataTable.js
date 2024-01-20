@@ -46,7 +46,7 @@ var Skeleton_1 = __importDefault(require("../Skeleton"));
 var Stack_1 = __importDefault(require("../Stack"));
 var Text_1 = __importDefault(require("../Text"));
 var Table_1 = __importDefault(require("./Table"));
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
 function DataTable(_a) {
     var title = _a.title, subtitle = _a.subtitle, headerContent = _a.headerContent, data = _a.data, _b = _a.idAccessor, idAccessor = _b === void 0 ? "_id" : _b, actions = _a.actions, columns = _a.columns, isLoading = _a.isLoading, _c = _a.noRecords, noRecordsText = _c === void 0 ? "No records" : _c, onRowClick = _a.onRowClick, rowWrapper = _a.rowWrapper, pagination = _a.pagination, _d = _a.currentPage, currentPage = _d === void 0 ? 0 : _d, onChangePage = _a.onChangePage, totalItems = _a.totalItems, _e = _a.itemsPerPage, itemsPerPage = _e === void 0 ? 0 : _e, className = _a.className, autoHeight = _a.autoHeight, onChangeSort = _a.onChangeSort, _f = _a.sort, defaultSort = _f === void 0 ? [] : _f, previousText = _a.previousText, nextText = _a.nextText, showingText = _a.showingText, toText = _a.toText, ofText = _a.ofText, resultsText = _a.resultsText, tableClassName = _a.tableClassName;
@@ -101,46 +101,46 @@ function DataTable(_a) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [sort]);
-    return ((0, jsx_runtime_1.jsxs)(Stack_1.default, __assign({ className: (0, clsx_1.default)({
+    return ((0, jsx_runtime_1.jsxs)(Stack_1.default, { className: (0, clsx_1.default)({
             "flex flex-1 flex-col": autoHeight,
-        }, className) }, { children: [(title || subtitle || headerContent) && ((0, jsx_runtime_1.jsx)(Table_1.default.Header, __assign({ title: title, subtitle: subtitle }, { children: headerContent }))), (0, jsx_runtime_1.jsxs)(Table_1.default, __assign({ autoHeight: autoHeight, className: tableClassName }, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Head, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) {
+        }, className), children: [(title || subtitle || headerContent) && ((0, jsx_runtime_1.jsx)(Table_1.default.Header, { title: title, subtitle: subtitle, children: headerContent })), (0, jsx_runtime_1.jsxs)(Table_1.default, { autoHeight: autoHeight, className: tableClassName, children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Head, { children: [(0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) {
                                         var id = column.id ||
                                             (typeof column.title === "string"
                                                 ? column.title
                                                 : i.toString());
                                         var columnSort = getColumnSort(id);
-                                        return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ className: column.headerClassName }, { children: column.sortable ? ((0, jsx_runtime_1.jsxs)("span", __assign({ className: "group inline-flex cursor-pointer", onClick: handleColumnClick(id) }, { children: [column.title, (0, jsx_runtime_1.jsx)("span", __assign({ className: (0, clsx_1.default)("ml-2 mb-auto flex-none rounded text-gray-400", {
-                                                            "bg-gray-200 text-gray-900 group-hover:bg-gray-300": columnSort === null || columnSort === void 0 ? void 0 : columnSort[1],
+                                        return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { className: column.headerClassName, children: column.sortable ? ((0, jsx_runtime_1.jsxs)("span", { className: "group inline-flex cursor-pointer", onClick: handleColumnClick(id), children: [column.title, (0, jsx_runtime_1.jsx)("span", { className: (0, clsx_1.default)("mb-auto ml-2 flex-none rounded text-zinc-400", {
+                                                            "bg-zinc-200 text-zinc-900 group-hover:bg-zinc-300": columnSort === null || columnSort === void 0 ? void 0 : columnSort[1],
                                                             "invisible group-hover:visible group-focus:visible": !(columnSort === null || columnSort === void 0 ? void 0 : columnSort[1]),
-                                                        }) }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, { className: (0, clsx_1.default)("h-5 w-5", {
+                                                        }), children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, { className: (0, clsx_1.default)("h-5 w-5", {
                                                                 "scale-y-flip": (columnSort === null || columnSort === void 0 ? void 0 : columnSort[1]) === "desc",
-                                                            }), "aria-hidden": "true" }) }))] }))) : (column.title) }), id));
-                                    }), actions && (0, jsx_runtime_1.jsx)(Table_1.default.Cell, {})] }), isLoading && ((0, jsx_runtime_1.jsx)("tr", __assign({ className: "absolute top-2 right-3 rounded-full bg-gray-50/50 dark:bg-zinc-800/50" }, { children: (0, jsx_runtime_1.jsx)("td", { children: (0, jsx_runtime_1.jsx)(Loading_1.default, {}) }) })))] }), (0, jsx_runtime_1.jsxs)(Table_1.default.Body, { children: [data === null || data === void 0 ? void 0 : data.map(function (item) {
+                                                            }), "aria-hidden": "true" }) })] })) : (column.title) }, id));
+                                    }), actions && (0, jsx_runtime_1.jsx)(Table_1.default.Cell, {})] }), isLoading && ((0, jsx_runtime_1.jsx)("tr", { className: "absolute right-3 top-2 rounded-full bg-zinc-50/50 dark:bg-zinc-800/50", children: (0, jsx_runtime_1.jsx)("td", { children: (0, jsx_runtime_1.jsx)(Loading_1.default, {}) }) }))] }), (0, jsx_runtime_1.jsxs)(Table_1.default.Body, { children: [data === null || data === void 0 ? void 0 : data.map(function (item) {
                                 var RowComponent = rowWrapper || react_1.Fragment;
                                 return ((0, jsx_runtime_1.jsx)(RowComponent, __assign({}, (RowComponent !== react_1.Fragment
                                     ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                         { item: item }
-                                    : {}), { children: (0, jsx_runtime_1.jsxs)(Table_1.default.Row, __assign({ onClick: handleRowClick(item) }, { children: [columns.map(function (column, i) {
+                                    : {}), { children: (0, jsx_runtime_1.jsxs)(Table_1.default.Row, { onClick: handleRowClick(item), children: [columns.map(function (column, i) {
                                                 var _a;
                                                 var value = column.accessor
                                                     ? item[column.accessor]
                                                     : column.render && column.render(item);
-                                                return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ className: column.cellClassName, title: ((_a = column.cellClassName) === null || _a === void 0 ? void 0 : _a.includes("max-w")) &&
+                                                return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { className: column.cellClassName, title: ((_a = column.cellClassName) === null || _a === void 0 ? void 0 : _a.includes("max-w")) &&
                                                         typeof value === "string"
                                                         ? value
-                                                        : undefined }, { children: value }), column.id ||
+                                                        : undefined, children: value }, column.id ||
                                                     (typeof column.title === "string" ? column.title : i)));
-                                            }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ actions: true }, { children: actions.map(function (action, i) {
+                                            }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { actions: true, children: actions.map(function (action, i) {
                                                     var _a;
                                                     var ActionComponent = action.wrapper || react_1.Fragment;
                                                     return ((0, jsx_runtime_1.jsx)(ActionComponent, __assign({}, (ActionComponent !== react_1.Fragment
                                                         ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                                             { item: item }
-                                                        : {}), { children: (0, jsx_runtime_1.jsx)(Table_1.default.ActionButton, __assign({ title: action.title, onClick: function () { var _a; return (_a = action.onClick) === null || _a === void 0 ? void 0 : _a.call(action, item); }, href: typeof action.href === "function"
+                                                        : {}), { children: (0, jsx_runtime_1.jsx)(Table_1.default.ActionButton, { title: action.title, onClick: function () { var _a; return (_a = action.onClick) === null || _a === void 0 ? void 0 : _a.call(action, item); }, href: typeof action.href === "function"
                                                                 ? (_a = action.href) === null || _a === void 0 ? void 0 : _a.call(action, item)
-                                                                : action.href, target: action.target }, { children: action.icon })) }), i));
-                                                }) })))] })) }), item[idAccessor]));
+                                                                : action.href, target: action.target, children: action.icon }) }), i));
+                                                }) }))] }) }), item[idAccessor]));
                             }), isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsxs)(Table_1.default.Row, { children: [columns.map(function (column, i) { return ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "h-3" }) }, column.id ||
-                                        (typeof column.title === "string" ? column.title : i))); }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ actions: true }, { children: (0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "inline-block h-3 w-6" }) })))] })), !isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsx)(Table_1.default.Row, { children: (0, jsx_runtime_1.jsx)(Table_1.default.Cell, __assign({ colSpan: columns.length + (actions ? 1 : 0) }, { children: (0, jsx_runtime_1.jsx)(Text_1.default, __assign({ variant: "secondary" }, { children: noRecordsText })) })) }))] })] })), pagination ? ((0, jsx_runtime_1.jsx)(Table_1.default.FooterWithPagination, { totalItems: totalItems, itemsPerPage: itemsPerPage, currentPage: currentPage, onChangePage: onChangePage, previousText: previousText, nextText: nextText, showingText: showingText, toText: toText, ofText: ofText, resultsText: resultsText })) : undefined] })));
+                                        (typeof column.title === "string" ? column.title : i))); }), actions && ((0, jsx_runtime_1.jsx)(Table_1.default.Cell, { actions: true, children: (0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "inline-block h-3 w-6" }) }))] })), !isLoading && !(data === null || data === void 0 ? void 0 : data.length) && ((0, jsx_runtime_1.jsx)(Table_1.default.Row, { children: (0, jsx_runtime_1.jsx)(Table_1.default.Cell, { colSpan: columns.length + (actions ? 1 : 0), children: (0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: noRecordsText }) }) }))] })] }), pagination ? ((0, jsx_runtime_1.jsx)(Table_1.default.FooterWithPagination, { totalItems: totalItems, itemsPerPage: itemsPerPage, currentPage: currentPage, onChangePage: onChangePage, previousText: previousText, nextText: nextText, showingText: showingText, toText: toText, ofText: ofText, resultsText: resultsText })) : undefined] }));
 }
 exports.default = DataTable;

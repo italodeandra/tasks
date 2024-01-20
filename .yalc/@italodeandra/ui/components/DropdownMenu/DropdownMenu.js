@@ -48,30 +48,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.menuItemClassName = exports.menuSeparatorClassName = exports.menuContentClassName = void 0;
 var jsx_runtime_1 = require("react/jsx-runtime");
+var react_1 = require("react");
 var RDropdownMenu = __importStar(require("@radix-ui/react-dropdown-menu"));
-var clsx_1 = __importDefault(require("clsx"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
 var solid_1 = require("@heroicons/react/20/solid");
-exports.menuContentClassName = "z-20 min-w-[220px] rounded-md bg-white p-[5px] shadow-lg ring-1 ring-black/5 will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade";
-exports.menuSeparatorClassName = "m-[5px] h-[1px] bg-zinc-200";
+var link_1 = __importDefault(require("next/link"));
+var Dropdown_styles_1 = require("../../styles/Dropdown.styles");
 function DropdownMenuContent(_a) {
-    var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Portal, { children: (0, jsx_runtime_1.jsxs)(RDropdownMenu.Content, __assign({ sideOffset: 5 }, props, { className: (0, clsx_1.default)(exports.menuContentClassName, className) }, { children: [children, (0, jsx_runtime_1.jsx)(RDropdownMenu.Arrow, { className: "mt-px fill-black/5" })] })) }));
+    var className = _a.className, arrowClassName = _a.arrowClassName, children = _a.children, _b = _a.sideOffset, sideOffset = _b === void 0 ? 5 : _b, _c = _a.collisionPadding, collisionPadding = _c === void 0 ? 8 : _c, props = __rest(_a, ["className", "arrowClassName", "children", "sideOffset", "collisionPadding"]);
+    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Portal, { children: (0, jsx_runtime_1.jsxs)(RDropdownMenu.Content, __assign({ sideOffset: sideOffset, collisionPadding: collisionPadding }, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownContentClassName, "ui-dropdown-menu-content", className), children: [children, (0, jsx_runtime_1.jsx)(RDropdownMenu.Arrow, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownArrowClassName, "ui-dropdown-menu-arrow", arrowClassName) })] })) }));
 }
 function DropdownMenuSeparator(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Separator, __assign({}, props, { className: (0, clsx_1.default)(exports.menuSeparatorClassName, className) })));
+    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Separator, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownSeparatorClassName, "ui-dropdown-menu-separator", className) })));
 }
-exports.menuItemClassName = "relative flex h-[25px] select-none items-center rounded-[3px] pl-[25px] text-[13px] leading-none text-zinc-900 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-primary-500 data-[disabled]:text-zinc-300 data-[highlighted]:text-white";
-var dropdownMenuItemClassName = (0, clsx_1.default)(exports.menuItemClassName, "group px-[5px]");
 function DropdownMenuItem(_a) {
+    var className = _a.className, href = _a.href, props = __rest(_a, ["className", "href"]);
+    var Wrapper = href ? link_1.default : react_1.Fragment;
+    return (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (0, jsx_runtime_1.jsx)(Wrapper, __assign({}, (href ? { href: href } : {}), { children: (0, jsx_runtime_1.jsx)(RDropdownMenu.Item, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemClassName, "ui-dropdown-menu-item", className) })) })));
+}
+function DropdownMenuLabel(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Item, __assign({}, props, { className: (0, clsx_1.default)(dropdownMenuItemClassName, className) })));
+    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Item, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownLabelClassName, "ui-dropdown-menu-label", className) })));
 }
 function DropdownMenuCheckboxItem(_a) {
-    var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
-    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(dropdownMenuItemClassName, className) }, { children: [(0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, __assign({ className: "absolute left-0 inline-flex w-[25px] items-center justify-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "h-3 w-3" }) })), children] })));
+    var className = _a.className, children = _a.children, indicatorClassName = _a.indicatorClassName, props = __rest(_a, ["className", "children", "indicatorClassName"]);
+    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemClassName, "ui-dropdown-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemIndicatorClassName, "ui-dropdown-menu-checkbox-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
 }
 var DropdownMenu = {
     Root: RDropdownMenu.Root,
@@ -80,5 +85,6 @@ var DropdownMenu = {
     Item: DropdownMenuItem,
     Separator: DropdownMenuSeparator,
     CheckboxItem: DropdownMenuCheckboxItem,
+    Label: DropdownMenuLabel,
 };
 exports.default = DropdownMenu;

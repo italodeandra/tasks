@@ -29,9 +29,14 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var link_1 = __importDefault(require("next/link"));
 var UnstyledButton = function (_a, ref) {
-    var href = _a.href, props = __rest(_a, ["href"]);
+    var href = _a.href, as = _a.as, props = __rest(_a, ["href", "as"]);
+    if (as) {
+        var Component = as;
+        return ((0, jsx_runtime_1.jsx)(Component, __assign({}, props, { ref: ref })));
+    }
     if (href) {
-        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({}, props, { href: href, ref: ref })));
+        var props2 = props;
+        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({}, props2, { href: href, ref: ref })));
     }
     return ((0, jsx_runtime_1.jsx)("button", __assign({}, props, { ref: ref })));
 };

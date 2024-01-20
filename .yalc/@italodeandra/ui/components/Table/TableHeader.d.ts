@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-export declare type TableHeaderProps = {
+export type TableHeaderProps = {
     title?: ReactNode;
     subtitle?: ReactNode;
     children?: ReactNode;

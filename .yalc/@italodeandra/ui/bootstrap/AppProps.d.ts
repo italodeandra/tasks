@@ -1,7 +1,7 @@
 import { AppProps as NAppProps } from "next/app";
 import { NextComponentType, NextPageContext } from "next/dist/shared/lib/utils";
 import { ReactNode } from "react";
-declare type AppProps<LayoutProps = void> = Omit<NAppProps, "Component"> & {
+type AppProps<LayoutProps = void> = Omit<NAppProps, "Component"> & {
     Component: NextComponentType<NextPageContext, any, any> & {
         getLayout: (children: ReactNode, props: LayoutProps) => ReactNode;
         layoutProps: LayoutProps;

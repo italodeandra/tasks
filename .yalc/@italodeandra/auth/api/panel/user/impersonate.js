@@ -69,12 +69,16 @@ var ms_1 = __importDefault(require("ms"));
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var react_query_1 = require("@tanstack/react-query");
 function authPanelUserImpersonateHandler(args, req, res, _a) {
-    var connectDb = _a.connectDb;
+    var connectDb = _a.connectDb, disableImpersonate = _a.disableImpersonate;
     return __awaiter(this, void 0, void 0, function () {
         var reqUser;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, connectDb()];
+                case 0:
+                    if (disableImpersonate) {
+                        throw errors_1.unauthorized;
+                    }
+                    return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
@@ -83,7 +87,10 @@ function authPanelUserImpersonateHandler(args, req, res, _a) {
                     if (!reqUser && !(0, User_service_1.checkUserType)(reqUser, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
-                    (0, cookies_next_1.setCookie)("auth", { token: (0, User_service_1.generateToken)((0, isomorphicObjectId_1.default)(args._id)) }, {
+                    (0, cookies_next_1.setCookie)("auth", {
+                        token: (0, User_service_1.generateToken)((0, isomorphicObjectId_1.default)(args._id)),
+                        previousToken: (0, User_service_1.getAuthCookieToken)(req, res),
+                    }, {
                         req: req,
                         res: res,
                         maxAge: (0, ms_1.default)("30d"),

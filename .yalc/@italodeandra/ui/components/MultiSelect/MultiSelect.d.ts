@@ -1,8 +1,6 @@
 import { ReactNode } from "react";
 import Input, { UnstyledInputProps } from "../Input";
-export interface MultiSelectProps<T extends {
-    _id: string;
-} | string> extends Omit<UnstyledInputProps<false>, "as" | "onSelect" | "inputClassName" | "innerClassName" | "value" | "onChange"> {
+export interface MultiSelectProps<T extends object | string> extends Omit<UnstyledInputProps<false>, "as" | "onSelect" | "inputClassName" | "innerClassName" | "value" | "onChange"> {
     placeholder?: string;
     emptyText?: string;
     items?: T[];
@@ -25,7 +23,6 @@ export interface MultiSelectProps<T extends {
     creatable?: boolean;
     getCreateLabel?: (query: string) => string;
     itemsRenderLimit?: number;
+    valueProperty?: string | number;
 }
-export default function MultiSelect<T extends {
-    _id: string;
-} | string>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onChange, query: defaultQuery, onChangeQuery, loading, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, labelClassName, creatable, getCreateLabel, itemsRenderLimit, className, ...props }: MultiSelectProps<T>): JSX.Element;
+export default function MultiSelect<T extends object | string>({ placeholder, emptyText, items, renderProperty, renderFunction, filterProperty, filterFunction, onChange, query: defaultQuery, onChangeQuery, loading, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, labelClassName, creatable, getCreateLabel, itemsRenderLimit, className, valueProperty, label, required, readOnly, ...props }: MultiSelectProps<T>): JSX.Element;

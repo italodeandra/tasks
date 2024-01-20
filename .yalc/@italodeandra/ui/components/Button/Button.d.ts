@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { UnstyledButtonProps } from "./UnstyledButton";
 import { ReactElement } from "react";
 declare const styles: {
@@ -90,7 +89,7 @@ declare const styles: {
         };
     };
 };
-export declare type ButtonProps<Href extends string | undefined = undefined> = UnstyledButtonProps<Href> & {
+export type ButtonProps<T extends HTMLElement = HTMLButtonElement> = Omit<UnstyledButtonProps<T>, "size"> & {
     variant?: keyof (typeof styles)["variant"];
     color?: keyof (typeof styles)["color"] | "white";
     size?: keyof (typeof styles)["size"];
@@ -103,40 +102,7 @@ export declare type ButtonProps<Href extends string | undefined = undefined> = U
     disabled?: boolean;
     rounded?: boolean;
 };
-declare const _default: import("react").ForwardRefExoticComponent<{
-    href?: string | undefined;
-    target?: string | undefined;
-    rel?: string | undefined;
-    download?: string | undefined;
-} & Omit<(Omit<import("react").AnchorHTMLAttributes<HTMLAnchorElement>, keyof {
-    href: string | import("url").UrlObject;
-    as?: (string | import("url").UrlObject) | undefined;
-    replace?: boolean | undefined;
-    scroll?: boolean | undefined;
-    shallow?: boolean | undefined;
-    passHref?: boolean | undefined;
-    prefetch?: boolean | undefined;
-    locale?: string | false | undefined;
-    legacyBehavior?: boolean | undefined;
-    onMouseEnter?: ((e: any) => void) | undefined;
-    onTouchStart?: ((e: any) => void) | undefined;
-    onClick?: ((e: any) => void) | undefined;
-}> & {
-    href: string | import("url").UrlObject;
-    as?: (string | import("url").UrlObject) | undefined;
-    replace?: boolean | undefined;
-    scroll?: boolean | undefined;
-    shallow?: boolean | undefined;
-    passHref?: boolean | undefined;
-    prefetch?: boolean | undefined;
-    locale?: string | false | undefined;
-    legacyBehavior?: boolean | undefined;
-    onMouseEnter?: ((e: any) => void) | undefined;
-    onTouchStart?: ((e: any) => void) | undefined;
-    onClick?: ((e: any) => void) | undefined;
-} & {
-    children?: import("react").ReactNode;
-} & import("react").RefAttributes<HTMLAnchorElement>) | import("react").DetailedHTMLProps<import("react").ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>, "ref"> & {
+declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledButtonProps<HTMLElement>, "size"> & {
     variant?: "text" | "custom" | "light" | "filled" | "outlined" | undefined;
     color?: "default" | "success" | "error" | "gray" | "white" | "primary" | undefined;
     size?: "xs" | "sm" | "lg" | "xl" | "md" | undefined;
@@ -148,5 +114,5 @@ declare const _default: import("react").ForwardRefExoticComponent<{
     loading?: boolean | undefined;
     disabled?: boolean | undefined;
     rounded?: boolean | undefined;
-} & import("react").RefAttributes<HTMLAnchorElement | HTMLButtonElement>>;
+} & import("react").RefAttributes<HTMLElement>>;
 export default _default;

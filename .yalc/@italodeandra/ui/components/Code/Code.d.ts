@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { Language, PrismTheme } from "prism-react-renderer";
-export declare type CodeProps = {
+export type CodeProps = {
     children: string;
     language: Language;
     className?: string;

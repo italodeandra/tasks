@@ -6,7 +6,7 @@ import TableHead from "./TableHead";
 import TableHeader from "./TableHeader";
 import TableFooter from "./TableFooter";
 import TableFooterWithPagination from "./TableFooterWithPagination";
-export declare type TableProps = {
+export type TableProps = {
     children?: ReactNode;
     className?: string;
     hideBorder?: boolean;

@@ -1,5 +1,5 @@
 import { CSSProperties, ReactElement, ReactNode } from "react";
-declare type Notification = {
+type Notification = {
     _id: string;
     message: string | ReactElement;
     title?: string;

@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-export declare type DialogProps = {
+export type DialogProps = {
     open?: boolean;
     onClose?: (open: boolean) => void;
     title?: ReactNode;
@@ -8,5 +8,6 @@ export declare type DialogProps = {
     actions?: ReactNode;
     hideOverlay?: boolean;
     className?: string;
+    noPadding?: boolean;
 };
-export default function Drawer({ open: defaultOpen, onClose, title, children, position, actions, hideOverlay, className, }: DialogProps): JSX.Element;
+export default function Drawer({ open: defaultOpen, onClose, title, children, position, actions, hideOverlay, className, noPadding }: DialogProps): JSX.Element;

@@ -1,5 +1,5 @@
 /// <reference types="react" />
-export declare type JsonProps = {
+export type JsonProps = {
     json: any;
     className?: string;
 };

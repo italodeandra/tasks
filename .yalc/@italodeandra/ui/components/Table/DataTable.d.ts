@@ -1,5 +1,5 @@
 import { ComponentType, ReactElement, ReactNode } from "react";
-export declare type DataTableProps<RowData> = {
+export type DataTableProps<RowData> = {
     title?: ReactNode;
     subtitle?: ReactNode;
     headerContent?: ReactNode;

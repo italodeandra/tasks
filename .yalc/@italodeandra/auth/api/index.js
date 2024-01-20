@@ -27,6 +27,7 @@ var create_1 = __importDefault(require("./panel/user/create"));
 var update_1 = __importDefault(require("./panel/user/update"));
 var getFullUser_1 = __importDefault(require("./getFullUser"));
 var impersonate_1 = __importDefault(require("./panel/user/impersonate"));
+var stop_impersonate_1 = __importDefault(require("./panel/user/stop-impersonate"));
 function Auth(config) {
     config.fallbackLocale = config.fallbackLocale || "en-US";
     config.intl = __assign({ "en-US": {
@@ -54,6 +55,7 @@ function Auth(config) {
                     create: create_1.default,
                     update: update_1.default,
                     impersonate: impersonate_1.default,
+                    stopImpersonate: stop_impersonate_1.default,
                 },
             },
         }, route.join(".")

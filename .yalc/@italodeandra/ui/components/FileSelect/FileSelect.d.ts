@@ -5,15 +5,20 @@ export interface FileSelectProps {
     upToText?: string;
     anyFileText?: string;
     dropFilesHereText?: string;
+    uploadingText?: string;
     maxFileSize?: number | string;
     allowedFileTypes?: string[];
     id?: string;
     limit?: number;
     onAcceptFiles: (files: File[]) => void;
+    onRejectFiles?: (files: File[], reason: "type" | "size") => void;
     helperText?: string;
     className?: string;
     error?: boolean;
     icon?: ReactElement;
+    uploading?: boolean;
+    disabled?: boolean;
+    additionalBottomInfo?: ReactNode;
 }
 declare const _default: import("react").ForwardRefExoticComponent<FileSelectProps & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

@@ -51,30 +51,29 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
 var react_1 = require("react");
 var RSelect = __importStar(require("@radix-ui/react-select"));
-var solid_1 = require("@heroicons/react/20/solid");
-var clsx_1 = __importDefault(require("clsx"));
-var DropdownMenu_1 = require("../DropdownMenu");
+var solid_1 = require("@heroicons/react/16/solid");
 var Button_1 = __importDefault(require("../Button"));
+var clsx_1 = __importDefault(require("../../utils/clsx"));
+function SelectContent(_a) {
+    var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
+    return ((0, jsx_runtime_1.jsx)(RSelect.Portal, { children: (0, jsx_runtime_1.jsxs)(RSelect.Content, __assign({}, props, { className: (0, clsx_1.default)("ui-select-content", className), children: [(0, jsx_runtime_1.jsx)(RSelect.ScrollUpButton, { className: "ui-select-scroll-button", children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.Viewport, { children: children }), (0, jsx_runtime_1.jsx)(RSelect.ScrollDownButton, { className: "ui-select-scroll-button", children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, {}) })] })) }));
+}
+function SelectSeparator(_a) {
+    var className = _a.className, props = __rest(_a, ["className"]);
+    return ((0, jsx_runtime_1.jsx)(RSelect.Separator, __assign({}, props, { className: (0, clsx_1.default)("ui-select-separator", className) })));
+}
 function SelectItemComponent(_a, forwardedRef) {
     var children = _a.children, className = _a.className, props = __rest(_a, ["children", "className"]);
-    return ((0, jsx_runtime_1.jsxs)(RSelect.Item, __assign({ className: (0, clsx_1.default)(DropdownMenu_1.menuItemClassName, "pr-[35px]", className) }, props, { ref: forwardedRef }, { children: [(0, jsx_runtime_1.jsx)(RSelect.ItemText, { children: children }), (0, jsx_runtime_1.jsx)(RSelect.ItemIndicator, __assign({ className: "absolute left-0 inline-flex w-[25px] items-center justify-center" }, { children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, { className: "h-3 w-3" }) }))] })));
+    return ((0, jsx_runtime_1.jsxs)(RSelect.Item, __assign({ className: (0, clsx_1.default)("ui-select-item", className) }, props, { ref: forwardedRef, children: [(0, jsx_runtime_1.jsx)(RSelect.ItemIndicator, { className: "ui-select-item-indicator", children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.ItemText, { children: children })] })));
 }
 var SelectItem = (0, react_1.forwardRef)(SelectItemComponent);
 function SelectTrigger(_a) {
     var className = _a.className, placeholder = _a.placeholder, children = _a.children, props = __rest(_a, ["className", "placeholder", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Trigger, __assign({ asChild: true }, props, { className: className }, { children: children || ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({ trailing: (0, jsx_runtime_1.jsx)(RSelect.Icon, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, {}) }) }, { children: (0, jsx_runtime_1.jsx)(RSelect.Value, { placeholder: placeholder }) }))) })));
-}
-function SelectContent(_a) {
-    var children = _a.children;
-    return ((0, jsx_runtime_1.jsx)(RSelect.Portal, { children: (0, jsx_runtime_1.jsxs)(RSelect.Content, __assign({ className: DropdownMenu_1.menuContentClassName }, { children: [(0, jsx_runtime_1.jsx)(RSelect.ScrollUpButton, __assign({ className: "flex h-[25px] cursor-default items-center justify-center bg-white text-zinc-900" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, { className: "h-5 w-5" }) })), (0, jsx_runtime_1.jsx)(RSelect.Viewport, { children: children }), (0, jsx_runtime_1.jsx)(RSelect.ScrollDownButton, __assign({ className: "flex h-[25px] cursor-default items-center justify-center bg-white text-zinc-900" }, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, { className: "h-5 w-5" }) }))] })) }));
+    return ((0, jsx_runtime_1.jsx)(RSelect.Trigger, __assign({ asChild: true }, props, { className: className, children: children || ((0, jsx_runtime_1.jsx)(Button_1.default, { trailing: (0, jsx_runtime_1.jsx)(RSelect.Icon, { children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, {}) }), children: (0, jsx_runtime_1.jsx)(RSelect.Value, { placeholder: placeholder }) })) })));
 }
 function SelectLabel(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Label, __assign({ className: (0, clsx_1.default)("px-[25px] text-xs font-medium leading-[25px] text-zinc-400", className) }, props)));
-}
-function SelectSeparator(_a) {
-    var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Separator, __assign({ className: (0, clsx_1.default)(DropdownMenu_1.menuSeparatorClassName, className) }, props)));
+    return ((0, jsx_runtime_1.jsx)(RSelect.Label, __assign({ className: (0, clsx_1.default)("ui-select-label", className) }, props)));
 }
 var Select = {
     Root: RSelect.Root,

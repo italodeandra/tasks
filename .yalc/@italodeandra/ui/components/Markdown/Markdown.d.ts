@@ -1,5 +1,5 @@
 /// <reference types="react" />
-export declare type MarkdownProps = {
+export type MarkdownProps = {
     children?: string;
     className?: string;
 };

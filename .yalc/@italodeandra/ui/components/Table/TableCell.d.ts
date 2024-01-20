@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-export declare type TableCellProps = {
+export type TableCellProps = {
     children?: ReactNode;
     className?: string;
     actions?: boolean;
