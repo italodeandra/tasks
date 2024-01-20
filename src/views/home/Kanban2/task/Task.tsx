@@ -14,7 +14,7 @@ import { useTaskUpsert } from "../../../../pages/api/task/upsert";
 import { TaskOptions } from "./TaskOptions";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
 import { TaskListApiResponse } from "../../../../pages/api/task/list";
-import { Timer } from "./Timer";
+import { Timer } from "../../task/Timer";
 import { Icon } from "@iconify/react";
 import { useSortable } from "@dnd-kit/sortable";
 import { UniqueIdentifier } from "@dnd-kit/core";

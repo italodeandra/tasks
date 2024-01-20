@@ -7,7 +7,6 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { DefaultSeo } from "next-seo";
 import { useState } from "react";
-import "focus-visible";
 import "../globals.css";
 import AppProps from "@italodeandra/ui/bootstrap/AppProps";
 import routes from "../Routes";

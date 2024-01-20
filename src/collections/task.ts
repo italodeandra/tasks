@@ -1,4 +1,4 @@
-import { schema, types, VALIDATION_ACTIONS, VALIDATION_LEVEL } from "papr";
+import { schema, types } from "papr";
 import { onlyServer } from "@italodeandra/next/utils/isServer";
 import db from "@italodeandra/next/db";
 
@@ -12,18 +12,17 @@ export enum TaskStatus {
 const taskSchema = onlyServer(() =>
   schema(
     {
-      content: types.string({ required: true }),
+      content: types.string(),
+      title: types.string({ required: true }),
+      description: types.string(),
       status: types.enum(Object.values(TaskStatus), { required: true }),
       projectId: types.objectId(),
       userId: types.objectId({ required: true }),
       order: types.number({ required: true }),
-      projectUpdatedAt: types.date(),
-      statusUpdatedAt: types.date(),
+      tags: types.array(types.string({ required: true })),
     },
     {
       timestamps: true,
-      validationLevel: VALIDATION_LEVEL.OFF,
-      validationAction: VALIDATION_ACTIONS.WARN,
     }
   )
 );

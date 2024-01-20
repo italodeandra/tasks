@@ -9,7 +9,7 @@ import {
   setData_authGetUser,
 } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
-import getLayout from "../views/layout";
+import getLayout from "../views/layout/layout";
 import { HomeView } from "../views/home/HomeView";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {

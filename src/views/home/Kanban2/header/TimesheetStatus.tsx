@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTimesheetStatus } from "../../../../pages/api/timesheet/status";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
 import Group from "@italodeandra/ui/components/Group/Group";
-import { Timer } from "../task/Timer";
+import { Timer } from "../../task/Timer";
 import Text from "@italodeandra/ui/components/Text";
 import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
