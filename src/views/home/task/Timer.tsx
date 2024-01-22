@@ -8,11 +8,16 @@ import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
 import { TaskListApiResponse } from "../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
+import Loading from "@italodeandra/ui/components/Loading";
 
 export function Timer({
   task,
+  buttonVariant = "text",
+  className,
 }: {
   task: Pick<TaskListApiResponse[0], "_id" | "timesheet">;
+  buttonVariant?: "text" | "outlined";
+  className?: string;
 }) {
   let { mutate: start, isLoading: isStarting } = useTimesheetStart();
   let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
@@ -40,22 +45,33 @@ export function Timer({
   return (
     <Button
       size="xs"
-      variant="outlined"
-      loading={isLoading}
+      variant={buttonVariant}
       onClick={handleClick}
       data-no-dnd="true"
       color={task.timesheet?.currentClockIn ? "success" : undefined}
-      className={clsx("whitespace-nowrap p-1", {
-        "px-1.5": !!time,
-      })}
+      className={clsx(
+        "whitespace-nowrap p-1",
+        {
+          "px-1.5": !!time,
+        },
+        className
+      )}
       {...(time > 0
         ? {
-            leading: <ClockIcon className="shrink-0 w-4 h-4" />,
+            leading: isLoading ? (
+              <Loading className="w-4 h-4 text-inherit" />
+            ) : (
+              <ClockIcon className="shrink-0 w-4 h-4" />
+            ),
             children: prettyMilliseconds(time),
           }
         : {
             icon: true,
-            children: <ClockIcon className="shrink-0 w-4 h-4" />,
+            children: isLoading ? (
+              <Loading className="w-4 h-4 text-inherit" />
+            ) : (
+              <ClockIcon className="shrink-0 w-4 h-4" />
+            ),
           })}
     />
   );

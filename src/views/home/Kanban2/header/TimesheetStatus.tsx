@@ -22,8 +22,10 @@ export function TimesheetStatus() {
 
   return (
     <Group className="items-center">
-      {data.currentClock && <Timer task={data.currentClock} />}
-      {data.todayClockedTime && (
+      {data.currentClock && (
+        <Timer task={data.currentClock} buttonVariant="outlined" />
+      )}
+      {!!data.todayClockedTime && (
         <Text size="sm">
           Today: {prettyMilliseconds(data.todayClockedTime)}
         </Text>

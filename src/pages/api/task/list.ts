@@ -14,6 +14,7 @@ import showdown from "showdown";
 import dayjs from "dayjs";
 import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
 import { invalidate_timesheetStatus } from "../timesheet/status";
+import getProject from "../../../collections/project";
 
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
@@ -25,6 +26,7 @@ let converter = new showdown.Converter({
 async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
   let Task = getTask();
+  let Project = getProject();
   const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
@@ -34,11 +36,12 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
     await Task.aggregate<
       Pick<
         ITask,
-        "_id" | "content" | "status" | "projectId" | "order" | "title"
+        "_id" | "content" | "status" | "order" | "title" | "createdAt"
       > & {
+        project?: string;
         timesheet?: {
-          totalTime: number;
-          currentClockIn: Date | null;
+          totalTime?: number;
+          currentClockIn?: Date | null;
         };
       }
     >([
@@ -111,14 +114,54 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
         },
       },
       {
+        $lookup: {
+          from: Project.collection.collectionName,
+          localField: "projectId",
+          foreignField: "_id",
+          as: "project",
+          pipeline: [{ $project: { name: 1 } }],
+        },
+      },
+      {
+        $unwind: {
+          path: "$project",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          statusOrder: {
+            $switch: {
+              branches: [
+                TaskStatus.DOING,
+                TaskStatus.BLOCKED,
+                TaskStatus.TODO,
+                TaskStatus.DONE,
+              ].map((status, index) => ({
+                case: { $eq: ["$status", status] },
+                then: index,
+              })),
+              default: 4,
+            },
+          },
+        },
+      },
+      {
+        $sort: {
+          statusOrder: 1,
+          order: 1,
+        },
+      },
+      {
         $project: {
           content: 1,
           status: 1,
-          projectId: 1,
+          project: "$project.name",
           order: 1,
           title: 1,
           "timesheet.totalTime": 1,
           "timesheet.currentClockIn": 1,
+          createdAt: 1,
         },
       },
     ])
@@ -131,87 +174,6 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
         .replaceAll("[x]", "-")
     ),
   }));
-
-  /*return asyncMap(
-    await Task.find(
-      {
-        userId: user._id,
-        $or: [
-          {
-            status: {
-              $ne: TaskStatus.DONE,
-            },
-          },
-          {
-            status: TaskStatus.DONE,
-            updatedAt: {
-              $gte: dayjs().subtract(1, "week").toDate(),
-            },
-          },
-        ],
-      },
-      {
-        projection: {
-          content: 1,
-          status: 1,
-          projectId: 1,
-          order: 1,
-          title: 1,
-        },
-        sort: {
-          status: 1,
-          order: 1,
-        },
-      }
-    ),
-    async ({ title, content, ...t }) => ({
-      ...t,
-      timesheet: {
-        currentClockIn: (
-          await Timesheet.findOne(
-            {
-              userId: user._id,
-              taskId: t._id,
-              startedAt: {
-                $exists: true,
-              },
-              stoppedAt: {
-                $exists: false,
-              },
-            },
-            {
-              projection: {
-                startedAt: 1,
-              },
-            }
-          )
-        )?.startedAt,
-        time: sumBy(
-          await Timesheet.find(
-            {
-              userId: user._id,
-              taskId: t._id,
-              time: {
-                $exists: true,
-              },
-            },
-            {
-              projection: {
-                time: 1,
-              },
-            }
-          ),
-          "time"
-        ),
-      },
-      titleHtml: converter.makeHtml(
-        (title || content || "")
-          .split("---")[0]
-          .replaceAll("[ ]", "-")
-          .replaceAll("[x]", "-")
-      ),
-    })
-  );*/
 }
 
 export default apiHandlerWrapper(handler);

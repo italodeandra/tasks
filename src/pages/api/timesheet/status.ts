@@ -11,8 +11,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import dayjs from "dayjs";
-import getTask from "../../../collections/task";
-import { sumBy } from "lodash";
+import getTask, { ITask } from "../../../collections/task";
 
 async function handler(
   args: { today: Date },
@@ -27,46 +26,46 @@ async function handler(
     throw unauthorized;
   }
 
-  let currentClock = await Timesheet.findOne({
-    userId: user._id,
-    startedAt: {
-      $exists: true,
-    },
-    stoppedAt: {
-      $exists: false,
-    },
-  });
-  let task = await Task.findOne({
-    _id: currentClock?.taskId,
-  });
-
   return {
-    currentClock:
-      task && currentClock
-        ? {
-            _id: task._id,
-            timesheet: {
-              currentClockIn: currentClock.startedAt,
-              time: sumBy(
-                await Timesheet.find(
-                  {
-                    userId: user._id,
-                    taskId: task._id,
-                    time: {
-                      $exists: true,
-                    },
-                  },
-                  {
-                    projection: {
-                      time: 1,
-                    },
-                  }
-                ),
-                "time"
-              ),
+    currentClock: (
+      await Timesheet.aggregate<{
+        _id: ITask["_id"];
+        timesheet: {
+          currentClockIn: Date;
+        };
+      }>([
+        {
+          $match: {
+            userId: user._id,
+            startedAt: {
+              $exists: true,
             },
-          }
-        : null,
+            stoppedAt: {
+              $exists: false,
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: Task.collection.collectionName,
+            localField: "taskId",
+            foreignField: "_id",
+            as: "task",
+          },
+        },
+        {
+          $unwind: "$task",
+        },
+        {
+          $project: {
+            _id: "$task._id",
+            timesheet: {
+              currentClockIn: "$startedAt",
+            },
+          },
+        },
+      ])
+    )[0],
     todayClockedTime:
       (
         await Timesheet.aggregate<{
