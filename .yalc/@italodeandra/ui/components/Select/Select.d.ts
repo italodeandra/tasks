@@ -1,8 +1,9 @@
 import React, { ComponentProps } from "react";
 import * as RSelect from "@radix-ui/react-select";
+import Button from "../Button";
 declare function SelectContent({ className, children, ...props }: ComponentProps<typeof RSelect.Content>): JSX.Element;
 declare function SelectSeparator({ className, ...props }: ComponentProps<typeof RSelect.Separator>): JSX.Element;
-declare function SelectTrigger({ className, placeholder, children, ...props }: ComponentProps<typeof RSelect.Trigger> & {
+declare function SelectTrigger({ className, placeholder, children, ...props }: ComponentProps<typeof RSelect.Trigger> & ComponentProps<typeof Button> & {
     placeholder?: string;
 }): JSX.Element;
 declare function SelectLabel({ className, ...props }: ComponentProps<typeof RSelect.Label>): JSX.Element;
