@@ -7,10 +7,7 @@ import Text from "@italodeandra/ui/components/Text";
 import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
 
 export function TimesheetStatus() {
-  let [today] = useState(() => new Date());
-  let { data, isLoading } = useTimesheetStatus({
-    today,
-  });
+  let { data, isLoading } = useTimesheetStatus();
 
   if (isLoading) {
     return <Loading className="my-auto" />;

@@ -13,29 +13,27 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
+import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import { invalidate_taskList } from "../task/list";
-import { ObjectId } from "bson";
-import getTimesheet from "../../../collections/timesheet";
-import { invalidate_timesheetStatus } from "./status";
+import getTask, { ITask } from "../../../collections/task";
+import Jsonify from "@italodeandra/next/utils/Jsonify";
+import { invalidate_projectList } from "../project/list";
 
 async function handler(
-  args: {
-    _id: string | ObjectId;
-  },
+  args: Pick<Jsonify<Partial<ITask>>, "_id">,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await connectDb();
-  let Timesheet = getTimesheet();
+  let Task = getTask();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  let _id = isomorphicObjectId(args._id);
+  const _id = isomorphicObjectId(args._id);
 
-  await Timesheet.deleteOne({
+  await Task.deleteOne({
     _id,
     userId: user._id,
   });
@@ -43,29 +41,23 @@ async function handler(
 
 export default apiHandlerWrapper(handler);
 
-export type TimesheetDeleteApiResponse = InferApiResponse<typeof handler>;
-export type TimesheetDeleteApiArgs = InferApiArgs<typeof handler>;
+export type TaskRemoveResponse = InferApiResponse<typeof handler>;
+export type TaskRemoveArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/timesheet/delete";
+const mutationKey = "/api/task/remove";
 
-export const useTimesheetDelete = (
-  options?: UseMutationOptions<
-    TimesheetDeleteApiResponse,
-    unknown,
-    TimesheetDeleteApiArgs
-  >
+export const useTaskRemove = (
+  options?: UseMutationOptions<TaskRemoveResponse, unknown, TaskRemoveArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<TimesheetDeleteApiArgs, TimesheetDeleteApiResponse>(
-      mutationKey
-    ),
+    mutationFnWrapper<TaskRemoveArgs, TaskRemoveResponse>(mutationKey),
     {
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
-        await invalidate_timesheetStatus(queryClient);
+        await invalidate_projectList(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

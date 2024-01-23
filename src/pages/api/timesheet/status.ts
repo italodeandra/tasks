@@ -1,7 +1,6 @@
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import {
   apiHandlerWrapper,
-  InferApiArgs,
   InferApiResponse,
   queryFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
@@ -13,11 +12,7 @@ import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import dayjs from "dayjs";
 import getTask, { ITask } from "../../../collections/task";
 
-async function handler(
-  args: { today: Date },
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
   let Timesheet = getTimesheet();
   let Task = getTask();
@@ -79,7 +74,7 @@ async function handler(
                 $in: [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL],
               },
               createdAt: {
-                $gte: dayjs(args.today).startOf("day").toDate(),
+                $gte: dayjs().startOf("day").toDate(),
               },
             },
           },
@@ -98,16 +93,12 @@ async function handler(
 
 export default apiHandlerWrapper(handler);
 
-export type TimesheetStatusApiArgs = InferApiArgs<typeof handler>;
 export type TimesheetStatusApiResponse = InferApiResponse<typeof handler>;
 
 const queryKey = "/api/timesheet/status";
 
-export const useTimesheetStatus = (args: TimesheetStatusApiArgs) =>
-  useQuery(
-    [queryKey, args.today],
-    queryFnWrapper<TimesheetStatusApiResponse>(queryKey, args)
-  );
+export const useTimesheetStatus = () =>
+  useQuery([queryKey], queryFnWrapper<TimesheetStatusApiResponse>(queryKey));
 
 export const invalidate_timesheetStatus = (queryClient: QueryClient) =>
   queryClient.invalidateQueries([queryKey]);

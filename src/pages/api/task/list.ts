@@ -14,7 +14,7 @@ import showdown from "showdown";
 import dayjs from "dayjs";
 import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
 import { invalidate_timesheetStatus } from "../timesheet/status";
-import getProject from "../../../collections/project";
+import getProject, { IProject } from "../../../collections/project";
 
 let converter = new showdown.Converter({
   simplifiedAutoLink: true,
@@ -38,10 +38,10 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
         ITask,
         "_id" | "content" | "status" | "order" | "title" | "createdAt"
       > & {
-        project?: string;
+        project?: Pick<IProject, "_id" | "name">;
         timesheet?: {
           totalTime?: number;
-          currentClockIn?: Date | null;
+          currentClockIn?: Date;
         };
       }
     >([
@@ -156,7 +156,7 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
         $project: {
           content: 1,
           status: 1,
-          project: "$project.name",
+          project: 1,
           order: 1,
           title: 1,
           "timesheet.totalTime": 1,
@@ -173,6 +173,7 @@ async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
         .replaceAll("[ ]", "-")
         .replaceAll("[x]", "-")
     ),
+    title: t.title || t.content,
   }));
 }
 
@@ -188,6 +189,5 @@ export const useTaskList = (args?: TaskListApiArgs) =>
 
 export const invalidate_taskList = async (queryClient: QueryClient) => {
   await invalidate_timesheetListFromProject(queryClient);
-  await invalidate_timesheetStatus(queryClient);
   return queryClient.invalidateQueries([queryKey]);
 };

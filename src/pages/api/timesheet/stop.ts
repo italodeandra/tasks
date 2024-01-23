@@ -16,12 +16,12 @@ import { connectDb } from "../../../db";
 import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
+import { invalidate_timesheetStatus } from "./status";
 
 export async function stopClock(userId: ObjectId) {
   let Timesheet = getTimesheet();
   let activeTimesheet = await Timesheet.findOne({
     userId: userId,
-    // taskId: task._id,
     startedAt: {
       $exists: true,
     },
@@ -81,6 +81,7 @@ export const useTimesheetStop = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

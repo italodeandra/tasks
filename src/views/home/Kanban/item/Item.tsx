@@ -15,13 +15,15 @@ export function ItemWithRef<T extends { _id: string }>(
     placeholder,
     value,
     renderItem,
+    isDragging,
     ...props
   }: Omit<HTMLProps<HTMLDivElement>, "id" | "placeholder" | "value"> & {
     id: string | number;
     dragOverlay?: boolean;
     placeholder?: boolean;
     value?: T[];
-    renderItem?: (item: T) => ReactNode;
+    renderItem?: (item: T, drag: boolean) => ReactNode;
+    isDragging?: boolean;
   },
   ref: ForwardedRef<HTMLDivElement>
 ) {
@@ -42,13 +44,14 @@ export function ItemWithRef<T extends { _id: string }>(
   }
 
   return (
-    <div
-      {...props}
-      ref={ref}
-      className={clsx("flex gap-2 rounded bg-zinc-900", className)}
-    >
-      {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-      {value && renderItem && renderItem(value.find((i) => i._id === id)!)}
+    <div {...props} ref={ref} className={clsx(className)}>
+      {value &&
+        renderItem &&
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        renderItem(
+          value.find((i) => i._id === id)!,
+          !!dragOverlay || !!isDragging
+        )}
     </div>
   );
 }

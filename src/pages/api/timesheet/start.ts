@@ -23,6 +23,7 @@ import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import { stopClock } from "./stop";
+import { invalidate_timesheetStatus } from "./status";
 
 async function handler(
   args: {
@@ -95,6 +96,7 @@ export const useTimesheetStart = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

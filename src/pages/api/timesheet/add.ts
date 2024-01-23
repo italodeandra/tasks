@@ -18,6 +18,7 @@ import { invalidate_taskList } from "../task/list";
 import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import ms from "ms";
+import { invalidate_timesheetStatus } from "./status";
 
 async function handler(
   args: Jsonify<
@@ -68,6 +69,7 @@ export const useTimesheetAdd = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

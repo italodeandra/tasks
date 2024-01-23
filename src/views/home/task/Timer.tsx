@@ -2,13 +2,14 @@ import Button from "@italodeandra/ui/components/Button/Button";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { useTimesheetStart } from "../../../pages/api/timesheet/start";
 import { useTimesheetStop } from "../../../pages/api/timesheet/stop";
-import { MouseEvent, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import ms from "ms";
 import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
 import { TaskListApiResponse } from "../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import Loading from "@italodeandra/ui/components/Loading";
+import { isNil } from "lodash";
 
 export function Timer({
   task,
@@ -23,40 +24,33 @@ export function Timer({
   let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
   let isLoading = isStarting || isStopping;
 
-  let handleClick = useCallback(
-    (e: MouseEvent) => {
-      e.stopPropagation();
-      if (task.timesheet?.currentClockIn) {
-        stop();
-      } else {
-        start(task);
-      }
-    },
-    [start, stop, task]
-  );
+  let currentClockIn = task.timesheet?.currentClockIn;
 
-  let time = task.timesheet?.currentClockIn
-    ? Date.now() - new Date(task.timesheet.currentClockIn).getTime()
-    : task.timesheet?.totalTime || 0;
+  let handleClick = useCallback(() => {
+    if (currentClockIn) {
+      stop();
+    } else {
+      start({ _id: task._id });
+    }
+  }, [currentClockIn, start, stop, task._id]);
+
+  let currentClockInTime = currentClockIn
+    ? Date.now() - new Date(currentClockIn).getTime()
+    : undefined;
+
+  let time = currentClockIn ? currentClockInTime : task.timesheet?.totalTime;
 
   let rerender = useUpdate();
-  useInterval(rerender, time ? ms("1s") : null);
+  useInterval(
+    rerender,
+    !isNil(currentClockInTime)
+      ? ms(currentClockInTime < ms("1m") ? "1s" : "1m")
+      : null
+  );
 
-  return (
-    <Button
-      size="xs"
-      variant={buttonVariant}
-      onClick={handleClick}
-      data-no-dnd="true"
-      color={task.timesheet?.currentClockIn ? "success" : undefined}
-      className={clsx(
-        "whitespace-nowrap p-1",
-        {
-          "px-1.5": !!time,
-        },
-        className
-      )}
-      {...(time > 0
+  let buttonProps = useMemo(
+    () =>
+      !isNil(time)
         ? {
             leading: isLoading ? (
               <Loading className="w-4 h-4 text-inherit" />
@@ -72,7 +66,25 @@ export function Timer({
             ) : (
               <ClockIcon className="shrink-0 w-4 h-4" />
             ),
-          })}
+          },
+    [isLoading, time]
+  );
+
+  return (
+    <Button
+      size="xs"
+      variant={buttonVariant}
+      onClick={handleClick}
+      data-no-dnd="true"
+      color={!isNil(currentClockIn) ? "success" : undefined}
+      className={clsx(
+        "whitespace-nowrap p-1",
+        {
+          "px-1.5": !!time,
+        },
+        className
+      )}
+      {...buttonProps}
     />
   );
 }

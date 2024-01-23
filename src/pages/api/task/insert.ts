@@ -6,66 +6,73 @@ import {
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
   useMutation,
   UseMutationOptions,
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
+import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import { invalidate_taskList } from "../task/list";
-import { ObjectId } from "bson";
-import getTimesheet from "../../../collections/timesheet";
-import { invalidate_timesheetStatus } from "./status";
+import getTask, { TaskStatus } from "../../../collections/task";
+import { invalidate_projectList } from "../project/list";
 
 async function handler(
   args: {
-    _id: string | ObjectId;
+    status: TaskStatus;
   },
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await connectDb();
-  let Timesheet = getTimesheet();
+  let Task = getTask();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  let _id = isomorphicObjectId(args._id);
+  let firstTask = await Task.findOne(
+    {
+      userId: user._id,
+      status: args.status,
+    },
+    {
+      sort: {
+        order: 1,
+      },
+      projection: {
+        order: 1,
+      },
+    }
+  );
 
-  await Timesheet.deleteOne({
-    _id,
+  await Task.insertOne({
+    title: "",
     userId: user._id,
+    status: args.status,
+    order: (firstTask?.order || 0) - 1,
   });
 }
 
 export default apiHandlerWrapper(handler);
 
-export type TimesheetDeleteApiResponse = InferApiResponse<typeof handler>;
-export type TimesheetDeleteApiArgs = InferApiArgs<typeof handler>;
+export type TaskInsertResponse = InferApiResponse<typeof handler>;
+export type TaskInsertArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/timesheet/delete";
+const mutationKey = "/api/task/insert";
 
-export const useTimesheetDelete = (
-  options?: UseMutationOptions<
-    TimesheetDeleteApiResponse,
-    unknown,
-    TimesheetDeleteApiArgs
-  >
+export const useTaskInsert = (
+  options?: UseMutationOptions<TaskInsertResponse, unknown, TaskInsertArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<TimesheetDeleteApiArgs, TimesheetDeleteApiResponse>(
-      mutationKey
-    ),
+    mutationFnWrapper<TaskInsertArgs, TaskInsertResponse>(mutationKey),
     {
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
-        await invalidate_timesheetStatus(queryClient);
+        await invalidate_projectList(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

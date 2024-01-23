@@ -6,7 +6,6 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  KeyboardSensor,
   PointerSensor,
   UniqueIdentifier,
   useSensor,
@@ -15,7 +14,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { SortableItem } from "./item/SortableItem";
@@ -24,6 +22,8 @@ import { Item } from "./item/Item";
 import { groupBy, mapValues, toPairs } from "lodash";
 import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
+
+import { Orientation } from "./Orientation";
 
 const PLACEHOLDER_ID = "placeholder";
 
@@ -43,22 +43,26 @@ export function Kanban<
   value,
   onChangeValue,
   renderItem,
-  orientation = "vertical",
+  orientation = Orientation.VERTICAL,
   renderColumn,
 }: {
   value: T[];
   onChangeValue: (value: T[]) => void;
-  renderItem: (item: T) => ReactNode;
+  renderItem: (item: T, drag: boolean) => ReactNode;
   renderColumn: (column: string) => ReactNode;
-  orientation?: "vertical" | "horizontal";
+  orientation?: Orientation;
 }) {
   let [activeId, setActiveId] = useState<string | null>(null);
   let [items, setItems] = useState<Record<string, string[]>>({});
   let sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 4,
+      },
     })
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates,
+    // })
   );
 
   useDeepCompareEffect(() => {
@@ -179,15 +183,9 @@ export function Kanban<
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
       >
-        <div>
-          <div className="flex gap-2">
-            <div>ID</div>
-            <div>Content</div>
-          </div>
-        </div>
         <div
           className={clsx("flex gap-2 p-2", {
-            "flex-col": orientation === "vertical",
+            "flex-col": orientation === Orientation.VERTICAL,
           })}
         >
           {containers.map((container) => {
@@ -196,10 +194,12 @@ export function Kanban<
               <div
                 key={container}
                 className={clsx("flex flex-col gap-0.5", {
-                  "max-w-[300px]": orientation === "horizontal",
+                  "max-w-[300px]": orientation === Orientation.HORIZONTAL,
                 })}
               >
-                <div>{renderColumn(container.toString())}</div>
+                <div className="text-sm font-medium">
+                  {renderColumn(container.toString())}
+                </div>
                 <SortableContext
                   items={containerItems}
                   strategy={verticalListSortingStrategy}

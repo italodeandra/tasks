@@ -17,72 +17,69 @@ import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
+import { invalidate_projectList } from "../project/list";
+import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
+import type { StrictUpdateFilter } from "mongodb";
+import { WritableDeep } from "type-fest";
 
 async function handler(
-  argsList: Pick<
-    Jsonify<Partial<ITask>>,
-    "_id" | "content" | "projectId" | "status" | "order"
-  >[],
+  args: Pick<Jsonify<Partial<ITask>>, "_id" | "content" | "projectId">,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await connectDb();
   let Task = getTask();
-  const user = await getUserFromCookies(req, res);
+  let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  await Task.bulkWrite(
-    argsList.map((args) => ({
-      updateOne: {
-        filter: {
-          _id: isomorphicObjectId(args._id),
-          userId: user._id,
-          $or: [
-            {
-              order: { $ne: args.order },
-            },
-            {
-              status: { $ne: args.status },
-            },
-          ],
-        },
-        update: {
-          $set: {
-            order: args.order,
-            status: args.status,
-          },
-        },
-      },
-    }))
+  const _id = isomorphicObjectId(args._id);
+
+  let $set = {
+    content: args.content,
+    projectId: args.projectId,
+  };
+  let $unset: WritableDeep<StrictUpdateFilter<ITask>["$unset"]> = {};
+
+  removeEmptyProperties($set);
+
+  if (args.projectId === "NONE") {
+    delete $set.projectId;
+    $unset.projectId = "";
+  }
+
+  await Task.updateOne(
+    {
+      _id,
+      userId: user._id,
+    },
+    {
+      $set,
+      $unset,
+    }
   );
 }
 
 export default apiHandlerWrapper(handler);
 
-export type TaskBatchUpdateOrderResponse = InferApiResponse<typeof handler>;
-export type TaskBatchUpdateOrderArgs = InferApiArgs<typeof handler>;
+export type TaskUpdateResponse = InferApiResponse<typeof handler>;
+export type TaskUpdateArgs = InferApiArgs<typeof handler>;
 
-const mutationKey = "/api/task/batchUpdateOrder";
+const mutationKey = "/api/task/update";
 
-export const useTaskBatchUpdateOrder = (
-  options?: UseMutationOptions<
-    TaskBatchUpdateOrderResponse,
-    unknown,
-    TaskBatchUpdateOrderArgs
-  >
+export const useTaskUpdate = (
+  options?: UseMutationOptions<TaskUpdateResponse, unknown, TaskUpdateArgs>
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
     [mutationKey],
-    mutationFnWrapper<TaskBatchUpdateOrderArgs, TaskBatchUpdateOrderResponse>(
-      mutationKey
-    ),
+    mutationFnWrapper<TaskUpdateArgs, TaskUpdateResponse>(mutationKey),
     {
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_projectList(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

@@ -4,6 +4,7 @@ import React, { useMemo } from "react";
 import { ProjectColor } from "../../collections/project";
 import { Project } from "./Kanban2/Project";
 import Group from "@italodeandra/ui/components/Group";
+import Stack from "@italodeandra/ui/components/Stack";
 
 export function Projects() {
   let { data: projects, isLoading: isLoading } = useProjectList();
@@ -11,7 +12,7 @@ export function Projects() {
   let projectsWithNone = useMemo(
     () => [
       {
-        _id: "",
+        _id: "NONE",
         name: "None",
         lastTaskUpdatedAt: "",
         color: ProjectColor.BLUE,
@@ -22,11 +23,14 @@ export function Projects() {
   );
 
   return (
-    <Group className="px-2 pb-2">
-      {isLoading && <Loading />}
-      {projectsWithNone.map((project) => (
-        <Project key={project._id} project={project} />
-      ))}
-    </Group>
+    <Stack>
+      <div className="text-xs font-semibold">Projects</div>
+      <Group className="items-center">
+        {isLoading && <Loading />}
+        {projectsWithNone.map((project) => (
+          <Project key={project._id} {...project} />
+        ))}
+      </Group>
+    </Stack>
   );
 }
