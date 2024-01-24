@@ -1,6 +1,6 @@
-import { useTimesheetAdd } from "../../../../pages/api/timesheet/add";
+import { useTimesheetAdd } from "../../../pages/api/timesheet/add";
 import { useForm } from "react-hook-form";
-import { TimesheetType } from "../../../../collections/timesheet";
+import { TimesheetType } from "../../../collections/timesheet";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Input from "@italodeandra/ui/components/Input/Input";
 import Button from "@italodeandra/ui/components/Button/Button";

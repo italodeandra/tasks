@@ -13,7 +13,6 @@ import getTask, { ITask, TaskStatus } from "../../../collections/task";
 import showdown from "showdown";
 import dayjs from "dayjs";
 import { invalidate_timesheetListFromProject } from "../timesheet/list-from-project";
-import { invalidate_timesheetStatus } from "../timesheet/status";
 import getProject, { IProject } from "../../../collections/project";
 
 let converter = new showdown.Converter({

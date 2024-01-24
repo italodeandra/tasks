@@ -1,10 +1,10 @@
 import {
   TimesheetListFromProjectApiResponse,
   useTimesheetListFromProject,
-} from "../../../../pages/api/timesheet/list-from-project";
+} from "../../../pages/api/timesheet/list-from-project";
 import React, { useMemo, useState } from "react";
-import { ProjectListApiResponse } from "../../../../pages/api/project/list";
-import { useTimesheetDelete } from "../../../../pages/api/timesheet/delete";
+import { useProjectList } from "../../../pages/api/project/list";
+import { useTimesheetDelete } from "../../../pages/api/timesheet/delete";
 import DataTable, {
   DataTableProps,
 } from "@italodeandra/ui/components/Table/DataTable";
@@ -20,19 +20,31 @@ import {
 import { TimesheetItem } from "./TimesheetItem";
 import Text from "@italodeandra/ui/components/Text";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
-import { prettyMilliseconds } from "../../../../utils/prettyMilliseconds";
+import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import dayjs from "dayjs";
 import copy2DToClipboard from "@italodeandra/ui/utils/copy2DToClipboard";
-import { translateTimesheetType } from "../../../../utils/translateTimesheetType";
+import { translateTimesheetType } from "../../../utils/translateTimesheetType";
 import Group from "@italodeandra/ui/components/Group/Group";
 import { TimesheetAddDialog } from "./TimesheetAddDialog";
+import { useSnapshot } from "valtio";
+import { homeState } from "../home.state";
 
-export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
+export function Timesheet() {
+  let { selectedProjects } = useSnapshot(homeState);
+  let { data: projects } = useProjectList();
+
+  const project =
+    projects?.find((p) => selectedProjects.includes(p._id)) || projects?.[0];
+
   let [startDate, setStartDate] = useState(() => new Date());
-  let { data: timesheet, isLoading } = useTimesheetListFromProject({
-    projectId: project._id,
-    startDate,
-  });
+  let { data: timesheet, isLoading } = useTimesheetListFromProject(
+    project
+      ? {
+          projectId: project._id,
+          startDate,
+        }
+      : undefined
+  );
 
   let { mutate: deleteTimesheet, isLoading: isDeleting } = useTimesheetDelete();
 
@@ -69,62 +81,73 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
   }, [timesheet]);
 
   let handleAddClick = () => {
-    showDialog({
-      title: `Add time to ${project.name}`,
-      content: (_id) => (
-        <TimesheetAddDialog
-          projectId={project._id}
-          onSubmit={() => closeDialog(_id)}
-        />
-      ),
-    });
+    if (project) {
+      showDialog({
+        title: `Add time to ${project.name}`,
+        content: (_id) => (
+          <TimesheetAddDialog
+            projectId={project._id}
+            onSubmit={() => closeDialog(_id)}
+          />
+        ),
+      });
+    }
   };
 
   return (
-    <Stack className="h-full w-full">
-      <DataTable
-        title={
-          <div className="flex flex-col items-center gap-4 sm:flex-row">
-            <span>Timesheet {project.name}</span>
-            <Group className="mx-auto items-center">
-              <Button
-                icon
-                size="sm"
-                onClick={() =>
-                  setStartDate(dayjs(startDate).subtract(1, "month").toDate())
-                }
-              >
-                <ChevronLeftIcon />
-              </Button>
-              <Text className="w-[8rem] text-center text-sm">
-                {dayjs(startDate).format("MMMM YYYY")}
-              </Text>
-              <Button
-                icon
-                size="sm"
-                onClick={() =>
-                  setStartDate(dayjs(startDate).add(1, "month").toDate())
-                }
-              >
-                <ChevronRightIcon />
-              </Button>
-            </Group>
+    <Stack className="p-2 relative">
+      <div className="flex flex-col items-center gap-4 sm:flex-row">
+        <span>Timesheet {project?.name}</span>
+        <Group className="mx-auto items-center">
+          <Button
+            icon
+            size="sm"
+            onClick={() =>
+              setStartDate(dayjs(startDate).subtract(1, "month").toDate())
+            }
+          >
+            <ChevronLeftIcon />
+          </Button>
+          <Text className="w-[8rem] text-center text-sm">
+            {dayjs(startDate).format("MMMM YYYY")}
+          </Text>
+          <Button
+            icon
+            size="sm"
+            onClick={() =>
+              setStartDate(dayjs(startDate).add(1, "month").toDate())
+            }
+          >
+            <ChevronRightIcon />
+          </Button>
+        </Group>
+        <Button
+          leading={<PlusIcon />}
+          onClick={handleAddClick}
+          className="ml-auto sm:ml-0"
+        >
+          Add
+        </Button>
+      </div>
+      {!!totalClocked && (
+        <div className="grid grid-cols-3 gap-2">
+          <div>
+            <Text variant="label">Total clocked</Text>
+            <Text>{prettyMilliseconds(totalClocked)}</Text>
           </div>
-        }
+          <div>
+            <Text variant="label">Total paid</Text>
+            <Text>{prettyMilliseconds(totalPaid)}</Text>
+          </div>
+          <div>
+            <Text variant="label">Pending payment</Text>
+            <Text>{prettyMilliseconds(pendingPayment)}</Text>
+          </div>
+        </div>
+      )}
+      <DataTable
         data={timesheet?.data}
         columns={columns}
-        autoHeight
-        headerContent={
-          <div className="flex">
-            <Button
-              leading={<PlusIcon />}
-              onClick={handleAddClick}
-              className="ml-auto sm:ml-0"
-            >
-              Add
-            </Button>
-          </div>
-        }
         isLoading={isLoading || isDeleting}
         actions={[
           {
@@ -146,22 +169,6 @@ export function Timesheet({ project }: { project: ProjectListApiResponse[0] }) {
           },
         ]}
       />
-      {!!totalClocked && (
-        <div className="grid grid-cols-2 gap-2">
-          <div>
-            <Text variant="label">Total clocked</Text>
-            <Text>{prettyMilliseconds(totalClocked)}</Text>
-          </div>
-          <div>
-            <Text variant="label">Total paid</Text>
-            <Text>{prettyMilliseconds(totalPaid)}</Text>
-          </div>
-          <div>
-            <Text variant="label">Pending payment</Text>
-            <Text>{prettyMilliseconds(pendingPayment)}</Text>
-          </div>
-        </div>
-      )}
     </Stack>
   );
 }

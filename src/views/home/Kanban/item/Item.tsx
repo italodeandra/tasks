@@ -53,7 +53,7 @@ export function ItemWithRef<T extends { _id: string }>(
   }
 
   return (
-    <div {...props} ref={ref} className={clsx(className)}>
+    <div {...props} ref={ref} className={clsx("touch-manipulation", className)}>
       {itemElement}
     </div>
   );

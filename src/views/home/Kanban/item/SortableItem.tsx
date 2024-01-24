@@ -22,6 +22,7 @@ export function SortableItem<T extends { _id: string }>({
     transform,
     transition,
     isDragging,
+    active,
   } = useSortable({ id });
 
   const style = useMemo(
@@ -41,6 +42,7 @@ export function SortableItem<T extends { _id: string }>({
       {...listeners}
       className={clsx({
         "opacity-50": isDragging,
+        "scale-105": active?.id === id,
       })}
       placeholder={placeholder}
       value={value}

@@ -6,7 +6,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  PointerSensor,
+  TouchSensor,
   UniqueIdentifier,
   useSensor,
   useSensors,
@@ -48,16 +48,22 @@ export function Kanban<
 }: {
   value: T[];
   onChangeValue: (value: T[]) => void;
-  renderItem: (item: T, drag: boolean) => ReactNode;
+  renderItem: (item: T) => ReactNode;
   renderColumn: (column: string) => ReactNode;
   orientation?: Orientation;
 }) {
   let [activeId, setActiveId] = useState<string | null>(null);
   let [items, setItems] = useState<Record<string, string[]>>({});
   let sensors = useSensors(
-    useSensor(PointerSensor, {
+    // useSensor(PointerSensor, {
+    //   activationConstraint: {
+    //     distance: 4,
+    //   },
+    // }),
+    useSensor(TouchSensor, {
       activationConstraint: {
-        distance: 4,
+        delay: 500,
+        tolerance: 4,
       },
     })
     // useSensor(KeyboardSensor, {

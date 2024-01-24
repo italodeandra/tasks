@@ -11,11 +11,11 @@ import { TimesheetStatus } from "./TimesheetStatus";
 
 export default function Header() {
   return (
-    <UiHeader className="gap-2">
+    <UiHeader className="gap-2 px-3.5">
       <Button
         icon
         variant="text"
-        className="-my-2 -ml-2 mr-3 sm:hidden"
+        className="-ml-1 mr-1 sm:hidden"
         onClick={navigationDrawerState.toggle}
       >
         <Bars3BottomLeftIcon />
@@ -23,7 +23,7 @@ export default function Header() {
       <NextLink href="/">
         <Image src="/favicon.ico" width={34} height={34} alt="Logo" />
       </NextLink>
-      <span className="ml-2 text-xl font-medium">Tasks</span>
+      <span className="ml-1 text-xl font-medium">Tasks</span>
       <div className="flex-grow" />
       <TimesheetStatus />
       <ModeToggle />

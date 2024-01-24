@@ -73,7 +73,7 @@ async function handler(
           ITimesheet,
           "_id" | "time" | "startedAt" | "type" | "createdAt"
         > & {
-          task?: Pick<ITask, "_id" | "content">;
+          task?: Pick<ITask, "_id" | "content" | "title">;
         }
       >([
         {
@@ -96,6 +96,7 @@ async function handler(
               {
                 $project: {
                   content: 1,
+                  title: 1,
                 },
               },
             ],
@@ -126,7 +127,7 @@ async function handler(
       ...t,
       task: t.task && {
         ...t.task,
-        content: removeMd(t.task?.content).split("\n")[0],
+        content: removeMd(t.task.content || t.task.title).split("\n")[0],
       },
     })),
   };
@@ -142,11 +143,14 @@ export type TimesheetListFromProjectApiResponse = InferApiResponse<
 const queryKey = "/api/timesheet/list-from-project";
 
 export const useTimesheetListFromProject = (
-  args: TimesheetListFromProjectApiArgs
+  args?: TimesheetListFromProjectApiArgs
 ) =>
   useQuery(
-    [queryKey, args.projectId, args.startDate],
-    queryFnWrapper<TimesheetListFromProjectApiResponse>(queryKey, args)
+    [queryKey, args?.projectId, args?.startDate],
+    queryFnWrapper<TimesheetListFromProjectApiResponse>(queryKey, args),
+    {
+      enabled: !!args,
+    }
   );
 
 export const invalidate_timesheetListFromProject = async (

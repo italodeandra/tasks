@@ -4,10 +4,8 @@ import { Kanban } from "./kanban/Kanban";
 import Group from "@italodeandra/ui/components/Group";
 import { useSnapshot } from "valtio";
 import { homeState } from "./home.state";
-import { ITask, renderTask } from "./task/Task";
 import { OrientationSelect } from "./OrientationSelect";
 import { KanbanSkeleton } from "./kanban/KanbanSkeleton";
-import { Projects } from "./projects/Projects";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { useTaskBatchUpdateOrder } from "../../pages/api/task/batchUpdateOrder";
 import Loading from "@italodeandra/ui/components/Loading";
@@ -15,9 +13,16 @@ import { TaskStatus } from "../../collections/task";
 import { renderColumn } from "./column/Column";
 import { isEqual } from "lodash";
 import { NewProjectModal } from "./new-project/NewProjectModal";
+import { ITask } from "./task/ITask";
+import { renderTask } from "./task/renderTask";
+import dynamic from "next/dynamic";
+import { TimesheetButton } from "./TimesheetButton";
+import { Timesheet } from "./timesheet/Timesheet";
+
+const Projects = dynamic(() => import("./projects/Projects"), { ssr: false });
 
 export function HomeView() {
-  let { orientation } = useSnapshot(homeState);
+  let { orientation, showTimesheet } = useSnapshot(homeState);
   let { data: databaseTasks, isLoading, isFetching } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -56,23 +61,28 @@ export function HomeView() {
       >
         <Projects />
         <div className="grow" />
-        <OrientationSelect />
+        <TimesheetButton />
+        {!showTimesheet && <OrientationSelect />}
       </Group>
-      <div className="relative">
-        {(isFetching || isUpdating) && (
-          <Loading className="absolute right-9 top-[7px]" />
-        )}
-        {isLoading && <KanbanSkeleton />}
-        {kanbanTasks && (
-          <Kanban
-            orientation={orientation}
-            value={kanbanTasks}
-            onChangeValue={handleKanbanChange}
-            renderColumn={renderColumn}
-            renderItem={renderTask}
-          />
-        )}
-      </div>
+      {showTimesheet ? (
+        <Timesheet />
+      ) : (
+        <div className="relative">
+          {(isFetching || isUpdating) && (
+            <Loading className="absolute right-9 top-[7px]" />
+          )}
+          {isLoading && <KanbanSkeleton />}
+          {kanbanTasks && (
+            <Kanban
+              orientation={orientation}
+              value={kanbanTasks}
+              onChangeValue={handleKanbanChange}
+              renderColumn={renderColumn}
+              renderItem={renderTask}
+            />
+          )}
+        </div>
+      )}
     </>
   );
 }
