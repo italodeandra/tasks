@@ -17,9 +17,14 @@ import { invalidate_taskList } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
 import { invalidate_timesheetStatus } from "./status";
+import getTask from "../../../collections/task";
+import getProject from "../../../collections/project";
+import { invalidate_projectList } from "../project/list";
 
 export async function stopClock(userId: ObjectId) {
   let Timesheet = getTimesheet();
+  let Task = getTask();
+  let Project = getProject();
   let activeTimesheet = await Timesheet.findOne({
     userId: userId,
     startedAt: {
@@ -32,6 +37,30 @@ export async function stopClock(userId: ObjectId) {
   if (activeTimesheet?.startedAt) {
     let stoppedAt = new Date();
     let addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
+
+    let taskId = activeTimesheet.taskId;
+    if (taskId) {
+      await Task.updateOne(
+        { _id: taskId },
+        {
+          $set: {
+            updatedAt: new Date(),
+          },
+        }
+      );
+    }
+
+    let projectId = activeTimesheet.projectId;
+    if (projectId) {
+      await Project.updateOne(
+        { _id: projectId },
+        {
+          $set: {
+            updatedAt: new Date(),
+          },
+        }
+      );
+    }
 
     await Timesheet.updateOne(
       {
@@ -81,6 +110,7 @@ export const useTimesheetStop = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_projectList(queryClient);
         await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },

@@ -21,6 +21,7 @@ import { invalidate_projectList } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import type { StrictUpdateFilter } from "mongodb";
 import { WritableDeep } from "type-fest";
+import getProject from "../../../collections/project";
 
 async function handler(
   args: Pick<Jsonify<Partial<ITask>>, "_id" | "content" | "projectId">,
@@ -29,6 +30,7 @@ async function handler(
 ) {
   await connectDb();
   let Task = getTask();
+  let Project = getProject();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
@@ -38,7 +40,10 @@ async function handler(
 
   let $set = {
     content: args.content,
-    projectId: args.projectId,
+    projectId:
+      args.projectId && args.projectId !== "NONE"
+        ? isomorphicObjectId(args.projectId)
+        : undefined,
   };
   let $unset: WritableDeep<StrictUpdateFilter<ITask>["$unset"]> = {};
 
@@ -47,6 +52,17 @@ async function handler(
   if (args.projectId === "NONE") {
     delete $set.projectId;
     $unset.projectId = "";
+  }
+
+  if ($set.projectId) {
+    await Project.updateOne(
+      { _id: $set.projectId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
   }
 
   await Task.updateOne(

@@ -6,14 +6,20 @@ import { TaskListApiResponse } from "../../../pages/api/task/list";
 import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import { Orientation } from "../kanban/Orientation";
-import { KeyboardEvent, useCallback, useMemo, useState } from "react";
-import Textarea from "@italodeandra/ui/components/Textarea";
+import {
+  FocusEvent,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { PencilIcon } from "@heroicons/react/16/solid";
 import { useTaskUpdate } from "../../../pages/api/task/update";
-import Loading from "@italodeandra/ui/components/Loading";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { useTaskRemove } from "../../../pages/api/task/remove";
 import { ProjectSelect } from "./ProjectSelect";
+import Button from "@italodeandra/ui/components/Button";
 
 export type ITask = Omit<
   TaskListApiResponse[number],
@@ -24,13 +30,15 @@ export type ITask = Omit<
   columnId: string;
 };
 
-function Task({ drag, ...task }: ITask & { drag: boolean }) {
+function Task(task: ITask) {
   let { orientation, selectedProjects } = useSnapshot(homeState);
   let [isEditing, setEditing] = useState(!task.content);
   let [newValue, setNewValue] = useState(task.title);
+  let contentRef = useRef<HTMLDivElement>(null);
 
   let handleDoubleClick = useCallback(() => {
     setEditing(true);
+    setTimeout(() => contentRef.current?.focus());
   }, []);
 
   let { mutate: remove, isLoading: isRemoving } = useTaskRemove();
@@ -56,13 +64,15 @@ function Task({ drag, ...task }: ITask & { drag: boolean }) {
   }, [handleDeleteClick, newValue, task._id, update]);
 
   let handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+    (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
+        setNewValue(e.currentTarget.innerText);
         e.preventDefault();
         handleSaveClick();
       }
       if (e.key === "Escape") {
         if (task.content) {
+          setNewValue(e.currentTarget.innerText);
           setEditing(false);
         } else {
           handleDeleteClick();
@@ -71,6 +81,14 @@ function Task({ drag, ...task }: ITask & { drag: boolean }) {
     },
     [handleDeleteClick, handleSaveClick, task.content]
   );
+
+  let handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
+    setNewValue(e.currentTarget.innerText);
+  }, []);
+
+  let handleClearChanges = useCallback(() => {
+    setNewValue(task.title);
+  }, [task.title]);
 
   let dimmed = useMemo(
     () =>
@@ -89,81 +107,97 @@ function Task({ drag, ...task }: ITask & { drag: boolean }) {
     "flex-col": orientation === Orientation.HORIZONTAL,
   });
 
-  let taskElement = (
-    <Group
-      className={clsx(taskClassName, "flex py-1 px-1 group", {
-        "opacity-40": dimmed,
-        "gap-2": orientation === Orientation.VERTICAL,
-        "gap-1": orientation === Orientation.HORIZONTAL,
-      })}
-      onDoubleClick={handleDoubleClick}
-    >
-      <div
-        className="text-sm [&_a]:truncate [&_a]:block overflow-hidden px-0.5"
-        dangerouslySetInnerHTML={{ __html: task.content }}
-      />
-      {newValue !== task.title && (
-        <div
-          className={clsx(
-            "rounded px-1 py-0.5 text-xs flex gap-1 items-center mb-auto",
-            "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300"
-          )}
-        >
-          <PencilIcon className="w-4 h-4" /> Unsaved changes
-        </div>
-      )}
-      <Group
-        className={clsx({
-          "items-start ml-auto": orientation === Orientation.VERTICAL,
-          "items-end justify-end": orientation === Orientation.HORIZONTAL,
-        })}
-      >
-        <ProjectSelect {...task} drag={drag} />
-        <div
-          title={dayjs(task.createdAt).format("LLL")}
-          className="mt-[3px] text-zinc-500 text-xs whitespace-nowrap"
-        >
-          {dayjs(task.createdAt).format("ll")}
-        </div>
-        <Timer
-          task={task}
-          className={clsx("-m-1 -mt-[3px] transition", {
-            "group-hover:opacity-100 opacity-50": !task.timesheet,
-          })}
-        />
-      </Group>
-    </Group>
-  );
-
-  if (drag) {
-    return taskElement;
-  }
-
-  if (isEditing) {
-    return (
-      <Textarea
-        className={clsx(taskClassName)}
-        innerClassName=""
-        inputClassName="border-0 rounded bg-transparent py-1 px-1.5 ring-1 transition"
-        value={newValue}
-        onChange={(e) => setNewValue(e.target.value)}
-        autoFocus
-        onKeyDown={handleKeyDown}
-        trailing={
-          isUpdating || isRemoving ? (
-            <Loading />
-          ) : (
-            <PencilIcon className="w-5 h-5" />
-          )
-        }
-        trailingClassName="items-start pt-1 pr-1"
-      />
-    );
-  }
+  // if (isEditing) {
+  //   return (
+  //     <Textarea
+  //       className={clsx(taskClassName)}
+  //       innerClassName=""
+  //       inputClassName="border-0 rounded bg-transparent py-1 px-1.5 ring-1 transition"
+  //       value={newValue}
+  //       onChange={(e) => setNewValue(e.target.value)}
+  //       autoFocus
+  //       onKeyDown={handleKeyDown}
+  //       trailing={
+  //         isUpdating || isRemoving ? (
+  //           <Loading />
+  //         ) : (
+  //           <PencilIcon className="w-5 h-5" />
+  //         )
+  //       }
+  //       trailingClassName="items-start pt-1 pr-1"
+  //     />
+  //   );
+  // }
 
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{taskElement}</ContextMenu.Trigger>
+      <ContextMenu.Trigger asChild>
+        <Group
+          className={clsx(taskClassName, "flex p-1 group", {
+            "opacity-40": dimmed,
+            "gap-2": orientation === Orientation.VERTICAL,
+            "gap-1": orientation === Orientation.HORIZONTAL,
+          })}
+          onDoubleClick={handleDoubleClick}
+        >
+          <div
+            ref={contentRef}
+            className={clsx(
+              "text-sm [&_a]:truncate [&_a]:block overflow-hidden px-1.5 py-1 -m-1",
+              "flex-1 outline-0 rounded",
+              {
+                "cursor-text ring-1 ring-primary-500 whitespace-pre-line":
+                  isEditing,
+                "select-none": !isEditing,
+              }
+            )}
+            dangerouslySetInnerHTML={{
+              __html: isEditing ? newValue || "" : task.content,
+            }}
+            contentEditable={isEditing}
+            onKeyDown={handleKeyDown}
+            onBlur={handleBlur}
+          />
+          <Group
+            className={clsx({
+              "items-center ml-auto": orientation === Orientation.VERTICAL,
+              "items-end justify-end": orientation === Orientation.HORIZONTAL,
+            })}
+          >
+            {!isEditing && newValue !== task.title && (
+              // eslint-disable-next-line react/jsx-no-undef
+              <Button
+                size="xs"
+                className={clsx(
+                  "rounded px-0.5 py-0 text-xs flex gap-1 items-center border-transparent dark:border-transparent",
+                  "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 group/changes"
+                )}
+                onClick={handleClearChanges}
+              >
+                <PencilIcon className="w-4 h-4" />{" "}
+                <span className="group-hover/changes:hidden">Unsaved</span>
+                <span className="hidden group-hover/changes:inline">
+                  Clear
+                </span>{" "}
+                changes
+              </Button>
+            )}
+            <ProjectSelect {...task} />
+            <div
+              title={dayjs(task.createdAt).format("LLL")}
+              className="text-zinc-500 text-xs whitespace-nowrap"
+            >
+              {dayjs(task.createdAt).format("ll")}
+            </div>
+            <Timer
+              task={task}
+              className={clsx("-m-1 transition", {
+                "group-hover:opacity-100 opacity-50": !task.timesheet,
+              })}
+            />
+          </Group>
+        </Group>
+      </ContextMenu.Trigger>
       <ContextMenu.Content>
         <ContextMenu.Item onClick={handleDeleteClick}>Delete</ContextMenu.Item>
       </ContextMenu.Content>
@@ -171,6 +205,6 @@ function Task({ drag, ...task }: ITask & { drag: boolean }) {
   );
 }
 
-export function renderTask(item: ITask, drag: boolean) {
-  return <Task {...item} drag={drag} />;
+export function renderTask(item: ITask) {
+  return <Task {...item} />;
 }

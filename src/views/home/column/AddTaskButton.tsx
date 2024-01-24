@@ -4,6 +4,7 @@ import { PlusIcon } from "@heroicons/react/16/solid";
 import { useTaskInsert } from "../../../pages/api/task/insert";
 import { useCallback } from "react";
 import { TaskStatus } from "../../../collections/task";
+import { homeState } from "../home.state";
 
 export function AddTaskButton({ column }: { column: string }) {
   let { mutate: insert, isLoading } = useTaskInsert();
@@ -11,6 +12,10 @@ export function AddTaskButton({ column }: { column: string }) {
   let handleClick = useCallback(() => {
     insert({
       status: column as TaskStatus,
+      projectId:
+        homeState.selectedProjects.length === 1
+          ? homeState.selectedProjects[0]
+          : undefined,
     });
   }, [column, insert]);
 

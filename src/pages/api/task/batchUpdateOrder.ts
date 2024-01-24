@@ -19,10 +19,7 @@ import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 
 async function handler(
-  argsList: Pick<
-    Jsonify<Partial<ITask>>,
-    "_id" | "content" | "projectId" | "status" | "order"
-  >[],
+  argsList: Pick<Jsonify<ITask>, "_id" | "status" | "order">[],
   req: NextApiRequest,
   res: NextApiResponse
 ) {

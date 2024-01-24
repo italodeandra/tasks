@@ -6,7 +6,7 @@ import clsx from "@italodeandra/ui/utils/clsx";
 import { ITask } from "./Task";
 import { useUpdateEffect } from "react-use";
 
-export function ProjectSelect({ drag, ...task }: ITask & { drag: boolean }) {
+export function ProjectSelect(task: ITask) {
   let [value, setValue] = useState(task.project?._id || "NONE");
   let { data: projects, isLoading } = useProjectList();
   let { mutate: update, isLoading: isUpdating } = useTaskUpdate();
@@ -20,28 +20,22 @@ export function ProjectSelect({ drag, ...task }: ITask & { drag: boolean }) {
     }
   }, [task._id, task.project?._id, update, value]);
 
-  let valueElement = (
-    <div
-      className={clsx(
-        "rounded px-1 text-xs mt-0.5 opacity-0 group-hover:opacity-100",
-        "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
-        {
-          "animate-pulse": isLoading || isUpdating,
-          "opacity-100": !value || value !== "NONE",
-        }
-      )}
-    >
-      {drag ? task.project?.name : <Select.Value />}
-    </div>
-  );
-
-  if (drag) {
-    return valueElement;
-  }
-
   return (
     <Select.Root onValueChange={setValue} value={value}>
-      <Select.Trigger>{valueElement}</Select.Trigger>
+      <Select.Trigger>
+        <div
+          className={clsx(
+            "rounded px-1 text-xs min-h-[18px] flex items-center opacity-0 group-hover:opacity-100",
+            "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
+            {
+              "animate-pulse": isLoading || isUpdating,
+              "opacity-100": !value || value !== "NONE",
+            }
+          )}
+        >
+          <Select.Value />
+        </div>
+      </Select.Trigger>
       <Select.Content>
         <Select.Item value="NONE" className="opacity-50">
           None

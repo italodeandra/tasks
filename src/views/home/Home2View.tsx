@@ -20,13 +20,13 @@ import { AddNewTaskButton } from "./Kanban2/AddNewTaskButton";
 import clsx from "clsx";
 import Alert from "@italodeandra/ui/components/Alert";
 import Button from "@italodeandra/ui/components/Button/Button";
-import { NewProjectModal } from "./Kanban2/task/new-project/NewProjectModal";
+import { NewProjectModal } from "./new-project/NewProjectModal";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import { Header } from "./Kanban2/header/Header";
 import { Kanban as UiKanban } from "../../components/Kanban/Kanban";
 import { Resizable } from "./Kanban2/Resizable";
 import { Timesheet } from "./Kanban2/timesheet/Timesheet";
-import { Projects } from "./Projects";
+import { Projects } from "./projects/Projects";
 
 export function Home2View() {
   let { selectedProjects, timesheetWidth } = useSnapshot(state);

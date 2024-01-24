@@ -7,7 +7,7 @@ import Button from "@italodeandra/ui/components/Button";
 import { navigationDrawerState } from "@italodeandra/ui/components/NavigationDrawer";
 import UserMenu from "../../panel/layout/UserMenu";
 import React from "react";
-import { TimesheetStatus } from "../../home/Kanban2/header/TimesheetStatus";
+import { TimesheetStatus } from "./TimesheetStatus";
 
 export default function Header() {
   return (

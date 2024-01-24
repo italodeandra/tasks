@@ -19,6 +19,9 @@ import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import ms from "ms";
 import { invalidate_timesheetStatus } from "./status";
+import getTask from "../../../collections/task";
+import getProject from "../../../collections/project";
+import { invalidate_projectList } from "../project/list";
 
 async function handler(
   args: Jsonify<
@@ -31,15 +34,43 @@ async function handler(
 ) {
   await connectDb();
   let Timesheet = getTimesheet();
+  let Task = getTask();
+  let Project = getProject();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
+  let taskId = args.taskId ? isomorphicObjectId(args.taskId) : undefined;
+  if (taskId) {
+    await Task.updateOne(
+      { _id: taskId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+  }
+
+  let projectId = args.projectId
+    ? isomorphicObjectId(args.projectId)
+    : undefined;
+  if (projectId) {
+    await Project.updateOne(
+      { _id: projectId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+  }
+
   await Timesheet.insertOne({
-    taskId: args.taskId ? isomorphicObjectId(args.taskId) : undefined,
+    taskId,
     userId: user._id,
-    projectId: args.projectId ? isomorphicObjectId(args.projectId) : undefined,
+    projectId,
     type: args.type,
     time: args.time ? ms(args.time) : undefined,
   });
@@ -69,6 +100,7 @@ export const useTimesheetAdd = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_projectList(queryClient);
         await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },

@@ -13,10 +13,16 @@ export function SortableItem<T extends { _id: string }>({
   id: string;
   placeholder?: boolean;
   value?: T[];
-  renderItem?: (item: T, dragOverlay: boolean) => ReactNode;
+  renderItem?: (item: T) => ReactNode;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, active } =
-    useSortable({ id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
 
   const style = useMemo(
     () => ({
@@ -34,12 +40,11 @@ export function SortableItem<T extends { _id: string }>({
       {...attributes}
       {...listeners}
       className={clsx({
-        "opacity-50": active?.id === id,
+        "opacity-50": isDragging,
       })}
       placeholder={placeholder}
       value={value}
       renderItem={renderItem}
-      isDragging={!!active}
     />
   );
 }

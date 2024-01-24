@@ -4,6 +4,7 @@ import React, {
   HTMLProps,
   ReactNode,
   useEffect,
+  useMemo,
 } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 
@@ -15,20 +16,18 @@ export function ItemWithRef<T extends { _id: string }>(
     placeholder,
     value,
     renderItem,
-    isDragging,
     ...props
   }: Omit<HTMLProps<HTMLDivElement>, "id" | "placeholder" | "value"> & {
     id: string | number;
     dragOverlay?: boolean;
     placeholder?: boolean;
     value?: T[];
-    renderItem?: (item: T, drag: boolean) => ReactNode;
-    isDragging?: boolean;
+    renderItem?: (item: T) => ReactNode;
   },
   ref: ForwardedRef<HTMLDivElement>
 ) {
   useEffect(() => {
-    if (!dragOverlay) {
+    if (!dragOverlay || placeholder) {
       return;
     }
 
@@ -37,7 +36,17 @@ export function ItemWithRef<T extends { _id: string }>(
     return () => {
       document.body.style.cursor = "";
     };
-  }, [dragOverlay]);
+  }, [dragOverlay, placeholder]);
+
+  let itemElement = useMemo(
+    () =>
+      !placeholder &&
+      value &&
+      renderItem &&
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      renderItem(value.find((i) => i._id === id)!),
+    [id, placeholder, renderItem, value]
+  );
 
   if (placeholder) {
     return <div ref={ref} className="-mt-2" />;
@@ -45,13 +54,7 @@ export function ItemWithRef<T extends { _id: string }>(
 
   return (
     <div {...props} ref={ref} className={clsx(className)}>
-      {value &&
-        renderItem &&
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        renderItem(
-          value.find((i) => i._id === id)!,
-          !!dragOverlay || !!isDragging
-        )}
+      {itemElement}
     </div>
   );
 }

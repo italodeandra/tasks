@@ -24,6 +24,8 @@ import { ObjectId } from "bson";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import { stopClock } from "./stop";
 import { invalidate_timesheetStatus } from "./status";
+import getProject from "../../../collections/project";
+import { invalidate_projectList } from "../project/list";
 
 async function handler(
   args: {
@@ -35,6 +37,7 @@ async function handler(
   await connectDb();
   let Task = getTask();
   let Timesheet = getTimesheet();
+  let Project = getProject();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
@@ -63,10 +66,34 @@ async function handler(
 
   await stopClock(user._id);
 
+  let taskId = task._id;
+  if (taskId) {
+    await Task.updateOne(
+      { _id: taskId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+  }
+
+  let projectId = task.projectId;
+  if (projectId) {
+    await Project.updateOne(
+      { _id: projectId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+  }
+
   await Timesheet.insertOne({
-    taskId: task._id,
+    taskId,
     userId: user._id,
-    projectId: task.projectId,
+    projectId,
     type: TimesheetType.CLOCK_IN_OUT,
     startedAt: new Date(),
   });
@@ -96,6 +123,7 @@ export const useTimesheetStart = (
       ...options,
       async onSuccess(...params) {
         await invalidate_taskList(queryClient);
+        await invalidate_projectList(queryClient);
         await invalidate_timesheetStatus(queryClient);
         await options?.onSuccess?.(...params);
       },

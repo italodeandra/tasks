@@ -14,18 +14,21 @@ import {
 import { NextApiRequest, NextApiResponse } from "next";
 import { invalidate_taskList } from "./list";
 import { connectDb } from "../../../db";
-import getTask, { TaskStatus } from "../../../collections/task";
+import getTask, { ITask } from "../../../collections/task";
 import { invalidate_projectList } from "../project/list";
+import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import Jsonify from "@italodeandra/next/utils/Jsonify";
+import getProject from "../../../collections/project";
 
 async function handler(
-  args: {
-    status: TaskStatus;
-  },
+  args: Jsonify<Pick<ITask, "status" | "projectId">>,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
   await connectDb();
   let Task = getTask();
+  let Project = getProject();
   let user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
@@ -46,11 +49,33 @@ async function handler(
     }
   );
 
-  await Task.insertOne({
-    title: "",
+  let projectId = args.projectId
+    ? isomorphicObjectId(args.projectId)
+    : undefined;
+
+  if (projectId) {
+    await Project.updateOne(
+      { _id: projectId },
+      {
+        $set: {
+          updatedAt: new Date(),
+        },
+      }
+    );
+  }
+
+  let doc = {
     userId: user._id,
     status: args.status,
     order: (firstTask?.order || 0) - 1,
+    projectId,
+  };
+
+  removeEmptyProperties(doc);
+
+  await Task.insertOne({
+    ...doc,
+    title: "",
   });
 }
 
