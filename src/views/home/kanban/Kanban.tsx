@@ -51,7 +51,7 @@ export function Kanban<
   value: T[];
   onChangeValue: (value: T[]) => void;
   renderItem: (item: T) => ReactNode;
-  renderColumn: (column: string) => ReactNode;
+  renderColumn: (column: string, taskCount: number) => ReactNode;
   orientation?: Orientation;
   disabledItems?: string[];
 }) {
@@ -203,7 +203,7 @@ export function Kanban<
                 })}
               >
                 <div className="text-sm font-medium">
-                  {renderColumn(container.toString())}
+                  {renderColumn(container.toString(), containerItems.length)}
                 </div>
                 <SortableContext
                   items={containerItems}
