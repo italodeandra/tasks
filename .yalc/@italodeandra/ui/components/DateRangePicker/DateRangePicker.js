@@ -73,21 +73,21 @@ function DateRangePicker(_a) {
         return buttonText;
     }, [range]);
     var children2 = children ? (children(buttonText)) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({}, buttonProps, { leading: (buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.leading) || (0, jsx_runtime_1.jsx)(solid_1.CalendarIcon, {}), className: (0, clsx_1.default)(classNames.button, buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.className), children: buttonText })));
-    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsx)(Popover_1.default.Portal, { children: (0, jsx_runtime_1.jsx)(Popover_1.default.Content, { children: (0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: {
-                            months: classNames.months,
-                            caption: classNames.caption,
-                            nav_button_previous: classNames.navButtonPrevious,
-                            nav_button_next: classNames.navButtonNext,
-                            nav_button: classNames.navButton,
-                            head: classNames.head,
-                            head_cell: classNames.headCell,
-                            day: classNames.day,
-                            cell: classNames.cell,
-                            table: classNames.table,
-                            day_range_start: (0, clsx_1.default)("ui-date-picker-day-range-start", classNames.dayRangeStart),
-                            day_range_end: (0, clsx_1.default)("ui-date-picker-day-range-end", classNames.dayRangeEnd),
-                            day_outside: "ui-date-picker-day-outside",
-                            day_range_middle: "ui-date-picker-day-range-middle",
-                        }, fromDate: fromDate, toDate: toDate, min: min, max: max }) }) })] }));
+    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsx)(Popover_1.default.Content, { children: (0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: {
+                        months: classNames.months,
+                        caption: classNames.caption,
+                        nav_button_previous: classNames.navButtonPrevious,
+                        nav_button_next: classNames.navButtonNext,
+                        nav_button: classNames.navButton,
+                        head: classNames.head,
+                        head_cell: classNames.headCell,
+                        day: classNames.day,
+                        cell: classNames.cell,
+                        table: classNames.table,
+                        day_range_start: (0, clsx_1.default)("ui-date-picker-day-range-start", classNames.dayRangeStart),
+                        day_range_end: (0, clsx_1.default)("ui-date-picker-day-range-end", classNames.dayRangeEnd),
+                        day_outside: "ui-date-picker-day-outside",
+                        day_range_middle: "ui-date-picker-day-range-middle",
+                    }, fromDate: fromDate, toDate: toDate, min: min, max: max }) })] }));
 }
 exports.default = DateRangePicker;
