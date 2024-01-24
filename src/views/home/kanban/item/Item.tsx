@@ -53,7 +53,13 @@ export function ItemWithRef<T extends { _id: string }>(
   }
 
   return (
-    <div {...props} ref={ref} className={clsx("touch-manipulation", className)}>
+    <div
+      {...props}
+      ref={ref}
+      className={clsx("touch-manipulation transition-all", className, {
+        "scale-[1.01] sm:scale-100": dragOverlay,
+      })}
+    >
       {itemElement}
     </div>
   );

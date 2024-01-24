@@ -6,6 +6,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  PointerSensor,
   TouchSensor,
   UniqueIdentifier,
   useSensor,
@@ -22,8 +23,8 @@ import { Item } from "./item/Item";
 import { groupBy, mapValues, toPairs } from "lodash";
 import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
-
 import { Orientation } from "./Orientation";
+import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 
 const PLACEHOLDER_ID = "placeholder";
 
@@ -54,22 +55,18 @@ export function Kanban<
 }) {
   let [activeId, setActiveId] = useState<string | null>(null);
   let [items, setItems] = useState<Record<string, string[]>>({});
-  let sensors = useSensors(
-    // useSensor(PointerSensor, {
-    //   activationConstraint: {
-    //     distance: 4,
-    //   },
-    // }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 500,
-        tolerance: 4,
-      },
-    })
-    // useSensor(KeyboardSensor, {
-    //   coordinateGetter: sortableKeyboardCoordinates,
-    // })
-  );
+  let mobileSensor = useSensor(TouchSensor, {
+    activationConstraint: {
+      delay: 500,
+      tolerance: 4,
+    },
+  });
+  let desktopSensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 4,
+    },
+  });
+  let sensors = useSensors(isTouchDevice ? mobileSensor : desktopSensor);
 
   useDeepCompareEffect(() => {
     let groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
