@@ -2,7 +2,7 @@ import Button from "@italodeandra/ui/components/Button/Button";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import { useTimesheetStart } from "../../../pages/api/timesheet/start";
 import { useTimesheetStop } from "../../../pages/api/timesheet/stop";
-import { useCallback, useMemo } from "react";
+import { MouseEvent, useCallback, useMemo } from "react";
 import ms from "ms";
 import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
@@ -26,13 +26,17 @@ export function Timer({
 
   let currentClockIn = task.timesheet?.currentClockIn;
 
-  let handleClick = useCallback(() => {
-    if (currentClockIn) {
-      stop();
-    } else {
-      start({ _id: task._id });
-    }
-  }, [currentClockIn, start, stop, task._id]);
+  let handleClick = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      if (currentClockIn) {
+        stop();
+      } else {
+        start({ _id: task._id });
+      }
+    },
+    [currentClockIn, start, stop, task._id]
+  );
 
   let currentClockInTime = currentClockIn
     ? Date.now() - new Date(currentClockIn).getTime()
