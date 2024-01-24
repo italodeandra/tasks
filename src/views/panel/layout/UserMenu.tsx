@@ -1,5 +1,4 @@
-import UiMenu from "@italodeandra/ui/components/Menu/Menu";
-import Button from "@italodeandra/ui/components/Button/Button";
+import Button from "@italodeandra/ui/components/Button";
 import { ExclamationTriangleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
@@ -8,29 +7,32 @@ import {
   setData_authGetUser,
   useAuthGetUser,
 } from "@italodeandra/auth/api/getUser";
-import Tooltip from "@italodeandra/ui/components/Tooltip/Tooltip";
+import Tooltip from "@italodeandra/ui/components/Tooltip";
 import { deleteCookie } from "cookies-next";
-import Routes from "../../../Routes";
-import { checkUserType } from "@italodeandra/auth/collections/user/User.service";
+import authState, { useAuthSnapshot } from "@italodeandra/auth/auth.state";
+import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
+import Loading from "@italodeandra/ui/components/Loading";
+import getInitials from "@italodeandra/ui/utils/getInitials";
+import { useAuthPanelUserStopImpersonate } from "@italodeandra/auth/api/panel/user/stop-impersonate";
 import { UserType } from "@italodeandra/auth/collections/user/User";
+import { checkUserType } from "@italodeandra/auth/collections/user/User.service";
+import Routes from "../../../Routes";
 
 export default function UserMenu() {
   let queryClient = useQueryClient();
+  let { token, previousToken } = useAuthSnapshot();
   let { data: user, isLoading: isLoadingUser, isError } = useAuthGetUser();
   let router = useRouter();
+  let { mutate: stopImpersonate, isLoading: isStoppingImpersonate } =
+    useAuthPanelUserStopImpersonate();
   let isAdmin = checkUserType(user, [UserType.ADMIN]);
 
   let handleLogOutClick = useCallback(async () => {
+    authState.token = null;
     deleteCookie("auth", { path: "/" });
     setData_authGetUser(queryClient, null);
     await router.replace(Routes.Home);
   }, [queryClient, router]);
-
-  if (isLoadingUser) {
-    return (
-      <div className="h-[42px] w-[42px] animate-pulse rounded-full bg-gray-300" />
-    );
-  }
 
   if (isError) {
     return (
@@ -45,16 +47,45 @@ export default function UserMenu() {
     );
   }
 
+  let isLoading = isStoppingImpersonate || (!!token && isLoadingUser);
+
   return (
-    <UiMenu
-      button={
-        <Button icon className="!rounded-full">
-          <UserIcon />
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger asChild>
+        <Button className="rounded-full p-1.5 w-9 h-9">
+          {isLoading ? (
+            <Loading className="w-5 h-5" />
+          ) : user ? (
+            <span className="text-sm font-medium uppercase">
+              {getInitials(user.name || user.email)}
+            </span>
+          ) : (
+            <UserIcon className="w-5 h-5" />
+          )}
         </Button>
-      }
-    >
-      {isAdmin && <UiMenu.Item href={Routes.Panel}>Panel</UiMenu.Item>}
-      <UiMenu.Item onClick={handleLogOutClick}>Log out</UiMenu.Item>
-    </UiMenu>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content>
+        {user ? (
+          <>
+            <DropdownMenu.Label title={user.email}>
+              {user.name || user.email}
+            </DropdownMenu.Label>
+            {previousToken && (
+              <DropdownMenu.Item onClick={() => stopImpersonate()}>
+                Stop impersonating
+              </DropdownMenu.Item>
+            )}
+            {isAdmin && (
+              <DropdownMenu.Item href={Routes.Panel}>Panel</DropdownMenu.Item>
+            )}
+            <DropdownMenu.Item onClick={handleLogOutClick}>
+              Log out
+            </DropdownMenu.Item>
+          </>
+        ) : (
+          <DropdownMenu.Item href={Routes.SignIn}>Entrar</DropdownMenu.Item>
+        )}
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 }
