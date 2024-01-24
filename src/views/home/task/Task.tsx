@@ -10,6 +10,7 @@ import {
   KeyboardEvent,
   MouseEvent,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -27,10 +28,31 @@ import Loading from "@italodeandra/ui/components/Loading";
 import { columns } from "../../../consts";
 import { translateTaskStatus } from "../../../utils/translateTaskStatus";
 import { TaskStatus } from "../../../collections/task";
+import { pull } from "lodash";
 
 export default function Task(task: ITask) {
-  let { orientation, selectedProjects } = useSnapshot(homeState);
-  let [isEditing, setEditing] = useState(!task.content);
+  let { orientation, selectedProjects, editingTasks, setEditingTasks } =
+    useSnapshot(homeState);
+
+  let isEditing = editingTasks.includes(task._id);
+  let setEditing = useCallback(
+    (editing: boolean) => {
+      setEditingTasks(
+        editing
+          ? [...editingTasks, task._id]
+          : pull([...editingTasks], task._id)
+      );
+    },
+    [editingTasks, setEditingTasks, task._id]
+  );
+
+  useEffect(() => {
+    if (isEditing !== !task.content) {
+      setEditing(!task.content);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [task.content]);
+
   let [newValue, setNewValue] = useState(task.title);
   let contentRef = useRef<HTMLDivElement>(null);
   let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
@@ -38,7 +60,7 @@ export default function Task(task: ITask) {
   let handleDoubleClick = useCallback(() => {
     setEditing(true);
     setTimeout(() => contentRef.current?.focus());
-  }, []);
+  }, [setEditing]);
 
   let { mutate: remove, isLoading: isRemoving } = useTaskRemove();
   let handleDeleteClick = useCallback(() => {
@@ -51,16 +73,19 @@ export default function Task(task: ITask) {
       setEditing(false);
     },
   });
-  let handleSaveClick = useCallback(() => {
-    if (newValue) {
-      update({
-        _id: task._id,
-        content: newValue,
-      });
-    } else {
-      handleDeleteClick();
-    }
-  }, [handleDeleteClick, newValue, task._id, update]);
+  let handleSaveClick = useCallback(
+    (newValue: string) => {
+      if (newValue) {
+        update({
+          _id: task._id,
+          content: newValue,
+        });
+      } else {
+        handleDeleteClick();
+      }
+    },
+    [handleDeleteClick, task._id, update]
+  );
 
   let handleMoveStatusClick = useCallback(
     (status: TaskStatus) => () =>
@@ -75,9 +100,9 @@ export default function Task(task: ITask) {
   let handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (e.key === "Enter" && !e.shiftKey) {
-        setNewValue(e.currentTarget.innerText);
         e.preventDefault();
-        handleSaveClick();
+        setNewValue(e.currentTarget.innerText);
+        handleSaveClick(e.currentTarget.innerText);
       }
       if (e.key === "Escape") {
         if (task.content) {
@@ -88,7 +113,7 @@ export default function Task(task: ITask) {
         }
       }
     },
-    [handleDeleteClick, handleSaveClick, task.content]
+    [handleDeleteClick, handleSaveClick, setEditing, task.content]
   );
 
   let handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {

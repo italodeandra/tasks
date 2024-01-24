@@ -16,4 +16,9 @@ export const homeState = proxy({
   setSelectedProjects(projects: string[]) {
     homeState.selectedProjects = projects;
   },
+
+  editingTasks: [] as string[],
+  setEditingTasks(tasks: string[]) {
+    homeState.editingTasks = tasks;
+  },
 });

@@ -22,7 +22,7 @@ import { Timesheet } from "./timesheet/Timesheet";
 const Projects = dynamic(() => import("./projects/Projects"), { ssr: false });
 
 export function HomeView() {
-  let { orientation, showTimesheet } = useSnapshot(homeState);
+  let { orientation, showTimesheet, editingTasks } = useSnapshot(homeState);
   let { data: databaseTasks, isLoading, isFetching } = useTaskList();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -79,6 +79,7 @@ export function HomeView() {
               onChangeValue={handleKanbanChange}
               renderColumn={renderColumn}
               renderItem={renderTask}
+              disabledItems={editingTasks as string[]}
             />
           )}
         </div>

@@ -9,11 +9,13 @@ export function SortableItem<T extends { _id: string }>({
   placeholder,
   value,
   renderItem,
+  disabled,
 }: {
   id: string;
   placeholder?: boolean;
   value?: T[];
   renderItem?: (item: T) => ReactNode;
+  disabled?: boolean;
 }) {
   const {
     attributes,
@@ -22,7 +24,7 @@ export function SortableItem<T extends { _id: string }>({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id });
+  } = useSortable({ id, disabled });
 
   const style = useMemo(
     () => ({

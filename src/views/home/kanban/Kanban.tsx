@@ -46,12 +46,14 @@ export function Kanban<
   renderItem,
   orientation = Orientation.VERTICAL,
   renderColumn,
+  disabledItems,
 }: {
   value: T[];
   onChangeValue: (value: T[]) => void;
   renderItem: (item: T) => ReactNode;
   renderColumn: (column: string) => ReactNode;
   orientation?: Orientation;
+  disabledItems?: string[];
 }) {
   let [activeId, setActiveId] = useState<string | null>(null);
   let [items, setItems] = useState<Record<string, string[]>>({});
@@ -213,6 +215,7 @@ export function Kanban<
                       id={id}
                       value={value}
                       renderItem={renderItem}
+                      disabled={disabledItems?.includes(id)}
                     />
                   ))}
                   {!containerItems.length && (
