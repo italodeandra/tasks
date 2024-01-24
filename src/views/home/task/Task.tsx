@@ -24,6 +24,9 @@ import useMediaQuery from "@italodeandra/ui/hooks/useMediaQuery";
 import defaultTheme from "tailwindcss/defaultTheme";
 import { ITask } from "./ITask";
 import Loading from "@italodeandra/ui/components/Loading";
+import { columns } from "../../../consts";
+import { translateTaskStatus } from "../../../utils/translateTaskStatus";
+import { TaskStatus } from "../../../collections/task";
 
 export default function Task(task: ITask) {
   let { orientation, selectedProjects } = useSnapshot(homeState);
@@ -58,6 +61,16 @@ export default function Task(task: ITask) {
       handleDeleteClick();
     }
   }, [handleDeleteClick, newValue, task._id, update]);
+
+  let handleMoveStatusClick = useCallback(
+    (status: TaskStatus) => () =>
+      update({
+        _id: task._id,
+        status,
+        order: -1,
+      }),
+    [task._id, update]
+  );
 
   let handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -186,6 +199,16 @@ export default function Task(task: ITask) {
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>{taskElement}</ContextMenu.Trigger>
       <ContextMenu.Content>
+        {columns
+          .filter((c) => c !== task.columnId)
+          .map((status) => (
+            <ContextMenu.Item
+              key={status}
+              onClick={handleMoveStatusClick(status)}
+            >
+              Move to {translateTaskStatus(status)}
+            </ContextMenu.Item>
+          ))}
         <ContextMenu.Item onClick={handleDeleteClick}>Delete</ContextMenu.Item>
       </ContextMenu.Content>
     </ContextMenu.Root>

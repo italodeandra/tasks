@@ -24,7 +24,10 @@ import { WritableDeep } from "type-fest";
 import getProject from "../../../collections/project";
 
 async function handler(
-  args: Pick<Jsonify<Partial<ITask>>, "_id" | "content" | "projectId">,
+  args: Pick<
+    Jsonify<Partial<ITask>>,
+    "_id" | "content" | "projectId" | "status" | "order"
+  >,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -44,6 +47,8 @@ async function handler(
       args.projectId && args.projectId !== "NONE"
         ? isomorphicObjectId(args.projectId)
         : undefined,
+    status: args.status,
+    order: args.order,
   };
   let $unset: WritableDeep<StrictUpdateFilter<ITask>["$unset"]> = {};
 
