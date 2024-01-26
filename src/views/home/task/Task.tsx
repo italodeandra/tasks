@@ -29,6 +29,8 @@ import { columns } from "../../../consts";
 import { translateTaskStatus } from "../../../utils/translateTaskStatus";
 import { TaskStatus } from "../../../collections/task";
 import { pull } from "lodash";
+import { isNil, pull } from "lodash";
+import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
 
 export default function Task(task: ITask) {
   let { orientation, selectedProjects, editingTasks, setEditingTasks } =
@@ -112,6 +114,79 @@ export default function Task(task: ITask) {
           handleDeleteClick();
         }
       }
+      if (e.key === "Tab") {
+        e.preventDefault();
+
+        let selection = window.getSelection();
+        if (selection) {
+          let start =
+            selection.anchorOffset < selection.focusOffset
+              ? selection.anchorOffset
+              : selection.focusOffset;
+          let end =
+            start === selection.anchorOffset
+              ? selection.focusOffset
+              : selection.anchorOffset;
+          if (!isNil(start) && !isNil(end)) {
+            let textBeforeSelection = e.currentTarget.innerText.substring(
+              0,
+              start
+            );
+            let linebreaksBeforeSelection = textBeforeSelection.split("\n");
+            if (!e.shiftKey) {
+              linebreaksBeforeSelection[
+                linebreaksBeforeSelection.length - 1
+              ] = `  ${
+                linebreaksBeforeSelection[linebreaksBeforeSelection.length - 1]
+              }`;
+            } else {
+              linebreaksBeforeSelection[linebreaksBeforeSelection.length - 1] =
+                linebreaksBeforeSelection[
+                  linebreaksBeforeSelection.length - 1
+                ].replace(/^ {1,2}/g, "");
+            }
+            let indentedBeforeSelection = linebreaksBeforeSelection.join("\n");
+            let beforeSelectionDiff =
+              indentedBeforeSelection.length - textBeforeSelection.length;
+
+            let textInsideSelection = e.currentTarget.innerText.substring(
+              start,
+              end
+            );
+            let linebreaksInsideSelection = textInsideSelection;
+            if (!e.shiftKey) {
+              linebreaksInsideSelection = linebreaksInsideSelection.replaceAll(
+                "\n",
+                "\n  "
+              );
+            } else {
+              linebreaksInsideSelection = linebreaksInsideSelection.replaceAll(
+                "\n  ",
+                "\n"
+              );
+            }
+            let insideSelectionDiff =
+              linebreaksInsideSelection.length - textInsideSelection.length;
+
+            let newValue =
+              indentedBeforeSelection +
+              linebreaksInsideSelection +
+              e.currentTarget.innerText.substring(end);
+
+            setNewValue(newValue);
+
+            let el = e.currentTarget;
+
+            setTimeout(() => {
+              setSelectionRange(
+                el,
+                start + beforeSelectionDiff,
+                end + beforeSelectionDiff + insideSelectionDiff
+              );
+            });
+          }
+        }
+      }
     },
     [handleDeleteClick, handleSaveClick, setEditing, task.content]
   );
@@ -120,9 +195,13 @@ export default function Task(task: ITask) {
     setNewValue(e.currentTarget.innerText);
   }, []);
 
-  let handleClearChanges = useCallback(() => {
-    setNewValue(task.title);
-  }, [task.title]);
+  let handleClearChanges = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation();
+      setNewValue(task.title);
+    },
+    [task.title]
+  );
 
   let dimmed = useMemo(
     () =>
@@ -162,7 +241,7 @@ export default function Task(task: ITask) {
           "text-sm [&_a]:truncate [&_a]:block overflow-hidden px-1.5 py-1 -m-1",
           "flex-1 outline-0 rounded",
           {
-            "cursor-text ring-1 ring-primary-500 whitespace-pre-line":
+            "cursor-text ring-1 ring-primary-500 whitespace-pre-wrap":
               isEditing,
             "select-none": !isEditing,
           }
