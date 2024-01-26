@@ -10,6 +10,7 @@ import { TaskListApiResponse } from "../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import Loading from "@italodeandra/ui/components/Loading";
 import { isNil } from "lodash";
+import { NextSeo } from "next-seo";
 
 export function Timer({
   task,
@@ -75,20 +76,25 @@ export function Timer({
   );
 
   return (
-    <Button
-      size="xs"
-      variant={buttonVariant}
-      onClick={handleClick}
-      data-no-dnd="true"
-      color={!isNil(currentClockIn) ? "success" : undefined}
-      className={clsx(
-        "whitespace-nowrap p-1",
-        {
-          "px-1.5": !!time,
-        },
-        className
+    <>
+      {!isNil(currentClockInTime) && (
+        <NextSeo title={prettyMilliseconds(currentClockInTime)} />
       )}
-      {...buttonProps}
-    />
+      <Button
+        size="xs"
+        variant={buttonVariant}
+        onClick={handleClick}
+        data-no-dnd="true"
+        color={!isNil(currentClockIn) ? "success" : undefined}
+        className={clsx(
+          "whitespace-nowrap p-1",
+          {
+            "px-1.5": !!time,
+          },
+          className
+        )}
+        {...buttonProps}
+      />
+    </>
   );
 }
