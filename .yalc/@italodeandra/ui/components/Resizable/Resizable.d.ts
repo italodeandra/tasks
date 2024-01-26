@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-export declare function Resizable({ children, minWidth, maxWidth, width, onResize, }: {
+export default function Resizable({ children, minWidth, maxWidth, width, onResize, }: {
     children: ReactElement;
     minWidth?: number;
     maxWidth?: number;
