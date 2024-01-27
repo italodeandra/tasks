@@ -5,6 +5,7 @@ import { Orientation } from "./kanban/Orientation";
 import Button from "@italodeandra/ui/components/Button";
 import { Bars3Icon, ViewColumnsIcon } from "@heroicons/react/16/solid";
 import Group from "@italodeandra/ui/components/Group";
+import Tooltip from "@italodeandra/ui/components/Tooltip";
 
 export function OrientationSelect() {
   let { orientation, setOrientation } = useSnapshot(homeState);
@@ -14,17 +15,19 @@ export function OrientationSelect() {
       onValueChange={(value: Orientation) => setOrientation(value)}
       value={orientation}
     >
-      <Select.Trigger>
-        <Button icon size="xs">
-          <Select.Value asChild>
-            {orientation === Orientation.VERTICAL ? (
-              <Bars3Icon className="w-3 h-3" />
-            ) : (
-              <ViewColumnsIcon className="w-3 h-3" />
-            )}
-          </Select.Value>
-        </Button>
-      </Select.Trigger>
+      <Tooltip content="Orientation">
+        <Select.Trigger>
+          <Button icon size="xs">
+            <Select.Value asChild>
+              {orientation === Orientation.VERTICAL ? (
+                <Bars3Icon className="w-3 h-3" />
+              ) : (
+                <ViewColumnsIcon className="w-3 h-3" />
+              )}
+            </Select.Value>
+          </Button>
+        </Select.Trigger>
+      </Tooltip>
       <Select.Content>
         <Select.Item value={Orientation.VERTICAL}>
           <Group className="items-center">
