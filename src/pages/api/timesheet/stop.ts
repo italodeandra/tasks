@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import { invalidate_taskList } from "../task/list";
+import { taskListApi } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
 import { invalidate_timesheetStatus } from "./status";
@@ -108,11 +108,11 @@ export const useTimesheetStop = (
     ),
     {
       ...options,
-      async onSuccess(...params) {
-        await invalidate_taskList(queryClient);
-        await invalidate_projectList(queryClient);
-        await invalidate_timesheetStatus(queryClient);
-        await options?.onSuccess?.(...params);
+      onSuccess(...params) {
+        void taskListApi.invalidate(queryClient);
+        void invalidate_projectList(queryClient);
+        void invalidate_timesheetStatus(queryClient);
+        return options?.onSuccess?.(...params);
       },
     }
   );

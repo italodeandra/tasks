@@ -12,7 +12,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
-import { invalidate_taskList } from "./list";
+import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import { invalidate_projectList } from "../project/list";
@@ -20,9 +20,10 @@ import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyPropertie
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import getProject from "../../../collections/project";
+import dayjs from "dayjs";
 
 async function handler(
-  args: Jsonify<Pick<ITask, "status" | "projectId">>,
+  args: Jsonify<Pick<ITask, "_id" | "status" | "projectId">>,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -65,6 +66,7 @@ async function handler(
   }
 
   let doc = {
+    _id: isomorphicObjectId(args._id),
     userId: user._id,
     status: args.status,
     order: (firstTask?.order || 0) - 1,
@@ -95,10 +97,38 @@ export const useTaskInsert = (
     mutationFnWrapper<TaskInsertArgs, TaskInsertResponse>(mutationKey),
     {
       ...options,
-      async onSuccess(...params) {
-        await invalidate_taskList(queryClient);
-        await invalidate_projectList(queryClient);
-        await options?.onSuccess?.(...params);
+      async onMutate(...params) {
+        let [args] = params;
+        await taskListApi.cancelQueries(queryClient);
+        const previousData = taskListApi.getQueryData(queryClient);
+        taskListApi.setQueryData(queryClient, (data) => [
+          {
+            ...args,
+            createdAt: dayjs().toISOString(),
+            titleHtml: "",
+            title: "",
+            order: 0,
+          },
+          ...(data?.map((t) =>
+            t.status === args.status ? { ...t, order: t.order + 1 } : t
+          ) || []),
+        ]);
+        return {
+          previousData,
+          ...((await options?.onMutate?.(...params)) || {}),
+        };
+      },
+      onError: (...params) => {
+        let [, , context] = params;
+        taskListApi.setQueryData(queryClient, context?.previousData);
+      },
+      onSuccess(...params) {
+        void invalidate_projectList(queryClient);
+        return options?.onSuccess?.(...params);
+      },
+      onSettled: (...params) => {
+        void taskListApi.invalidate(queryClient);
+        return options?.onSettled?.(...params);
       },
     }
   );

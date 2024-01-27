@@ -13,7 +13,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
-import { invalidate_taskList } from "./list";
+import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
@@ -55,10 +55,10 @@ export const useTaskRemove = (
     mutationFnWrapper<TaskRemoveArgs, TaskRemoveResponse>(mutationKey),
     {
       ...options,
-      async onSuccess(...params) {
-        await invalidate_taskList(queryClient);
-        await invalidate_projectList(queryClient);
-        await options?.onSuccess?.(...params);
+      onSuccess(...params) {
+        void taskListApi.invalidate(queryClient);
+        void invalidate_projectList(queryClient);
+        return options?.onSuccess?.(...params);
       },
     }
   );

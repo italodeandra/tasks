@@ -20,7 +20,7 @@ import {
 import { SortableItem } from "./item/SortableItem";
 import { DragOverEvent } from "@dnd-kit/core/dist/types";
 import { Item } from "./item/Item";
-import { groupBy, mapValues, toPairs } from "lodash";
+import { groupBy, isEqual, mapValues, toPairs } from "lodash";
 import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { Orientation } from "./Orientation";
@@ -90,7 +90,9 @@ export function Kanban<
           };
         })
       );
-      onChangeValue?.(newValue);
+      if (!isEqual(newValue, value)) {
+        onChangeValue?.(newValue);
+      }
     }
   }, [items]);
 

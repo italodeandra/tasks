@@ -6,7 +6,7 @@ import { MouseEvent, useCallback, useMemo } from "react";
 import ms from "ms";
 import { useInterval, useUpdate } from "react-use";
 import clsx from "clsx";
-import { TaskListApiResponse } from "../../../pages/api/task/list";
+import { TaskListApi } from "../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import Loading from "@italodeandra/ui/components/Loading";
 import { isNil } from "lodash";
@@ -17,7 +17,7 @@ export function Timer({
   buttonVariant = "text",
   className,
 }: {
-  task: Pick<TaskListApiResponse[0], "_id" | "timesheet">;
+  task: Pick<TaskListApi["Response"][number], "_id" | "timesheet">;
   buttonVariant?: "text" | "outlined";
   className?: string;
 }) {

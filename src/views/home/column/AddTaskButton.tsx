@@ -5,12 +5,14 @@ import { useTaskInsert } from "../../../pages/api/task/insert";
 import { useCallback } from "react";
 import { TaskStatus } from "../../../collections/task";
 import { homeState } from "../home.state";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
 export function AddTaskButton({ column }: { column: string }) {
   let { mutate: insert, isLoading } = useTaskInsert();
 
   let handleClick = useCallback(() => {
     insert({
+      _id: isomorphicObjectId().toString(),
       status: column as TaskStatus,
       projectId:
         homeState.selectedProjects.length === 1

@@ -1,4 +1,4 @@
-import { useTaskList } from "../../pages/api/task/list";
+import { taskListApi } from "../../pages/api/task/list";
 import { useCallback, useMemo } from "react";
 import { Kanban } from "./kanban/Kanban";
 import Group from "@italodeandra/ui/components/Group";
@@ -11,7 +11,6 @@ import { useTaskBatchUpdateOrder } from "../../pages/api/task/batchUpdateOrder";
 import Loading from "@italodeandra/ui/components/Loading";
 import { TaskStatus } from "../../collections/task";
 import { renderColumn } from "./column/Column";
-import { isEqual } from "lodash";
 import { NewProjectModal } from "./new-project/NewProjectModal";
 import { ITask } from "./task/ITask";
 import { renderTask } from "./task/renderTask";
@@ -23,7 +22,7 @@ const Projects = dynamic(() => import("./projects/Projects"), { ssr: false });
 
 export function HomeView() {
   let { orientation, showTimesheet, editingTasks } = useSnapshot(homeState);
-  let { data: databaseTasks, isLoading, isFetching } = useTaskList();
+  let { data: databaseTasks, isLoading, isFetching } = taskListApi.useQuery();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
 
@@ -40,7 +39,7 @@ export function HomeView() {
 
   let handleKanbanChange = useCallback(
     (tasks: ITask[]) => {
-      if (tasks.length && !isEqual(kanbanTasks, tasks)) {
+      if (tasks.length) {
         batchUpdate(
           tasks.map((task) => ({
             _id: task._id,
@@ -50,7 +49,7 @@ export function HomeView() {
         );
       }
     },
-    [batchUpdate, kanbanTasks]
+    [batchUpdate]
   );
 
   return (

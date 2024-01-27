@@ -1,7 +1,7 @@
-import { TaskListApiResponse } from "../../../pages/api/task/list";
+import { TaskListApi } from "../../../pages/api/task/list";
 
 export type ITask = Omit<
-  TaskListApiResponse[number],
+  TaskListApi["Response"][number],
   "status" | "order" | "titleHtml"
 > & {
   index: number;

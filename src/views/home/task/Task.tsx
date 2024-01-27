@@ -31,6 +31,7 @@ import { TaskStatus } from "../../../collections/task";
 import { pull } from "lodash";
 import { isNil, pull } from "lodash";
 import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
+import { useMount } from "react-use";
 
 export default function Task(task: ITask) {
   let { orientation, selectedProjects, editingTasks, setEditingTasks } =
@@ -63,6 +64,12 @@ export default function Task(task: ITask) {
     setEditing(true);
     setTimeout(() => contentRef.current?.focus());
   }, [setEditing]);
+
+  useMount(() => {
+    if (newValue === "") {
+      setTimeout(() => contentRef.current?.focus(), 500);
+    }
+  });
 
   let { mutate: remove, isLoading: isRemoving } = useTaskRemove();
   let handleDeleteClick = useCallback(() => {

@@ -13,7 +13,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
-import { invalidate_taskList } from "./list";
+import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
@@ -79,7 +79,7 @@ export const useTaskBatchUpdateOrder = (
     {
       ...options,
       async onSuccess(...params) {
-        await invalidate_taskList(queryClient);
+        await taskListApi.invalidate(queryClient);
         await options?.onSuccess?.(...params);
       },
     }
