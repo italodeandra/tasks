@@ -76,7 +76,7 @@ function DropdownMenuLabel(_a) {
 }
 function DropdownMenuCheckboxItem(_a) {
     var className = _a.className, children = _a.children, indicatorClassName = _a.indicatorClassName, props = __rest(_a, ["className", "children", "indicatorClassName"]);
-    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemClassName, "ui-dropdown-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemIndicatorClassName, "ui-dropdown-menu-checkbox-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
+    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemClassName, "ui-dropdown-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemIndicatorClassName, "ui-dropdown-menu-checkbox-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
 }
 var DropdownMenu = {
     Root: RDropdownMenu.Root,

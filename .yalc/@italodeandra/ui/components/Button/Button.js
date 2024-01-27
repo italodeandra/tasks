@@ -61,7 +61,7 @@ var styles = {
         "outlined-success": "border-success-500 text-success-500 hover:bg-success-500/10 active:border-success-700",
         "outlined-error": "border-error-500 text-error-500 hover:bg-error-500/10 active:border-error-700",
         "outlined-gray": "border-zinc-400 text-zinc-500 dark:text-zinc-400 hover:bg-zinc-500/10 active:border-zinc-700",
-        "outlined-default": "dark:text-white border-zinc-300 dark:border-zinc-600 dark:hover:bg-white/5 hover:bg-zinc-500/5 active:border-zinc-500 dark:active:border-white",
+        "outlined-default": (0, clsx_1.default)("border-zinc-300 hover:bg-zinc-500/5 active:border-zinc-400", "dark:text-white dark:border-zinc-700 dark:hover:bg-zinc-500/5 dark:active:border-zinc-500"),
         "text-primary": "text-primary-500 hover:bg-primary-500/5 border-transparent active:border-primary-500",
         "text-success": "text-success-500 hover:bg-success-500/5 border-transparent active:border-success-500",
         "text-error": "text-error-500 hover:bg-error-500/5 border-transparent active:border-error-500",

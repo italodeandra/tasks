@@ -5,7 +5,9 @@ declare function ContextMenuSeparator({ className, ...props }: ComponentProps<ty
 declare function ContextMenuItem({ className, href, ...props }: ComponentProps<typeof RContextMenu.Item> & {
     href?: string;
 }): JSX.Element;
-declare function ContextMenuCheckboxItem({ className, children, ...props }: ComponentProps<typeof RContextMenu.CheckboxItem>): JSX.Element;
+declare function ContextMenuCheckboxItem({ className, children, indicatorClassName, ...props }: ComponentProps<typeof RContextMenu.CheckboxItem> & {
+    indicatorClassName?: string;
+}): JSX.Element;
 declare const ContextMenu: {
     Root: React.FC<RContextMenu.ContextMenuProps>;
     Trigger: React.ForwardRefExoticComponent<RContextMenu.ContextMenuTriggerProps & React.RefAttributes<HTMLSpanElement>>;

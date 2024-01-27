@@ -1,6 +1,8 @@
-import { ReactNode } from "react";
-export default function Tooltip({ children, content, side, }: {
+import { ForwardedRef, ReactNode } from "react";
+declare function Tooltip({ children, content, side, }: {
     children?: ReactNode;
     content?: string;
     side?: "top" | "bottom" | "left" | "right";
-}): JSX.Element;
+}, ref: ForwardedRef<HTMLButtonElement>): JSX.Element;
+declare const _default: typeof Tooltip;
+export default _default;

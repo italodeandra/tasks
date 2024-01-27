@@ -54,24 +54,25 @@ var RContextMenu = __importStar(require("@radix-ui/react-context-menu"));
 var solid_1 = require("@heroicons/react/16/solid");
 var link_1 = __importDefault(require("next/link"));
 var clsx_1 = __importDefault(require("../../utils/clsx"));
+var Dropdown_styles_1 = require("../../styles/Dropdown.styles");
 function ContextMenuContent(_a) {
     var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RContextMenu.Portal, { children: (0, jsx_runtime_1.jsx)(RContextMenu.Content, __assign({}, props, { className: (0, clsx_1.default)("ui-context-menu-content", className), children: children })) }));
+    return ((0, jsx_runtime_1.jsx)(RContextMenu.Portal, { children: (0, jsx_runtime_1.jsx)(RContextMenu.Content, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownContentClassName, "ui-context-menu-content", className), children: children })) }));
 }
 function ContextMenuSeparator(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RContextMenu.Separator, __assign({}, props, { className: (0, clsx_1.default)("ui-context-menu-separator", className) })));
+    return ((0, jsx_runtime_1.jsx)(RContextMenu.Separator, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownSeparatorClassName, "ui-context-menu-separator", className) })));
 }
 function ContextMenuItem(_a) {
     var className = _a.className, href = _a.href, props = __rest(_a, ["className", "href"]);
     var Wrapper = href ? link_1.default : react_1.Fragment;
     return (
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (0, jsx_runtime_1.jsx)(Wrapper, __assign({}, (href ? { href: href } : {}), { children: (0, jsx_runtime_1.jsx)(RContextMenu.Item, __assign({}, props, { className: (0, clsx_1.default)("ui-context-menu-item", className) })) })));
+    (0, jsx_runtime_1.jsx)(Wrapper, __assign({}, (href ? { href: href } : {}), { children: (0, jsx_runtime_1.jsx)(RContextMenu.Item, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemClassName, "ui-context-menu-item", className) })) })));
 }
 function ContextMenuCheckboxItem(_a) {
-    var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
-    return ((0, jsx_runtime_1.jsxs)(RContextMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)("ui-context-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RContextMenu.ItemIndicator, { className: "ui-context-menu-checkbox-item-indicator", children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
+    var className = _a.className, children = _a.children, indicatorClassName = _a.indicatorClassName, props = __rest(_a, ["className", "children", "indicatorClassName"]);
+    return ((0, jsx_runtime_1.jsxs)(RContextMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownCheckboxItemClassName, "ui-context-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RContextMenu.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemIndicatorClassName, "ui-context-menu-checkbox-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
 }
 var ContextMenu = {
     Root: RContextMenu.Root,
