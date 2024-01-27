@@ -29,7 +29,7 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_1 = require("react");
 var Button_1 = __importDefault(require("../Button/Button"));
-var Tooltip_1 = __importDefault(require("../Tooltip/Tooltip"));
+var Tooltip_1 = __importDefault(require("../Tooltip"));
 function TableActionButton(_a) {
     var _b;
     var children = _a.children, className = _a.className, title = _a.title, onClick = _a.onClick, props = __rest(_a, ["children", "className", "title", "onClick"]);

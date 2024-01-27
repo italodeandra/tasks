@@ -1,5 +1,6 @@
 "use strict";
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+// noinspection JSUnresolvedReference
 var __read = (this && this.__read) || function (o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -26,7 +27,6 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// noinspection JSUnresolvedReference
 function getTextNodesIn(node) {
     var textNodes = [];
     if (node.nodeType == 3) {

@@ -29,12 +29,11 @@ function lagRadar(config) {
     inset = _d === void 0 ? 3 : _d, // circle inset px
     _e = config.parent, // circle inset px
     parent = _e === void 0 ? document.body : _e;
-    var svgns = "http://www.w3.org/2000/svg";
     var styles = document.createTextNode("\n    .lagRadar {\n      position: fixed;\n      bottom: 0.5rem;\n      right: 0.5rem;\n    }\n    .lagRadar {\n      pointer-events: none;\n    }\n    .lagRadar-sweep > * {\n      shape-rendering: crispEdges;\n    }\n    .lagRadar-face {\n      fill: transparent;\n    }\n    .lagRadar-hand {\n      stroke-width: 4px;\n      stroke-linecap: round;\n    }\n  ");
     function $svg(tag, props, children) {
         if (props === void 0) { props = {}; }
         if (children === void 0) { children = []; }
-        var el = document.createElementNS(svgns, tag);
+        var el = document.createElementNS("http://www.w3.org/2000/svg", tag);
         Object.keys(props).forEach(function (prop) { return el.setAttribute(prop, props[prop]); });
         children.forEach(function (child) { return el.appendChild(child); });
         return el;
@@ -75,6 +74,7 @@ function lagRadar(config) {
         var max_hue = 120;
         var max_ms = 1000;
         var log_f = 10;
+        // noinspection SpellCheckingInspection
         var mult = max_hue / Math.log(max_ms / log_f);
         return function (ms_delta) {
             return (max_hue -
@@ -83,13 +83,13 @@ function lagRadar(config) {
     })();
     function animate() {
         var now = Date.now();
-        var rdelta = Math.min(PI2 - speed, speed * (now - last.now));
-        var rotation = (last.rotation + rdelta) % PI2;
+        var rDelta = Math.min(PI2 - speed, speed * (now - last.now));
+        var rotation = (last.rotation + rDelta) % PI2;
         var tx = middle + radius * Math.cos(rotation);
         var ty = middle + radius * Math.sin(rotation);
-        var bigArc = rdelta < Math.PI ? "0" : "1";
+        var bigArc = rDelta < Math.PI ? "0" : "1";
         var path = "M".concat(tx, " ").concat(ty, "A").concat(radius, " ").concat(radius, " 0 ").concat(bigArc, " 0 ").concat(last.tx, " ").concat(last.ty, "L").concat(middle, " ").concat(middle);
-        var hue = calcHue(rdelta / speed);
+        var hue = calcHue(rDelta / speed);
         $arcs[framePtr % frames].setAttribute("d", path);
         $arcs[framePtr % frames].setAttribute("fill", "hsl(".concat(hue, ", 80%, 40%)"));
         $hand.setAttribute("d", "M".concat(middle, " ").concat(middle, "L").concat(tx, " ").concat(ty));

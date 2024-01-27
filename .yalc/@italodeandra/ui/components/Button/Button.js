@@ -122,19 +122,7 @@ var styles = {
 var Button = function (_a, ref) {
     var _b;
     var _c, _d, _e;
-    var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? "default" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leadingIcon = _a.leadingIcon, leading = _a.leading, trailingIcon = _a.trailingIcon, trailing = _a.trailing, children = _a.children, loading = _a.loading, disabled = _a.disabled, rounded = _a.rounded, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leadingIcon", "leading", "trailingIcon", "trailing", "children", "loading", "disabled", "rounded"]);
-    if (color === "white") {
-        color = "default";
-        console.error("[Button] Color \"white\" was deprecated. Change to \"default\".");
-    }
-    if (trailingIcon) {
-        trailing = trailingIcon;
-        console.error("[Button] Property \"trailingIcon\" was deprecated. Change to \"trailing\".");
-    }
-    if (leadingIcon) {
-        leading = leadingIcon;
-        console.error("[Button] Property \"leadingIcon\" was deprecated. Change to \"leading\".");
-    }
+    var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? "default" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leading = _a.leading, trailing = _a.trailing, children = _a.children, loading = _a.loading, disabled = _a.disabled, rounded = _a.rounded, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leading", "trailing", "children", "loading", "disabled", "rounded"]);
     if (loading) {
         if (icon) {
             children = ((0, jsx_runtime_1.jsx)(Loading_1.default, { className: (0, clsx_1.default)(styles.icon[size].icon, "text-inherit") }));

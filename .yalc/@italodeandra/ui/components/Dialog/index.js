@@ -21,6 +21,7 @@ exports.dialogsState = void 0;
 var Dialogs_1 = __importDefault(require("./Dialogs"));
 __exportStar(require("./Dialogs"), exports);
 exports.default = Dialogs_1.default;
+// noinspection JSUnusedGlobalSymbols
 var dialogs_state_1 = require("./dialogs.state");
 Object.defineProperty(exports, "dialogsState", { enumerable: true, get: function () { return __importDefault(dialogs_state_1).default; } });
 __exportStar(require("./dialogs.state"), exports);

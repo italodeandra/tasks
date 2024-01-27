@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@italodeandra/ui": {
-      "signature": "49fb1d5cfb4a77c4d2757e21701781af",
+      "signature": "15f52836f6f50cc8c4845be4e9cfc8b9",
       "file": true
     },
     "@italodeandra/auth": {
@@ -10,7 +10,7 @@
       "file": true
     },
     "@italodeandra/next": {
-      "signature": "f15f34aa6b10757dbcb07834466a8dca",
+      "signature": "dc0558857c7154e1f53fe66d7f8c6d2b",
       "file": true
     }
   }

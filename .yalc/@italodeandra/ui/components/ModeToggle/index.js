@@ -21,5 +21,6 @@ exports.useModeToggle = void 0;
 var ModeToggle_1 = __importDefault(require("./ModeToggle"));
 __exportStar(require("./ModeToggle"), exports);
 exports.default = ModeToggle_1.default;
+// noinspection JSUnusedGlobalSymbols
 var useModeToggle_1 = require("./useModeToggle");
 Object.defineProperty(exports, "useModeToggle", { enumerable: true, get: function () { return __importDefault(useModeToggle_1).default; } });

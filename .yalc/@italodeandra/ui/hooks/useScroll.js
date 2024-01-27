@@ -19,6 +19,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.useScrollYMovement = exports.useScrollY = exports.useIsScrolled = void 0;
 var react_1 = require("react");
 var isBrowser_1 = require("../utils/isBrowser");
+// noinspection JSUnusedGlobalSymbols
 function useIsScrolled(disabled) {
     return useScrollY(disabled) > 0;
 }

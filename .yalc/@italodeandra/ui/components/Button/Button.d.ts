@@ -91,25 +91,21 @@ declare const styles: {
 };
 export type ButtonProps<T extends HTMLElement = HTMLButtonElement> = Omit<UnstyledButtonProps<T>, "size"> & {
     variant?: keyof (typeof styles)["variant"];
-    color?: keyof (typeof styles)["color"] | "white";
+    color?: keyof (typeof styles)["color"];
     size?: keyof (typeof styles)["size"];
     icon?: boolean;
-    leadingIcon?: ReactElement;
     leading?: ReactElement;
-    trailingIcon?: ReactElement;
     trailing?: ReactElement;
     loading?: boolean;
     disabled?: boolean;
     rounded?: boolean;
 };
 declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledButtonProps<HTMLElement>, "size"> & {
-    variant?: "text" | "custom" | "light" | "filled" | "outlined" | undefined;
-    color?: "default" | "success" | "error" | "gray" | "white" | "primary" | undefined;
+    variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
+    color?: "default" | "success" | "error" | "primary" | "gray" | undefined;
     size?: "xs" | "sm" | "lg" | "xl" | "md" | undefined;
     icon?: boolean | undefined;
-    leadingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     leading?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
-    trailingIcon?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     trailing?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
     loading?: boolean | undefined;
     disabled?: boolean | undefined;
