@@ -25,6 +25,7 @@ import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { Orientation } from "./Orientation";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
+import { TaskStatus } from "../../../collections/task";
 
 const PLACEHOLDER_ID = "placeholder";
 
@@ -74,25 +75,28 @@ export function Kanban<
     let groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
       items.map((i) => i._id)
     );
-    setItems(groupedItems);
+    setItems({
+      [TaskStatus.DOING]: groupedItems[TaskStatus.DOING] || [],
+      [TaskStatus.BLOCKED]: groupedItems[TaskStatus.BLOCKED] || [],
+      [TaskStatus.TODO]: groupedItems[TaskStatus.TODO] || [],
+      [TaskStatus.DONE]: groupedItems[TaskStatus.DONE] || [],
+    });
   }, [value]);
 
   useDeepCompareEffect(() => {
-    if (!activeId) {
-      let newValue = toPairs(items).flatMap(([columnId, items]) =>
-        items.map((i, index) => {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          let item = value.find((v) => v._id === i)!;
-          return {
-            ...item,
-            index,
-            columnId,
-          };
-        })
-      );
-      if (!isEqual(newValue, value)) {
-        onChangeValue?.(newValue);
-      }
+    let newValue = toPairs(items).flatMap(([columnId, items]) =>
+      items.map((i, index) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        let item = value.find((v) => v._id === i)!;
+        return {
+          ...item,
+          index,
+          columnId,
+        };
+      })
+    );
+    if (!isEqual(newValue, value)) {
+      onChangeValue?.(newValue);
     }
   }, [items]);
 
