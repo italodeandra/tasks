@@ -54,19 +54,20 @@ var RSelect = __importStar(require("@radix-ui/react-select"));
 var solid_1 = require("@heroicons/react/16/solid");
 var Button_1 = __importDefault(require("../Button"));
 var clsx_1 = __importDefault(require("../../utils/clsx"));
-var Dropdown_styles_1 = require("../../styles/Dropdown.styles");
+var Dropdown_classNames_1 = require("../../styles/Dropdown.classNames");
+var Modal_classNames_1 = require("../../styles/Modal.classNames");
 var selectScrollButtonClassName = (0, clsx_1.default)("ui-select-scroll-button", "flex h-6 cursor-default items-center justify-center", "bg-white", "dark:bg-zinc-900", "[&>svg]:w-4 [&>svg]:h-4");
 function SelectContent(_a) {
     var className = _a.className, children = _a.children, props = __rest(_a, ["className", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Portal, { children: (0, jsx_runtime_1.jsxs)(RSelect.Content, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownContentClassName, "ui-select-content", className), children: [(0, jsx_runtime_1.jsx)(RSelect.ScrollUpButton, { className: selectScrollButtonClassName, children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.Viewport, { children: children }), (0, jsx_runtime_1.jsx)(RSelect.ScrollDownButton, { className: selectScrollButtonClassName, children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, {}) })] })) }));
+    return ((0, jsx_runtime_1.jsx)(RSelect.Portal, { children: (0, jsx_runtime_1.jsxs)(RSelect.Content, __assign({}, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalContentClassName, "ui-select-content", className), children: [(0, jsx_runtime_1.jsx)(RSelect.ScrollUpButton, { className: selectScrollButtonClassName, children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.Viewport, { children: children }), (0, jsx_runtime_1.jsx)(RSelect.ScrollDownButton, { className: selectScrollButtonClassName, children: (0, jsx_runtime_1.jsx)(solid_1.ChevronDownIcon, {}) })] })) }));
 }
 function SelectSeparator(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Separator, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownSeparatorClassName, "ui-select-separator", className) })));
+    return ((0, jsx_runtime_1.jsx)(RSelect.Separator, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownSeparatorClassName, "ui-select-separator", className) })));
 }
 function SelectItemComponent(_a, forwardedRef) {
     var children = _a.children, className = _a.className, indicatorClassName = _a.indicatorClassName, props = __rest(_a, ["children", "className", "indicatorClassName"]);
-    return ((0, jsx_runtime_1.jsxs)(RSelect.Item, __assign({ className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemClassName, "ui-select-item", className) }, props, { ref: forwardedRef, children: [(0, jsx_runtime_1.jsx)(RSelect.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownItemIndicatorClassName, "ui-select-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.ItemText, { children: children })] })));
+    return ((0, jsx_runtime_1.jsxs)(RSelect.Item, __assign({ className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownItemClassName, "ui-select-item", className) }, props, { ref: forwardedRef, children: [(0, jsx_runtime_1.jsx)(RSelect.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownItemIndicatorClassName, "ui-select-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), (0, jsx_runtime_1.jsx)(RSelect.ItemText, { children: children })] })));
 }
 var SelectItem = (0, react_1.forwardRef)(SelectItemComponent);
 function SelectTrigger(_a, ref) {
@@ -75,7 +76,7 @@ function SelectTrigger(_a, ref) {
 }
 function SelectLabel(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RSelect.Label, __assign({ className: (0, clsx_1.default)(Dropdown_styles_1.dropdownLabelClassName, "ui-select-label", className) }, props)));
+    return ((0, jsx_runtime_1.jsx)(RSelect.Label, __assign({ className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownLabelClassName, "ui-select-label", className) }, props)));
 }
 var Select = {
     Root: RSelect.Root,

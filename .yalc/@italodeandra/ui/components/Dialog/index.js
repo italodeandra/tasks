@@ -17,10 +17,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.dialogsState = void 0;
-var Dialogs_1 = __importDefault(require("./Dialogs"));
+exports.dialogsState = exports.Dialogs = void 0;
+var Dialog_1 = __importDefault(require("./Dialog"));
 __exportStar(require("./Dialogs"), exports);
-exports.default = Dialogs_1.default;
+var Dialogs_1 = require("./Dialogs");
+Object.defineProperty(exports, "Dialogs", { enumerable: true, get: function () { return __importDefault(Dialogs_1).default; } });
+exports.default = Dialog_1.default;
 // noinspection JSUnusedGlobalSymbols
 var dialogs_state_1 = require("./dialogs.state");
 Object.defineProperty(exports, "dialogsState", { enumerable: true, get: function () { return __importDefault(dialogs_state_1).default; } });

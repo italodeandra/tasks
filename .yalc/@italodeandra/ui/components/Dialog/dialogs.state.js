@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
     for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
@@ -40,7 +29,11 @@ var dialogsState = (0, valtio_1.proxy)({
         if (!dialogsState.rendered) {
             console.error("<Dialogs /> is not rendered. The dialog will be ignored.");
         }
-        dialogsState.dialogs.push((0, valtio_1.ref)(__assign(__assign({}, dialog), { open: open, _id: _id })));
+        dialogsState.dialogs.push({
+            _id: _id,
+            open: open,
+            props: (0, valtio_1.ref)(dialog),
+        });
     },
     remove: function (_id) {
         dialogsState.dialogs.splice(dialogsState.dialogs.findIndex(function (n) { return n._id === _id; }), 1);
@@ -61,7 +54,7 @@ function closeDialog(_id) {
         _id: _id,
         open: false,
     });
-    setTimeout(function () { return dialogsState.remove(_id); }, 200);
+    setTimeout(function () { return dialogsState.remove(_id); }, 300);
 }
 exports.closeDialog = closeDialog;
 exports.default = dialogsState;

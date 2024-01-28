@@ -52,15 +52,15 @@ var jsx_runtime_1 = require("react/jsx-runtime");
 var RPopover = __importStar(require("@radix-ui/react-popover"));
 var react_1 = require("react");
 var clsx_1 = __importDefault(require("../../utils/clsx"));
-var Dropdown_styles_1 = require("../../styles/Dropdown.styles");
+var Modal_classNames_1 = require("../../styles/Modal.classNames");
 function PopoverContentWithRef(_a, ref) {
     var className = _a.className, _b = _a.sideOffset, sideOffset = _b === void 0 ? 4 : _b, children = _a.children, props = __rest(_a, ["className", "sideOffset", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RPopover.Portal, { children: (0, jsx_runtime_1.jsxs)(RPopover.Content, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownContentClassName, "ui-popover-content", className), sideOffset: sideOffset, ref: ref, children: [children, (0, jsx_runtime_1.jsx)(PopoverArrow, {})] })) }));
+    return ((0, jsx_runtime_1.jsx)(RPopover.Portal, { children: (0, jsx_runtime_1.jsxs)(RPopover.Content, __assign({}, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalContentClassName, "ui-popover-content", className), sideOffset: sideOffset, ref: ref, children: [children, (0, jsx_runtime_1.jsx)(PopoverArrow, {})] })) }));
 }
 var PopoverContent = (0, react_1.forwardRef)(PopoverContentWithRef);
 function PopoverArrow(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
-    return ((0, jsx_runtime_1.jsx)(RPopover.Arrow, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_styles_1.dropdownArrowClassName, "ui-popover-arrow", className) })));
+    return ((0, jsx_runtime_1.jsx)(RPopover.Arrow, __assign({}, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalArrowClassName, "ui-popover-arrow", className) })));
 }
 var Popover = {
     Content: PopoverContent,

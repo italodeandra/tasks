@@ -28,8 +28,10 @@ import Loading from "@italodeandra/ui/components/Loading";
 import { columns } from "../../../consts";
 import { translateTaskStatus } from "../../../utils/translateTaskStatus";
 import { TaskStatus } from "../../../collections/task";
-import { pull } from "lodash";
 import { isNil, pull } from "lodash";
+import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
+import { showDialog } from "@italodeandra/ui/components/Dialog";
+import { TaskDetails } from "./TaskDetails";
 import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
 import { useMount } from "react-use";
 
@@ -59,8 +61,26 @@ export default function Task(task: ITask) {
   let [newValue, setNewValue] = useState(task.title);
   let contentRef = useRef<HTMLDivElement>(null);
   let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+  let [oneClicked, setOneClicked] = useState(false);
+  let debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
+
+  useEffect(() => {
+    if (debouncedOneClicked) {
+      setOneClicked(false);
+      showDialog({
+        content: <TaskDetails _id={task._id} />,
+      });
+    }
+  }, [debouncedOneClicked, task._id]);
+
+  let handleClick = useCallback(() => {
+    if (!isEditing) {
+      setOneClicked(true);
+    }
+  }, [isEditing]);
 
   let handleDoubleClick = useCallback(() => {
+    setOneClicked(false);
     setEditing(true);
     setTimeout(() => contentRef.current?.focus());
   }, [setEditing]);
@@ -239,6 +259,7 @@ export default function Task(task: ITask) {
         "gap-2": orientation === Orientation.VERTICAL,
         "gap-1": orientation === Orientation.HORIZONTAL,
       })}
+      onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       onContextMenu={isMobile ? handleContextMenu : undefined}
     >
