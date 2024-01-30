@@ -17,7 +17,7 @@ import { connectDb } from "../../../db";
 import { taskListApi } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
-import { invalidate_timesheetStatus } from "./status";
+import { timesheetStatusApi } from "./status";
 
 async function handler(
   args: {
@@ -65,7 +65,7 @@ export const useTimesheetDelete = (
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
-        void invalidate_timesheetStatus(queryClient);
+        void timesheetStatusApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

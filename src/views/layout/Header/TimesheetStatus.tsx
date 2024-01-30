@@ -1,13 +1,16 @@
 import React from "react";
-import { useTimesheetStatus } from "../../../pages/api/timesheet/status";
 import Loading from "@italodeandra/ui/components/Loading/Loading";
 import Group from "@italodeandra/ui/components/Group/Group";
 import { Timer } from "../../home/task/Timer";
 import Text from "@italodeandra/ui/components/Text";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
+import { timesheetStatusApi } from "../../../pages/api/timesheet/status";
+import dayjs from "dayjs";
 
 export function TimesheetStatus() {
-  let { data, isLoading } = useTimesheetStatus();
+  let { data, isLoading } = timesheetStatusApi.useQuery({
+    today: dayjs().toISOString(),
+  });
 
   if (isLoading) {
     return <Loading className="my-auto" />;

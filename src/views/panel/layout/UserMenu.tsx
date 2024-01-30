@@ -36,10 +36,7 @@ export default function UserMenu() {
 
   if (isError) {
     return (
-      <Tooltip
-        content="There was an unexpected error trying to get the logged in user data"
-        delay={200}
-      >
+      <Tooltip content="There was an unexpected error trying to get the logged in user data">
         <div className="flex h-[42px] w-[42px] items-center justify-center rounded-full bg-red-100">
           <ExclamationTriangleIcon className="w-6 text-red-500" />
         </div>

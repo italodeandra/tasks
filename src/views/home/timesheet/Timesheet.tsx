@@ -28,6 +28,7 @@ import Group from "@italodeandra/ui/components/Group/Group";
 import { TimesheetAddDialog } from "./TimesheetAddDialog";
 import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
 export function Timesheet() {
   let { selectedProjects } = useSnapshot(homeState);
@@ -82,9 +83,11 @@ export function Timesheet() {
 
   let handleAddClick = () => {
     if (project) {
+      let _id = isomorphicObjectId().toString();
       showDialog({
+        _id,
         title: `Add time to ${project.name}`,
-        content: (_id) => (
+        content: (
           <TimesheetAddDialog
             projectId={project._id}
             onSubmit={() => closeDialog(_id)}

@@ -18,10 +18,10 @@ import { taskListApi } from "../task/list";
 import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import ms from "ms";
-import { invalidate_timesheetStatus } from "./status";
 import getTask from "../../../collections/task";
 import getProject from "../../../collections/project";
 import { invalidate_projectList } from "../project/list";
+import { timesheetStatusApi } from "./status";
 
 async function handler(
   args: Jsonify<
@@ -101,7 +101,7 @@ export const useTimesheetAdd = (
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
         void invalidate_projectList(queryClient);
-        void invalidate_timesheetStatus(queryClient);
+        void timesheetStatusApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

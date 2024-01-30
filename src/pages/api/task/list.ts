@@ -15,7 +15,7 @@ let converter = new showdown.Converter({
   openLinksInNewWindow: true,
 });
 
-let api = createApi(
+export const taskListApi = createApi(
   "/api/task/list",
   async (_args: void, req: NextApiRequest, res: NextApiResponse) => {
     await connectDb();
@@ -172,8 +172,6 @@ let api = createApi(
   }
 );
 
-export default api.handler;
+export default taskListApi.handler;
 
-export type TaskListApi = typeof api.Types;
-
-export const taskListApi = api;
+export type TaskListApi = typeof taskListApi.Types;

@@ -6,7 +6,7 @@ import {
   queryFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getTimesheet, {
@@ -17,7 +17,6 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { ITask } from "../../../collections/task";
 import removeMd from "remove-markdown";
 import dayjs from "dayjs";
-import { invalidate_timesheetStatus } from "./status";
 
 async function handler(
   args: { projectId: string; startDate: Date },
@@ -152,10 +151,3 @@ export const useTimesheetListFromProject = (
       enabled: !!args,
     }
   );
-
-export const invalidate_timesheetListFromProject = async (
-  queryClient: QueryClient
-) => {
-  await invalidate_timesheetStatus(queryClient);
-  return queryClient.invalidateQueries([queryKey]);
-};

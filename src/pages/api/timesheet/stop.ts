@@ -16,10 +16,10 @@ import { connectDb } from "../../../db";
 import { taskListApi } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
-import { invalidate_timesheetStatus } from "./status";
 import getTask from "../../../collections/task";
 import getProject from "../../../collections/project";
 import { invalidate_projectList } from "../project/list";
+import { timesheetStatusApi } from "./status";
 
 export async function stopClock(userId: ObjectId) {
   let Timesheet = getTimesheet();
@@ -111,7 +111,7 @@ export const useTimesheetStop = (
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
         void invalidate_projectList(queryClient);
-        void invalidate_timesheetStatus(queryClient);
+        void timesheetStatusApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }
