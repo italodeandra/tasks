@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 
 export function TimesheetStatus() {
   let { data, isLoading } = timesheetStatusApi.useQuery({
-    today: dayjs().toISOString(),
+    today: dayjs().startOf("day").toDate().toISOString(),
   });
 
   if (isLoading) {

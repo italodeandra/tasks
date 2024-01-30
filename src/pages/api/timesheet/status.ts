@@ -3,7 +3,6 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
-import dayjs from "dayjs";
 import getTask, { ITask } from "../../../collections/task";
 import createApi from "@italodeandra/next/api/createApi";
 
@@ -79,7 +78,7 @@ export const timesheetStatusApi = createApi(
                   $in: [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL],
                 },
                 createdAt: {
-                  $gte: dayjs(today).startOf("day").toDate(),
+                  $gte: today,
                 },
               },
             },
