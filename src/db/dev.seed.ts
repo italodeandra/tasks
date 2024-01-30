@@ -2,6 +2,7 @@ import getProject, { ProjectColor } from "../collections/project";
 import getTask, { TaskStatus } from "../collections/task";
 import { userId } from "@italodeandra/auth/db/seed";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import dayjs from "dayjs";
 
 let projectId = isomorphicObjectId("64040f191fba7928b4763f66");
 let task1Id = isomorphicObjectId("64041c1b5cb96796f8e82595");
@@ -35,10 +36,11 @@ export async function seed() {
       {
         $set: {
           content: "Test 1",
-          status: TaskStatus.TODO,
           projectId,
           userId,
           order: 0,
+          updatedAt: dayjs().subtract(1, "day").toDate(),
+          status: TaskStatus.DONE,
         },
       },
       {

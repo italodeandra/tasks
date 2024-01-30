@@ -30,7 +30,7 @@ async function handler(
     throw unauthorized;
   }
 
-  await Task.bulkWrite(
+  await Task.collection.bulkWrite(
     argsList.map((args) => ({
       updateOne: {
         filter: {
