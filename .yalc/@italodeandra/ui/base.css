@@ -13,8 +13,16 @@ button {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-pre[class*="language-"] {
-    color: theme("colors.slate.50");
+input[type=checkbox], input[type=radio] {
+    @apply h-4 w-4 border-zinc-300 dark:checked:bg-primary-500 dark:checked:border-primary-500 dark:border-zinc-600 text-primary-600 ring-0 transition-colors dark:bg-zinc-900 hover:bg-zinc-100 focus:outline-none focus:ring-primary-500 focus-visible:ring-2 ring-offset-zinc-100 dark:ring-offset-zinc-900
+}
+
+input[type=checkbox] {
+    @apply rounded;
+}
+
+input[type=radio] {
+    @apply rounded-full;
 }
 
 #__next {
@@ -77,6 +85,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     z-index: 1;
 }
 
-.markdown code {
-    @apply bg-slate-700 before:hidden after:hidden px-2 py-1 text-white rounded select-all
+.prose {
+    @apply [&_.task-list-item]:my-0 prose-ul:!pl-5
 }
