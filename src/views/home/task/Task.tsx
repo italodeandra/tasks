@@ -16,7 +16,7 @@ import {
   useState,
 } from "react";
 import { PencilIcon } from "@heroicons/react/16/solid";
-import { useTaskUpdate } from "../../../pages/api/task/update";
+import { taskUpdateApi } from "../../../pages/api/task/update";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { useTaskRemove } from "../../../pages/api/task/remove";
 import { ProjectSelect } from "./ProjectSelect";
@@ -97,7 +97,7 @@ export default function Task(task: ITask) {
       _id: task._id,
     });
   }, [remove, task._id]);
-  let { mutate: update, isLoading: isUpdating } = useTaskUpdate({
+  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation({
     onSuccess() {
       setEditing(false);
     },
@@ -107,7 +107,7 @@ export default function Task(task: ITask) {
       if (newValue) {
         update({
           _id: task._id,
-          content: newValue,
+          title: newValue,
         });
       } else {
         handleDeleteClick();

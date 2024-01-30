@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useProjectList } from "../../../pages/api/project/list";
-import { useTaskUpdate } from "../../../pages/api/task/update";
+import { taskUpdateApi } from "../../../pages/api/task/update";
 import Select from "@italodeandra/ui/components/Select";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { useUpdateEffect } from "react-use";
@@ -11,7 +11,7 @@ import { ITask } from "./ITask";
 export function ProjectSelect(task: ITask) {
   let [value, setValue] = useState(task.project?._id || "NONE");
   let { data: projects, isLoading } = useProjectList();
-  let { mutate: update, isLoading: isUpdating } = useTaskUpdate();
+  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
   let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
