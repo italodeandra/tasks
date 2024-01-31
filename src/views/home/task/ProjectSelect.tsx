@@ -8,28 +8,38 @@ import useMediaQuery from "@italodeandra/ui/hooks/useMediaQuery";
 import defaultTheme from "tailwindcss/defaultTheme";
 import { ITask } from "./ITask";
 
-export function ProjectSelect(task: ITask) {
-  let [value, setValue] = useState(task.project?._id || "NONE");
+export function ProjectSelect({
+  triggerClassName,
+  ...task
+}: Pick<ITask, "project" | "_id"> & { triggerClassName?: string }) {
+  let [value, setValue] = useState(task.project?._id);
   let { data: projects, isLoading } = useProjectList();
   let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
   let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
-    if (value !== (task.project?._id || "NONE")) {
+    if (value !== task.project?._id) {
       update({
         _id: task._id,
         projectId: value,
       });
     }
-  }, [task._id, task.project?._id, update, value]);
+  }, [value]);
 
-  let triggerClassName = clsx(
-    "rounded px-1 text-xs min-h-[18px] flex items-center opacity-0 group-hover:opacity-100",
+  useUpdateEffect(() => {
+    if (value !== task.project?._id) {
+      setValue(task.project?._id);
+    }
+  }, [task.project?._id]);
+
+  triggerClassName = clsx(
+    "rounded px-1 text-xs min-h-[18px] flex items-center opacity-0 group-hover:opacity-100 transition",
     "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     {
       "animate-pulse": isLoading || isUpdating,
-      "opacity-100": !value || value !== "NONE",
-    }
+      "opacity-100": !!value,
+    },
+    triggerClassName
   );
 
   if (isMobile) {
@@ -39,7 +49,7 @@ export function ProjectSelect(task: ITask) {
   }
 
   return (
-    <Select.Root onValueChange={setValue} value={value}>
+    <Select.Root onValueChange={setValue} value={value || "NONE"}>
       <Select.Trigger>
         <div className={triggerClassName}>
           <Select.Value />

@@ -12,7 +12,6 @@ export enum TaskStatus {
 const taskSchema = onlyServer(() =>
   schema(
     {
-      content: types.string(),
       title: types.string({ required: true }),
       description: types.string(),
       status: types.enum(Object.values(TaskStatus), { required: true }),

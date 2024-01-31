@@ -35,7 +35,7 @@ export async function seed() {
       },
       {
         $set: {
-          content: "Test 1",
+          title: "Test 1",
           projectId,
           userId,
           order: 0,
@@ -53,7 +53,7 @@ export async function seed() {
       },
       {
         $set: {
-          content: "Test 2",
+          title: "Test 2",
           status: TaskStatus.TODO,
           projectId,
           userId,
@@ -70,7 +70,7 @@ export async function seed() {
       },
       {
         $set: {
-          content: "Test 3",
+          title: "Test 3",
           status: TaskStatus.DOING,
           projectId,
           userId,

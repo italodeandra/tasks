@@ -18,6 +18,7 @@ import { hydrateAuthState } from "@italodeandra/auth/auth.state";
 import Notifications from "@italodeandra/ui/components/Notifications/Notifications";
 import { Dialogs } from "@italodeandra/ui/components/Dialog";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutationWindowCloseProtection";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -108,6 +109,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         ]}
       />
       <QueryClientProvider client={queryClient}>
+        <MutationWindowCloseProtection />
         <Hydrate state={pageProps.dehydratedState}>
           <Notifications />
           <Dialogs />

@@ -1,65 +1,58 @@
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import {
-  apiHandlerWrapper,
-  InferApiArgs,
-  InferApiResponse,
-  mutationFnWrapper,
-} from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { invalidate_projectList } from "../project/list";
+import createApi from "@italodeandra/next/api/createApi";
 
-async function handler(
-  args: Pick<Jsonify<Partial<ITask>>, "_id">,
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await connectDb();
-  let Task = getTask();
-  let user = await getUserFromCookies(req, res);
-  if (!user) {
-    throw unauthorized;
-  }
-
-  const _id = isomorphicObjectId(args._id);
-
-  await Task.deleteOne({
-    _id,
-    userId: user._id,
-  });
-}
-
-export default apiHandlerWrapper(handler);
-
-export type TaskRemoveResponse = InferApiResponse<typeof handler>;
-export type TaskRemoveArgs = InferApiArgs<typeof handler>;
-
-const mutationKey = "/api/task/remove";
-
-export const useTaskRemove = (
-  options?: UseMutationOptions<TaskRemoveResponse, unknown, TaskRemoveArgs>
-) => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TaskRemoveArgs, TaskRemoveResponse>(mutationKey),
-    {
-      ...options,
-      onSuccess(...params) {
-        void taskListApi.invalidate(queryClient);
-        void invalidate_projectList(queryClient);
-        return options?.onSuccess?.(...params);
-      },
+export const taskRemoveApi = createApi(
+  "/api/task/remove",
+  async function handler(
+    args: Pick<Jsonify<Partial<ITask>>, "_id">,
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+    await connectDb();
+    let Task = getTask();
+    let user = await getUserFromCookies(req, res);
+    if (!user) {
+      throw unauthorized;
     }
-  );
-};
+
+    const _id = isomorphicObjectId(args._id);
+
+    await Task.deleteOne({
+      _id,
+      userId: user._id,
+    });
+  },
+  {
+    mutationOptions: {
+      async onMutate(variables, queryClient) {
+        await taskListApi.cancelQueries(queryClient);
+        const previousData = taskListApi.getQueryData(queryClient);
+        taskListApi.setQueryData(queryClient, (data) => [
+          ...(data?.filter((t) => t._id !== variables._id) || []),
+        ]);
+        return {
+          previousData,
+        };
+      },
+      onError: (_e, _v, context, queryClient) => {
+        taskListApi.setQueryData(queryClient, context?.previousData);
+      },
+      onSuccess: (_d, _v, _c, queryClient) => {
+        void invalidate_projectList(queryClient);
+      },
+      onSettled: (_d, _e, _v, _c, queryClient) => {
+        void taskListApi.invalidate(queryClient);
+      },
+    },
+  }
+);
+
+export default taskRemoveApi.handler;

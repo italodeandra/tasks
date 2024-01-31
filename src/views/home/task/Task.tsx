@@ -5,35 +5,24 @@ import { Timer } from "./Timer";
 import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import { Orientation } from "../kanban/Orientation";
-import {
-  FocusEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { PencilIcon } from "@heroicons/react/16/solid";
 import { taskUpdateApi } from "../../../pages/api/task/update";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import { useTaskRemove } from "../../../pages/api/task/remove";
 import { ProjectSelect } from "./ProjectSelect";
 import Button from "@italodeandra/ui/components/Button";
 import useMediaQuery from "@italodeandra/ui/hooks/useMediaQuery";
 import defaultTheme from "tailwindcss/defaultTheme";
 import { ITask } from "./ITask";
-import Loading from "@italodeandra/ui/components/Loading";
 import { columns } from "../../../consts";
 import { translateTaskStatus } from "../../../utils/translateTaskStatus";
 import { TaskStatus } from "../../../collections/task";
-import { isNil, pull } from "lodash";
+import { pull } from "lodash";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { TaskDetails } from "./TaskDetails";
-import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
-import { useMount } from "react-use";
+import { TaskDetails } from "./details/TaskDetails";
+import { Markdown } from "./Markdown";
+import { taskRemoveApi } from "../../../pages/api/task/remove";
 
 export default function Task(task: ITask) {
   let { orientation, selectedProjects, editingTasks, setEditingTasks } =
@@ -51,18 +40,20 @@ export default function Task(task: ITask) {
     [editingTasks, setEditingTasks, task._id]
   );
 
+  let [newValue, setNewValue] = useState(task.content);
+  let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+  let [oneClicked, setOneClicked] = useState(false);
+  let debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
+
   useEffect(() => {
     if (isEditing !== !task.content) {
       setEditing(!task.content);
     }
+    if (task.content !== newValue) {
+      setNewValue(task.content);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [task.content]);
-
-  let [newValue, setNewValue] = useState(task.title);
-  let contentRef = useRef<HTMLDivElement>(null);
-  let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
-  let [oneClicked, setOneClicked] = useState(false);
-  let debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
 
   useEffect(() => {
     if (debouncedOneClicked) {
@@ -82,28 +73,18 @@ export default function Task(task: ITask) {
   let handleDoubleClick = useCallback(() => {
     setOneClicked(false);
     setEditing(true);
-    setTimeout(() => contentRef.current?.focus());
   }, [setEditing]);
 
-  useMount(() => {
-    if (newValue === "") {
-      setTimeout(() => contentRef.current?.focus(), 500);
-    }
-  });
-
-  let { mutate: remove, isLoading: isRemoving } = useTaskRemove();
+  let { mutate: remove } = taskRemoveApi.useMutation();
   let handleDeleteClick = useCallback(() => {
     remove({
       _id: task._id,
     });
   }, [remove, task._id]);
-  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation({
-    onSuccess() {
-      setEditing(false);
-    },
-  });
+  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
   let handleSaveClick = useCallback(
     (newValue: string) => {
+      setNewValue(newValue);
       if (newValue) {
         update({
           _id: task._id,
@@ -126,108 +107,12 @@ export default function Task(task: ITask) {
     [task._id, update]
   );
 
-  let handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        setNewValue(e.currentTarget.innerText);
-        handleSaveClick(e.currentTarget.innerText);
-      }
-      if (e.key === "Escape") {
-        if (task.content) {
-          setNewValue(e.currentTarget.innerText);
-          setEditing(false);
-        } else {
-          handleDeleteClick();
-        }
-      }
-      if (e.key === "Tab") {
-        e.preventDefault();
-
-        let selection = window.getSelection();
-        if (selection) {
-          let start =
-            selection.anchorOffset < selection.focusOffset
-              ? selection.anchorOffset
-              : selection.focusOffset;
-          let end =
-            start === selection.anchorOffset
-              ? selection.focusOffset
-              : selection.anchorOffset;
-          if (!isNil(start) && !isNil(end)) {
-            let textBeforeSelection = e.currentTarget.innerText.substring(
-              0,
-              start
-            );
-            let linebreaksBeforeSelection = textBeforeSelection.split("\n");
-            if (!e.shiftKey) {
-              linebreaksBeforeSelection[
-                linebreaksBeforeSelection.length - 1
-              ] = `  ${
-                linebreaksBeforeSelection[linebreaksBeforeSelection.length - 1]
-              }`;
-            } else {
-              linebreaksBeforeSelection[linebreaksBeforeSelection.length - 1] =
-                linebreaksBeforeSelection[
-                  linebreaksBeforeSelection.length - 1
-                ].replace(/^ {1,2}/g, "");
-            }
-            let indentedBeforeSelection = linebreaksBeforeSelection.join("\n");
-            let beforeSelectionDiff =
-              indentedBeforeSelection.length - textBeforeSelection.length;
-
-            let textInsideSelection = e.currentTarget.innerText.substring(
-              start,
-              end
-            );
-            let linebreaksInsideSelection = textInsideSelection;
-            if (!e.shiftKey) {
-              linebreaksInsideSelection = linebreaksInsideSelection.replaceAll(
-                "\n",
-                "\n  "
-              );
-            } else {
-              linebreaksInsideSelection = linebreaksInsideSelection.replaceAll(
-                "\n  ",
-                "\n"
-              );
-            }
-            let insideSelectionDiff =
-              linebreaksInsideSelection.length - textInsideSelection.length;
-
-            let newValue =
-              indentedBeforeSelection +
-              linebreaksInsideSelection +
-              e.currentTarget.innerText.substring(end);
-
-            setNewValue(newValue);
-
-            let el = e.currentTarget;
-
-            setTimeout(() => {
-              setSelectionRange(
-                el,
-                start + beforeSelectionDiff,
-                end + beforeSelectionDiff + insideSelectionDiff
-              );
-            });
-          }
-        }
-      }
-    },
-    [handleDeleteClick, handleSaveClick, setEditing, task.content]
-  );
-
-  let handleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
-    setNewValue(e.currentTarget.innerText);
-  }, []);
-
   let handleClearChanges = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation();
-      setNewValue(task.title);
+      setNewValue(task.content);
     },
-    [task.title]
+    [task.content]
   );
 
   let dimmed = useMemo(
@@ -263,23 +148,12 @@ export default function Task(task: ITask) {
       onDoubleClick={handleDoubleClick}
       onContextMenu={isMobile ? handleContextMenu : undefined}
     >
-      <div
-        ref={contentRef}
-        className={clsx(
-          "text-sm [&_a]:truncate [&_a]:block overflow-hidden px-1.5 py-1 -m-1",
-          "flex-1 outline-0 rounded",
-          {
-            "cursor-text ring-1 ring-primary-500 whitespace-pre-wrap":
-              isEditing,
-            "select-none": !isEditing,
-          }
-        )}
-        dangerouslySetInnerHTML={{
-          __html: isEditing ? newValue || "" : task.content,
-        }}
-        contentEditable={isEditing}
-        onKeyDown={handleKeyDown}
-        onBlur={handleBlur}
+      <Markdown
+        value={task.content}
+        className="text-sm flex-1 overflow-hidden px-1.5 py-1 -m-1"
+        onChange={handleSaveClick}
+        editable
+        loading={isUpdating}
       />
       <Group
         className={clsx({
@@ -287,8 +161,7 @@ export default function Task(task: ITask) {
           "items-end justify-end": orientation === Orientation.HORIZONTAL,
         })}
       >
-        {(isUpdating || isRemoving) && <Loading className="w-4 h-4" />}
-        {!isEditing && newValue !== task.title && (
+        {!isEditing && newValue !== task.content && (
           // eslint-disable-next-line react/jsx-no-undef
           <Button
             size="xs"

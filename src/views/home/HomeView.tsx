@@ -28,11 +28,11 @@ export function HomeView() {
 
   let kanbanTasks = useMemo<ITask[] | undefined>(
     () =>
-      databaseTasks?.map(({ status, order, titleHtml, ...task }) => ({
+      databaseTasks?.map(({ status, order, title, ...task }) => ({
         ...task,
         columnId: status,
         index: order,
-        content: titleHtml,
+        content: title,
       })),
     [databaseTasks]
   );

@@ -9,10 +9,10 @@ import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { invalidate_projectList } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
-import type { StrictUpdateFilter } from "mongodb";
-import { WritableDeep } from "type-fest";
 import getProject from "../../../collections/project";
 import { pick } from "lodash";
+import { taskGetApi } from "./get";
+import wait from "@italodeandra/next/utils/wait";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
@@ -38,16 +38,13 @@ export const taskUpdateApi = createApi(
 
     const _id = isomorphicObjectId(args._id);
 
-    let $set = {
+    let $set: Partial<ITask> = {
       ...pick(args, ["title", "description", "status", "order"]),
-      projectId:
-        args.projectId && args.projectId !== "NONE"
-          ? isomorphicObjectId(args.projectId)
-          : undefined,
     };
-    let $unset: WritableDeep<StrictUpdateFilter<ITask>["$unset"]> = {};
-
-    removeEmptyProperties($set);
+    if (args.projectId && args.projectId !== "NONE") {
+      $set.projectId = isomorphicObjectId(args.projectId);
+    }
+    let $unset = removeEmptyProperties($set);
 
     if (args.projectId === "NONE") {
       delete $set.projectId;
@@ -78,9 +75,45 @@ export const taskUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      onSuccess: (_data, _args, queryClient) => {
-        void taskListApi.invalidate(queryClient);
+      async onMutate(args, queryClient) {
+        await taskListApi.cancelQueries(queryClient);
+        const previousTaskListData = taskListApi.getQueryData(queryClient);
+        taskListApi.setQueryData(queryClient, (data) => [
+          ...(data?.map((t) => (t._id === args._id ? { ...t, ...args } : t)) ||
+            []),
+        ]);
+
+        await taskGetApi.cancelQueries(queryClient, args);
+        const previousTaskGetData = taskGetApi.getQueryData(queryClient, args);
+        taskGetApi.setQueryData(
+          queryClient,
+          (data) =>
+            data && {
+              ...data,
+              ...args,
+            },
+          args
+        );
+
+        return {
+          previousTaskListData,
+          previousTaskGetData,
+        };
+      },
+      onError: (_e, args, context, queryClient) => {
+        taskListApi.setQueryData(queryClient, context?.previousTaskListData);
+        taskGetApi.setQueryData(
+          queryClient,
+          context?.previousTaskGetData,
+          args
+        );
+      },
+      onSuccess: (_d, _v, _c, queryClient) => {
         void invalidate_projectList(queryClient);
+      },
+      onSettled: (_d, _e, args, _c, queryClient) => {
+        void taskListApi.invalidate(queryClient);
+        void taskGetApi.invalidate(queryClient, args);
       },
     },
   }
