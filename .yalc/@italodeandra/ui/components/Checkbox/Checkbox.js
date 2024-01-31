@@ -42,6 +42,7 @@ function Checkbox(_a, ref) {
     descriptionClassName = descriptionClassName
         ? "".concat(defaultDescriptionClassName, " ").concat(descriptionClassName)
         : defaultDescriptionClassName;
+    inputClassName = (0, clsx_1.default)("ui-checkbox", inputClassName);
     return ((0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("relative flex items-start", className), children: [(0, jsx_runtime_1.jsx)("div", { className: "flex h-5 items-center", children: (0, jsx_runtime_1.jsx)("input", __assign({}, props, { id: id, "aria-describedby": descriptionId, type: type, className: inputClassName, ref: ref })) }), (label || description) && ((0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("ml-3 text-sm", labelOuterClassName), children: [label && ((0, jsx_runtime_1.jsx)("label", { htmlFor: id, className: labelClassName, children: label })), description && ((0, jsx_runtime_1.jsx)("p", { id: descriptionId, className: descriptionClassName, children: description }))] }))] }));
 }
 exports.default = (0, react_1.forwardRef)(Checkbox);

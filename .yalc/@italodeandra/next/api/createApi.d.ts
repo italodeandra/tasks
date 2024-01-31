@@ -1,8 +1,12 @@
 import { InferApiArgs, InferApiResponse } from "./apiHandlerWrapper";
 import { QueryClient, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
-export default function createApi<T extends (...args: any) => any>(queryKey: string, handler: T, apiOptions?: {
+export default function createApi<T extends (...args: any) => any, C extends Record<string, any>>(queryKey: string, handler: T, apiOptions?: {
+    queryKeyMap?: (args: InferApiArgs<T>) => string[];
     mutationOptions?: {
-        onSuccess?: (data: InferApiResponse<T>, variables: InferApiArgs<T>, queryClient: QueryClient) => Promise<unknown> | unknown;
+        onMutate?: (variables: InferApiArgs<T>, queryClient: QueryClient) => Promise<C> | C | void;
+        onSuccess?: (data: InferApiResponse<T>, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
+        onError?: (error: unknown, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
+        onSettled?: (data: InferApiResponse<T>, error: unknown, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
     };
 }): {
     handler: import("next").NextApiHandler;
@@ -13,9 +17,9 @@ export default function createApi<T extends (...args: any) => any>(queryKey: str
         MutationOptions: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown>;
     };
     useQuery: (args: InferApiArgs<T>, options?: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey> | undefined) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, unknown>;
-    useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>>, unknown, InferApiArgs<T>, unknown>;
-    invalidate: (queryClient: QueryClient) => Promise<void>;
-    cancelQueries: (queryClient: QueryClient) => Promise<void>;
-    getQueryData: (queryClient: QueryClient) => InferApiResponse<T> | undefined;
-    setQueryData: (queryClient: QueryClient, updater: import("@tanstack/query-core/build/types/packages/query-core/src/utils").Updater<import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined, import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined>) => import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined;
+    useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<any, unknown, any, C>;
+    invalidate: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
+    cancelQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
+    getQueryData: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => InferApiResponse<T> | undefined;
+    setQueryData: (queryClient: QueryClient, updater: import("@tanstack/query-core/build/types/packages/query-core/src/utils").Updater<import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined, import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined>, args?: InferApiArgs<T> | undefined) => import("../utils/Jsonify").default<T extends import("type-fest/source/async-return-type").AsyncFunction ? Awaited<ReturnType<T>> : ReturnType<T>> | undefined;
 };

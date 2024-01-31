@@ -94,28 +94,28 @@ var styles = {
             trailing: "ml-1.5 -mr-0.5",
         },
         sm: {
-            button: "p-1.5",
+            button: "p-2",
             icon: "w-4 h-4",
-            leading: "mr-1.5 -ml-0.5",
-            trailing: "ml-1.5 -mr-0.5",
+            leading: "mr-1.5",
+            trailing: "ml-1.5",
         },
         md: {
-            button: "p-1.5",
+            button: "p-2",
             icon: "w-5 h-5",
-            leading: "-my-0.5 mr-2 -ml-1.5",
-            trailing: "-my-0.5 ml-2 -mr-1.5",
+            leading: "-my-0.5 mr-2 -ml-1",
+            trailing: "-my-0.5 ml-2 -mr-1",
         },
         lg: {
-            button: "p-2",
+            button: "p-3",
             icon: "w-6 h-6",
-            leading: "-my-1 mr-3 -ml-3",
-            trailing: "-my-1 ml-3 -mr-3",
+            leading: "-my-1 mr-3 -ml-2",
+            trailing: "-my-1 ml-3 -mr-2",
         },
         xl: {
-            button: "p-2.5",
+            button: "p-4",
             icon: "w-7 h-7",
-            leading: "-my-2 mr-4 -ml-3.5",
-            trailing: "-my-2 ml-4 -mr-3.5",
+            leading: "-my-2 mr-4 -ml-2",
+            trailing: "-my-2 ml-4 -mr-2",
         },
     },
 };
@@ -125,17 +125,17 @@ var Button = function (_a, ref) {
     var _f = _a.variant, variant = _f === void 0 ? "outlined" : _f, _g = _a.color, color = _g === void 0 ? "default" : _g, _h = _a.size, size = _h === void 0 ? "md" : _h, className = _a.className, icon = _a.icon, _j = _a.type, type = _j === void 0 ? "button" : _j, leading = _a.leading, trailing = _a.trailing, children = _a.children, loading = _a.loading, disabled = _a.disabled, rounded = _a.rounded, props = __rest(_a, ["variant", "color", "size", "className", "icon", "type", "leading", "trailing", "children", "loading", "disabled", "rounded"]);
     if (loading) {
         if (icon) {
-            children = ((0, jsx_runtime_1.jsx)(Loading_1.default, { className: (0, clsx_1.default)(styles.icon[size].icon, "text-inherit") }));
+            children = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "my-auto" });
         }
         else {
-            trailing = ((0, jsx_runtime_1.jsx)(Loading_1.default, { className: (0, clsx_1.default)(styles.icon[size].icon, "text-inherit") }));
+            trailing = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "w-auto h-auto mr-0", debounce: true });
         }
     }
     return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded", (_b = {},
             _b[styles.disabled] = disabled,
             _b), className), type: type, disabled: disabled, children: [leading &&
                 (0, react_1.cloneElement)(leading, {
-                    className: (0, clsx_1.default)("", styles.icon[size].icon, styles.icon[size].leading, (_c = leading === null || leading === void 0 ? void 0 : leading.props) === null || _c === void 0 ? void 0 : _c.className),
+                    className: (0, clsx_1.default)(styles.icon[size].icon, styles.icon[size].leading, (_c = leading === null || leading === void 0 ? void 0 : leading.props) === null || _c === void 0 ? void 0 : _c.className),
                 }), !icon
                 ? children
                 : Array.isArray(children)
@@ -150,7 +150,7 @@ var Button = function (_a, ref) {
                         className: (0, clsx_1.default)(styles.icon[size].icon, (_d = children === null || children === void 0 ? void 0 : children.props) === null || _d === void 0 ? void 0 : _d.className),
                     }), trailing &&
                 (0, react_1.cloneElement)(trailing, {
-                    className: (0, clsx_1.default)("", styles.icon[size].icon, styles.icon[size].trailing, (_e = trailing === null || trailing === void 0 ? void 0 : trailing.props) === null || _e === void 0 ? void 0 : _e.className),
+                    className: (0, clsx_1.default)(styles.icon[size].icon, styles.icon[size].trailing, (_e = trailing === null || trailing === void 0 ? void 0 : trailing.props) === null || _e === void 0 ? void 0 : _e.className),
                 })] })));
 };
 exports.default = (0, react_1.forwardRef)(Button);

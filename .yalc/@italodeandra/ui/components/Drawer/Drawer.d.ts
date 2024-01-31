@@ -9,5 +9,6 @@ export type DialogProps = {
     hideOverlay?: boolean;
     className?: string;
     noPadding?: boolean;
+    panelClassName?: string;
 };
-export default function Drawer({ open: defaultOpen, onClose, title, children, position, actions, hideOverlay, className, noPadding }: DialogProps): JSX.Element;
+export default function Drawer({ open: defaultOpen, onClose, title, children, position, actions, hideOverlay, className, noPadding, panelClassName, }: DialogProps): JSX.Element;
