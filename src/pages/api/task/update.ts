@@ -12,7 +12,6 @@ import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyPropertie
 import getProject from "../../../collections/project";
 import { pick } from "lodash";
 import { taskGetApi } from "./get";
-import wait from "@italodeandra/next/utils/wait";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
