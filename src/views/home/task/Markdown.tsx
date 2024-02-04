@@ -171,7 +171,7 @@ export function Markdown({
       <div
         ref={contentRef}
         className={clsx(
-          "outline-0 [&_a]:truncate [&_a]:block rounded whitespace-pre-wrap prose prose-zinc",
+          "outline-0 [&_a]:truncate [&_a]:block rounded whitespace-pre-wrap prose prose-zinc dark:prose-invert",
           "prose-ul:my-0 prose-li:my-0 prose-ul:leading-none prose-li:leading-none",
           {
             "cursor-text": editing,
