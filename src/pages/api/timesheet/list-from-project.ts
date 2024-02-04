@@ -72,7 +72,7 @@ async function handler(
           ITimesheet,
           "_id" | "time" | "startedAt" | "type" | "createdAt"
         > & {
-          task?: Pick<ITask, "_id" | "content" | "title">;
+          task?: Pick<ITask, "_id" | "title">;
         }
       >([
         {
@@ -94,7 +94,6 @@ async function handler(
             pipeline: [
               {
                 $project: {
-                  content: 1,
                   title: 1,
                 },
               },
@@ -126,7 +125,7 @@ async function handler(
       ...t,
       task: t.task && {
         ...t.task,
-        content: removeMd(t.task.content || t.task.title).split("\n")[0],
+        content: removeMd(t.task.title).split("\n")[0],
       },
     })),
   };
