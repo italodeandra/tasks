@@ -68,7 +68,7 @@ export function HomeView() {
       ) : (
         <div className="relative">
           {(isFetching || isUpdating) && (
-            <Loading className="absolute right-9 top-[7px]" />
+            <Loading className="absolute right-10 top-[15px]" />
           )}
           {isLoading && <KanbanSkeleton />}
           {kanbanTasks && (

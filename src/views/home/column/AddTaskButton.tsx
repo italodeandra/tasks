@@ -11,8 +11,10 @@ export function AddTaskButton({ column }: { column: string }) {
   let { mutate: insert, isLoading } = taskInsertApi.useMutation();
 
   let handleClick = useCallback(() => {
+    let _id = isomorphicObjectId().toString();
+    homeState.setEditingTasks([...homeState.editingTasks, _id]);
     insert({
-      _id: isomorphicObjectId().toString(),
+      _id,
       status: column as TaskStatus,
       projectId:
         homeState.selectedProjects.length === 1

@@ -20,6 +20,7 @@ export function Markdown({
   placeholder,
   editable,
   loading,
+  editing,
 }: {
   value?: string;
   onChange?: (value: string) => void;
@@ -27,8 +28,9 @@ export function Markdown({
   placeholder?: string;
   editable?: boolean;
   loading?: boolean;
+  editing?: boolean;
 }) {
-  let [editing, setEditing] = useState(false);
+  let [internalEditing, setInternalEditing] = useState(editing);
   let [newValue, setNewValue] = useState(value);
   let contentRef = useRef<HTMLDivElement>(null);
 
@@ -38,22 +40,26 @@ export function Markdown({
     }
   }, [newValue, value]);
 
+  useEffect(() => {
+    setInternalEditing(editing);
+  }, [editing]);
+
   const markdownHtml = useMemo(
     () => markdownConverter.makeHtml(newValue),
     [newValue]
   );
 
   const saveChanges = useCallback(() => {
-    setEditing(false);
-    if (editing && contentRef.current) {
+    setInternalEditing(false);
+    if (internalEditing && contentRef.current) {
       setNewValue(contentRef.current.innerText);
       onChange?.(contentRef.current.innerText);
     }
-  }, [editing, onChange]);
+  }, [internalEditing, onChange]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
-      if (editing) {
+      if (internalEditing) {
         if (e.key === "Enter" && !e.shiftKey) {
           e.preventDefault();
           saveChanges();
@@ -61,7 +67,10 @@ export function Markdown({
         if (e.key === "Escape") {
           e.preventDefault();
           e.currentTarget.innerText = value;
-          setEditing(false);
+          if (!value) {
+            saveChanges();
+          }
+          setInternalEditing(false);
         }
         if (e.key === "Tab") {
           e.preventDefault();
@@ -138,7 +147,7 @@ export function Markdown({
         }
       }
     },
-    [editing, saveChanges, value]
+    [internalEditing, saveChanges, value]
   );
 
   const handleFocus = useCallback(
@@ -151,7 +160,7 @@ export function Markdown({
   );
 
   useEffect(() => {
-    if (editing && contentRef.current) {
+    if (internalEditing && contentRef.current) {
       contentRef.current.focus();
       setSelectionRange(
         contentRef.current,
@@ -159,10 +168,10 @@ export function Markdown({
         contentRef.current.innerText.length
       );
     }
-  }, [editing]);
+  }, [internalEditing]);
 
   const handleDoubleClick = useCallback(() => {
-    setEditing(true);
+    setInternalEditing(true);
   }, []);
 
   return (
@@ -174,18 +183,19 @@ export function Markdown({
           "outline-0 [&_a]:truncate [&_a]:block rounded whitespace-pre-wrap prose prose-zinc dark:prose-invert",
           "prose-ul:my-0 prose-li:my-0 prose-ul:leading-none prose-li:leading-none",
           {
-            "cursor-text": editing,
-            "select-none": !editing,
-            "opacity-50": !newValue && !editing && placeholder,
+            "cursor-text": internalEditing,
+            "select-none": !internalEditing,
+            "opacity-50": !newValue && !internalEditing && placeholder,
           },
           className
         )}
         dangerouslySetInnerHTML={{
-          __html: (editing ? newValue : markdownHtml) || placeholder || "",
+          __html:
+            (internalEditing ? newValue : markdownHtml) || placeholder || "",
         }}
         {...(editable
           ? {
-              contentEditable: editing,
+              contentEditable: internalEditing,
               onKeyDown: handleKeyDown,
               onBlur: saveChanges,
               onDoubleClick: handleDoubleClick,

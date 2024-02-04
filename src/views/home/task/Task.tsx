@@ -46,9 +46,6 @@ export default function Task(task: ITask) {
   let debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
 
   useEffect(() => {
-    if (isEditing !== !task.content) {
-      setEditing(!task.content);
-    }
     if (task.content !== newValue) {
       setNewValue(task.content);
     }
@@ -151,10 +148,11 @@ export default function Task(task: ITask) {
     >
       <Markdown
         value={task.content}
-        className="text-sm flex-1 overflow-hidden px-1.5 py-1 -m-1"
+        className="text-sm flex-1 overflow-hidden px-1.5 py-1 -m-1 min-h-[28px]"
         onChange={handleSaveClick}
         editable
         loading={isUpdating}
+        editing={isEditing}
       />
       <Group
         className={clsx({
