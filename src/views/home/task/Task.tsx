@@ -84,6 +84,7 @@ export default function Task(task: ITask) {
   let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
   let handleSaveClick = useCallback(
     (newValue: string) => {
+      setEditing(false);
       setNewValue(newValue);
       if (newValue) {
         update({
@@ -94,7 +95,7 @@ export default function Task(task: ITask) {
         handleDeleteClick();
       }
     },
-    [handleDeleteClick, task._id, update]
+    [handleDeleteClick, setEditing, task._id, update]
   );
 
   let handleMoveStatusClick = useCallback(
