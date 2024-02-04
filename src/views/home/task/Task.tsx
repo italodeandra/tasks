@@ -153,6 +153,7 @@ export default function Task(task: ITask) {
         editable
         loading={isUpdating}
         editing={isEditing}
+        onChangeEditing={setEditing}
       />
       <Group
         className={clsx({

@@ -21,6 +21,7 @@ export function Markdown({
   editable,
   loading,
   editing,
+  onChangeEditing,
 }: {
   value?: string;
   onChange?: (value: string) => void;
@@ -29,8 +30,9 @@ export function Markdown({
   editable?: boolean;
   loading?: boolean;
   editing?: boolean;
+  onChangeEditing?: (editing: boolean) => void;
 }) {
-  let [internalEditing, setInternalEditing] = useState(editing);
+  let [internalEditing, setInternalEditing] = useState(Boolean(editing));
   let [newValue, setNewValue] = useState(value);
   let contentRef = useRef<HTMLDivElement>(null);
 
@@ -41,8 +43,18 @@ export function Markdown({
   }, [newValue, value]);
 
   useEffect(() => {
-    setInternalEditing(editing);
+    if (editing !== internalEditing) {
+      setInternalEditing(Boolean(editing));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing]);
+
+  useEffect(() => {
+    if (editing !== internalEditing) {
+      onChangeEditing?.(internalEditing);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [internalEditing]);
 
   const markdownHtml = useMemo(
     () => markdownConverter.makeHtml(newValue),
