@@ -12,7 +12,7 @@ import getProject from "../../../collections/project";
 import dayjs from "dayjs";
 import createApi from "@italodeandra/next/api/createApi";
 
-const taskInsertApi = createApi(
+export const taskInsertApi = createApi(
   "/api/task/insert",
   async function handler(
     args: Jsonify<Pick<ITask, "_id" | "status" | "projectId">>,

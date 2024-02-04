@@ -5,10 +5,10 @@ import { useCallback } from "react";
 import { TaskStatus } from "../../../collections/task";
 import { homeState } from "../home.state";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { taskGetApi } from "../../../pages/api/task/get";
+import { taskInsertApi } from "../../../pages/api/task/insert";
 
 export function AddTaskButton({ column }: { column: string }) {
-  let { mutate: insert, isLoading } = taskGetApi.useMutation();
+  let { mutate: insert, isLoading } = taskInsertApi.useMutation();
 
   let handleClick = useCallback(() => {
     insert({
