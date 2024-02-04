@@ -43,7 +43,7 @@ export function TaskDetails({ _id }: { _id: string }) {
   );
 
   return (
-    <div className="-m-4">
+    <div className="-m-4 overflow-auto">
       <>
         <Stack className="m-4">
           {data ? (
@@ -60,6 +60,7 @@ export function TaskDetails({ _id }: { _id: string }) {
           {data ? (
             <Markdown
               value={data.description}
+              className="text-sm"
               editable
               placeholder="Add a description"
               onChange={handleDescriptionSave}
