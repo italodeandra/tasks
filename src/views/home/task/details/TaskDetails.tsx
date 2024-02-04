@@ -9,9 +9,10 @@ import { Markdown } from "../Markdown";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { useCallback } from "react";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function TaskDetails({ _id }: { _id: string }) {
-  const { data, isLoading } = taskGetApi.useQuery({
+  const { data } = taskGetApi.useQuery({
     _id,
   });
 
@@ -43,9 +44,9 @@ export function TaskDetails({ _id }: { _id: string }) {
 
   return (
     <div className="-m-4">
-      {data && (
-        <>
-          <Stack className="m-4">
+      <>
+        <Stack className="m-4">
+          {data ? (
             <Markdown
               value={data.title}
               className="text-lg font-medium"
@@ -53,72 +54,69 @@ export function TaskDetails({ _id }: { _id: string }) {
               onChange={handleTitleSave}
               loading={isUpdating}
             />
+          ) : (
+            <Skeleton className="h-4" />
+          )}
+          {data ? (
             <Markdown
               value={data.description}
               editable
               placeholder="Add a description"
               onChange={handleDescriptionSave}
             />
-          </Stack>
-          {/*<div
-            dangerouslySetInnerHTML={{ __html: data.title }}
-            contentEditable
-          />
-          <div
-            className={clsx("prose prose-zinc dark:prose-invert outline-0", {
-              "opacity-50": !data.description,
-            })}
-            dangerouslySetInnerHTML={{
-              __html: data.description || "Add a description",
-            }}
-            contentEditable
-            onFocus={(e) => {
-              if (!data.description) {
-                e.currentTarget.innerText = "";
-                // const target = e.currentTarget;
-                // setTimeout(() => target.focus(), 100);
-              }
-            }}
-            onBlur={(e) => {
-              if (!data.description) {
-                e.currentTarget.innerText = "Add a description";
-              }
-            }}
-          />*/}
-          <Stack
-            className={clsx(
-              "w-full gap-0 divide-y border-t",
-              "divide-zinc-100 border-zinc-100",
-              "dark:divide-zinc-800 dark:border-zinc-800"
-            )}
+          ) : (
+            <Skeleton className="h-4" />
+          )}
+        </Stack>
+        <Stack
+          className={clsx(
+            "w-full gap-0 divide-y border-t",
+            "divide-zinc-100 border-zinc-100",
+            "dark:divide-zinc-800 dark:border-zinc-800"
+          )}
+        >
+          <LabeledValue
+            label="Timesheet"
+            title={data && dayjs(data.updatedAt).format("LLLL")}
           >
-            <LabeledValue
-              label="Timesheet"
-              title={dayjs(data.updatedAt).format("LLLL")}
-            >
-              <Timer task={data} />
-            </LabeledValue>
-            <LabeledValue label="Status">
+            {data ? <Timer task={data} /> : <Skeleton className="h-4 w-20" />}
+          </LabeledValue>
+          <LabeledValue label="Status">
+            {data ? (
               <ColumnSelect {...data} />
-            </LabeledValue>
-            <LabeledValue label="Project" className="group">
+            ) : (
+              <Skeleton className="h-4 w-20" />
+            )}
+          </LabeledValue>
+          <LabeledValue label="Project" className="group">
+            {data ? (
               <ProjectSelect {...data} triggerClassName="text-md" />
-            </LabeledValue>
-            <LabeledValue
-              label="Created at"
-              title={dayjs(data.createdAt).format("LLLL")}
-            >
-              {dayjs(data.createdAt).fromNow()}
-            </LabeledValue>
-            <LabeledValue
-              label="Updated at"
-              title={dayjs(data.updatedAt).format("LLLL")}
-            >
-              {dayjs(data.updatedAt).fromNow()}
-            </LabeledValue>
-          </Stack>
-        </>
-      )}
+            ) : (
+              <Skeleton className="h-4 w-20" />
+            )}
+          </LabeledValue>
+          <LabeledValue
+            label="Created at"
+            title={data && dayjs(data.createdAt).format("LLLL")}
+          >
+            {data ? (
+              dayjs(data.createdAt).fromNow()
+            ) : (
+              <Skeleton className="h-4 w-20" />
+            )}
+          </LabeledValue>
+          <LabeledValue
+            label="Updated at"
+            title={data && dayjs(data.updatedAt).format("LLLL")}
+          >
+            {data ? (
+              dayjs(data.updatedAt).fromNow()
+            ) : (
+              <Skeleton className="h-4 w-20" />
+            )}
+          </LabeledValue>
+        </Stack>
+      </>
     </div>
   );
 }
