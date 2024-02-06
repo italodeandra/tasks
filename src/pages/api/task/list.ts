@@ -6,13 +6,15 @@ import getTask, { ITask, TaskStatus } from "../../../collections/task";
 import dayjs from "dayjs";
 import getProject, { IProject } from "../../../collections/project";
 import createApi from "@italodeandra/next/api/createApi";
+import getComment from "../../../collections/comment";
 
 export const taskListApi = createApi(
   "/api/task/list",
   async (_args: void, req: NextApiRequest, res: NextApiResponse) => {
     await connectDb();
-    let Task = getTask();
-    let Project = getProject();
+    const Task = getTask();
+    const Project = getProject();
+    const Comment = getComment();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -25,6 +27,8 @@ export const taskListApi = createApi(
           totalTime?: number;
           currentClockIn?: Date;
         };
+        comments: number;
+        description: boolean;
       }
     >([
       {
@@ -111,6 +115,35 @@ export const taskListApi = createApi(
         },
       },
       {
+        $lookup: {
+          from: Comment.collection.collectionName,
+          localField: "_id",
+          foreignField: "taskId",
+          pipeline: [
+            {
+              $count: "count",
+            },
+          ],
+          as: "comments",
+        },
+      },
+      {
+        $addFields: {
+          comments: {
+            $arrayElemAt: ["$comments.count", 0],
+          },
+          description: {
+            $cond: [
+              {
+                $ne: [{ $type: "$description" }, "missing"],
+              },
+              true,
+              false,
+            ],
+          },
+        },
+      },
+      {
         $addFields: {
           statusOrder: {
             $switch: {
@@ -136,7 +169,7 @@ export const taskListApi = createApi(
       },
       {
         $project: {
-          content: 1,
+          description: 1,
           status: 1,
           project: 1,
           order: 1,
@@ -144,6 +177,7 @@ export const taskListApi = createApi(
           "timesheet.totalTime": 1,
           "timesheet.currentClockIn": 1,
           createdAt: 1,
+          comments: 1,
         },
       },
     ]);

@@ -10,6 +10,7 @@ import clsx from "@italodeandra/ui/utils/clsx";
 import { useCallback } from "react";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { Comments } from "./comments/Comments";
 
 export function TaskDetails({ _id }: { _id: string }) {
   const { data } = taskGetApi.useQuery({
@@ -45,7 +46,7 @@ export function TaskDetails({ _id }: { _id: string }) {
   return (
     <div className="-m-4 overflow-auto">
       <>
-        <Stack className="m-4">
+        <Stack className="p-4">
           {data ? (
             <Markdown
               value={data.title}
@@ -71,7 +72,7 @@ export function TaskDetails({ _id }: { _id: string }) {
         </Stack>
         <Stack
           className={clsx(
-            "w-full gap-0 divide-y border-t",
+            "w-full gap-0 divide-y border-y",
             "divide-zinc-100 border-zinc-100",
             "dark:divide-zinc-800 dark:border-zinc-800"
           )}
@@ -117,6 +118,7 @@ export function TaskDetails({ _id }: { _id: string }) {
             )}
           </LabeledValue>
         </Stack>
+        {data && <Comments taskId={data._id} />}
       </>
     </div>
   );

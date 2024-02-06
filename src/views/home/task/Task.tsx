@@ -6,7 +6,11 @@ import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import { Orientation } from "../kanban/Orientation";
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { PencilIcon } from "@heroicons/react/16/solid";
+import {
+  Bars3BottomLeftIcon,
+  ChatBubbleLeftIcon,
+  PencilIcon,
+} from "@heroicons/react/16/solid";
 import { taskUpdateApi } from "../../../pages/api/task/update";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { ProjectSelect } from "./ProjectSelect";
@@ -161,6 +165,17 @@ export default function Task(task: ITask) {
           "items-end justify-end": orientation === Orientation.HORIZONTAL,
         })}
       >
+        {(task.description || task.comments) && (
+          <Group className="items-center gap-1">
+            {task.description && <Bars3BottomLeftIcon className="w-3 h-3" />}
+            {task.comments && (
+              <>
+                <ChatBubbleLeftIcon className="w-3 h-3" />
+                <div className="text-xs">{task.comments}</div>
+              </>
+            )}
+          </Group>
+        )}
         {!isEditing && newValue !== task.content && (
           // eslint-disable-next-line react/jsx-no-undef
           <Button
