@@ -77,10 +77,7 @@ export function TaskDetails({ _id }: { _id: string }) {
             "dark:divide-zinc-800 dark:border-zinc-800"
           )}
         >
-          <LabeledValue
-            label="Timesheet"
-            title={data && dayjs(data.updatedAt).format("LLLL")}
-          >
+          <LabeledValue label="Timesheet">
             {data ? <Timer task={data} /> : <Skeleton className="h-4 w-20" />}
           </LabeledValue>
           <LabeledValue label="Status">
