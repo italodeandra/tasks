@@ -9,7 +9,6 @@ import {
   useState,
 } from "react";
 import { markdownConverter } from "../../../utils/markdownConverter";
-import { isNil } from "lodash";
 import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
 import Loading from "@italodeandra/ui/components/Loading";
 
@@ -66,8 +65,11 @@ export function Markdown({
     if (internalEditing && contentRef.current) {
       setNewValue(contentRef.current.innerText);
       onChange?.(contentRef.current.innerText);
+      if (!contentRef.current.innerText) {
+        contentRef.current.innerText = placeholder || "";
+      }
     }
-  }, [internalEditing, onChange]);
+  }, [internalEditing, onChange, placeholder]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -86,75 +88,15 @@ export function Markdown({
         }
         if (e.key === "Tab") {
           e.preventDefault();
-
-          let selection = window.getSelection();
-          if (selection) {
-            let start =
-              selection.anchorOffset < selection.focusOffset
-                ? selection.anchorOffset
-                : selection.focusOffset;
-            let end =
-              start === selection.anchorOffset
-                ? selection.focusOffset
-                : selection.anchorOffset;
-            if (!isNil(start) && !isNil(end)) {
-              let textBeforeSelection = e.currentTarget.innerText.substring(
-                0,
-                start
-              );
-              let linebreaksBeforeSelection = textBeforeSelection.split("\n");
-              if (!e.shiftKey) {
-                linebreaksBeforeSelection[
-                  linebreaksBeforeSelection.length - 1
-                ] = `  ${
-                  linebreaksBeforeSelection[
-                    linebreaksBeforeSelection.length - 1
-                  ]
-                }`;
-              } else {
-                linebreaksBeforeSelection[
-                  linebreaksBeforeSelection.length - 1
-                ] = linebreaksBeforeSelection[
-                  linebreaksBeforeSelection.length - 1
-                ].replace(/^ {1,2}/g, "");
-              }
-              let indentedBeforeSelection =
-                linebreaksBeforeSelection.join("\n");
-              let beforeSelectionDiff =
-                indentedBeforeSelection.length - textBeforeSelection.length;
-
-              let textInsideSelection = e.currentTarget.innerText.substring(
-                start,
-                end
-              );
-              let linebreaksInsideSelection = textInsideSelection;
-              if (!e.shiftKey) {
-                linebreaksInsideSelection =
-                  linebreaksInsideSelection.replaceAll("\n", "\n  ");
-              } else {
-                linebreaksInsideSelection =
-                  linebreaksInsideSelection.replaceAll("\n  ", "\n");
-              }
-              let insideSelectionDiff =
-                linebreaksInsideSelection.length - textInsideSelection.length;
-
-              let newValue =
-                indentedBeforeSelection +
-                linebreaksInsideSelection +
-                e.currentTarget.innerText.substring(end);
-
-              setNewValue(newValue);
-
-              let el = e.currentTarget;
-
-              setTimeout(() => {
-                setSelectionRange(
-                  el,
-                  start + beforeSelectionDiff,
-                  end + beforeSelectionDiff + insideSelectionDiff
-                );
-              });
-            }
+          const selection = window.getSelection();
+          if (selection && selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const selectedText = range.toString();
+            const newText = e.shiftKey
+              ? selectedText.replace(/^(\t|\s{2})/gm, "")
+              : "\t" + selectedText.replace(/\n/g, "\n\t");
+            range.deleteContents();
+            range.insertNode(document.createTextNode(newText));
           }
         }
       }
