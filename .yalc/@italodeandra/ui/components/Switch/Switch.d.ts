@@ -12,4 +12,4 @@ export interface SwitchProps {
 }
 export default function Switch({ srLabel, checked, onChange, className, rightLabel, readOnly, switchClassName, pointerClassName, }: SwitchProps): JSX.Element;
 export type SwitchInputProps = UnstyledInputCommonProps & SwitchProps;
-export declare function SwitchInput({ inputClassName, ...props }: SwitchInputProps): JSX.Element;
+export declare function SwitchInput({ inputClassName, checked, ...props }: SwitchInputProps): JSX.Element;

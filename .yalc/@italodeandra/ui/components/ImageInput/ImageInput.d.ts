@@ -1,7 +1,7 @@
 /// <reference types="react" />
 declare const _default: import("react").ForwardRefExoticComponent<Pick<Pick<import("../Input").InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<import("../FileSelect").FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
     readOnly?: boolean | undefined;
-    defaultValue?: import("../FileInput").FileInputFile[] | undefined;
+    value?: import("../FileInput").FileInputFile[] | undefined;
     onChange?: ((event: {
         target: {
             value: import("../FileInput").FileInputFile[];
@@ -17,5 +17,5 @@ declare const _default: import("react").ForwardRefExoticComponent<Pick<Pick<impo
         _id: string;
     }>) | undefined;
     onRejectFiles?: ((files: File[], reason: "size" | "type" | "limit" | "upload-error") => void) | undefined;
-} & import("react").RefAttributes<HTMLInputElement>, "className" | "label" | "defaultValue" | "id" | "onChange" | "onMouseOut" | "onMouseOver" | "key" | "disabled" | "name" | "readOnly" | "required" | "error" | "icon" | "helpText" | "emptyText" | "maxFileSize" | "allowedFileTypes" | "limit" | "uploadAFileText" | "orDragAndDropText" | "upToText" | "anyFileText" | "dropFilesHereText" | "uploadingText" | "uploading" | "additionalBottomInfo" | "onRejectFiles" | "helperText" | "downloadText" | "openText" | "preview" | "asyncUpload"> & import("react").RefAttributes<HTMLInputElement>>;
+} & import("react").RefAttributes<HTMLInputElement>, "className" | "label" | "id" | "onChange" | "onMouseOut" | "onMouseOver" | "key" | "disabled" | "name" | "readOnly" | "required" | "value" | "error" | "icon" | "helpText" | "emptyText" | "maxFileSize" | "allowedFileTypes" | "limit" | "uploadAFileText" | "orDragAndDropText" | "upToText" | "anyFileText" | "dropFilesHereText" | "uploadingText" | "uploading" | "additionalBottomInfo" | "onRejectFiles" | "helperText" | "downloadText" | "openText" | "preview" | "asyncUpload"> & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

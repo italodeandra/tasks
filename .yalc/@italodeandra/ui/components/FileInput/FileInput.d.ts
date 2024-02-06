@@ -18,9 +18,9 @@ export type FileUrl = {
     size: number;
 };
 export type FileInputFile = FileFile | FileUrl;
-declare function FileInput({ error, className, helpText, onChange, name, limit, label, id, required, onMouseOver, onMouseOut, readOnly, defaultValue, emptyText, downloadText, openText, preview, asyncUpload, onRejectFiles, ...props }: Pick<InputProps<false>, "error" | "className" | "helpText" | "name" | "label" | "id" | "required" | "onMouseOver" | "onMouseOut"> & Omit<FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
+declare function FileInput({ error, className, helpText, onChange, name, limit, label, id, required, onMouseOver, onMouseOut, readOnly, value, emptyText, downloadText, openText, preview, asyncUpload, onRejectFiles, ...props }: Pick<InputProps<false>, "error" | "className" | "helpText" | "name" | "label" | "id" | "required" | "onMouseOver" | "onMouseOut"> & Omit<FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
     readOnly?: boolean;
-    defaultValue?: FileInputFile[];
+    value?: FileInputFile[];
     onChange?: (event: {
         target: {
             value: FileInputFile[];
@@ -40,7 +40,7 @@ declare function FileInput({ error, className, helpText, onChange, name, limit, 
 export type FileInputProps = ComponentPropsWithRef<typeof FileInput>;
 declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
     readOnly?: boolean | undefined;
-    defaultValue?: FileInputFile[] | undefined;
+    value?: FileInputFile[] | undefined;
     onChange?: ((event: {
         target: {
             value: FileInputFile[];

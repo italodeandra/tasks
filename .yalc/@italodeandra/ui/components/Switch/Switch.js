@@ -32,7 +32,7 @@ var clsx_1 = __importDefault(require("../../utils/clsx"));
 var Input_1 = __importDefault(require("../Input"));
 function Switch(_a) {
     var srLabel = _a.srLabel, checked = _a.checked, onChange = _a.onChange, className = _a.className, rightLabel = _a.rightLabel, readOnly = _a.readOnly, switchClassName = _a.switchClassName, pointerClassName = _a.pointerClassName;
-    return ((0, jsx_runtime_1.jsxs)(react_1.Switch.Group, { as: "div", className: (0, clsx_1.default)("flex items-center", className), children: [(0, jsx_runtime_1.jsxs)(react_1.Switch, { checked: checked, onChange: onChange, className: (0, clsx_1.default)({
+    return ((0, jsx_runtime_1.jsxs)(react_1.Switch.Group, { as: "div", className: (0, clsx_1.default)(className, "flex items-center"), children: [(0, jsx_runtime_1.jsxs)(react_1.Switch, { checked: checked, onChange: onChange, className: (0, clsx_1.default)({
                     "bg-primary-600": checked,
                     "bg-zinc-300 dark:bg-zinc-600": !checked,
                     "cursor-pointer": !readOnly,
@@ -43,9 +43,9 @@ function Switch(_a) {
 }
 exports.default = Switch;
 function SwitchInput(_a) {
-    var inputClassName = _a.inputClassName, props = __rest(_a, ["inputClassName"]);
+    var inputClassName = _a.inputClassName, checked = _a.checked, props = __rest(_a, ["inputClassName", "checked"]);
     return ((0, jsx_runtime_1.jsx)(Input_1.default
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    , __assign({}, props, { as: Switch, inputClassName: (0, clsx_1.default)("p-1.5 border bg-white", inputClassName) })));
+    , __assign({}, props, { as: Switch, inputClassName: (0, clsx_1.default)("p-1.5 border bg-white", inputClassName), checked: !!checked })));
 }
 exports.SwitchInput = SwitchInput;

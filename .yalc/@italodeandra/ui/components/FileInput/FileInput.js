@@ -131,20 +131,20 @@ function PreviewFile(_a) {
 function FileInput(_a, ref) {
     var _b;
     var _this = this;
-    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, readOnly = _a.readOnly, defaultValue = _a.defaultValue, _c = _a.emptyText, emptyText = _c === void 0 ? "No files" : _c, _d = _a.downloadText, downloadText = _d === void 0 ? "Download" : _d, _e = _a.openText, openText = _e === void 0 ? "Open" : _e, preview = _a.preview, asyncUpload = _a.asyncUpload, onRejectFiles = _a.onRejectFiles, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut", "readOnly", "defaultValue", "emptyText", "downloadText", "openText", "preview", "asyncUpload", "onRejectFiles"]);
+    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, readOnly = _a.readOnly, value = _a.value, _c = _a.emptyText, emptyText = _c === void 0 ? "No files" : _c, _d = _a.downloadText, downloadText = _d === void 0 ? "Download" : _d, _e = _a.openText, openText = _e === void 0 ? "Open" : _e, preview = _a.preview, asyncUpload = _a.asyncUpload, onRejectFiles = _a.onRejectFiles, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut", "readOnly", "value", "emptyText", "downloadText", "openText", "preview", "asyncUpload", "onRejectFiles"]);
     var _f = __read((0, react_1.useState)(false), 2), uploading = _f[0], setUploading = _f[1];
-    var _g = __read((0, react_1.useState)(defaultValue || []), 2), value = _g[0], setValue = _g[1];
+    var _g = __read((0, react_1.useState)(value || []), 2), innerValue = _g[0], setInnerValue = _g[1];
     (0, react_use_1.useDeepCompareEffect)(function () {
-        if (defaultValue && !(0, lodash_1.isEqual)(defaultValue, value)) {
-            setValue(defaultValue);
+        if (value && !(0, lodash_1.isEqual)(value, innerValue)) {
+            setInnerValue(value);
         }
-    }, [{ defaultValue: defaultValue }]);
+    }, [{ value: value }]);
     var innerRef = (0, react_1.useRef)({
         get value() {
-            return value;
+            return innerValue;
         },
         set value(value) {
-            setValue(value || []);
+            setInnerValue(value || []);
         },
     });
     (0, react_1.useEffect)(function () {
@@ -169,7 +169,7 @@ function FileInput(_a, ref) {
             switch (_b.label) {
                 case 0:
                     if (!!asyncUpload) return [3 /*break*/, 1];
-                    setValue(function (value) { return __spreadArray(__spreadArray([], __read(value), false), __read(files
+                    setInnerValue(function (value) { return __spreadArray(__spreadArray([], __read(value), false), __read(files
                         .filter(function (_file, index) { return !limit || index <= limit - value.length - 1; })
                         .map(function (file) { return ({
                         _id: (0, isomorphicObjectId_1.default)().toString(),
@@ -182,12 +182,12 @@ function FileInput(_a, ref) {
                 case 1:
                     setUploading(true);
                     if (onRejectFiles) {
-                        rejectedFilesLimit = files.filter(function (_file, index) { return !(!limit || index <= limit - value.length - 1); });
+                        rejectedFilesLimit = files.filter(function (_file, index) { return !(!limit || index <= limit - innerValue.length - 1); });
                         if (rejectedFilesLimit.length) {
                             onRejectFiles(rejectedFilesLimit, "limit");
                         }
                     }
-                    acceptedFiles = files.filter(function (_file, index) { return !limit || index <= limit - value.length - 1; });
+                    acceptedFiles = files.filter(function (_file, index) { return !limit || index <= limit - innerValue.length - 1; });
                     filesNotUploaded = [];
                     _loop_1 = function (file) {
                         var uploadedFile_1, e_2;
@@ -204,7 +204,7 @@ function FileInput(_a, ref) {
                                         })];
                                 case 1:
                                     uploadedFile_1 = _c.sent();
-                                    setValue(function (value) { return __spreadArray(__spreadArray([], __read(value), false), [uploadedFile_1], false); });
+                                    setInnerValue(function (value) { return __spreadArray(__spreadArray([], __read(value), false), [uploadedFile_1], false); });
                                     return [3 /*break*/, 3];
                                 case 2:
                                     e_2 = _c.sent();
@@ -255,7 +255,7 @@ function FileInput(_a, ref) {
             onChange({
                 target: {
                     name: name,
-                    value: value.map(function (file) { return ({
+                    value: innerValue.map(function (file) { return ({
                         _id: file._id,
                         url: file.file
                             ? URL.createObjectURL(file.file)
@@ -270,15 +270,15 @@ function FileInput(_a, ref) {
             });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
+    }, [innerValue]);
     var handleDeleteClick = (0, react_1.useCallback)(function (clickedFile) { return function () {
-        setValue(function (value) { return __spreadArray([], __read(value.filter(function (file) { return file !== clickedFile; })), false); });
+        setInnerValue(function (value) { return __spreadArray([], __read(value.filter(function (file) { return file !== clickedFile; })), false); });
     }; }, []);
     return ((0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("relative", className, (_b = {},
             _b["error"] = error,
             _b)), onMouseOver: onMouseOver, onMouseOut: onMouseOut, children: [label && ((0, jsx_runtime_1.jsxs)("label", { htmlFor: id, className: Input_1.defaultLabelClassName, children: [label, required && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", (0, jsx_runtime_1.jsx)("span", { className: "text-red-500", children: "*" })] }))] })), (0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("grid grid-cols-1 gap-4", {
-                    "md:grid-cols-2": !!value.length,
-                    "min-h-[140px]": !!value.length || !readOnly,
-                }), children: [value.map(function (file, i) { return ((0, jsx_runtime_1.jsx)(PreviewFile, { file: file, readOnly: readOnly, handleDeleteClick: handleDeleteClick(file), downloadText: downloadText, preview: preview, openText: openText }, i)); }), readOnly && !value.length && ((0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: emptyText })), !readOnly && (!limit || value.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - value.length : undefined, uploading: uploading, onRejectFiles: onRejectFiles })))] }), helpText && (0, jsx_runtime_1.jsx)("div", { className: Input_1.defaultHelpTextClassName, children: helpText })] }));
+                    "md:grid-cols-2": !!innerValue.length,
+                    "min-h-[140px]": !!innerValue.length || !readOnly,
+                }), children: [innerValue.map(function (file, i) { return ((0, jsx_runtime_1.jsx)(PreviewFile, { file: file, readOnly: readOnly, handleDeleteClick: handleDeleteClick(file), downloadText: downloadText, preview: preview, openText: openText }, i)); }), readOnly && !innerValue.length && ((0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: emptyText })), !readOnly && (!limit || innerValue.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - innerValue.length : undefined, uploading: uploading, onRejectFiles: onRejectFiles })))] }), helpText && (0, jsx_runtime_1.jsx)("div", { className: Input_1.defaultHelpTextClassName, children: helpText })] }));
 }
 exports.default = (0, react_1.forwardRef)(FileInput);

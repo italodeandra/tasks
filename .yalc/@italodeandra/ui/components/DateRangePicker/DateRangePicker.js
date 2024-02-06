@@ -55,10 +55,10 @@ var classNames = {
     cell: (0, clsx_1.default)("p-0", "has-[.ui-date-picker-day-outside]:opacity-40", "dark:has-[.ui-date-picker-day-outside]:opacity-30", "has-[.ui-date-picker-day-range-start]:rounded-l first:rounded-l", "has-[.ui-date-picker-day-range-start]:bg-black/5", "dark:has-[.ui-date-picker-day-range-start]:bg-white/10", "has-[.ui-date-picker-day-range-middle]:bg-black/5", "dark:has-[.ui-date-picker-day-range-middle]:bg-white/10", "has-[.ui-date-picker-day-range-end]:rounded-r last:rounded-r", "has-[.ui-date-picker-day-range-end]:bg-black/5", "dark:has-[.ui-date-picker-day-range-end]:bg-white/10"),
 };
 function DateRangePicker(_a) {
-    var value = _a.value, onChangeValue = _a.onChangeValue, children = _a.children, buttonProps = _a.buttonProps, fromDate = _a.fromDate, toDate = _a.toDate, min = _a.min, max = _a.max;
+    var value = _a.value, onValueChange = _a.onValueChange, children = _a.children, buttonProps = _a.buttonProps, fromDate = _a.fromDate, toDate = _a.toDate, min = _a.min, max = _a.max, footer = _a.footer, monthFooter = _a.monthFooter;
     var _b = __read((0, react_1.useState)(value), 2), range = _b[0], setRange = _b[1];
     (0, react_use_1.useDeepCompareEffect)(function () {
-        onChangeValue === null || onChangeValue === void 0 ? void 0 : onChangeValue(range);
+        onValueChange === null || onValueChange === void 0 ? void 0 : onValueChange(range);
     }, [range || {}]);
     var buttonText = (0, react_1.useMemo)(function () {
         var buttonText = "";
@@ -73,21 +73,21 @@ function DateRangePicker(_a) {
         return buttonText;
     }, [range]);
     var children2 = children ? (children(buttonText)) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({}, buttonProps, { leading: (buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.leading) || (0, jsx_runtime_1.jsx)(solid_1.CalendarIcon, {}), className: (0, clsx_1.default)(classNames.button, buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.className), children: buttonText })));
-    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsx)(Popover_1.default.Content, { children: (0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: {
-                        months: classNames.months,
-                        caption: classNames.caption,
-                        nav_button_previous: classNames.navButtonPrevious,
-                        nav_button_next: classNames.navButtonNext,
-                        nav_button: classNames.navButton,
-                        head: classNames.head,
-                        head_cell: classNames.headCell,
-                        day: classNames.day,
-                        cell: classNames.cell,
-                        table: classNames.table,
-                        day_range_start: (0, clsx_1.default)("ui-date-picker-day-range-start", classNames.dayRangeStart),
-                        day_range_end: (0, clsx_1.default)("ui-date-picker-day-range-end", classNames.dayRangeEnd),
-                        day_outside: "ui-date-picker-day-outside",
-                        day_range_middle: "ui-date-picker-day-range-middle",
-                    }, fromDate: fromDate, toDate: toDate, min: min, max: max }) })] }));
+    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsxs)(Popover_1.default.Content, { children: [(0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: {
+                            months: classNames.months,
+                            caption: classNames.caption,
+                            nav_button_previous: classNames.navButtonPrevious,
+                            nav_button_next: classNames.navButtonNext,
+                            nav_button: classNames.navButton,
+                            head: classNames.head,
+                            head_cell: classNames.headCell,
+                            day: classNames.day,
+                            cell: classNames.cell,
+                            table: classNames.table,
+                            day_range_start: (0, clsx_1.default)("ui-date-picker-day-range-start", classNames.dayRangeStart),
+                            day_range_end: (0, clsx_1.default)("ui-date-picker-day-range-end", classNames.dayRangeEnd),
+                            day_outside: "ui-date-picker-day-outside",
+                            day_range_middle: "ui-date-picker-day-range-middle",
+                        }, fromDate: fromDate, toDate: toDate, min: min, max: max, footer: monthFooter }), footer] })] }));
 }
 exports.default = DateRangePicker;

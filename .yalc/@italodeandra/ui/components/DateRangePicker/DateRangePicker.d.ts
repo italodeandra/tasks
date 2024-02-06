@@ -1,14 +1,16 @@
-import { ComponentProps, ReactElement } from "react";
+import { ComponentProps, ReactElement, ReactNode } from "react";
 import { DateRange } from "react-day-picker";
 import Button from "../Button";
 export type { DateRange };
-export default function DateRangePicker({ value, onChangeValue, children, buttonProps, fromDate, toDate, min, max, }: {
+export default function DateRangePicker({ value, onValueChange, children, buttonProps, fromDate, toDate, min, max, footer, monthFooter, }: {
     value?: DateRange;
-    onChangeValue?: (value?: DateRange) => void;
+    onValueChange?: (value?: DateRange) => void;
     children?: (value: string) => ReactElement;
     buttonProps?: ComponentProps<typeof Button>;
     fromDate?: Date;
     toDate?: Date;
     min?: number;
     max?: number;
+    footer?: ReactNode;
+    monthFooter?: ReactNode;
 }): JSX.Element;

@@ -6,7 +6,7 @@ export default function createApi<T extends (...args: any) => any, C extends Rec
         onMutate?: (variables: InferApiArgs<T>, queryClient: QueryClient) => Promise<C> | C | void;
         onSuccess?: (data: InferApiResponse<T>, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
         onError?: (error: unknown, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
-        onSettled?: (data: InferApiResponse<T>, error: unknown, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
+        onSettled?: (data: InferApiResponse<T> | undefined, error: unknown, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
     };
 }): {
     handler: import("next").NextApiHandler;
@@ -17,7 +17,7 @@ export default function createApi<T extends (...args: any) => any, C extends Rec
         MutationOptions: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown>;
     };
     useQuery: (args: InferApiArgs<T>, options?: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey> | undefined) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, unknown>;
-    useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<any, unknown, any, C>;
+    useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<InferApiResponse<T>, unknown, InferApiArgs<T>, C>;
     invalidate: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     cancelQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     getQueryData: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => InferApiResponse<T> | undefined;
