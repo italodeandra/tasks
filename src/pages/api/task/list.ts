@@ -27,8 +27,8 @@ export const taskListApi = createApi(
           totalTime?: number;
           currentClockIn?: Date;
         };
-        comments: number;
-        description: boolean;
+        comments?: number;
+        description?: boolean;
       }
     >([
       {

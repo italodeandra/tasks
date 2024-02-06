@@ -10,7 +10,7 @@ import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { invalidate_projectList } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import getProject from "../../../collections/project";
-import { pick } from "lodash";
+import { omit, pick } from "lodash";
 import { taskGetApi } from "./get";
 
 export const taskUpdateApi = createApi(
@@ -78,8 +78,9 @@ export const taskUpdateApi = createApi(
         await taskListApi.cancelQueries(queryClient);
         const previousTaskListData = taskListApi.getQueryData(queryClient);
         taskListApi.setQueryData(queryClient, (data) => [
-          ...(data?.map((t) => (t._id === args._id ? { ...t, ...args } : t)) ||
-            []),
+          ...(data?.map((t) =>
+            t._id === args._id ? { ...t, ...omit(args, "description") } : t
+          ) || []),
         ]);
 
         await taskGetApi.cancelQueries(queryClient, args);
