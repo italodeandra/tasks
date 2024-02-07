@@ -18,7 +18,7 @@ import {
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import getTask from "../../../collections/task";
+import getTask, { TaskStatus } from "../../../collections/task";
 import { taskListApi } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
@@ -74,6 +74,8 @@ async function handler(
       {
         $set: {
           updatedAt: new Date(),
+          status: TaskStatus.DOING,
+          order: -1,
         },
       }
     );
