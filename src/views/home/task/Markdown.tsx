@@ -135,7 +135,7 @@ export function Markdown({
         ref={contentRef}
         className={clsx(
           "outline-0 [&_a]:truncate [&_a]:block rounded whitespace-pre-wrap prose prose-zinc dark:prose-invert",
-          "prose-ul:my-0 prose-li:my-0 prose-ul:leading-none prose-li:leading-none",
+          "prose-ul:-my-4 prose-ul:leading-none prose-li:my-0 prose-p:my-0 [&_li_a]:my-0 prose-li:leading-none",
           {
             "cursor-text": internalEditing,
             "select-none": !internalEditing,
