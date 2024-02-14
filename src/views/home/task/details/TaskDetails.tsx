@@ -50,7 +50,7 @@ export function TaskDetails({ _id }: { _id: string }) {
           {data ? (
             <Markdown
               value={data.title}
-              className="text-lg font-medium"
+              className="text-lg font-medium transition hover:bg-zinc-100 dark:hover:bg-zinc-800"
               editable
               onChange={handleTitleSave}
               loading={isUpdating}
@@ -61,7 +61,7 @@ export function TaskDetails({ _id }: { _id: string }) {
           {data ? (
             <Markdown
               value={data.description}
-              className="text-sm"
+              className="text-sm transition hover:bg-zinc-100 dark:hover:bg-zinc-800 pb-4"
               editable
               placeholder="Add a description"
               onChange={handleDescriptionSave}
