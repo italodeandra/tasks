@@ -6,7 +6,7 @@ import { PlusIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import { commentListApi } from "../../../../../pages/api/comment/list";
 import { commentAddApi } from "../../../../../pages/api/comment/add";
@@ -15,6 +15,10 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { commentRemoveApi } from "../../../../../pages/api/comment/remove";
 import clsx from "@italodeandra/ui/utils/clsx";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { markdownConverter } from "../../../../../utils/markdownConverter";
 
 function NewComment({
   taskId,
@@ -30,16 +34,35 @@ function NewComment({
     mutate({
       _id: isomorphicObjectId().toString(),
       taskId,
-      content,
+      content: content.trim(),
     });
     onSubmit();
   };
 
   return (
     <Input
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      as={CodeMirror as any}
+      {...({
+        onChange: setContent,
+        extensions: [
+          EditorView.lineWrapping,
+          markdown({ base: markdownLanguage }),
+        ],
+        theme: vscodeDark,
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      } as any)}
+      value={content}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          handleSubmit();
+        }
+      }}
       placeholder="New comment"
       autoFocus
       trailingClassName="pr-0.5"
+      inputClassName="dark:bg-[#1e1e1e] pl-0"
       trailing={
         <Button
           icon
@@ -52,14 +75,6 @@ function NewComment({
           <PaperAirplaneIcon />
         </Button>
       }
-      value={content}
-      onChange={(e) => setContent(e.currentTarget.value)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          handleSubmit();
-        }
-      }}
     />
   );
 }
@@ -76,10 +91,22 @@ function Comment({
   const { mutate: remove, isLoading: isRemoving } =
     commentRemoveApi.useMutation();
 
+  const markdownHtml = useMemo(
+    () => markdownConverter.makeHtml(content.trim()),
+    [content]
+  );
+
   return (
     <div className="group">
-      {content}
-      <div className="text-zinc-500 float-right flex gap-1">
+      <div
+        className={clsx(
+          "prose prose-zinc dark:prose-invert",
+          "prose-pre:p-0 prose-ul:my-0 prose-li:my-0 prose-p:my-0 [&_.task-list-item]:pl-3 [&_p+p]:mt-4"
+        )}
+        dangerouslySetInnerHTML={{ __html: markdownHtml }}
+      />
+      <div className="text-zinc-500 flex gap-1">
+        <span>{dayjs(createdAt).fromNow()}</span>
         <Tooltip content="Delete this comment">
           <Button
             icon
@@ -97,7 +124,6 @@ function Comment({
             <TrashIcon />
           </Button>
         </Tooltip>
-        {dayjs(createdAt).fromNow()}
       </div>
     </div>
   );
