@@ -119,7 +119,7 @@ export function Markdown({
         <div
           ref={contentRef}
           className={clsx(
-            "prose prose-zinc dark:prose-invert",
+            "max-w-full prose prose-zinc dark:prose-invert",
             "prose-pre:p-0 prose-ul:my-0 prose-li:my-0 prose-p:my-0 [&_.task-list-item]:pl-3 [&_p+p]:mt-4",
             {
               "cursor-text": internalEditing,
