@@ -19,6 +19,7 @@ import Notifications from "@italodeandra/ui/components/Notifications/Notificatio
 import { Dialogs } from "@italodeandra/ui/components/Dialog";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutationWindowCloseProtection";
+import "highlight.js/styles/github-dark.css";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);

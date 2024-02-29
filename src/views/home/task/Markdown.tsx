@@ -1,6 +1,5 @@
 import clsx from "@italodeandra/ui/utils/clsx";
 import {
-  FocusEvent,
   KeyboardEvent,
   useCallback,
   useEffect,
@@ -11,6 +10,9 @@ import {
 import { markdownConverter } from "../../../utils/markdownConverter";
 import setSelectionRange from "@italodeandra/ui/utils/setSelectionRange";
 import Loading from "@italodeandra/ui/components/Loading";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 
 export function Markdown({
   value = "",
@@ -39,7 +41,8 @@ export function Markdown({
     if (newValue !== value) {
       setNewValue(value);
     }
-  }, [newValue, value]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
 
   useEffect(() => {
     if (editing !== internalEditing) {
@@ -62,55 +65,21 @@ export function Markdown({
 
   const saveChanges = useCallback(() => {
     setInternalEditing(false);
-    if (internalEditing && contentRef.current) {
-      setNewValue(contentRef.current.innerText);
-      onChange?.(contentRef.current.innerText);
-      if (!contentRef.current.innerText) {
-        contentRef.current.innerText = placeholder || "";
-      }
+    if (internalEditing) {
+      onChange?.(newValue.trim());
     }
-  }, [internalEditing, onChange, placeholder]);
+  }, [internalEditing, newValue, onChange]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (internalEditing) {
-        if (e.key === "Enter" && !e.shiftKey) {
+        if (e.key === "Escape") {
           e.preventDefault();
           saveChanges();
         }
-        if (e.key === "Escape") {
-          e.preventDefault();
-          e.currentTarget.innerText = value;
-          if (!value) {
-            saveChanges();
-          }
-          setInternalEditing(false);
-        }
-        if (e.key === "Tab") {
-          e.preventDefault();
-          const selection = window.getSelection();
-          if (selection && selection.rangeCount > 0) {
-            const range = selection.getRangeAt(0);
-            const selectedText = range.toString();
-            const newText = e.shiftKey
-              ? selectedText.replace(/^(\t|\s{2})/gm, "")
-              : "\t" + selectedText.replace(/\n/g, "\n\t");
-            range.deleteContents();
-            range.insertNode(document.createTextNode(newText));
-          }
-        }
       }
     },
-    [internalEditing, saveChanges, value]
-  );
-
-  const handleFocus = useCallback(
-    (e: FocusEvent<HTMLDivElement>) => {
-      if (!newValue && placeholder) {
-        e.currentTarget.innerText = "";
-      }
-    },
-    [newValue, placeholder]
+    [internalEditing, saveChanges]
   );
 
   useEffect(() => {
@@ -128,35 +97,47 @@ export function Markdown({
     setInternalEditing(true);
   }, []);
 
+  const handleChange = useCallback((value: string) => {
+    setNewValue(value);
+  }, []);
+
   return (
     <div className="relative flex-1">
       {loading && <Loading className="absolute top-0.5 right-0.5 w-4 h-4" />}
-      <div
-        ref={contentRef}
-        className={clsx(
-          "outline-0 [&_a]:truncate [&_a]:block rounded whitespace-pre-wrap prose prose-zinc dark:prose-invert",
-          "prose-ul:-my-4 prose-ul:leading-none prose-li:my-0 prose-p:my-0 [&_li_a]:my-0 prose-li:leading-none",
-          {
-            "cursor-text": internalEditing,
-            "select-none": !internalEditing,
-            "opacity-50": !newValue && !internalEditing && placeholder,
-          },
-          className
-        )}
-        dangerouslySetInnerHTML={{
-          __html:
-            (internalEditing ? newValue : markdownHtml) || placeholder || "",
-        }}
-        {...(editable
-          ? {
-              contentEditable: internalEditing,
-              onKeyDown: handleKeyDown,
-              onBlur: saveChanges,
-              onDoubleClick: handleDoubleClick,
-              onFocus: handleFocus,
-            }
-          : {})}
-      />
+      {internalEditing ? (
+        <CodeMirror
+          value={newValue}
+          extensions={[
+            EditorView.lineWrapping,
+            markdown({ base: markdownLanguage }),
+          ]}
+          onChange={handleChange}
+          theme={vscodeDark}
+          onKeyDown={handleKeyDown}
+        />
+      ) : (
+        <div
+          ref={contentRef}
+          className={clsx(
+            "prose prose-zinc dark:prose-invert",
+            "prose-pre:p-0 prose-ul:my-0 prose-li:my-0 prose-p:my-0 [&_.task-list-item]:pl-3",
+            {
+              "cursor-text": internalEditing,
+              "select-none": !internalEditing,
+              "opacity-50": !newValue && !internalEditing && placeholder,
+            },
+            className
+          )}
+          dangerouslySetInnerHTML={{
+            __html: markdownHtml,
+          }}
+          {...(editable
+            ? {
+                onDoubleClick: handleDoubleClick,
+              }
+            : {})}
+        />
+      )}
     </div>
   );
 }

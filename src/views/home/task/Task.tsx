@@ -152,7 +152,7 @@ export default function Task(task: ITask) {
     >
       <Markdown
         value={task.content}
-        className="text-sm flex-1 overflow-hidden px-1.5 py-1 -m-1 min-h-[28px]"
+        className="text-sm flex-1 overflow-hidden px-1.5 py-1 -m-1 min-h-[28px] [&_.task-list-item]:pl-0.5"
         onChange={handleSaveClick}
         editable
         loading={isUpdating}
