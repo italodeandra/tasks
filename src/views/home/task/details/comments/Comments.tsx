@@ -100,12 +100,12 @@ function Comment({
     <div className="group">
       <div
         className={clsx(
-          "prose prose-zinc dark:prose-invert",
+          "prose prose-zinc dark:prose-invert text-sm",
           "prose-pre:p-0 prose-ul:my-0 prose-li:my-0 prose-p:my-0 [&_.task-list-item]:pl-3 [&_p+p]:mt-4"
         )}
         dangerouslySetInnerHTML={{ __html: markdownHtml }}
       />
-      <div className="text-zinc-500 flex gap-1">
+      <div className="text-zinc-500 flex gap-1 text-xs">
         <span>{dayjs(createdAt).fromNow()}</span>
         <Tooltip content="Delete this comment">
           <Button
