@@ -208,7 +208,8 @@ export function Kanban<
               <div
                 key={container}
                 className={clsx("flex flex-col gap-0.5", {
-                  "max-w-[300px]": orientation === Orientation.HORIZONTAL,
+                  "max-w-[300px] shrink-0":
+                    orientation === Orientation.HORIZONTAL,
                   "w-full": orientation === Orientation.HORIZONTAL && !isHidden,
                 })}
               >
