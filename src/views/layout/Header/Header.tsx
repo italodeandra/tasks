@@ -1,8 +1,7 @@
-import ModeToggle from "@italodeandra/ui/components/ModeToggle";
 import Image from "next/image";
 import NextLink from "next/link";
 import UiHeader from "@italodeandra/ui/components/Header";
-import UserMenu from "../../panel/layout/UserMenu";
+import UserMenu from "../../panel/layout/user-menu/UserMenu";
 import React from "react";
 import { TimesheetStatus } from "./TimesheetStatus";
 
@@ -15,7 +14,6 @@ export default function Header() {
       <span className="ml-1 text-xl font-medium">Tasks</span>
       <div className="flex-grow" />
       <TimesheetStatus />
-      <ModeToggle />
       <UserMenu />
     </UiHeader>
   );

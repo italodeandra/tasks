@@ -2,7 +2,7 @@ import UiHeader from "@italodeandra/ui/components/Header/Header";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
-import UserMenu from "./UserMenu";
+import UserMenu from "./user-menu/UserMenu";
 import navigationDrawerState from "@italodeandra/ui/components/NavigationDrawer/navigationDrawer.state";
 import NextLink from "next/link";
 import Routes from "../../../Routes";

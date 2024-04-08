@@ -16,18 +16,19 @@ import getInitials from "@italodeandra/ui/utils/getInitials";
 import { useAuthPanelUserStopImpersonate } from "@italodeandra/auth/api/panel/user/stop-impersonate";
 import { UserType } from "@italodeandra/auth/collections/user/User";
 import { checkUserType } from "@italodeandra/auth/collections/user/User.service";
-import Routes from "../../../Routes";
+import Routes from "../../../../Routes";
+import { DarkModeMenuItem } from "./DarkModeMenuItem";
 
 export default function UserMenu() {
-  let queryClient = useQueryClient();
-  let { token, previousToken } = useAuthSnapshot();
-  let { data: user, isLoading: isLoadingUser, isError } = useAuthGetUser();
-  let router = useRouter();
-  let { mutate: stopImpersonate, isLoading: isStoppingImpersonate } =
+  const queryClient = useQueryClient();
+  const { token, previousToken } = useAuthSnapshot();
+  const { data: user, isLoading: isLoadingUser, isError } = useAuthGetUser();
+  const router = useRouter();
+  const { mutate: stopImpersonate, isLoading: isStoppingImpersonate } =
     useAuthPanelUserStopImpersonate();
-  let isAdmin = checkUserType(user, [UserType.ADMIN]);
+  const isAdmin = checkUserType(user, [UserType.ADMIN]);
 
-  let handleLogOutClick = useCallback(async () => {
+  const handleLogOutClick = useCallback(async () => {
     authState.token = null;
     deleteCookie("auth", { path: "/" });
     setData_authGetUser(queryClient, null);
@@ -67,6 +68,7 @@ export default function UserMenu() {
             <DropdownMenu.Label title={user.email}>
               {user.name || user.email}
             </DropdownMenu.Label>
+            <DarkModeMenuItem />
             {previousToken && (
               <DropdownMenu.Item onClick={() => stopImpersonate()}>
                 Stop impersonating
