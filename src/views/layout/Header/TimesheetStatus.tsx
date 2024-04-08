@@ -6,6 +6,8 @@ import Text from "@italodeandra/ui/components/Text";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import { timesheetStatusApi } from "../../../pages/api/timesheet/status";
 import dayjs from "dayjs";
+import { ClockIcon } from "@heroicons/react/24/outline";
+import Tooltip from "@italodeandra/ui/components/Tooltip";
 
 export function TimesheetStatus() {
   let { data, isLoading } = timesheetStatusApi.useQuery({
@@ -26,9 +28,16 @@ export function TimesheetStatus() {
         <Timer task={data.currentClock} buttonVariant="outlined" />
       )}
       {!!data.todayClockedTime && (
-        <Text size="sm">
-          Today: {prettyMilliseconds(data.todayClockedTime)}
-        </Text>
+        <Tooltip
+          content={`Time clocked today: ${prettyMilliseconds(
+            data.todayClockedTime
+          )}`}
+        >
+          <Text size="sm" className="whitespace-nowrap flex items-center gap-1">
+            <ClockIcon className="shrink-0 w-4 h-4" />{" "}
+            {prettyMilliseconds(data.todayClockedTime)}
+          </Text>
+        </Tooltip>
       )}
     </Group>
   );
