@@ -29,7 +29,6 @@ export function AddTaskButton({ column }: { column: string }) {
         icon
         size="xs"
         variant="text"
-        className="-mt-1"
         loading={isLoading}
         onClick={handleClick}
       >

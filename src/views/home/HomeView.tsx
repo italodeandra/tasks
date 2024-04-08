@@ -14,7 +14,8 @@ import { renderTask } from "./task/renderTask";
 import { Timesheet } from "./timesheet/Timesheet";
 
 export function HomeView() {
-  let { orientation, showTimesheet, editingTasks } = useSnapshot(homeState);
+  let { orientation, showTimesheet, editingTasks, hiddenColumns } =
+    useSnapshot(homeState);
   let { data: databaseTasks, isLoading, isFetching } = taskListApi.useQuery();
   let { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
@@ -64,6 +65,7 @@ export function HomeView() {
               renderColumn={renderColumn}
               renderItem={renderTask}
               disabledItems={editingTasks as string[]}
+              hiddenColumns={hiddenColumns as string[]}
             />
           )}
         </div>

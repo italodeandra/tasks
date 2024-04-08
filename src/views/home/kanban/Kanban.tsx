@@ -48,6 +48,7 @@ export function Kanban<
   orientation = Orientation.VERTICAL,
   renderColumn,
   disabledItems,
+  hiddenColumns,
 }: {
   value: T[];
   onChangeValue: (value: T[]) => void;
@@ -55,6 +56,7 @@ export function Kanban<
   renderColumn: (column: string, taskCount: number) => ReactNode;
   orientation?: Orientation;
   disabledItems?: string[];
+  hiddenColumns?: string[];
 }) {
   let [activeId, setActiveId] = useState<string | null>(null);
   let [items, setItems] = useState<Record<string, string[]>>({});
@@ -200,7 +202,8 @@ export function Kanban<
           })}
         >
           {containers.map((container) => {
-            let containerItems = items[container];
+            const containerItems = items[container];
+            const isHidden = hiddenColumns?.includes(container.toString());
             return (
               <div
                 key={container}
@@ -208,23 +211,24 @@ export function Kanban<
                   "max-w-[300px]": orientation === Orientation.HORIZONTAL,
                 })}
               >
-                <div className="text-sm font-medium">
+                <div className="text-sm font-medium flex">
                   {renderColumn(container.toString(), containerItems.length)}
                 </div>
                 <SortableContext
                   items={containerItems}
                   strategy={verticalListSortingStrategy}
                 >
-                  {containerItems.map((id) => (
-                    <SortableItem
-                      key={id}
-                      id={id}
-                      value={value}
-                      renderItem={renderItem}
-                      disabled={disabledItems?.includes(id)}
-                    />
-                  ))}
-                  {!containerItems.length && (
+                  {!isHidden &&
+                    containerItems.map((id) => (
+                      <SortableItem
+                        key={id}
+                        id={id}
+                        value={value}
+                        renderItem={renderItem}
+                        disabled={disabledItems?.includes(id)}
+                      />
+                    ))}
+                  {(isHidden || !containerItems.length) && (
                     <SortableItem
                       id={`${PLACEHOLDER_ID}-${container}`}
                       placeholder

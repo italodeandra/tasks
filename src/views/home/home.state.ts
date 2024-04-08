@@ -22,6 +22,11 @@ export const homeState = proxy({
   setEditingTasks(tasks: string[]) {
     homeState.editingTasks = tasks;
   },
+
+  hiddenColumns: [] as string[],
+  setHiddenColumns(columns: string[]) {
+    homeState.hiddenColumns = columns;
+  },
 });
 
 export const hydrateHomeState = createStateHydration("homeState", homeState);
