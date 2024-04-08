@@ -50,7 +50,7 @@ export default function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button className="rounded-full p-1.5 w-9 h-9">
+        <Button className="rounded-full p-1.5 w-9 h-9 shrink-0">
           {isLoading ? (
             <Loading className="w-5 h-5" />
           ) : user ? (

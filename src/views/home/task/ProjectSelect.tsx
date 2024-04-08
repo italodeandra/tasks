@@ -33,7 +33,7 @@ export function ProjectSelect({
   }, [task.project?._id]);
 
   triggerClassName = clsx(
-    "rounded px-1 text-xs min-h-[18px] flex items-center opacity-0 group-hover:opacity-100 transition",
+    "rounded px-1 text-xs min-h-[18px] flex items-center opacity-0 group-hover:opacity-100 transition whitespace-nowrap",
     "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     {
       "animate-pulse": isLoading || isUpdating,
