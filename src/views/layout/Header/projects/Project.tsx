@@ -2,18 +2,14 @@ import { ProjectListApiResponse } from "../../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
 import { useProjectArchive } from "../../../../pages/api/project/archive";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import Button from "@italodeandra/ui/components/Button/Button";
-import { xor } from "lodash";
+import { pull } from "lodash";
 import React, { useCallback } from "react";
 import { homeState } from "../../../home/home.state";
+import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
 export function Project(project: ProjectListApiResponse[0]) {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
-  const { mutate: archive, isLoading } = useProjectArchive();
-
-  const handleProjectSelect = useCallback(() => {
-    setSelectedProjects(xor(selectedProjects, [project._id]));
-  }, [project._id, selectedProjects, setSelectedProjects]);
+  const { mutate: archive } = useProjectArchive();
 
   const handleProjectArchive = useCallback(() => {
     archive(project);
@@ -23,17 +19,19 @@ export function Project(project: ProjectListApiResponse[0]) {
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>
-        <Button
-          size="xs"
-          variant={
-            selectedProjects.includes(project._id) ? "filled" : "outlined"
+        <DropdownMenu.CheckboxItem
+          key={project._id}
+          checked={selectedProjects.includes(project._id)}
+          onCheckedChange={(checked) =>
+            setSelectedProjects(
+              checked
+                ? [...selectedProjects, project._id]
+                : pull([...selectedProjects], project._id)
+            )
           }
-          color={selectedProjects.includes(project._id) ? "primary" : undefined}
-          onClick={handleProjectSelect}
-          loading={isLoading}
         >
           {project.name}
-        </Button>
+        </DropdownMenu.CheckboxItem>
       </ContextMenu.Trigger>
 
       <ContextMenu.Content>

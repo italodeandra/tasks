@@ -5,7 +5,9 @@ import Button from "@italodeandra/ui/components/Button";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 import { useSnapshot } from "valtio";
 import { homeState } from "../../../home/home.state";
-import { pull } from "lodash";
+import { PlusIcon } from "@heroicons/react/20/solid";
+import { newProjectState } from "../../../home/new-project/newProject.state";
+import { Project } from "./Project";
 
 export default function Projects() {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
@@ -52,20 +54,14 @@ export default function Projects() {
           All
         </DropdownMenu.CheckboxItem>
         {projectsWithNone.map((project) => (
-          <DropdownMenu.CheckboxItem
-            key={project._id}
-            checked={selectedProjects.includes(project._id)}
-            onCheckedChange={(checked) =>
-              setSelectedProjects(
-                checked
-                  ? [...selectedProjects, project._id]
-                  : pull([...selectedProjects], project._id)
-              )
-            }
-          >
-            {project.name}
-          </DropdownMenu.CheckboxItem>
+          <Project key={project._id} {...project} />
         ))}
+        <DropdownMenu.Item onClick={newProjectState.openModal}>
+          <DropdownMenu.ItemIndicator forceMount>
+            <PlusIcon />
+          </DropdownMenu.ItemIndicator>
+          Create a new project
+        </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );
