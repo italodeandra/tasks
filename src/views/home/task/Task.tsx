@@ -167,7 +167,9 @@ export default function Task(task: ITask) {
       >
         {(task.description || task.comments) && (
           <Group className="items-center gap-1">
-            {task.description && <Bars3BottomLeftIcon className="w-3 h-3" />}
+            {task.description && (
+              <Bars3BottomLeftIcon className="w-3 h-3 my-0.5" />
+            )}
             {task.comments && (
               <>
                 <ChatBubbleLeftIcon className="w-3 h-3" />
