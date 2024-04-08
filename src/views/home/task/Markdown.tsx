@@ -114,6 +114,7 @@ export function Markdown({
           onChange={handleChange}
           theme={vscodeDark}
           onKeyDown={handleKeyDown}
+          autoFocus
         />
       ) : (
         <div
