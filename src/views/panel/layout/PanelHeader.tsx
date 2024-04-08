@@ -1,11 +1,11 @@
 import UiHeader from "@italodeandra/ui/components/Header/Header";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { Bars3BottomLeftIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
 import UserMenu from "./user-menu/UserMenu";
 import navigationDrawerState from "@italodeandra/ui/components/NavigationDrawer/navigationDrawer.state";
 import NextLink from "next/link";
 import Routes from "../../../Routes";
+import { Logo } from "./Logo";
 
 export default function PanelHeader({ title }: { title?: string }) {
   return (
@@ -19,7 +19,7 @@ export default function PanelHeader({ title }: { title?: string }) {
         <Bars3BottomLeftIcon />
       </Button>
       <NextLink href={Routes.Home}>
-        <Image src="/favicon.ico" width={34} height={34} alt="Logo" />
+        <Logo className="w-8 h-8" />
       </NextLink>
       {title && <span className="ml-2 text-xl font-medium">{title}</span>}
       <div className="flex-grow" />
