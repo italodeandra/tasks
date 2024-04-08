@@ -1,5 +1,6 @@
 import { proxy } from "valtio";
 import { Orientation } from "./kanban/Orientation";
+import createStateHydration from "../../utils/createStateHydration";
 
 export const homeState = proxy({
   showTimesheet: false,
@@ -22,3 +23,5 @@ export const homeState = proxy({
     homeState.editingTasks = tasks;
   },
 });
+
+export const hydrateHomeState = createStateHydration("homeState", homeState);

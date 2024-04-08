@@ -20,6 +20,7 @@ import { Dialogs } from "@italodeandra/ui/components/Dialog";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutationWindowCloseProtection";
 import "highlight.js/styles/github-dark.css";
+import { hydrateHomeState } from "../views/home/home.state";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -29,6 +30,7 @@ setupNProgress(primaryColor);
 function MyApp({ Component, pageProps }: AppProps) {
   hydrateNavigationDrawerState(pageProps.cookies);
   hydrateAuthState(pageProps.cookies);
+  hydrateHomeState(pageProps.cookies);
 
   const [queryClient] = useState(() => new QueryClient());
 
