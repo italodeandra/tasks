@@ -8,16 +8,17 @@ import React, { useCallback } from "react";
 import { homeState } from "../../../home/home.state";
 
 export function Project(project: ProjectListApiResponse[0]) {
-  let { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
-  let { mutate: archive, isLoading } = useProjectArchive();
+  const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
+  const { mutate: archive, isLoading } = useProjectArchive();
 
-  let handleProjectSelect = useCallback(() => {
+  const handleProjectSelect = useCallback(() => {
     setSelectedProjects(xor(selectedProjects, [project._id]));
   }, [project._id, selectedProjects, setSelectedProjects]);
 
-  let handleProjectArchive = useCallback(() => {
+  const handleProjectArchive = useCallback(() => {
     archive(project);
-  }, [archive, project]);
+    setSelectedProjects([...selectedProjects.filter((p) => p !== project._id)]);
+  }, [archive, project, selectedProjects, setSelectedProjects]);
 
   return (
     <ContextMenu.Root>
