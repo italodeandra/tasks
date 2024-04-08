@@ -1,7 +1,7 @@
 import Button from "@italodeandra/ui/components/Button";
 import { ArrowLeftIcon, TableCellsIcon } from "@heroicons/react/16/solid";
 import { useCallback } from "react";
-import { homeState } from "./home.state";
+import { homeState } from "../../home/home.state";
 import { useSnapshot } from "valtio";
 
 export function TimesheetButton() {

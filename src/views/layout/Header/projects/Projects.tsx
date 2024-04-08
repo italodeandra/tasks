@@ -1,10 +1,10 @@
-import { useProjectList } from "../../../pages/api/project/list";
+import { useProjectList } from "../../../../pages/api/project/list";
 import React, { useMemo } from "react";
-import { ProjectColor } from "../../../collections/project";
+import { ProjectColor } from "../../../../collections/project";
 import Button from "@italodeandra/ui/components/Button";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 import { useSnapshot } from "valtio";
-import { homeState } from "../home.state";
+import { homeState } from "../../../home/home.state";
 import { pull } from "lodash";
 
 export default function Projects() {

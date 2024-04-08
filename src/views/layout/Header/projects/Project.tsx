@@ -1,11 +1,11 @@
-import { ProjectListApiResponse } from "../../../pages/api/project/list";
+import { ProjectListApiResponse } from "../../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
-import { useProjectArchive } from "../../../pages/api/project/archive";
+import { useProjectArchive } from "../../../../pages/api/project/archive";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import Button from "@italodeandra/ui/components/Button/Button";
 import { xor } from "lodash";
 import React, { useCallback } from "react";
-import { homeState } from "../home.state";
+import { homeState } from "../../../home/home.state";
 
 export function Project(project: ProjectListApiResponse[0]) {
   let { selectedProjects, setSelectedProjects } = useSnapshot(homeState);

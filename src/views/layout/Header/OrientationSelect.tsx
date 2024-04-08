@@ -1,7 +1,7 @@
 import { useSnapshot } from "valtio";
-import { homeState } from "./home.state";
+import { homeState } from "../../home/home.state";
 import Select from "@italodeandra/ui/components/Select";
-import { Orientation } from "./kanban/Orientation";
+import { Orientation } from "../../home/kanban/Orientation";
 import Button from "@italodeandra/ui/components/Button";
 import { Bars3Icon, ViewColumnsIcon } from "@heroicons/react/16/solid";
 import Group from "@italodeandra/ui/components/Group";

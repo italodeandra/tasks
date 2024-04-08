@@ -1,16 +1,16 @@
 import NextLink from "next/link";
 import UiHeader from "@italodeandra/ui/components/Header";
-import UserMenu from "../../panel/layout/user-menu/UserMenu";
+import UserMenu from "./user-menu/UserMenu";
 import React from "react";
 import { TimesheetStatus } from "./TimesheetStatus";
 import { Logo } from "../../panel/layout/Logo";
 import clsx from "@italodeandra/ui/utils/clsx";
-import { TimesheetButton } from "../../home/TimesheetButton";
-import { OrientationSelect } from "../../home/OrientationSelect";
+import { TimesheetButton } from "./TimesheetButton";
+import { OrientationSelect } from "./OrientationSelect";
 import Group from "@italodeandra/ui/components/Group";
 import { useSnapshot } from "valtio";
 import { homeState } from "../../home/home.state";
-import Projects from "../../home/projects/Projects";
+import Projects from "./projects/Projects";
 
 export default function Header() {
   const { showTimesheet } = useSnapshot(homeState);
