@@ -95,10 +95,10 @@ export function Kanban<
         };
       })
     );
-    if (!isEqual(newValue, value)) {
+    if (!activeId && !isEqual(newValue, value)) {
       onChangeValue?.(newValue);
     }
-  }, [items]);
+  }, [activeId, items]);
 
   let containers = useMemo(
     () => Object.keys(items) as UniqueIdentifier[],
