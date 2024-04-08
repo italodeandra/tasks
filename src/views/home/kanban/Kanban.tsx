@@ -197,7 +197,7 @@ export function Kanban<
         onDragOver={handleDragOver}
       >
         <div
-          className={clsx("flex gap-2 p-2", {
+          className={clsx("flex gap-2 p-2 overflow-auto", {
             "flex-col": orientation === Orientation.VERTICAL,
           })}
         >
