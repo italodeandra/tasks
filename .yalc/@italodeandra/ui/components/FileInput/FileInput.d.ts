@@ -38,7 +38,7 @@ declare function FileInput({ error, className, helpText, onChange, name, limit, 
     onRejectFiles?: (files: File[], reason: "type" | "size" | "limit" | "upload-error") => void;
 }, ref: ForwardedRef<HTMLInputElement>): JSX.Element;
 export type FileInputProps = ComponentPropsWithRef<typeof FileInput>;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "className" | "label" | "id" | "onMouseOut" | "onMouseOver" | "name" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
+declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<false>, "label" | "name" | "className" | "id" | "onMouseOut" | "onMouseOver" | "required" | "error" | "helpText"> & Omit<FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
     readOnly?: boolean | undefined;
     value?: FileInputFile[] | undefined;
     onChange?: ((event: {

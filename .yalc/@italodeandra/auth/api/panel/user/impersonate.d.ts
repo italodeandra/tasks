@@ -5,7 +5,7 @@ import { AuthConfig } from "../..";
 import { InferApiArgs, InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
 import { UseMutationOptions } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-export default function authPanelUserImpersonateHandler(args: Jsonify<Pick<IUser, "_id">>, req: NextApiRequest, res: NextApiResponse, { connectDb, disableImpersonate }: AuthConfig): Promise<void>;
+export default function authPanelUserImpersonateHandler(args: Jsonify<Pick<IUser, "_id">>, req: NextApiRequest, res: NextApiResponse, { connectDb, disableImpersonate, multitenantMode }: AuthConfig): Promise<void>;
 export declare type AuthPanelUserImpersonateResponse = InferApiResponse<typeof authPanelUserImpersonateHandler>;
 export declare type AuthPanelUserImpersonateArgs = InferApiArgs<typeof authPanelUserImpersonateHandler>;
 export declare const useAuthPanelUserImpersonate: (options?: UseMutationOptions<AuthPanelUserImpersonateResponse, AxiosError, AuthPanelUserImpersonateArgs>) => import("@tanstack/react-query").UseMutationResult<void, AxiosError<unknown, any>, {

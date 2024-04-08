@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -47,31 +58,43 @@ var react_query_1 = require("@tanstack/react-query");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var cookies_next_1 = require("cookies-next");
+var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 function signUpHandler(args, req, res, _a) {
-    var connectDb = _a.connectDb;
+    var connectDb = _a.connectDb, newUserDefaultType = _a.newUserDefaultType, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, existingUser, user, token;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var User, tenantId, _b, existingUser, user, token;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     if (!args.email || !args.password) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _b.sent();
+                    _c.sent();
                     User = (0, User_1.default)();
+                    if (!multitenantMode) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 2:
+                    _b = _c.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    _b = undefined;
+                    _c.label = 4;
+                case 4:
+                    tenantId = _b;
                     return [4 /*yield*/, User.countDocuments({
+                            tenantId: tenantId,
                             email: args.email.toLowerCase().trim(),
                         })];
-                case 2:
-                    existingUser = _b.sent();
+                case 5:
+                    existingUser = _c.sent();
                     if (existingUser) {
                         throw errors_1.conflict;
                     }
-                    return [4 /*yield*/, (0, User_service_1.createUser)(args)];
-                case 3:
-                    user = _b.sent();
+                    return [4 /*yield*/, (0, User_service_1.createUser)(__assign(__assign({ tenantId: tenantId }, args), { type: newUserDefaultType || "NORMAL" }))];
+                case 6:
+                    user = _c.sent();
                     token = (0, User_service_1.generateToken)(user._id);
                     (0, cookies_next_1.setCookie)("auth", { token: token }, {
                         req: req,

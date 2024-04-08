@@ -1,7 +1,7 @@
 import { InferApiArgs, InferApiResponse } from "./apiHandlerWrapper";
 import { QueryClient, UseMutationOptions, UseQueryOptions } from "@tanstack/react-query";
 export default function createApi<T extends (...args: any) => any, C extends Record<string, any>>(queryKey: string, handler: T, apiOptions?: {
-    queryKeyMap?: (args: InferApiArgs<T>) => string[];
+    queryKeyMap?: (args: InferApiArgs<T>) => unknown[];
     mutationOptions?: {
         onMutate?: (variables: InferApiArgs<T>, queryClient: QueryClient) => Promise<C> | C | void;
         onSuccess?: (data: InferApiResponse<T>, variables: InferApiArgs<T>, context: C | undefined, queryClient: QueryClient) => Promise<C> | C | void;
@@ -16,7 +16,7 @@ export default function createApi<T extends (...args: any) => any, C extends Rec
         QueryOptions: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey>;
         MutationOptions: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown>;
     };
-    useQuery: (args: InferApiArgs<T>, options?: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey> | undefined) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, unknown>;
+    useQuery: (args?: InferApiArgs<T> | undefined, options?: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey> | undefined) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, unknown>;
     useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<InferApiResponse<T>, unknown, InferApiArgs<T>, C>;
     invalidate: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     cancelQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;

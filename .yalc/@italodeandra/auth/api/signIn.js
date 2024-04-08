@@ -48,21 +48,33 @@ var errors_1 = require("@italodeandra/next/api/errors");
 var lodash_1 = require("lodash");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var cookies_next_1 = require("cookies-next");
+var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 function signInHandler(args, req, res, _a) {
-    var connectDb = _a.connectDb;
+    var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, user, token;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var User, tenantId, _b, user, token;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     if (!args.email || !args.password) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _b.sent();
+                    _c.sent();
                     User = (0, User_1.default)();
+                    if (!multitenantMode) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 2:
+                    _b = _c.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    _b = undefined;
+                    _c.label = 4;
+                case 4:
+                    tenantId = _b;
                     return [4 /*yield*/, User.findOne({
+                            tenantId: tenantId,
                             email: args.email.toLowerCase().trim(),
                         }, {
                             projection: {
@@ -72,8 +84,8 @@ function signInHandler(args, req, res, _a) {
                                 passwordSalt: 1,
                             },
                         })];
-                case 2:
-                    user = _b.sent();
+                case 5:
+                    user = _c.sent();
                     if (!user || !(0, User_service_1.checkUserPassword)(user, args.password)) {
                         throw errors_1.unauthorized;
                     }

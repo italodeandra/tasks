@@ -60,7 +60,7 @@ function log(content) {
                     _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
-                    console.info((0, safeStringify_1.default)(content));
+                    console.info((0, safeStringify_1.default)(content, 2));
                     _a.label = 3;
                 case 3: return [2 /*return*/];
             }

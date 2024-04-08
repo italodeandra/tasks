@@ -80,24 +80,35 @@ var User_service_1 = require("../../../collections/user/User.service");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
+var Tenant_service_1 = require("../../../collections/tenant/Tenant.service");
 function authPanelUserListHandler(args, req, res, _a) {
-    var connectDb = _a.connectDb;
+    var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, user;
-        var _b;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var User, user, tenantId, _b;
+        var _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
-                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
+                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res, multitenantMode)];
                 case 2:
-                    user = _c.sent();
+                    user = _d.sent();
                     if (!(0, User_service_1.checkUserType)(user, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
-                    return [2 /*return*/, User.find(__assign({ _id: {
+                    if (!multitenantMode) return [3 /*break*/, 4];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 3:
+                    _b = _d.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    _b = undefined;
+                    _d.label = 5;
+                case 5:
+                    tenantId = _b;
+                    return [2 /*return*/, User.find(__assign({ tenantId: tenantId, _id: {
                                 $ne: (0, isomorphicObjectId_1.default)("65414920b31d36e515ce53c0"),
                             } }, ((args === null || args === void 0 ? void 0 : args.search) ? { $text: { $search: args.search } } : {})), {
                             projection: {
@@ -108,9 +119,9 @@ function authPanelUserListHandler(args, req, res, _a) {
                                 updatedAt: 1,
                             },
                             sort: __assign(__assign({}, ((args === null || args === void 0 ? void 0 : args.search) ? { score: { $meta: "textScore" } } : {})), (args.sort
-                                ? (_b = {},
-                                    _b[args.sort] = args.sortDirection !== "desc" ? 1 : -1,
-                                    _b) : {})),
+                                ? (_c = {},
+                                    _c[args.sort] = args.sortDirection !== "desc" ? 1 : -1,
+                                    _c) : {})),
                         })];
             }
         });

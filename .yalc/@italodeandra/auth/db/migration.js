@@ -40,12 +40,14 @@ function authMigration(db) {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, db.collection("users").createIndex({ email: 1 }, {
+                case 0: return [4 /*yield*/, db.collection("users").createIndex({ tenantId: 1, email: 1 }, {
                         unique: true,
                     })];
                 case 1:
                     _a.sent();
-                    return [4 /*yield*/, db.collection("users").createIndex({ email: "text", name: "text" })];
+                    return [4 /*yield*/, db
+                            .collection("users")
+                            .createIndex({ tenantId: 1, email: "text", name: "text" })];
                 case 2:
                     _a.sent();
                     return [2 /*return*/];

@@ -26,15 +26,15 @@ export type TextProps<Inline extends boolean | undefined, Href extends string | 
     rel?: string;
 } & (Href extends true ? ComponentProps<typeof NextLink> : Inline extends true ? DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> : DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>);
 declare const _default: import("react").ForwardRefExoticComponent<(Pick<{
-    variant?: "default" | "label" | "secondary" | "link" | undefined;
-    size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | undefined;
+    variant?: "link" | "label" | "default" | "secondary" | undefined;
+    size?: "base" | "xs" | "sm" | "lg" | "xl" | "2xl" | undefined;
     inline?: boolean | undefined;
     href?: string | undefined;
     target?: string | undefined;
     rel?: string | undefined;
 } & import("react").ClassAttributes<HTMLSpanElement> & HTMLAttributes<HTMLSpanElement>, "size" | "variant" | "href" | "rel" | "target" | "inline" | "key" | keyof HTMLAttributes<HTMLSpanElement>> | Pick<{
-    variant?: "default" | "label" | "secondary" | "link" | undefined;
-    size?: "xs" | "sm" | "base" | "lg" | "xl" | "2xl" | undefined;
+    variant?: "link" | "label" | "default" | "secondary" | undefined;
+    size?: "base" | "xs" | "sm" | "lg" | "xl" | "2xl" | undefined;
     inline?: boolean | undefined;
     href?: string | undefined;
     target?: string | undefined;

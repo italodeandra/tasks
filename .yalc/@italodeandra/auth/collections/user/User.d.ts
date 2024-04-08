@@ -14,6 +14,7 @@ declare const userSchema: [{
     createdAt: Date;
     updatedAt: Date;
     _id: ObjectId;
+    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
@@ -32,6 +33,7 @@ declare const getUser: () => import("papr").Model<{
     createdAt: Date;
     updatedAt: Date;
     _id: ObjectId;
+    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;

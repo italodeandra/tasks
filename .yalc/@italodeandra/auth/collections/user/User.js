@@ -35,6 +35,7 @@ var userSchema = (0, isServer_1.onlyServer)(function () {
         createdAt: papr_1.types.date({ required: true }),
         updatedAt: papr_1.types.date({ required: true }),
         customData: papr_1.types.any(),
+        tenantId: papr_1.types.objectId(),
     }, {
         defaults: {
             type: exports.UserType.NORMAL,

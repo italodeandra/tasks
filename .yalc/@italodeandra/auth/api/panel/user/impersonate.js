@@ -69,7 +69,7 @@ var ms_1 = __importDefault(require("ms"));
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var react_query_1 = require("@tanstack/react-query");
 function authPanelUserImpersonateHandler(args, req, res, _a) {
-    var connectDb = _a.connectDb, disableImpersonate = _a.disableImpersonate;
+    var connectDb = _a.connectDb, disableImpersonate = _a.disableImpersonate, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
         var reqUser;
         return __generator(this, function (_b) {
@@ -81,7 +81,7 @@ function authPanelUserImpersonateHandler(args, req, res, _a) {
                     return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
-                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
+                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res, multitenantMode)];
                 case 2:
                     reqUser = _b.sent();
                     if (!reqUser && !(0, User_service_1.checkUserType)(reqUser, [User_1.UserType.ADMIN])) {

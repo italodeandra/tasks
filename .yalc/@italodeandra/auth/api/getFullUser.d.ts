@@ -1,9 +1,9 @@
 import { QueryClient, UseQueryResult } from "@tanstack/react-query";
 import { InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
 import { AuthConfig } from "./index";
-import { OptionsType } from "cookies-next/lib/types";
 import { IUser } from "../collections/user/User";
-export default function getFullUserHandler(_args: void, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<Pick<{
+import { NextApiRequest, NextApiResponse } from "next";
+export default function getFullUserHandler(_args: void, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<Pick<{
     email: string;
     type: string;
     password: string;
@@ -11,6 +11,7 @@ export default function getFullUserHandler(_args: void, req: OptionsType["req"],
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
+    tenantId?: import("bson").ObjectID | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;

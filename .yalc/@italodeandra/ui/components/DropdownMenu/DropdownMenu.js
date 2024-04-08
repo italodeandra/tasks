@@ -57,7 +57,7 @@ var link_1 = __importDefault(require("next/link"));
 var Dropdown_classNames_1 = require("../../styles/Dropdown.classNames");
 var Modal_classNames_1 = require("../../styles/Modal.classNames");
 function DropdownMenuContent(_a) {
-    var className = _a.className, arrowClassName = _a.arrowClassName, children = _a.children, _b = _a.sideOffset, sideOffset = _b === void 0 ? 5 : _b, _c = _a.collisionPadding, collisionPadding = _c === void 0 ? 8 : _c, props = __rest(_a, ["className", "arrowClassName", "children", "sideOffset", "collisionPadding"]);
+    var className = _a.className, arrowClassName = _a.arrowClassName, children = _a.children, _b = _a.sideOffset, sideOffset = _b === void 0 ? 4 : _b, _c = _a.collisionPadding, collisionPadding = _c === void 0 ? 8 : _c, props = __rest(_a, ["className", "arrowClassName", "children", "sideOffset", "collisionPadding"]);
     return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Portal, { children: (0, jsx_runtime_1.jsxs)(RDropdownMenu.Content, __assign({ sideOffset: sideOffset, collisionPadding: collisionPadding }, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalContentClassName, "ui-dropdown-menu-content", className), children: [children, (0, jsx_runtime_1.jsx)(RDropdownMenu.Arrow, { className: (0, clsx_1.default)(Modal_classNames_1.modalArrowClassName, "ui-dropdown-menu-arrow", arrowClassName) })] })) }));
 }
 function DropdownMenuSeparator(_a) {
@@ -75,9 +75,13 @@ function DropdownMenuLabel(_a) {
     var className = _a.className, props = __rest(_a, ["className"]);
     return ((0, jsx_runtime_1.jsx)(RDropdownMenu.Item, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownLabelClassName, "ui-dropdown-menu-label", className) })));
 }
+function DropdownMenuItemIndicator(_a) {
+    var className = _a.className, props = __rest(_a, ["className"]);
+    return ((0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, __assign({ className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownItemIndicatorClassName, "ui-dropdown-menu-checkbox-item-indicator", className) }, props)));
+}
 function DropdownMenuCheckboxItem(_a) {
     var className = _a.className, children = _a.children, indicatorClassName = _a.indicatorClassName, props = __rest(_a, ["className", "children", "indicatorClassName"]);
-    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownCheckboxItemClassName, "ui-dropdown-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(RDropdownMenu.ItemIndicator, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownItemIndicatorClassName, "ui-dropdown-menu-checkbox-item-indicator", indicatorClassName), children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
+    return ((0, jsx_runtime_1.jsxs)(RDropdownMenu.CheckboxItem, __assign({}, props, { className: (0, clsx_1.default)(Dropdown_classNames_1.dropdownCheckboxItemClassName, "ui-dropdown-menu-checkbox-item", className), children: [(0, jsx_runtime_1.jsx)(DropdownMenuItemIndicator, { className: indicatorClassName, children: (0, jsx_runtime_1.jsx)(solid_1.CheckIcon, {}) }), children] })));
 }
 var DropdownMenu = {
     Root: RDropdownMenu.Root,
@@ -87,5 +91,6 @@ var DropdownMenu = {
     Separator: DropdownMenuSeparator,
     CheckboxItem: DropdownMenuCheckboxItem,
     Label: DropdownMenuLabel,
+    ItemIndicator: DropdownMenuItemIndicator,
 };
 exports.default = DropdownMenu;

@@ -53,6 +53,7 @@ export declare type IAuthContext = {
         "to sign in"?: string;
         Impersonate?: string;
     } & Record<string, string>;
+    disableModeToggle?: boolean;
 };
 export declare const authContextDefaultValue: {
     Routes: {

@@ -46,47 +46,59 @@ var react_query_1 = require("@tanstack/react-query");
 var jsonwebtoken_1 = require("jsonwebtoken");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
-function resetPasswordHandler(args, _req, res, _a) {
-    var connectDb = _a.connectDb;
+var Tenant_service_1 = require("../collections/tenant/Tenant.service");
+function resetPasswordHandler(args, req, res, _a) {
+    var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, email, user, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var User, tenantId, _b, email, user, e_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     if (!args.token || !args.newPassword) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _b.sent();
+                    _c.sent();
                     User = (0, User_1.default)();
-                    _b.label = 2;
+                    if (!multitenantMode) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
                 case 2:
-                    _b.trys.push([2, 5, , 6]);
+                    _b = _c.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    _b = undefined;
+                    _c.label = 4;
+                case 4:
+                    tenantId = _b;
+                    _c.label = 5;
+                case 5:
+                    _c.trys.push([5, 8, , 9]);
                     email = (0, User_service_1.readResetPasswordToken)(args.token);
                     return [4 /*yield*/, User.findOne({
+                            tenantId: tenantId,
                             email: email,
                         }, {
                             projection: {},
                         })];
-                case 3:
-                    user = _b.sent();
+                case 6:
+                    user = _c.sent();
                     if (!user) {
                         // noinspection ExceptionCaughtLocallyJS
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, (0, User_service_1.setUserPassword)(user._id, args.newPassword)];
-                case 4:
-                    _b.sent();
-                    return [3 /*break*/, 6];
-                case 5:
-                    e_1 = _b.sent();
+                case 7:
+                    _c.sent();
+                    return [3 /*break*/, 9];
+                case 8:
+                    e_1 = _c.sent();
                     if (e_1 instanceof jsonwebtoken_1.TokenExpiredError) {
                         // noinspection JSVoidFunctionReturnValueUsed
                         throw (0, errors_1.badRequest)(res, { status: "TokenExpired" });
                     }
                     throw e_1;
-                case 6: return [2 /*return*/];
+                case 9: return [2 /*return*/];
             }
         });
     });

@@ -1,5 +1,6 @@
 import Routes from "../Routes";
 import prepareSendMail from "@italodeandra/next/mailer/sendMail";
+import { IUserType } from "../collections/user/User";
 export interface AuthConfig {
     connectDb: () => Promise<void>;
     primaryColor: string;
@@ -16,5 +17,7 @@ export interface AuthConfig {
     fallbackLocale?: string;
     sendMail: ReturnType<typeof prepareSendMail>;
     disableImpersonate?: boolean;
+    newUserDefaultType?: IUserType[keyof IUserType];
+    multitenantMode?: boolean;
 }
 export default function Auth(config: AuthConfig): import("next").NextApiHandler<any>;

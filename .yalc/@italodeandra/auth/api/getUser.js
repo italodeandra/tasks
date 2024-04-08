@@ -81,7 +81,7 @@ var react_1 = require("react");
 var getFullUser_1 = require("./getFullUser");
 var auth_state_1 = __importStar(require("../auth.state"));
 function getUserHandler(_args, req, res, _a) {
-    var connectDb = _a.connectDb;
+    var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
         var user;
         return __generator(this, function (_b) {
@@ -89,7 +89,7 @@ function getUserHandler(_args, req, res, _a) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
                     _b.sent();
-                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res)];
+                    return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res, multitenantMode)];
                 case 2:
                     user = _b.sent();
                     if (!user) {

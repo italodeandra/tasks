@@ -47,6 +47,8 @@ var translateAllowedType = function (type) {
         "application/msword": "DOC",
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "DOCX",
         "application/vnd.openxmlformats-officedocument.presentationml.presentation": "PPTX",
+        ".webp": "WEBP",
+        "image/webp": "WEBP",
     })[type];
 };
 var defaultIcon = (0, jsx_runtime_1.jsx)(outline_1.DocumentIcon, {});
@@ -56,7 +58,7 @@ function checkAllowedFileTypesFn(file, allowedFileTypes) {
         allowedFileTypes.some(function (t) { return file.name.endsWith(t); }));
 }
 function FileSelect(_a, ref) {
-    var maxFileSize = _a.maxFileSize, allowedFileTypes = _a.allowedFileTypes, id = _a.id, limit = _a.limit, onAcceptFiles = _a.onAcceptFiles, className = _a.className, _b = _a.uploadAFileText, uploadAFileText = _b === void 0 ? "Upload a file" : _b, _c = _a.orDragAndDropText, orDragAndDropText = _c === void 0 ? "or drag and drop" : _c, _d = _a.upToText, upToText = _d === void 0 ? "up to" : _d, _e = _a.anyFileText, anyFileText = _e === void 0 ? "Any file" : _e, _f = _a.dropFilesHereText, dropFilesHereText = _f === void 0 ? "Drop files here" : _f, _g = _a.uploadingText, uploadingText = _g === void 0 ? "Uploading..." : _g, _h = _a.icon, icon = _h === void 0 ? defaultIcon : _h, uploading = _a.uploading, disabled = _a.disabled, additionalBottomInfo = _a.additionalBottomInfo, onRejectFiles = _a.onRejectFiles;
+    var maxFileSize = _a.maxFileSize, allowedFileTypes = _a.allowedFileTypes, id = _a.id, limit = _a.limit, onAcceptFiles = _a.onAcceptFiles, className = _a.className, _b = _a.uploadAFileText, uploadAFileText = _b === void 0 ? "Upload a file" : _b, _c = _a.orDragAndDropText, orDragAndDropText = _c === void 0 ? "or drag and drop" : _c, _d = _a.upToText, upToText = _d === void 0 ? "up to" : _d, _e = _a.anyFileText, anyFileText = _e === void 0 ? "Any file" : _e, _f = _a.dropFilesHereText, dropFilesHereText = _f === void 0 ? "Drop files here" : _f, _g = _a.uploadingText, uploadingText = _g === void 0 ? "Uploading..." : _g, _h = _a.icon, icon = _h === void 0 ? defaultIcon : _h, uploading = _a.uploading, disabled = _a.disabled, additionalBottomInfo = _a.additionalBottomInfo, onRejectFiles = _a.onRejectFiles, error = _a.error;
     var innerId = (0, react_1.useId)();
     id = id || innerId;
     maxFileSize =
@@ -104,8 +106,9 @@ function FileSelect(_a, ref) {
     }); }), 2), _l = _k[0], canDrop = _l.canDrop, isOver = _l.isOver, drop = _k[1];
     return ((0, jsx_runtime_1.jsx)("div", { ref: drop, className: (0, clsx_1.default)("flex justify-center rounded-md border-2 border-dashed px-6 pb-6 pt-5", className, {
             "border-primary-300 dark:border-primary-700": isOver,
-            "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600": !disabled,
+            "border-zinc-300 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-600": !disabled && !error,
             "cursor-not-allowed border-zinc-200 dark:border-zinc-800": disabled,
+            "border-error-500": error,
         }), onMouseMove: !disabled ? function () { return setPasteEnabled(true); } : undefined, onMouseOut: !disabled ? function () { return setPasteEnabled(false); } : undefined, children: uploading ? ((0, jsx_runtime_1.jsxs)("div", { className: "flex flex-col items-center justify-center text-center", children: [(0, jsx_runtime_1.jsx)(Loading_1.default, { className: (0, clsx_1.default)("mb-2 h-10 w-10", {
                         "text-primary-500": isOver,
                     }) }), (0, jsx_runtime_1.jsx)("div", { children: uploadingText })] })) : !canDrop || disabled ? ((0, jsx_runtime_1.jsxs)("div", { className: "relative flex flex-col items-center justify-center space-y-1 text-center", children: [(0, react_1.cloneElement)(icon, {

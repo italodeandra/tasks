@@ -6,7 +6,7 @@ import { AuthConfig } from "../..";
 import { InferApiArgs, InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
 export default function panelUserGetHandler(args: Jsonify<{
     _id: ObjectId;
-}>, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+}>, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     type: string;
     password: string;
@@ -14,6 +14,7 @@ export default function panelUserGetHandler(args: Jsonify<{
     createdAt: Date;
     updatedAt: Date;
     _id: ObjectId;
+    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;

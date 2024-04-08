@@ -39,6 +39,10 @@ function Dialogs() {
             setRendered(false);
         };
     }, [setRendered]);
-    return ((0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: dialogs.map(function (dialog) { return ((0, jsx_runtime_1.jsx)(Dialog_1.default, { title: dialog.props.title, description: dialog.props.description, open: dialog.open, onOpenChange: function () { return (0, dialogs_state_1.closeDialog)(dialog._id); }, children: dialog.props.content }, dialog._id)); }) }));
+    return ((0, jsx_runtime_1.jsx)(jsx_runtime_1.Fragment, { children: dialogs.map(function (dialog) { return ((0, jsx_runtime_1.jsx)(Dialog_1.default, { title: dialog.props.title, description: dialog.props.description, open: dialog.open, onOpenChange: function () {
+                var _a, _b;
+                (0, dialogs_state_1.closeDialog)(dialog._id);
+                (_b = (_a = dialog.props).onClose) === null || _b === void 0 ? void 0 : _b.call(_a, dialog._id);
+            }, contentClassName: dialog.props.contentClassName, contentOverflowClassName: dialog.props.contentOverflowClassName, children: dialog.props.content }, dialog._id)); }) }));
 }
 exports.default = Dialogs;

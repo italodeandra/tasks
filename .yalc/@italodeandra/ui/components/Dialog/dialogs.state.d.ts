@@ -6,6 +6,9 @@ export type IDialog = {
         title?: ReactNode;
         description?: ReactNode;
         content: ReactNode;
+        contentClassName?: string;
+        contentOverflowClassName?: string;
+        onClose?: (_id: string) => void;
     };
 };
 declare const dialogsState: {

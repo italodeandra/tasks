@@ -62,46 +62,61 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userId = void 0;
+exports.tenantId = exports.userId = void 0;
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
 var User_1 = __importStar(require("../collections/user/User"));
 var User_service_1 = require("../collections/user/User.service");
+var Tenant_1 = __importDefault(require("../collections/tenant/Tenant"));
 var appEnv = process.env.APP_ENV || "development";
 exports.userId = (0, isomorphicObjectId_1.default)("62da0f38c6dc21efec2136e6");
+exports.tenantId = (0, isomorphicObjectId_1.default)("661021d7cae5964a0b9ec04a");
 function authSeed() {
     return __awaiter(this, void 0, void 0, function () {
-        var User;
+        var User, Tenant, tenant;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     User = (0, User_1.default)();
-                    if (!(appEnv === "development")) return [3 /*break*/, 6];
-                    return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
+                    Tenant = (0, Tenant_1.default)();
+                    if (!(appEnv === "development")) return [3 /*break*/, 7];
+                    return [4 /*yield*/, Tenant.findOneAndUpdate({
+                            _id: exports.tenantId,
+                        }, {
+                            $set: {
+                                name: "Test Tenant",
+                                subdomain: "tenant",
+                            },
+                        }, { upsert: true })];
                 case 1:
-                    if (!!(_a.sent())) return [3 /*break*/, 3];
+                    tenant = _a.sent();
+                    return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
+                case 2:
+                    if (!!(_a.sent())) return [3 /*break*/, 4];
                     return [4 /*yield*/, (0, User_service_1.createUser)({
+                            tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id,
                             _id: exports.userId,
                             email: "italodeandra@gmail.com",
                             password: "12345678",
                             type: User_1.UserType.ADMIN,
                             name: "Ítalo Andrade",
                         })];
-                case 2:
+                case 3:
                     _a.sent();
-                    _a.label = 3;
-                case 3: return [4 /*yield*/, User.countDocuments({ email: "italodeandra+b@gmail.com" })];
-                case 4:
-                    if (!!(_a.sent())) return [3 /*break*/, 6];
+                    _a.label = 4;
+                case 4: return [4 /*yield*/, User.countDocuments({ email: "italodeandra+b@gmail.com" })];
+                case 5:
+                    if (!!(_a.sent())) return [3 /*break*/, 7];
                     return [4 /*yield*/, (0, User_service_1.createUser)({
+                            tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id,
                             email: "italodeandra+b@gmail.com",
                             password: "12345678",
                             type: User_1.UserType.ADMIN,
                             name: "Ítalo Andrade B",
                         })];
-                case 5:
+                case 6:
                     _a.sent();
-                    _a.label = 6;
-                case 6: return [2 /*return*/];
+                    _a.label = 7;
+                case 7: return [2 /*return*/];
             }
         });
     });

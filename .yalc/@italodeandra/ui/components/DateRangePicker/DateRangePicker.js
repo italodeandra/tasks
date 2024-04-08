@@ -39,27 +39,16 @@ var Button_1 = __importDefault(require("../Button"));
 var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_use_1 = require("react-use");
 var Popover_1 = __importDefault(require("../Popover"));
-var classNames = {
-    button: "justify-start pl-4 min-h-[38px]",
-    months: "flex gap-2",
-    caption: "text-center h-9 flex items-center justify-center mx-9",
-    navButtonPrevious: "left-2 top-2",
-    navButtonNext: "right-2 top-2",
-    navButton: (0, clsx_1.default)("absolute border rounded p-1.5 [&_svg]:w-3 [&_svg]:h-3 transition", "border-zinc-100 hover:bg-zinc-100 bg-white active:border-zinc-200", "dark:border-zinc-800 dark:hover:bg-zinc-800 dark:bg-zinc-900 dark:active:border-zinc-700", "disabled:opacity-50 disabled:cursor-not-allowed"),
-    head: "text-xs dark:text-zinc-500",
-    headCell: "font-normal",
-    day: (0, clsx_1.default)("w-8 h-8 rounded transition", "text-zinc-700 hover:bg-black/10", "dark:text-zinc-300 dark:hover:bg-white/10", "disabled:opacity-30 disabled:cursor-not-allowed", "dark:disabled:opacity-20"),
-    dayRangeStart: (0, clsx_1.default)("!text-onPrimary dark:!text-onPrimary", "bg-primary-500 hover:bg-primary-500/50", "dark:bg-primary-600 dark:hover:bg-primary-600/50"),
-    dayRangeEnd: (0, clsx_1.default)("!text-onPrimary dark:!text-onPrimary", "bg-primary-500 hover:bg-primary-500/50", "dark:bg-primary-600 dark:hover:bg-primary-600/50"),
-    table: "border-spacing-y-1 border-separate",
-    cell: (0, clsx_1.default)("p-0", "has-[.ui-date-picker-day-outside]:opacity-40", "dark:has-[.ui-date-picker-day-outside]:opacity-30", "has-[.ui-date-picker-day-range-start]:rounded-l first:rounded-l", "has-[.ui-date-picker-day-range-start]:bg-black/5", "dark:has-[.ui-date-picker-day-range-start]:bg-white/10", "has-[.ui-date-picker-day-range-middle]:bg-black/5", "dark:has-[.ui-date-picker-day-range-middle]:bg-white/10", "has-[.ui-date-picker-day-range-end]:rounded-r last:rounded-r", "has-[.ui-date-picker-day-range-end]:bg-black/5", "dark:has-[.ui-date-picker-day-range-end]:bg-white/10"),
-};
+var DayPicker_classNames_1 = require("../../styles/DayPicker.classNames");
 function DateRangePicker(_a) {
     var value = _a.value, onValueChange = _a.onValueChange, children = _a.children, buttonProps = _a.buttonProps, fromDate = _a.fromDate, toDate = _a.toDate, min = _a.min, max = _a.max, footer = _a.footer, monthFooter = _a.monthFooter;
     var _b = __read((0, react_1.useState)(value), 2), range = _b[0], setRange = _b[1];
     (0, react_use_1.useDeepCompareEffect)(function () {
         onValueChange === null || onValueChange === void 0 ? void 0 : onValueChange(range);
     }, [range || {}]);
+    (0, react_use_1.useDeepCompareEffect)(function () {
+        setRange(value);
+    }, [value || {}]);
     var buttonText = (0, react_1.useMemo)(function () {
         var buttonText = "";
         if (range === null || range === void 0 ? void 0 : range.from) {
@@ -72,22 +61,7 @@ function DateRangePicker(_a) {
         }
         return buttonText;
     }, [range]);
-    var children2 = children ? (children(buttonText)) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({}, buttonProps, { leading: (buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.leading) || (0, jsx_runtime_1.jsx)(solid_1.CalendarIcon, {}), className: (0, clsx_1.default)(classNames.button, buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.className), children: buttonText })));
-    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsxs)(Popover_1.default.Content, { children: [(0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: {
-                            months: classNames.months,
-                            caption: classNames.caption,
-                            nav_button_previous: classNames.navButtonPrevious,
-                            nav_button_next: classNames.navButtonNext,
-                            nav_button: classNames.navButton,
-                            head: classNames.head,
-                            head_cell: classNames.headCell,
-                            day: classNames.day,
-                            cell: classNames.cell,
-                            table: classNames.table,
-                            day_range_start: (0, clsx_1.default)("ui-date-picker-day-range-start", classNames.dayRangeStart),
-                            day_range_end: (0, clsx_1.default)("ui-date-picker-day-range-end", classNames.dayRangeEnd),
-                            day_outside: "ui-date-picker-day-outside",
-                            day_range_middle: "ui-date-picker-day-range-middle",
-                        }, fromDate: fromDate, toDate: toDate, min: min, max: max, footer: monthFooter }), footer] })] }));
+    var children2 = children ? (children(buttonText)) : ((0, jsx_runtime_1.jsx)(Button_1.default, __assign({}, buttonProps, { leading: (buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.leading) || (0, jsx_runtime_1.jsx)(solid_1.CalendarIcon, {}), className: (0, clsx_1.default)(DayPicker_classNames_1.dayPickerButtonClassName, buttonProps === null || buttonProps === void 0 ? void 0 : buttonProps.className), children: buttonText })));
+    return ((0, jsx_runtime_1.jsxs)(Popover_1.default.Root, { children: [(0, jsx_runtime_1.jsx)(Popover_1.default.Trigger, { asChild: true, children: children2 }), (0, jsx_runtime_1.jsxs)(Popover_1.default.Content, { children: [(0, jsx_runtime_1.jsx)(react_day_picker_1.DayPicker, { mode: "range", defaultMonth: value === null || value === void 0 ? void 0 : value.from, selected: range, onSelect: setRange, numberOfMonths: 2, showOutsideDays: true, classNames: DayPicker_classNames_1.dayPickerClassNames, fromDate: fromDate, toDate: toDate, min: min, max: max, footer: monthFooter }), footer] })] }));
 }
 exports.default = DateRangePicker;

@@ -54,8 +54,8 @@ var react_1 = require("react");
 var clsx_1 = __importDefault(require("../../utils/clsx"));
 var Modal_classNames_1 = require("../../styles/Modal.classNames");
 function PopoverContentWithRef(_a, ref) {
-    var className = _a.className, _b = _a.sideOffset, sideOffset = _b === void 0 ? 4 : _b, children = _a.children, props = __rest(_a, ["className", "sideOffset", "children"]);
-    return ((0, jsx_runtime_1.jsx)(RPopover.Portal, { children: (0, jsx_runtime_1.jsxs)(RPopover.Content, __assign({}, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalContentClassName, "ui-popover-content", className), sideOffset: sideOffset, ref: ref, children: [children, (0, jsx_runtime_1.jsx)(PopoverArrow, {})] })) }));
+    var className = _a.className, _b = _a.sideOffset, sideOffset = _b === void 0 ? 4 : _b, _c = _a.collisionPadding, collisionPadding = _c === void 0 ? 8 : _c, children = _a.children, props = __rest(_a, ["className", "sideOffset", "collisionPadding", "children"]);
+    return ((0, jsx_runtime_1.jsx)(RPopover.Portal, { children: (0, jsx_runtime_1.jsxs)(RPopover.Content, __assign({}, props, { className: (0, clsx_1.default)(Modal_classNames_1.modalContentClassName, "ui-popover-content", className), sideOffset: sideOffset, collisionPadding: collisionPadding, ref: ref, children: [children, (0, jsx_runtime_1.jsx)(PopoverArrow, {})] })) }));
 }
 var PopoverContent = (0, react_1.forwardRef)(PopoverContentWithRef);
 function PopoverArrow(_a) {

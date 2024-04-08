@@ -8,6 +8,7 @@ declare function DropdownMenuItem({ className, href, ...props }: ComponentProps<
     href?: string;
 }): JSX.Element;
 declare function DropdownMenuLabel({ className, ...props }: ComponentProps<typeof RDropdownMenu.Item>): JSX.Element;
+declare function DropdownMenuItemIndicator({ className, ...props }: ComponentProps<typeof RDropdownMenu.ItemIndicator>): JSX.Element;
 declare function DropdownMenuCheckboxItem({ className, children, indicatorClassName, ...props }: ComponentProps<typeof RDropdownMenu.CheckboxItem> & {
     indicatorClassName?: string;
 }): JSX.Element;
@@ -19,5 +20,6 @@ declare const DropdownMenu: {
     Separator: typeof DropdownMenuSeparator;
     CheckboxItem: typeof DropdownMenuCheckboxItem;
     Label: typeof DropdownMenuLabel;
+    ItemIndicator: typeof DropdownMenuItemIndicator;
 };
 export default DropdownMenu;

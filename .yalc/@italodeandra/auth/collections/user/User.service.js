@@ -80,6 +80,7 @@ var jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 var User_1 = __importStar(require("./User"));
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
 var cookies_next_1 = require("cookies-next");
+var Tenant_service_1 = require("../tenant/Tenant.service");
 var JWT_SECRET = process.env.JWT_SECRET;
 function hashPassword(plainPassword, salt) {
     return crypto_1.default
@@ -156,56 +157,76 @@ function getAuthCookieToken(req, res) {
     }
 }
 exports.getAuthCookieToken = getAuthCookieToken;
-function getUserFromCookies(req, res) {
+function getUserFromCookies(req, res, multitenantMode) {
     return __awaiter(this, void 0, void 0, function () {
-        var User, token, userId, user, e_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var User, tenantId, _a, token, userId, user, e_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     User = (0, User_1.default)();
+                    if (!multitenantMode) return [3 /*break*/, 2];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 1:
+                    _a = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    _a = undefined;
+                    _b.label = 3;
+                case 3:
+                    tenantId = _a;
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
                     }
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _b.label = 4;
+                case 4:
+                    _b.trys.push([4, 6, , 7]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User.findOne({ _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
-                case 2:
-                    user = _a.sent();
+                    return [4 /*yield*/, User.findOne({ tenantId: tenantId, _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
+                case 5:
+                    user = _b.sent();
                     if (!user) {
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
                     return [2 /*return*/, user];
-                case 3:
-                    e_1 = _a.sent();
+                case 6:
+                    e_1 = _b.sent();
                     console.error(e_1);
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
-                case 4: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });
 }
 exports.getUserFromCookies = getUserFromCookies;
-function getFullUserFromCookies(req, res) {
+function getFullUserFromCookies(req, res, multitenantMode) {
     return __awaiter(this, void 0, void 0, function () {
-        var User, token, userId, user, e_2;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var User, tenantId, _a, token, userId, user, e_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
                     User = (0, User_1.default)();
+                    if (!multitenantMode) return [3 /*break*/, 2];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 1:
+                    _a = _b.sent();
+                    return [3 /*break*/, 3];
+                case 2:
+                    _a = undefined;
+                    _b.label = 3;
+                case 3:
+                    tenantId = _a;
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
                     }
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _b.label = 4;
+                case 4:
+                    _b.trys.push([4, 6, , 7]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User.findOne({ _id: userId }, {
+                    return [4 /*yield*/, User.findOne({ tenantId: tenantId, _id: userId }, {
                             projection: {
                                 email: 1,
                                 type: 1,
@@ -214,18 +235,18 @@ function getFullUserFromCookies(req, res) {
                                 customData: 1,
                             },
                         })];
-                case 2:
-                    user = _a.sent();
+                case 5:
+                    user = _b.sent();
                     if (!user) {
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
                     return [2 /*return*/, user];
-                case 3:
-                    e_2 = _a.sent();
+                case 6:
+                    e_2 = _b.sent();
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
-                case 4: return [2 /*return*/];
+                case 7: return [2 /*return*/];
             }
         });
     });

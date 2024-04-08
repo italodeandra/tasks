@@ -102,38 +102,16 @@ var clsx_1 = __importDefault(require("../../utils/clsx"));
 var react_1 = require("react");
 var react_use_1 = require("react-use");
 var Input_1 = require("../Input");
-var Button_1 = __importDefault(require("../Button"));
 var FileSelect_1 = __importDefault(require("../FileSelect"));
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
-var solid_1 = require("@heroicons/react/20/solid");
 var lodash_1 = require("lodash");
 var Text_1 = __importDefault(require("../Text/Text"));
-var Stack_1 = __importDefault(require("../Stack"));
-var outline_1 = require("@heroicons/react/24/outline");
-var Group_1 = __importDefault(require("../Group"));
-var numeral_1 = __importDefault(require("numeral"));
-var videoExtensions = [".mp4"];
-var imageExtensions = [".png", ".jpg", ".jpeg"];
-function PreviewFile(_a) {
-    var _b, _c;
-    var file = _a.file, readOnly = _a.readOnly, handleDeleteClick = _a.handleDeleteClick, downloadText = _a.downloadText, openText = _a.openText, preview = _a.preview;
-    var url = file.file
-        ? URL.createObjectURL(file.file)
-        : file.url;
-    return ((0, jsx_runtime_1.jsxs)("div", { className: "group relative flex items-center justify-center rounded-md bg-zinc-200 dark:bg-zinc-800", children: [preview &&
-                (((_b = file.type) === null || _b === void 0 ? void 0 : _b.startsWith("video")) ||
-                    videoExtensions.some(function (e) { return url.endsWith(e); })) ? ((0, jsx_runtime_1.jsx)("video", { className: "max-h-96 rounded-md", src: url, controls: true })) : preview &&
-                (((_c = file.type) === null || _c === void 0 ? void 0 : _c.startsWith("image")) ||
-                    imageExtensions.some(function (e) { return url.endsWith(e); })) ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            (0, jsx_runtime_1.jsx)("img", { src: url, alt: file.description, className: "max-h-96 rounded-md" })) : ((0, jsx_runtime_1.jsxs)(Group_1.default, { className: "max-w-full items-center gap-4 p-3", children: [(0, jsx_runtime_1.jsx)("div", { className: "rounded-lg bg-zinc-300 p-2 dark:bg-zinc-800", children: (0, jsx_runtime_1.jsx)(outline_1.DocumentIcon, { className: "h-5 w-5" }) }), (0, jsx_runtime_1.jsxs)(Stack_1.default, { className: "flex-1 gap-1 overflow-hidden", children: [(0, jsx_runtime_1.jsx)("div", { className: "flex-1 truncate", title: file.name, children: file.name }), file.description && (0, jsx_runtime_1.jsx)("div", { children: file.description }), (0, jsx_runtime_1.jsx)(Text_1.default, { size: "sm", children: file.type }), file.size && ((0, jsx_runtime_1.jsx)(Text_1.default, { size: "sm", children: (0, numeral_1.default)(file.size).format("0b") })), !url.startsWith("blob") && ((0, jsx_runtime_1.jsxs)(Group_1.default, { className: "mr-auto", children: [(0, jsx_runtime_1.jsx)(Button_1.default, { leading: (0, jsx_runtime_1.jsx)(solid_1.ArrowTopRightOnSquareIcon, {}), href: url, target: "_blank", children: openText }), (0, jsx_runtime_1.jsx)(Button_1.default, { leading: (0, jsx_runtime_1.jsx)(outline_1.ArrowDownTrayIcon, {}), href: url, download: file.name, children: downloadText })] }))] })] })), !readOnly && ((0, jsx_runtime_1.jsx)(Button_1.default, { icon: true, variant: "filled", color: "default", className: "absolute right-2 top-2 group-hover:opacity-100 sm:opacity-0", onClick: handleDeleteClick, children: (0, jsx_runtime_1.jsx)(solid_1.TrashIcon, {}) }))] }));
-}
+var PreviewFile_1 = require("./PreviewFile");
 function FileInput(_a, ref) {
-    var _b;
     var _this = this;
-    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, readOnly = _a.readOnly, value = _a.value, _c = _a.emptyText, emptyText = _c === void 0 ? "No files" : _c, _d = _a.downloadText, downloadText = _d === void 0 ? "Download" : _d, _e = _a.openText, openText = _e === void 0 ? "Open" : _e, preview = _a.preview, asyncUpload = _a.asyncUpload, onRejectFiles = _a.onRejectFiles, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut", "readOnly", "value", "emptyText", "downloadText", "openText", "preview", "asyncUpload", "onRejectFiles"]);
-    var _f = __read((0, react_1.useState)(false), 2), uploading = _f[0], setUploading = _f[1];
-    var _g = __read((0, react_1.useState)(value || []), 2), innerValue = _g[0], setInnerValue = _g[1];
+    var error = _a.error, className = _a.className, helpText = _a.helpText, onChange = _a.onChange, name = _a.name, limit = _a.limit, label = _a.label, id = _a.id, required = _a.required, onMouseOver = _a.onMouseOver, onMouseOut = _a.onMouseOut, readOnly = _a.readOnly, value = _a.value, _b = _a.emptyText, emptyText = _b === void 0 ? "No files" : _b, _c = _a.downloadText, downloadText = _c === void 0 ? "Download" : _c, _d = _a.openText, openText = _d === void 0 ? "Open" : _d, preview = _a.preview, asyncUpload = _a.asyncUpload, onRejectFiles = _a.onRejectFiles, props = __rest(_a, ["error", "className", "helpText", "onChange", "name", "limit", "label", "id", "required", "onMouseOver", "onMouseOut", "readOnly", "value", "emptyText", "downloadText", "openText", "preview", "asyncUpload", "onRejectFiles"]);
+    var _e = __read((0, react_1.useState)(false), 2), uploading = _e[0], setUploading = _e[1];
+    var _f = __read((0, react_1.useState)(value || []), 2), innerValue = _f[0], setInnerValue = _f[1];
     (0, react_use_1.useDeepCompareEffect)(function () {
         if (value && !(0, lodash_1.isEqual)(value, innerValue)) {
             setInnerValue(value);
@@ -274,11 +252,9 @@ function FileInput(_a, ref) {
     var handleDeleteClick = (0, react_1.useCallback)(function (clickedFile) { return function () {
         setInnerValue(function (value) { return __spreadArray([], __read(value.filter(function (file) { return file !== clickedFile; })), false); });
     }; }, []);
-    return ((0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("relative", className, (_b = {},
-            _b["error"] = error,
-            _b)), onMouseOver: onMouseOver, onMouseOut: onMouseOut, children: [label && ((0, jsx_runtime_1.jsxs)("label", { htmlFor: id, className: Input_1.defaultLabelClassName, children: [label, required && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", (0, jsx_runtime_1.jsx)("span", { className: "text-red-500", children: "*" })] }))] })), (0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("grid grid-cols-1 gap-4", {
+    return ((0, jsx_runtime_1.jsxs)("div", { "data-input-name": name, "data-error": error, className: (0, clsx_1.default)("relative", className), onMouseOver: onMouseOver, onMouseOut: onMouseOut, children: [label && ((0, jsx_runtime_1.jsxs)("label", { htmlFor: id, className: Input_1.defaultLabelClassName, children: [label, required && ((0, jsx_runtime_1.jsxs)(jsx_runtime_1.Fragment, { children: [" ", (0, jsx_runtime_1.jsx)("span", { className: "text-red-500", children: "*" })] }))] })), (0, jsx_runtime_1.jsxs)("div", { className: (0, clsx_1.default)("grid grid-cols-1 gap-4", {
                     "md:grid-cols-2": !!innerValue.length,
                     "min-h-[140px]": !!innerValue.length || !readOnly,
-                }), children: [innerValue.map(function (file, i) { return ((0, jsx_runtime_1.jsx)(PreviewFile, { file: file, readOnly: readOnly, handleDeleteClick: handleDeleteClick(file), downloadText: downloadText, preview: preview, openText: openText }, i)); }), readOnly && !innerValue.length && ((0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: emptyText })), !readOnly && (!limit || innerValue.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - innerValue.length : undefined, uploading: uploading, onRejectFiles: onRejectFiles })))] }), helpText && (0, jsx_runtime_1.jsx)("div", { className: Input_1.defaultHelpTextClassName, children: helpText })] }));
+                }), children: [innerValue.map(function (file, i) { return ((0, jsx_runtime_1.jsx)(PreviewFile_1.PreviewFile, { file: file, readOnly: readOnly, handleDeleteClick: handleDeleteClick(file), downloadText: downloadText, preview: preview, openText: openText }, i)); }), readOnly && !innerValue.length && ((0, jsx_runtime_1.jsx)(Text_1.default, { variant: "secondary", children: emptyText })), !readOnly && (!limit || innerValue.length < limit) && ((0, jsx_runtime_1.jsx)(FileSelect_1.default, __assign({}, props, { id: id, onAcceptFiles: handleAcceptFiles, limit: limit ? limit - innerValue.length : undefined, uploading: uploading, onRejectFiles: onRejectFiles, error: error })))] }), helpText && ((0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)(Input_1.defaultHelpTextClassName, "[[data-error]_&]:text-error-500"), children: helpText }))] }));
 }
 exports.default = (0, react_1.forwardRef)(FileInput);

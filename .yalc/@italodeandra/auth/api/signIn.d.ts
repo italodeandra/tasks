@@ -8,7 +8,7 @@ export interface AuthSignInApiError {
 export default function signInHandler(args: {
     email: string;
     password: string;
-}, req: NextApiRequest, res: NextApiResponse, { connectDb }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
+}, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
     email: string;
     type: string;
     password: string;
@@ -16,6 +16,7 @@ export default function signInHandler(args: {
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
+    tenantId?: import("bson").ObjectID | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;

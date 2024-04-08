@@ -1,13 +1,12 @@
-/// <reference types="node" />
 import { QueryClient } from "@tanstack/react-query";
 import { AuthConfig } from "../..";
 import { InferApiArgs, InferApiResponse } from "@italodeandra/next/api/apiHandlerWrapper";
-import { OptionsType } from "cookies-next/lib/types";
+import { NextApiRequest, NextApiResponse } from "next";
 export default function authPanelUserListHandler(args: {
     search?: string;
     sort?: string;
     sortDirection?: "asc" | "desc";
-}, req: OptionsType["req"], res: OptionsType["res"], { connectDb }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+}, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
     email: string;
     type: string;
     password: string;
@@ -15,6 +14,7 @@ export default function authPanelUserListHandler(args: {
     createdAt: Date;
     updatedAt: Date;
     _id: import("bson").ObjectID;
+    tenantId?: import("bson").ObjectID | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
@@ -34,11 +34,5 @@ export declare const prefetch_authPanelUserList: (queryClient: QueryClient, args
     search?: string | undefined;
     sort?: string | undefined;
     sortDirection?: "asc" | "desc" | undefined;
-}, args_1: (import("http").IncomingMessage & {
-    cookies?: {
-        [key: string]: string;
-    } | Partial<{
-        [key: string]: string;
-    }> | undefined;
-}) | undefined, args_2: import("http").ServerResponse<import("http").IncomingMessage> | undefined, args_3: AuthConfig) => Promise<void>;
+}, args_1: NextApiRequest, args_2: NextApiResponse<any>, args_3: AuthConfig) => Promise<void>;
 export declare const invalidate_authPanelUserList: (queryClient: QueryClient) => Promise<void>;

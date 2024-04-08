@@ -45,14 +45,15 @@ var User_service_1 = require("../collections/user/User.service");
 var react_query_1 = require("@tanstack/react-query");
 var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
+var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 var appEnv = process.env.APP_ENV || "development";
 function requestPasswordResetHandler(args, req, _res, _a) {
     var _b;
-    var routes = _a.routes, connectDb = _a.connectDb, intl = _a.intl, fallbackLocale = _a.fallbackLocale, primaryColor = _a.primaryColor, sendMail = _a.sendMail;
+    var routes = _a.routes, connectDb = _a.connectDb, intl = _a.intl, fallbackLocale = _a.fallbackLocale, primaryColor = _a.primaryColor, sendMail = _a.sendMail, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var locales, locale, t, User, user, host, protocol, token, url;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var locales, locale, t, User, tenantId, _c, user, host, protocol, token, url;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     if (!routes.ResetPassword) {
                         throw Error("Missing ResetPassword route");
@@ -69,17 +70,28 @@ function requestPasswordResetHandler(args, req, _res, _a) {
                     t = intl[locale];
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
+                    if (!multitenantMode) return [3 /*break*/, 3];
+                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                case 2:
+                    _c = _d.sent();
+                    return [3 /*break*/, 4];
+                case 3:
+                    _c = undefined;
+                    _d.label = 4;
+                case 4:
+                    tenantId = _c;
                     return [4 /*yield*/, User.findOne({
+                            tenantId: tenantId,
                             email: args.email.toLowerCase().trim(),
                         }, {
                             projection: {
                                 email: 1,
                             },
                         })];
-                case 2:
-                    user = _c.sent();
+                case 5:
+                    user = _d.sent();
                     if (!user)
                         return [2 /*return*/];
                     host = req.headers.host;
@@ -106,8 +118,8 @@ function requestPasswordResetHandler(args, req, _res, _a) {
                             ],
                             signature: t["Kind regards"],
                         })];
-                case 3:
-                    _c.sent();
+                case 6:
+                    _d.sent();
                     if (appEnv === "development") {
                         console.info("Reset password in URL:", url);
                     }
