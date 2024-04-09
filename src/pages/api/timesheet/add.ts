@@ -22,6 +22,7 @@ import getTask from "../../../collections/task";
 import getProject from "../../../collections/project";
 import { invalidate_projectList } from "../project/list";
 import { timesheetStatusApi } from "./status";
+import { timesheetListFromProjectApi } from "./list-from-project";
 
 async function handler(
   args: Jsonify<
@@ -102,6 +103,7 @@ export const useTimesheetAdd = (
         void taskListApi.invalidate(queryClient);
         void invalidate_projectList(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
+        void timesheetListFromProjectApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

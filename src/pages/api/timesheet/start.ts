@@ -27,6 +27,7 @@ import getProject from "../../../collections/project";
 import { invalidate_projectList } from "../project/list";
 import { timesheetStatusApi } from "./status";
 import { taskGetApi } from "../task/get";
+import { timesheetListFromProjectApi } from "./list-from-project";
 
 async function handler(
   args: {
@@ -129,6 +130,7 @@ export const useTimesheetStart = (
         void invalidate_projectList(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
         void taskGetApi.invalidate(queryClient);
+        void timesheetListFromProjectApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

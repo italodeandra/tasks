@@ -18,6 +18,7 @@ import { taskListApi } from "../task/list";
 import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
 import { timesheetStatusApi } from "./status";
+import { timesheetListFromProjectApi } from "./list-from-project";
 
 async function handler(
   args: {
@@ -66,6 +67,7 @@ export const useTimesheetDelete = (
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
+        void timesheetListFromProjectApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

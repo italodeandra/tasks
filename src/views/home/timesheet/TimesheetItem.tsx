@@ -1,13 +1,13 @@
-import { TimesheetListFromProjectApiResponse } from "../../../pages/api/timesheet/list-from-project";
 import { useInterval, useUpdate } from "react-use";
 import ms from "ms";
 import React from "react";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
+import { TimesheetListFromProjectApi } from "../../../pages/api/timesheet/list-from-project";
 
 export function TimesheetItem({
   timesheet,
 }: {
-  timesheet: TimesheetListFromProjectApiResponse["data"][0];
+  timesheet: TimesheetListFromProjectApi["Response"]["data"][0];
 }) {
   let time =
     timesheet?.time ||

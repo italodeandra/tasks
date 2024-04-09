@@ -27,13 +27,15 @@ import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { TaskDetails } from "./details/TaskDetails";
 import { Markdown } from "./Markdown";
 import { taskRemoveApi } from "../../../pages/api/task/remove";
+import { useTimesheetStop } from "../../../pages/api/timesheet/stop";
 
 export default function Task(task: ITask) {
-  let { orientation, selectedProjects, editingTasks, setEditingTasks } =
+  const { orientation, selectedProjects, editingTasks, setEditingTasks } =
     useSnapshot(homeState);
+  const { mutate: stop } = useTimesheetStop();
 
-  let isEditing = editingTasks.includes(task._id);
-  let setEditing = useCallback(
+  const isEditing = editingTasks.includes(task._id);
+  const setEditing = useCallback(
     (editing: boolean) => {
       setEditingTasks(
         editing
@@ -44,10 +46,10 @@ export default function Task(task: ITask) {
     [editingTasks, setEditingTasks, task._id]
   );
 
-  let [newValue, setNewValue] = useState(task.content);
-  let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
-  let [oneClicked, setOneClicked] = useState(false);
-  let debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
+  const [newValue, setNewValue] = useState(task.content);
+  const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+  const [oneClicked, setOneClicked] = useState(false);
+  const debouncedOneClicked = useDebouncedValue(oneClicked, "500ms");
 
   useEffect(() => {
     if (task.content !== newValue) {
@@ -65,25 +67,25 @@ export default function Task(task: ITask) {
     }
   }, [debouncedOneClicked, task._id]);
 
-  let handleClick = useCallback(() => {
+  const handleClick = useCallback(() => {
     if (!isEditing) {
       setOneClicked(true);
     }
   }, [isEditing]);
 
-  let handleDoubleClick = useCallback(() => {
+  const handleDoubleClick = useCallback(() => {
     setOneClicked(false);
     setEditing(true);
   }, [setEditing]);
 
-  let { mutate: remove } = taskRemoveApi.useMutation();
-  let handleDeleteClick = useCallback(() => {
+  const { mutate: remove } = taskRemoveApi.useMutation();
+  const handleDeleteClick = useCallback(() => {
     remove({
       _id: task._id,
     });
   }, [remove, task._id]);
-  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
-  let handleSaveClick = useCallback(
+  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const handleSaveClick = useCallback(
     (newValue: string) => {
       setEditing(false);
       setNewValue(newValue);
@@ -99,17 +101,21 @@ export default function Task(task: ITask) {
     [handleDeleteClick, setEditing, task._id, update]
   );
 
-  let handleMoveStatusClick = useCallback(
-    (status: TaskStatus) => () =>
+  const handleMoveStatusClick = useCallback(
+    (status: TaskStatus) => () => {
+      if (status === TaskStatus.DONE) {
+        stop();
+      }
       update({
         _id: task._id,
         status,
         order: -1,
-      }),
-    [task._id, update]
+      });
+    },
+    [stop, task._id, update]
   );
 
-  let handleClearChanges = useCallback(
+  const handleClearChanges = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation();
       setNewValue(task.content);
@@ -117,7 +123,7 @@ export default function Task(task: ITask) {
     [task.content]
   );
 
-  let dimmed = useMemo(
+  const dimmed = useMemo(
     () =>
       !selectedProjects.length
         ? false
@@ -130,16 +136,16 @@ export default function Task(task: ITask) {
     [task.project, selectedProjects]
   );
 
-  let taskClassName = clsx("w-full rounded bg-zinc-200 dark:bg-zinc-900", {
+  const taskClassName = clsx("w-full rounded bg-zinc-200 dark:bg-zinc-900", {
     "flex-col": orientation === Orientation.HORIZONTAL,
   });
 
-  let handleContextMenu = useCallback(
+  const handleContextMenu = useCallback(
     (e: MouseEvent) => e.preventDefault(),
     []
   );
 
-  let taskElement = (
+  const taskElement = (
     <Group
       className={clsx(taskClassName, "flex p-1 group overflow-hidden", {
         "opacity-40": dimmed,

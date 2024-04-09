@@ -1,12 +1,5 @@
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import {
-  apiHandlerWrapper,
-  InferApiArgs,
-  InferApiResponse,
-  queryFnWrapper,
-} from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import { useQuery } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getTimesheet, {
@@ -17,136 +10,128 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { ITask } from "../../../collections/task";
 import removeMd from "remove-markdown";
 import dayjs from "dayjs";
+import createApi from "@italodeandra/next/api/createApi";
 
-async function handler(
-  args: { projectId: string; startDate: Date },
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await connectDb();
-  let Timesheet = getTimesheet();
-  let user = await getUserFromCookies(req, res);
-  if (!user) {
-    throw unauthorized;
-  }
+export const timesheetListFromProjectApi = createApi(
+  "/api/timesheet/list-from-project",
+  async function (
+    args: { projectId: string; startDate: Date },
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+    await connectDb();
+    let Timesheet = getTimesheet();
+    let user = await getUserFromCookies(req, res);
+    if (!user) {
+      throw unauthorized;
+    }
 
-  let projectId = isomorphicObjectId(args.projectId);
+    let projectId = isomorphicObjectId(args.projectId);
 
-  let stats = await Timesheet.aggregate<{
-    _id: "clock" | "payment";
-    time: number;
-  }>([
-    {
-      $match: {
-        userId: user._id,
-        projectId: projectId,
-      },
-    },
-    {
-      $group: {
-        _id: {
-          $cond: [
-            {
-              $in: [
-                "$type",
-                [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL],
-              ],
-            },
-            "clock",
-            "payment",
-          ],
-        },
-        time: {
-          $sum: "$time",
+    let stats = await Timesheet.aggregate<{
+      _id: "clock" | "payment";
+      time: number;
+    }>([
+      {
+        $match: {
+          userId: user._id,
+          projectId: projectId,
         },
       },
-    },
-  ]);
-
-  return {
-    timeClocked: stats.find((s) => s._id === "clock")?.time || 0,
-    timePaid: stats.find((s) => s._id === "payment")?.time || 0,
-    data: (
-      await Timesheet.aggregate<
-        Pick<
-          ITimesheet,
-          "_id" | "time" | "startedAt" | "type" | "createdAt"
-        > & {
-          task?: Pick<ITask, "_id" | "title">;
-        }
-      >([
-        {
-          $match: {
-            userId: user._id,
-            projectId: projectId,
-            createdAt: {
-              $gte: dayjs(args.startDate).startOf("month").toDate(),
-              $lte: dayjs(args.startDate).endOf("month").toDate(),
-            },
-          },
-        },
-        {
-          $lookup: {
-            from: "tasks",
-            localField: "taskId",
-            foreignField: "_id",
-            as: "task",
-            pipeline: [
+      {
+        $group: {
+          _id: {
+            $cond: [
               {
-                $project: {
-                  title: 1,
-                },
+                $in: [
+                  "$type",
+                  [TimesheetType.CLOCK_IN_OUT, TimesheetType.MANUAL],
+                ],
               },
+              "clock",
+              "payment",
             ],
           },
-        },
-        {
-          $unwind: {
-            path: "$task",
-            preserveNullAndEmptyArrays: true,
+          time: {
+            $sum: "$time",
           },
         },
-        {
-          $project: {
-            time: 1,
-            startedAt: 1,
-            createdAt: 1,
-            type: 1,
-            task: 1,
-          },
-        },
-        {
-          $sort: {
-            createdAt: 1,
-          },
-        },
-      ])
-    ).map((t) => ({
-      ...t,
-      task: t.task && {
-        ...t.task,
-        content: removeMd(t.task.title).split("\n")[0],
       },
-    })),
-  };
-}
+    ]);
 
-export default apiHandlerWrapper(handler);
+    return {
+      timeClocked: stats.find((s) => s._id === "clock")?.time || 0,
+      timePaid: stats.find((s) => s._id === "payment")?.time || 0,
+      data: (
+        await Timesheet.aggregate<
+          Pick<
+            ITimesheet,
+            "_id" | "time" | "startedAt" | "type" | "createdAt"
+          > & {
+            task?: Pick<ITask, "_id" | "title">;
+          }
+        >([
+          {
+            $match: {
+              userId: user._id,
+              projectId: projectId,
+              createdAt: {
+                $gte: dayjs(args.startDate).startOf("month").toDate(),
+                $lte: dayjs(args.startDate).endOf("month").toDate(),
+              },
+            },
+          },
+          {
+            $lookup: {
+              from: "tasks",
+              localField: "taskId",
+              foreignField: "_id",
+              as: "task",
+              pipeline: [
+                {
+                  $project: {
+                    title: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $unwind: {
+              path: "$task",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $project: {
+              time: 1,
+              startedAt: 1,
+              createdAt: 1,
+              type: 1,
+              task: 1,
+            },
+          },
+          {
+            $sort: {
+              createdAt: 1,
+            },
+          },
+        ])
+      ).map((t) => ({
+        ...t,
+        task: t.task && {
+          ...t.task,
+          content: removeMd(t.task.title).split("\n")[0],
+        },
+      })),
+    };
+  },
+  {
+    queryKeyMap: (args) => [args?.projectId, args?.startDate].filter(Boolean),
+  }
+);
 
-export type TimesheetListFromProjectApiArgs = InferApiArgs<typeof handler>;
-export type TimesheetListFromProjectApiResponse = InferApiResponse<
-  typeof handler
->;
+export default timesheetListFromProjectApi.handler;
 
-const queryKey = "/api/timesheet/list-from-project";
-
-export const useTimesheetListFromProject = (
-  args?: TimesheetListFromProjectApiArgs
-) =>
-  useQuery(
-    [queryKey, args?.projectId, args?.startDate],
-    queryFnWrapper<TimesheetListFromProjectApiResponse>(queryKey, args),
-    {
-      enabled: !!args,
-    }
-  );
+export type TimesheetListFromProjectApi =
+  typeof timesheetListFromProjectApi.Types;

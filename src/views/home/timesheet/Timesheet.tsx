@@ -1,7 +1,3 @@
-import {
-  TimesheetListFromProjectApiResponse,
-  useTimesheetListFromProject,
-} from "../../../pages/api/timesheet/list-from-project";
 import React, { useMemo, useState } from "react";
 import { useProjectList } from "../../../pages/api/project/list";
 import { useTimesheetDelete } from "../../../pages/api/timesheet/delete";
@@ -29,6 +25,10 @@ import { TimesheetAddDialog } from "./TimesheetAddDialog";
 import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import {
+  TimesheetListFromProjectApi,
+  timesheetListFromProjectApi,
+} from "../../../pages/api/timesheet/list-from-project";
 
 export function Timesheet() {
   let { selectedProjects } = useSnapshot(homeState);
@@ -38,7 +38,7 @@ export function Timesheet() {
     projects?.find((p) => selectedProjects.includes(p._id)) || projects?.[0];
 
   let [startDate, setStartDate] = useState(() => new Date());
-  let { data: timesheet, isLoading } = useTimesheetListFromProject(
+  let { data: timesheet, isLoading } = timesheetListFromProjectApi.useQuery(
     project
       ? {
           projectId: project._id,
@@ -50,7 +50,9 @@ export function Timesheet() {
   let { mutate: deleteTimesheet, isLoading: isDeleting } = useTimesheetDelete();
 
   let columns = useMemo<
-    DataTableProps<TimesheetListFromProjectApiResponse["data"][0]>["columns"]
+    DataTableProps<
+      TimesheetListFromProjectApi["Response"]["data"][0]
+    >["columns"]
   >(
     () => [
       {

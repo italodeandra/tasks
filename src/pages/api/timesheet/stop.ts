@@ -21,6 +21,7 @@ import getProject from "../../../collections/project";
 import { invalidate_projectList } from "../project/list";
 import { timesheetStatusApi } from "./status";
 import { taskGetApi } from "../task/get";
+import { timesheetListFromProjectApi } from "./list-from-project";
 
 export async function stopClock(userId: ObjectId) {
   let Timesheet = getTimesheet();
@@ -114,6 +115,7 @@ export const useTimesheetStop = (
         void invalidate_projectList(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
         void taskGetApi.invalidate(queryClient);
+        void timesheetListFromProjectApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);
       },
     }
