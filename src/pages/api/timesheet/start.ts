@@ -24,7 +24,7 @@ import { ObjectId } from "bson";
 import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import { stopClock } from "./stop";
 import getProject from "../../../collections/project";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import { timesheetStatusApi } from "./status";
 import { taskGetApi } from "../task/get";
 import { timesheetListFromProjectApi } from "./list-from-project";
@@ -127,7 +127,7 @@ export const useTimesheetStart = (
       ...options,
       async onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
         void taskGetApi.invalidate(queryClient);
         void timesheetListFromProjectApi.invalidate(queryClient);

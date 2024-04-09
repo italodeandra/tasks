@@ -13,12 +13,12 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
-import { invalidate_projectList } from "./list";
+import { projectListApi } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import getProject, { IProject } from "../../../collections/project";
 
 async function handler(
-  args: Jsonify<Pick<IProject, "color" | "name">>,
+  args: Jsonify<Pick<IProject, "name">>,
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -31,7 +31,6 @@ async function handler(
 
   const inserted = await Project.insertOne({
     name: args.name,
-    color: args.color,
     userId: user._id,
   });
 
@@ -58,9 +57,9 @@ export const useProjectCreate = (
     mutationFnWrapper<ProjectCreateArgs, ProjectCreateResponse>(mutationKey),
     {
       ...options,
-      async onSuccess(...params) {
-        await invalidate_projectList(queryClient);
-        await options?.onSuccess?.(...params);
+      onSuccess(...params) {
+        void projectListApi.invalidate(queryClient);
+        return options?.onSuccess?.(...params);
       },
     }
   );

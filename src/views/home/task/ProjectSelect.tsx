@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useProjectList } from "../../../pages/api/project/list";
+import { projectListApi } from "../../../pages/api/project/list";
 import { taskUpdateApi } from "../../../pages/api/task/update";
 import Select from "@italodeandra/ui/components/Select";
 import clsx from "@italodeandra/ui/utils/clsx";
@@ -12,10 +12,10 @@ export function ProjectSelect({
   triggerClassName,
   ...task
 }: Pick<ITask, "project" | "_id"> & { triggerClassName?: string }) {
-  let [value, setValue] = useState(task.project?._id);
-  let { data: projects, isLoading } = useProjectList();
-  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
-  let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+  const [value, setValue] = useState(task.project?._id);
+  const { data: projects, isLoading } = projectListApi.useQuery();
+  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
     if (value !== task.project?._id) {

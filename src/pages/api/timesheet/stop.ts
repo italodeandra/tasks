@@ -18,16 +18,16 @@ import { ObjectId } from "bson";
 import getTimesheet from "../../../collections/timesheet";
 import getTask from "../../../collections/task";
 import getProject from "../../../collections/project";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import { timesheetStatusApi } from "./status";
 import { taskGetApi } from "../task/get";
 import { timesheetListFromProjectApi } from "./list-from-project";
 
 export async function stopClock(userId: ObjectId) {
-  let Timesheet = getTimesheet();
-  let Task = getTask();
-  let Project = getProject();
-  let activeTimesheet = await Timesheet.findOne({
+  const Timesheet = getTimesheet();
+  const Task = getTask();
+  const Project = getProject();
+  const activeTimesheet = await Timesheet.findOne({
     userId: userId,
     startedAt: {
       $exists: true,
@@ -37,10 +37,10 @@ export async function stopClock(userId: ObjectId) {
     },
   });
   if (activeTimesheet?.startedAt) {
-    let stoppedAt = new Date();
-    let addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
+    const stoppedAt = new Date();
+    const addedTime = stoppedAt.getTime() - activeTimesheet.startedAt.getTime();
 
-    let taskId = activeTimesheet.taskId;
+    const taskId = activeTimesheet.taskId;
     if (taskId) {
       await Task.updateOne(
         { _id: taskId },
@@ -52,7 +52,7 @@ export async function stopClock(userId: ObjectId) {
       );
     }
 
-    let projectId = activeTimesheet.projectId;
+    const projectId = activeTimesheet.projectId;
     if (projectId) {
       await Project.updateOne(
         { _id: projectId },
@@ -80,7 +80,7 @@ export async function stopClock(userId: ObjectId) {
 
 async function handler(_args: void, req: NextApiRequest, res: NextApiResponse) {
   await connectDb();
-  let user = await getUserFromCookies(req, res);
+  const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
@@ -112,7 +112,7 @@ export const useTimesheetStop = (
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
         void taskGetApi.invalidate(queryClient);
         void timesheetListFromProjectApi.invalidate(queryClient);

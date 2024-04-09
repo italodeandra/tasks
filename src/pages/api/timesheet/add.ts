@@ -20,7 +20,7 @@ import Jsonify from "@italodeandra/next/utils/Jsonify";
 import ms from "ms";
 import getTask from "../../../collections/task";
 import getProject from "../../../collections/project";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import { timesheetStatusApi } from "./status";
 import { timesheetListFromProjectApi } from "./list-from-project";
 
@@ -102,7 +102,7 @@ export const useTimesheetAdd = (
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
         void timesheetStatusApi.invalidate(queryClient);
         void timesheetListFromProjectApi.invalidate(queryClient);
         return options?.onSuccess?.(...params);

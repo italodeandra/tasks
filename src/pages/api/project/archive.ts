@@ -13,7 +13,7 @@ import {
   InferApiResponse,
   mutationFnWrapper,
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import { invalidate_projectList } from "./list";
+import { projectListApi } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import getProject, { IProject } from "../../../collections/project";
 import { connectDb } from "../../../db";
@@ -88,9 +88,9 @@ export const useProjectArchive = (
     mutationFnWrapper<ProjectArchiveArgs, ProjectArchiveResponse>(mutationKey),
     {
       ...options,
-      async onSuccess(...params) {
-        await invalidate_projectList(queryClient);
-        await options?.onSuccess?.(...params);
+      onSuccess(...params) {
+        void projectListApi.invalidate(queryClient);
+        return options?.onSuccess?.(...params);
       },
     }
   );

@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
@@ -140,7 +140,7 @@ export const taskInsertApi = createApi(
         taskListApi.setQueryData(queryClient, context?.previousData);
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
       },
       onSettled: (_d, _e, _v, _c, queryClient) => {
         void taskListApi.invalidate(queryClient);

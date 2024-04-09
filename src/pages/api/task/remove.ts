@@ -6,7 +6,7 @@ import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import createApi from "@italodeandra/next/api/createApi";
 
 export const taskRemoveApi = createApi(
@@ -46,7 +46,7 @@ export const taskRemoveApi = createApi(
         taskListApi.setQueryData(queryClient, context?.previousData);
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
       },
       onSettled: (_d, _e, _v, _c, queryClient) => {
         void taskListApi.invalidate(queryClient);

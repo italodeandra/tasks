@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { useProjectList } from "../../../pages/api/project/list";
+import { useMemo, useState } from "react";
+import { projectListApi } from "../../../pages/api/project/list";
 import { useTimesheetDelete } from "../../../pages/api/timesheet/delete";
 import DataTable, {
   DataTableProps,
@@ -31,14 +31,14 @@ import {
 } from "../../../pages/api/timesheet/list-from-project";
 
 export function Timesheet() {
-  let { selectedProjects } = useSnapshot(homeState);
-  let { data: projects } = useProjectList();
+  const { selectedProjects } = useSnapshot(homeState);
+  const { data: projects } = projectListApi.useQuery();
 
   const project =
     projects?.find((p) => selectedProjects.includes(p._id)) || projects?.[0];
 
-  let [startDate, setStartDate] = useState(() => new Date());
-  let { data: timesheet, isLoading } = timesheetListFromProjectApi.useQuery(
+  const [startDate, setStartDate] = useState(() => new Date());
+  const { data: timesheet, isLoading } = timesheetListFromProjectApi.useQuery(
     project
       ? {
           projectId: project._id,
@@ -47,9 +47,10 @@ export function Timesheet() {
       : undefined
   );
 
-  let { mutate: deleteTimesheet, isLoading: isDeleting } = useTimesheetDelete();
+  const { mutate: deleteTimesheet, isLoading: isDeleting } =
+    useTimesheetDelete();
 
-  let columns = useMemo<
+  const columns = useMemo<
     DataTableProps<
       TimesheetListFromProjectApi["Response"]["data"][0]
     >["columns"]
@@ -76,14 +77,14 @@ export function Timesheet() {
     []
   );
 
-  let { totalClocked, totalPaid, pendingPayment } = useMemo(() => {
-    let totalClocked = timesheet?.timeClocked || 0;
-    let totalPaid = timesheet?.timePaid || 0;
-    let pendingPayment = totalClocked - totalPaid;
+  const { totalClocked, totalPaid, pendingPayment } = useMemo(() => {
+    const totalClocked = timesheet?.timeClocked || 0;
+    const totalPaid = timesheet?.timePaid || 0;
+    const pendingPayment = totalClocked - totalPaid;
     return { totalClocked, totalPaid, pendingPayment };
   }, [timesheet]);
 
-  let handleAddClick = () => {
+  const handleAddClick = () => {
     if (project) {
       let _id = isomorphicObjectId().toString();
       showDialog({

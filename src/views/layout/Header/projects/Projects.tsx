@@ -1,6 +1,5 @@
-import { useProjectList } from "../../../../pages/api/project/list";
-import React, { useMemo } from "react";
-import { ProjectColor } from "../../../../collections/project";
+import { useMemo } from "react";
+import { projectListApi } from "../../../../pages/api/project/list";
 import Button from "@italodeandra/ui/components/Button";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 import { useSnapshot } from "valtio";
@@ -11,7 +10,7 @@ import { Project } from "./Project";
 
 export default function Projects() {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
-  const { data: projects, isLoading: isLoading } = useProjectList();
+  const { data: projects, isLoading: isLoading } = projectListApi.useQuery();
 
   const projectsWithNone = useMemo(
     () => [
@@ -19,7 +18,6 @@ export default function Projects() {
         _id: "NONE",
         name: "None",
         lastTaskUpdatedAt: "",
-        color: ProjectColor.BLUE,
       },
       ...(projects || []),
     ],

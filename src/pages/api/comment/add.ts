@@ -3,7 +3,7 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { commentListApi } from "./list";
 import { connectDb } from "../../../db";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import createApi from "@italodeandra/next/api/createApi";
@@ -50,7 +50,7 @@ export const commentAddApi = createApi(
         commentListApi.setQueryData(queryClient, context?.previousData);
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
       },
       onSettled: (_d, _e, _v, _c, queryClient) => {
         void commentListApi.invalidate(queryClient);

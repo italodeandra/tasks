@@ -7,7 +7,7 @@ import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
 import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
-import { invalidate_projectList } from "../project/list";
+import { projectListApi } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import getProject from "../../../collections/project";
 import { omit, pick } from "lodash";
@@ -134,7 +134,7 @@ export const taskUpdateApi = createApi(
         );
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void invalidate_projectList(queryClient);
+        void projectListApi.invalidate(queryClient);
       },
       onSettled: (_d, _e, args, _c, queryClient) => {
         void taskListApi.invalidate(queryClient);

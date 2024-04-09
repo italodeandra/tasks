@@ -1,4 +1,4 @@
-import { ProjectListApiResponse } from "../../../../pages/api/project/list";
+import { ProjectListApi } from "../../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
 import { useProjectArchive } from "../../../../pages/api/project/archive";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
@@ -7,7 +7,7 @@ import React, { useCallback } from "react";
 import { homeState } from "../../../home/home.state";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
-export function Project(project: ProjectListApiResponse[0]) {
+export function Project(project: ProjectListApi["Response"][0]) {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
   const { mutate: archive } = useProjectArchive();
 
