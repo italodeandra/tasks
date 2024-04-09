@@ -23,6 +23,7 @@ export function Markdown({
   loading,
   editing,
   onChangeEditing,
+  inputClassName,
 }: {
   value?: string;
   onChange?: (value: string) => void;
@@ -32,6 +33,7 @@ export function Markdown({
   loading?: boolean;
   editing?: boolean;
   onChangeEditing?: (editing: boolean) => void;
+  inputClassName?: string;
 }) {
   let [internalEditing, setInternalEditing] = useState(Boolean(editing));
   let [newValue, setNewValue] = useState(value);
@@ -115,6 +117,11 @@ export function Markdown({
           theme={vscodeDark}
           onKeyDown={handleKeyDown}
           autoFocus
+          className={inputClassName}
+          basicSetup={{
+            lineNumbers: false,
+            foldGutter: false,
+          }}
         />
       ) : (
         <div
