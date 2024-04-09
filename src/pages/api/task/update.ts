@@ -1,6 +1,6 @@
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import createApi from "@italodeandra/next/api/createApi";
-import { unauthorized } from "@italodeandra/next/api/errors";
+import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { NextApiRequest, NextApiResponse } from "next";
 import { taskListApi } from "./list";
@@ -12,6 +12,7 @@ import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyPropertie
 import getProject from "../../../collections/project";
 import { omit, pick } from "lodash";
 import { taskGetApi } from "./get";
+import getTimesheet from "../../../collections/timesheet";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
@@ -28,22 +29,27 @@ export const taskUpdateApi = createApi(
     res: NextApiResponse
   ) => {
     await connectDb();
-    let Task = getTask();
-    let Project = getProject();
-    let user = await getUserFromCookies(req, res);
+    const Task = getTask();
+    const Project = getProject();
+    const Timesheet = getTimesheet();
+    const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
     const _id = isomorphicObjectId(args._id);
+    const oldTask = await Task.findOne({ _id, userId: user._id });
+    if (!oldTask) {
+      throw notFound;
+    }
 
-    let $set: Partial<ITask> = {
+    const $set: Partial<ITask> = {
       ...pick(args, ["title", "description", "status", "order"]),
     };
     if (args.projectId && args.projectId !== "NONE") {
       $set.projectId = isomorphicObjectId(args.projectId);
     }
-    let $unset = removeEmptyProperties($set);
+    const $unset = removeEmptyProperties($set);
 
     if (args.projectId === "NONE") {
       delete $set.projectId;
@@ -61,7 +67,7 @@ export const taskUpdateApi = createApi(
       );
     }
 
-    await Task.updateOne(
+    const newTask = (await Task.findOneAndUpdate(
       {
         _id,
         userId: user._id,
@@ -70,7 +76,26 @@ export const taskUpdateApi = createApi(
         $set,
         $unset,
       }
-    );
+    ))!;
+
+    if (
+      oldTask.projectId &&
+      newTask.projectId &&
+      !oldTask.projectId.equals(newTask.projectId)
+    ) {
+      await Timesheet.updateMany(
+        {
+          taskId: _id,
+          projectId: oldTask.projectId,
+          userId: user._id,
+        },
+        {
+          $set: {
+            projectId: newTask.projectId,
+          },
+        }
+      );
+    }
   },
   {
     mutationOptions: {
