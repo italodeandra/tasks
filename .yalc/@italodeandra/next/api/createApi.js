@@ -159,6 +159,12 @@ function createApi(queryKey, handler, apiOptions) {
                 queryKey
             ], (((_a = apiOptions === null || apiOptions === void 0 ? void 0 : apiOptions.queryKeyMap) === null || _a === void 0 ? void 0 : _a.call(apiOptions, args)) || []), true));
         },
+        refetchQueries: function (queryClient, args) {
+            var _a;
+            return queryClient.refetchQueries(__spreadArray([
+                queryKey
+            ], (((_a = apiOptions === null || apiOptions === void 0 ? void 0 : apiOptions.queryKeyMap) === null || _a === void 0 ? void 0 : _a.call(apiOptions, args)) || []), true));
+        },
         cancelQueries: function (queryClient, args) {
             var _a;
             return queryClient.cancelQueries(__spreadArray([
