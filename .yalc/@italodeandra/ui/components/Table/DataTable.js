@@ -115,7 +115,7 @@ function DataTable(_a) {
                                                         }), children: (0, jsx_runtime_1.jsx)(solid_1.ChevronUpIcon, { className: (0, clsx_1.default)("h-5 w-5", {
                                                                 "scale-y-flip": (columnSort === null || columnSort === void 0 ? void 0 : columnSort[1]) === "desc",
                                                             }), "aria-hidden": "true" }) })] })) : (column.title) }, id));
-                                    }), actions && (0, jsx_runtime_1.jsx)(Table_1.default.Cell, {})] }), isLoading && ((0, jsx_runtime_1.jsx)("tr", { className: "absolute right-3 top-2 rounded-full bg-zinc-50/50 dark:bg-zinc-800/50", children: (0, jsx_runtime_1.jsx)("td", { children: (0, jsx_runtime_1.jsx)(Loading_1.default, {}) }) }))] }), (0, jsx_runtime_1.jsxs)(Table_1.default.Body, { children: [data === null || data === void 0 ? void 0 : data.map(function (item) {
+                                    }), actions && (0, jsx_runtime_1.jsx)(Table_1.default.Cell, {})] }), isLoading && ((0, jsx_runtime_1.jsx)("tr", { className: "absolute right-3 top-2 rounded-full bg-zinc-50/50 dark:bg-zinc-900/50", children: (0, jsx_runtime_1.jsx)("td", { children: (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "mt-px" }) }) }))] }), (0, jsx_runtime_1.jsxs)(Table_1.default.Body, { children: [data === null || data === void 0 ? void 0 : data.map(function (item) {
                                 var RowComponent = rowWrapper || react_1.Fragment;
                                 return ((0, jsx_runtime_1.jsx)(RowComponent, __assign({}, (RowComponent !== react_1.Fragment
                                     ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
