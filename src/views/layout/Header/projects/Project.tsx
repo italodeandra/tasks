@@ -8,7 +8,7 @@ import { homeState } from "../../../home/home.state";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
 export function Project(
-  project: Pick<ProjectListApi["Response"][0], "_id" | "name">
+  project: Pick<ProjectListApi["Response"][0], "_id" | "name" | "client">
 ) {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
   const { mutate: archive } = projectArchiveApi.useMutation();
@@ -33,6 +33,7 @@ export function Project(
           }
         >
           {project.name}
+          {project.client ? ` / ${project.client.name}` : null}
         </DropdownMenu.CheckboxItem>
       </ContextMenu.Trigger>
 
