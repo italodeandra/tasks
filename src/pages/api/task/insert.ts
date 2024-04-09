@@ -15,34 +15,60 @@ import createApi from "@italodeandra/next/api/createApi";
 export const taskInsertApi = createApi(
   "/api/task/insert",
   async function handler(
-    args: Jsonify<Pick<ITask, "_id" | "status" | "projectId">>,
+    args: Jsonify<Pick<ITask, "_id" | "status" | "projectId">> & {
+      bottom?: boolean;
+    },
     req: NextApiRequest,
     res: NextApiResponse
   ) {
     await connectDb();
-    let Task = getTask();
-    let Project = getProject();
-    let user = await getUserFromCookies(req, res);
+    const Task = getTask();
+    const Project = getProject();
+    const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    let firstTask = await Task.findOne(
-      {
-        userId: user._id,
-        status: args.status,
-      },
-      {
-        sort: {
-          order: 1,
+    let order = 0;
+    if (!args.bottom) {
+      const firstTask = await Task.findOne(
+        {
+          userId: user._id,
+          status: args.status,
         },
-        projection: {
-          order: 1,
-        },
+        {
+          sort: {
+            order: 1,
+          },
+          projection: {
+            order: 1,
+          },
+        }
+      );
+      if (firstTask) {
+        order = firstTask.order - 1;
       }
-    );
+    } else {
+      const lastTask = await Task.findOne(
+        {
+          userId: user._id,
+          status: args.status,
+        },
+        {
+          sort: {
+            order: -1,
+          },
+          projection: {
+            order: 1,
+          },
+        }
+      );
+      if (lastTask) {
+        order = lastTask.order + 1;
+      }
+    }
 
-    let projectId = args.projectId
+    const projectId = args.projectId
       ? isomorphicObjectId(args.projectId)
       : undefined;
 
@@ -57,11 +83,11 @@ export const taskInsertApi = createApi(
       );
     }
 
-    let doc = {
+    const doc = {
       _id: isomorphicObjectId(args._id),
       userId: user._id,
       status: args.status,
-      order: (firstTask?.order || 0) - 1,
+      order,
       projectId,
     };
 
@@ -74,20 +100,37 @@ export const taskInsertApi = createApi(
   },
   {
     mutationOptions: {
-      async onMutate(variables, queryClient) {
+      async onMutate({ bottom, ...variables }, queryClient) {
         await taskListApi.cancelQueries(queryClient);
         const previousData = taskListApi.getQueryData(queryClient);
+        const newTask = {
+          ...variables,
+          createdAt: dayjs().toISOString(),
+          titleHtml: "",
+          title: "",
+        };
         taskListApi.setQueryData(queryClient, (data) => [
-          {
-            ...variables,
-            createdAt: dayjs().toISOString(),
-            titleHtml: "",
-            title: "",
-            order: 0,
-          },
+          ...(!bottom
+            ? [
+                {
+                  ...newTask,
+                  order: 0,
+                },
+              ]
+            : []),
           ...(data?.map((t) =>
-            t.status === variables.status ? { ...t, order: t.order + 1 } : t
+            t.status === variables.status
+              ? { ...t, order: !bottom ? t.order + 1 : t.order }
+              : t
           ) || []),
+          ...(!!bottom
+            ? [
+                {
+                  ...newTask,
+                  order: data?.length || 0,
+                },
+              ]
+            : []),
         ]);
         return {
           previousData,
