@@ -9,8 +9,22 @@ import { newProjectState } from "./new-project/newProject.state";
 import { Project } from "./Project";
 
 export default function Projects() {
-  const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
-  const { data: projects, isLoading: isLoading } = projectListApi.useQuery();
+  const { selectedProjects, setSelectedProjects, selectedClients } =
+    useSnapshot(homeState);
+  const { data: projects, isLoading: isLoading } = projectListApi.useQuery(
+    {
+      clientsIds: selectedClients as string[],
+    },
+    {
+      onSuccess(projects) {
+        setSelectedProjects([
+          ...selectedProjects.filter((p) =>
+            projects.map((p) => p._id).includes(p)
+          ),
+        ]);
+      },
+    }
+  );
 
   const projectsWithNone = useMemo(
     () => [

@@ -6,9 +6,11 @@ import { useForm } from "react-hook-form";
 import { useSnapshot } from "valtio";
 import { newProjectState } from "./newProject.state";
 import { projectCreateApi } from "../../../../../pages/api/project/create";
+import { clientListApi } from "../../../../../pages/api/client/list";
 
 type FieldValues = {
   name: string;
+  clientId: string;
 };
 
 export function NewProjectModal() {
@@ -18,6 +20,8 @@ export function NewProjectModal() {
       closeModal();
     },
   });
+  const { data: clients, isLoading: isLoadingClients } =
+    clientListApi.useQuery();
 
   const {
     register,
@@ -25,7 +29,7 @@ export function NewProjectModal() {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const onSubmit = (data: FieldValues) => create({ ...data });
+  const onSubmit = (data: FieldValues) => create(data);
 
   return (
     <Modal open={modalOpen} onClose={closeModal}>
@@ -42,6 +46,21 @@ export function NewProjectModal() {
               error={!!errors.name}
               helpText={errors.name?.message}
             />
+            <Input
+              label="Client"
+              {...register("clientId")}
+              error={!!errors.name}
+              helpText={errors.name?.message}
+              select
+              loading={isLoadingClients}
+            >
+              <option value="" />
+              {clients?.map((client) => (
+                <option key={client._id} value={client._id}>
+                  {client.name}
+                </option>
+              ))}
+            </Input>
           </Stack>
           <Modal.Actions>
             <Modal.CloseButton onClick={closeModal} />

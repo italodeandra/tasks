@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import getProject, { IProject } from "../../../collections/project";
 import createApi from "@italodeandra/next/api/createApi";
 import getComment from "../../../collections/comment";
+import getClient, { IClient } from "../../../collections/client";
+import getTimesheet from "../../../collections/timesheet";
 
 export const taskListApi = createApi(
   "/api/task/list",
@@ -15,6 +17,8 @@ export const taskListApi = createApi(
     const Task = getTask();
     const Project = getProject();
     const Comment = getComment();
+    const Timesheet = getTimesheet();
+    const Client = getClient();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -22,6 +26,7 @@ export const taskListApi = createApi(
 
     return Task.aggregate<
       Pick<ITask, "_id" | "status" | "order" | "title" | "createdAt"> & {
+        client?: Pick<IClient, "_id" | "name">;
         project?: Pick<IProject, "_id" | "name">;
         timesheet?: {
           totalTime?: number;
@@ -51,7 +56,7 @@ export const taskListApi = createApi(
       },
       {
         $lookup: {
-          from: "timesheet",
+          from: Timesheet.collection.collectionName,
           let: { taskId: "$_id" },
           pipeline: [
             {
@@ -64,7 +69,7 @@ export const taskListApi = createApi(
             },
             {
               $sort: {
-                startedAt: -1, // Sorting in descending order
+                startedAt: -1,
               },
             },
             {
@@ -105,12 +110,27 @@ export const taskListApi = createApi(
           localField: "projectId",
           foreignField: "_id",
           as: "project",
-          pipeline: [{ $project: { name: 1 } }],
+          pipeline: [{ $project: { name: 1, clientId: 1 } }],
         },
       },
       {
         $unwind: {
           path: "$project",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: Client.collection.collectionName,
+          localField: "project.clientId",
+          foreignField: "_id",
+          as: "client",
+          pipeline: [{ $project: { name: 1 } }],
+        },
+      },
+      {
+        $unwind: {
+          path: "$client",
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -171,7 +191,9 @@ export const taskListApi = createApi(
         $project: {
           description: 1,
           status: 1,
-          project: 1,
+          "project._id": 1,
+          "project.name": 1,
+          client: 1,
           order: 1,
           title: 1,
           "timesheet.totalTime": 1,

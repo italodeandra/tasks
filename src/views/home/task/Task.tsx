@@ -30,8 +30,13 @@ import { taskRemoveApi } from "../../../pages/api/task/remove";
 import { useTimesheetStop } from "../../../pages/api/timesheet/stop";
 
 export default function Task(task: ITask) {
-  const { orientation, selectedProjects, editingTasks, setEditingTasks } =
-    useSnapshot(homeState);
+  const {
+    orientation,
+    selectedProjects,
+    editingTasks,
+    setEditingTasks,
+    selectedClients,
+  } = useSnapshot(homeState);
   const { mutate: stop } = useTimesheetStop();
 
   const isEditing = editingTasks.includes(task._id);
@@ -123,18 +128,22 @@ export default function Task(task: ITask) {
     [task.content]
   );
 
-  const dimmed = useMemo(
-    () =>
-      !selectedProjects.length
-        ? false
-        : !selectedProjects.some((selectedProject) => {
-            return (
-              task.project?._id ===
-              (selectedProject === "NONE" ? undefined : selectedProject)
-            );
-          }),
-    [task.project, selectedProjects]
-  );
+  const dimmed = useMemo(() => {
+    if (
+      selectedProjects.length > 0 &&
+      (!task.project?._id || !selectedProjects.includes(task.project?._id))
+    ) {
+      return true;
+    }
+    // noinspection RedundantIfStatementJS
+    if (
+      selectedClients.length > 0 &&
+      (!task.client?._id || !selectedClients.includes(task.client?._id))
+    ) {
+      return true;
+    }
+    return false;
+  }, [selectedProjects, selectedClients, task.project?._id, task.client?._id]);
 
   const taskClassName = clsx("w-full rounded bg-zinc-200 dark:bg-zinc-900", {
     "flex-col": orientation === Orientation.HORIZONTAL,

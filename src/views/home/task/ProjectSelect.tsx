@@ -62,6 +62,7 @@ export function ProjectSelect({
         {projects?.map((project) => (
           <Select.Item key={project._id} value={project._id}>
             {project.name}
+            {project.client ? ` / ${project.client.name}` : null}
           </Select.Item>
         ))}
       </Select.Content>
