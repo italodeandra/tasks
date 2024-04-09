@@ -1,97 +1,73 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  apiHandlerWrapper,
-  InferApiArgs,
-  InferApiResponse,
-  mutationFnWrapper,
-} from "@italodeandra/next/api/apiHandlerWrapper";
 import { projectListApi } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import getProject, { IProject } from "../../../collections/project";
 import { connectDb } from "../../../db";
 import getTask from "../../../collections/task";
+import createApi from "@italodeandra/next/api/createApi";
 
-async function handler(
-  args: Jsonify<Pick<IProject, "_id">>,
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await connectDb();
-  let Project = getProject();
-  let Task = getTask();
-  let user = await getUserFromCookies(req, res);
-  if (!user) {
-    throw unauthorized;
-  }
-
-  let _id = isomorphicObjectId(args._id);
-
-  if (
-    (await Project.countDocuments({
-      _id,
-      userId: user._id,
-    })) === 0
+export const projectArchiveApi = createApi(
+  "/api/project/archive",
+  async function (
+    args: Jsonify<Pick<IProject, "_id">>,
+    req: NextApiRequest,
+    res: NextApiResponse
   ) {
-    throw notFound;
-  }
+    await connectDb();
+    let Project = getProject();
+    let Task = getTask();
+    let user = await getUserFromCookies(req, res);
+    if (!user) {
+      throw unauthorized;
+    }
 
-  if (
-    await Task.countDocuments({
-      userId: user._id,
-      projectId: _id,
-    })
-  ) {
-    await Project.updateOne(
-      {
+    let _id = isomorphicObjectId(args._id);
+
+    if (
+      (await Project.countDocuments({
         _id,
         userId: user._id,
-      },
-      {
-        $set: {
-          archived: true,
-        },
-      }
-    );
-  } else {
-    await Project.deleteOne({
-      _id,
-      userId: user._id,
-    });
-  }
-}
-
-export default apiHandlerWrapper(handler);
-
-export type ProjectArchiveResponse = InferApiResponse<typeof handler>;
-export type ProjectArchiveArgs = InferApiArgs<typeof handler>;
-
-const mutationKey = "/api/project/archive";
-
-export const useProjectArchive = (
-  options?: UseMutationOptions<
-    ProjectArchiveResponse,
-    unknown,
-    ProjectArchiveArgs
-  >
-) => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    [mutationKey],
-    mutationFnWrapper<ProjectArchiveArgs, ProjectArchiveResponse>(mutationKey),
-    {
-      ...options,
-      onSuccess(...params) {
-        void projectListApi.invalidate(queryClient);
-        return options?.onSuccess?.(...params);
-      },
+      })) === 0
+    ) {
+      throw notFound;
     }
-  );
-};
+
+    if (
+      await Task.countDocuments({
+        userId: user._id,
+        projectId: _id,
+      })
+    ) {
+      await Project.updateOne(
+        {
+          _id,
+          userId: user._id,
+        },
+        {
+          $set: {
+            archived: true,
+          },
+        }
+      );
+    } else {
+      await Project.deleteOne({
+        _id,
+        userId: user._id,
+      });
+    }
+  },
+  {
+    mutationOptions: {
+      onSuccess(_d, _v, _c, queryClient) {
+        void projectListApi.invalidate(queryClient);
+      },
+    },
+  }
+);
+
+export default projectArchiveApi.handler;
+
+export type ProjectArchiveApi = typeof projectArchiveApi.Types;

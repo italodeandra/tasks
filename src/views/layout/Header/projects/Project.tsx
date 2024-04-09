@@ -1,6 +1,6 @@
 import { ProjectListApi } from "../../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
-import { useProjectArchive } from "../../../../pages/api/project/archive";
+import { projectArchiveApi } from "../../../../pages/api/project/archive";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { pull } from "lodash";
 import React, { useCallback } from "react";
@@ -9,7 +9,7 @@ import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
 export function Project(project: ProjectListApi["Response"][0]) {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
-  const { mutate: archive } = useProjectArchive();
+  const { mutate: archive } = projectArchiveApi.useMutation();
 
   const handleProjectArchive = useCallback(() => {
     archive(project);
