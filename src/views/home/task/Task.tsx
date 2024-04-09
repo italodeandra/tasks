@@ -180,19 +180,20 @@ export default function Task(task: ITask) {
           "items-center ml-auto": orientation === Orientation.VERTICAL,
           "items-end justify-end": orientation === Orientation.HORIZONTAL,
         })}
+        wrap
       >
         {(task.description || task.comments) && (
-          <Group className="items-center gap-1">
+          <>
             {task.description && (
               <Bars3BottomLeftIcon className="w-3 h-3 my-0.5" />
             )}
             {task.comments && (
-              <>
+              <Group className="items-center gap-1">
                 <ChatBubbleLeftIcon className="w-3 h-3" />
                 <div className="text-xs">{task.comments}</div>
-              </>
+              </Group>
             )}
-          </Group>
+          </>
         )}
         {!isEditing && newValue !== task.content && (
           // eslint-disable-next-line react/jsx-no-undef
