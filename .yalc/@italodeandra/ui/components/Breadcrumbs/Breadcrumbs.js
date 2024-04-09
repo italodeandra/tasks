@@ -21,6 +21,6 @@ function Breadcrumbs(_a) {
                                         "cursor-default": isLast,
                                         "hover:!text-zinc-700 dark:hover:!text-zinc-200": !isLast,
                                     }), "aria-current": isLast ? "page" : undefined, children: page.loading ? ((0, jsx_runtime_1.jsx)(Skeleton_1.default, { className: "h-3 w-10" })) : (page.title) })] }) }, page.title));
-                }), loading && ((0, jsx_runtime_1.jsx)("li", { className: "!ml-auto mt-3", children: (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "-mr-3 ml-4" }) }))] }) }));
+                }), loading && ((0, jsx_runtime_1.jsx)("li", { className: "!ml-auto items-center flex", children: (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "-mr-3 ml-4" }) }))] }) }));
 }
 exports.default = Breadcrumbs;

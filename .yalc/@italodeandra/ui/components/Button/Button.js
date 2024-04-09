@@ -128,7 +128,7 @@ var Button = function (_a, ref) {
             children = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "my-auto" });
         }
         else {
-            trailing = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "w-auto h-auto mr-0", debounce: true });
+            trailing = (0, jsx_runtime_1.jsx)(Loading_1.default, { className: "w-auto h-auto mr-0" });
         }
     }
     return ((0, jsx_runtime_1.jsxs)(UnstyledButton_1.default, __assign({ ref: ref }, props, { className: (0, clsx_1.default)(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor["".concat(variant, "-").concat(color)], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded", (_b = {},

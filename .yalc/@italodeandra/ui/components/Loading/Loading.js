@@ -1,45 +1,8 @@
 "use strict";
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsx_runtime_1 = require("react/jsx-runtime");
-var clsx_1 = __importDefault(require("../../utils/clsx"));
-var Group_1 = __importDefault(require("../Group"));
-var react_1 = require("react");
-var ms_1 = __importDefault(require("ms"));
 function Loading(_a) {
-    var className = _a.className, dotClassName = _a.dotClassName, debounce = _a.debounce;
-    var _b = __read((0, react_1.useState)(false), 2), shouldBeVisible = _b[0], setShouldBeVisible = _b[1];
-    (0, react_1.useEffect)(function () {
-        if (debounce) {
-            setTimeout(function () {
-                setShouldBeVisible(true);
-            }, (0, ms_1.default)(typeof debounce === "string" ? debounce : "0.5s"));
-        }
-        else {
-            setShouldBeVisible(true);
-        }
-    }, [debounce]);
-    dotClassName = (0, clsx_1.default)("bg-[currentColor] w-1 h-1 rounded-full shrink-0", dotClassName);
-    return ((0, jsx_runtime_1.jsxs)(Group_1.default, { className: (0, clsx_1.default)("gap-0.5 opacity-0 transition items-center justify-center", {
-            "opacity-20": !shouldBeVisible,
-        }, className), children: [(0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_300ms]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_600ms]", dotClassName) })] }));
+    var className = _a.className;
+    return ((0, jsx_runtime_1.jsxs)("svg", { xmlns: "http://www.w3.org/2000/svg", width: "1em", height: "1em", viewBox: "0 0 24 24", className: className, children: [(0, jsx_runtime_1.jsx)("circle", { cx: "4", cy: "12", r: "3", fill: "currentColor", children: (0, jsx_runtime_1.jsx)("animate", { id: "svgSpinners3DotsFade0", fill: "freeze", attributeName: "opacity", begin: "0;svgSpinners3DotsFade1.end-0.5s", dur: "1.5s", values: "1;0.2" }) }), (0, jsx_runtime_1.jsx)("circle", { cx: "12", cy: "12", r: "3", fill: "currentColor", opacity: "0.4", children: (0, jsx_runtime_1.jsx)("animate", { fill: "freeze", attributeName: "opacity", begin: "svgSpinners3DotsFade0.begin+0.3s", dur: "1.5s", values: "1;0.2" }) }), (0, jsx_runtime_1.jsx)("circle", { cx: "20", cy: "12", r: "3", fill: "currentColor", opacity: "0.3", children: (0, jsx_runtime_1.jsx)("animate", { id: "svgSpinners3DotsFade1", fill: "freeze", attributeName: "opacity", begin: "svgSpinners3DotsFade0.begin+0.6s", dur: "1.5s", values: "1;0.2" }) })] }));
 }
 exports.default = Loading;
