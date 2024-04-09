@@ -215,10 +215,10 @@ export default function Task(task: ITask) {
         )}
         <ProjectSelect {...task} />
         <div
-          title={dayjs(task.createdAt).format("LLL")}
+          title={`Created at ${dayjs(task.createdAt).format("LLL")}`}
           className="text-zinc-500 text-xs whitespace-nowrap"
         >
-          {dayjs(task.createdAt).format("ll")}
+          {dayjs(task.createdAt).fromNow(true)}
         </div>
         <Timer
           task={task}
