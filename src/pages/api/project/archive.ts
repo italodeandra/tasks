@@ -69,5 +69,3 @@ export const projectArchiveApi = createApi(
 );
 
 export default projectArchiveApi.handler;
-
-export type ProjectArchiveApi = typeof projectArchiveApi.Types;

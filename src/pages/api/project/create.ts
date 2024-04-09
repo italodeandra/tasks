@@ -1,66 +1,40 @@
 import { connectDb } from "../../../db";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import {
-  apiHandlerWrapper,
-  InferApiArgs,
-  InferApiResponse,
-  mutationFnWrapper,
-} from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { projectListApi } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import getProject, { IProject } from "../../../collections/project";
+import createApi from "@italodeandra/next/api/createApi";
 
-async function handler(
-  args: Jsonify<Pick<IProject, "name">>,
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  await connectDb();
-  let Project = getProject();
-  const user = await getUserFromCookies(req, res);
-  if (!user) {
-    throw unauthorized;
-  }
-
-  const inserted = await Project.insertOne({
-    name: args.name,
-    userId: user._id,
-  });
-
-  return { _id: inserted._id };
-}
-
-export default apiHandlerWrapper(handler);
-
-export type ProjectCreateResponse = InferApiResponse<typeof handler>;
-export type ProjectCreateArgs = InferApiArgs<typeof handler>;
-
-const mutationKey = "/api/project/create";
-
-export const useProjectCreate = (
-  options?: UseMutationOptions<
-    ProjectCreateResponse,
-    unknown,
-    ProjectCreateArgs
-  >
-) => {
-  const queryClient = useQueryClient();
-  return useMutation(
-    [mutationKey],
-    mutationFnWrapper<ProjectCreateArgs, ProjectCreateResponse>(mutationKey),
-    {
-      ...options,
-      onSuccess(...params) {
-        void projectListApi.invalidate(queryClient);
-        return options?.onSuccess?.(...params);
-      },
+export const projectCreateApi = createApi(
+  "/api/project/create",
+  async function (
+    args: Jsonify<Pick<IProject, "name">>,
+    req: NextApiRequest,
+    res: NextApiResponse
+  ) {
+    await connectDb();
+    let Project = getProject();
+    const user = await getUserFromCookies(req, res);
+    if (!user) {
+      throw unauthorized;
     }
-  );
-};
+
+    const inserted = await Project.insertOne({
+      name: args.name,
+      userId: user._id,
+    });
+
+    return { _id: inserted._id };
+  },
+  {
+    mutationOptions: {
+      onSuccess(_d, _v, _c, queryClient) {
+        void projectListApi.invalidate(queryClient);
+      },
+    },
+  }
+);
+
+export default projectCreateApi.handler;

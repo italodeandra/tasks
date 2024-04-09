@@ -2,32 +2,30 @@ import Modal from "@italodeandra/ui/components/Modal/Modal";
 import Button from "@italodeandra/ui/components/Button/Button";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Input from "@italodeandra/ui/components/Input/Input";
-import { useProjectCreate } from "../../../pages/api/project/create";
 import { useForm } from "react-hook-form";
-import { ProjectColor } from "../../../collections/project";
 import { useSnapshot } from "valtio";
 import { newProjectState } from "./newProject.state";
+import { projectCreateApi } from "../../../pages/api/project/create";
 
 type FieldValues = {
   name: string;
 };
 
 export function NewProjectModal() {
-  let { modalOpen, closeModal } = useSnapshot(newProjectState);
-  let { mutate: create, isLoading } = useProjectCreate({
+  const { modalOpen, closeModal } = useSnapshot(newProjectState);
+  const { mutate: create, isLoading } = projectCreateApi.useMutation({
     onSuccess() {
       closeModal();
     },
   });
 
-  let {
+  const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FieldValues>();
 
-  let onSubmit = (data: FieldValues) =>
-    create({ ...data, color: ProjectColor.BLUE });
+  const onSubmit = (data: FieldValues) => create({ ...data });
 
   return (
     <Modal open={modalOpen} onClose={closeModal}>
