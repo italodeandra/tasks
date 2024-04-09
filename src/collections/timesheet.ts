@@ -18,6 +18,7 @@ const timesheetSchema = onlyServer(() =>
       projectId: types.objectId(),
       userId: types.objectId({ required: true }),
       taskId: types.objectId(),
+      description: types.string(),
     },
     {
       timestamps: true,

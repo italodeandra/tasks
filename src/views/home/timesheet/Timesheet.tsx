@@ -65,7 +65,7 @@ export function Timesheet() {
       },
       {
         title: "Descrição",
-        render: (item) => item.task?.content,
+        render: (item) => item.task?.content || item.description,
         cellClassName: "max-w-[300px] truncate",
       },
       {

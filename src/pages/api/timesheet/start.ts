@@ -125,7 +125,7 @@ export const useTimesheetStart = (
     ),
     {
       ...options,
-      onSuccess(...params) {
+      async onSuccess(...params) {
         void taskListApi.invalidate(queryClient);
         void invalidate_projectList(queryClient);
         void timesheetStatusApi.invalidate(queryClient);

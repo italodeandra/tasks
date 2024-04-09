@@ -66,7 +66,7 @@ export const timesheetListFromProjectApi = createApi(
         await Timesheet.aggregate<
           Pick<
             ITimesheet,
-            "_id" | "time" | "startedAt" | "type" | "createdAt"
+            "_id" | "time" | "startedAt" | "type" | "createdAt" | "description"
           > & {
             task?: Pick<ITask, "_id" | "title">;
           }
@@ -109,6 +109,7 @@ export const timesheetListFromProjectApi = createApi(
               createdAt: 1,
               type: 1,
               task: 1,
+              description: 1,
             },
           },
           {

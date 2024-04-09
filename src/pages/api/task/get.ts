@@ -118,7 +118,7 @@ export const taskGetApi = createApi(
     )[0];
   },
   {
-    queryKeyMap: (args) => [args._id],
+    queryKeyMap: (args) => [args?._id].filter(Boolean),
   }
 );
 

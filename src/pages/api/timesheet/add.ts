@@ -26,7 +26,7 @@ import { timesheetListFromProjectApi } from "./list-from-project";
 
 async function handler(
   args: Jsonify<
-    Pick<ITimesheet, "taskId" | "projectId" | "type"> & {
+    Pick<ITimesheet, "taskId" | "projectId" | "type" | "description"> & {
       time: string;
     }
   >,
@@ -34,15 +34,15 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  let Timesheet = getTimesheet();
-  let Task = getTask();
-  let Project = getProject();
-  let user = await getUserFromCookies(req, res);
+  const Timesheet = getTimesheet();
+  const Task = getTask();
+  const Project = getProject();
+  const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  let taskId = args.taskId ? isomorphicObjectId(args.taskId) : undefined;
+  const taskId = args.taskId ? isomorphicObjectId(args.taskId) : undefined;
   if (taskId) {
     await Task.updateOne(
       { _id: taskId },
@@ -54,7 +54,7 @@ async function handler(
     );
   }
 
-  let projectId = args.projectId
+  const projectId = args.projectId
     ? isomorphicObjectId(args.projectId)
     : undefined;
   if (projectId) {
@@ -74,6 +74,7 @@ async function handler(
     projectId,
     type: args.type,
     time: args.time ? ms(args.time) : undefined,
+    description: args.description,
   });
 }
 

@@ -9,6 +9,7 @@ import React from "react";
 interface FieldValues {
   type: TimesheetType;
   time: string;
+  description: string;
 }
 
 export function TimesheetAddDialog({
@@ -18,13 +19,13 @@ export function TimesheetAddDialog({
   projectId: string;
   onSubmit: () => void;
 }) {
-  let { mutate, isLoading } = useTimesheetAdd({
+  const { mutate, isLoading } = useTimesheetAdd({
     onSuccess() {
       onSubmitDialog();
     },
   });
 
-  let {
+  const {
     register,
     formState: { errors },
     handleSubmit,
@@ -67,6 +68,12 @@ export function TimesheetAddDialog({
           })}
           error={!!errors.time}
           helpText={errors.time?.message}
+        />
+        <Input
+          label="Description"
+          {...register("description")}
+          error={!!errors.description}
+          helpText={errors.description?.message}
         />
         <Button variant="filled" color="primary" type="submit">
           Save
