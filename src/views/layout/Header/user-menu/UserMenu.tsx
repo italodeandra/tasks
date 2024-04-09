@@ -45,7 +45,7 @@ export default function UserMenu() {
     );
   }
 
-  let isLoading = isStoppingImpersonate || (!!token && isLoadingUser);
+  const isLoading = isStoppingImpersonate || (!!token && isLoadingUser);
 
   return (
     <DropdownMenu.Root>

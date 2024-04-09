@@ -17,8 +17,8 @@ export const taskRemoveApi = createApi(
     res: NextApiResponse
   ) {
     await connectDb();
-    let Task = getTask();
-    let user = await getUserFromCookies(req, res);
+    const Task = getTask();
+    const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }

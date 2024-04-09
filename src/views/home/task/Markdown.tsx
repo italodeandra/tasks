@@ -35,9 +35,9 @@ export function Markdown({
   onChangeEditing?: (editing: boolean) => void;
   inputClassName?: string;
 }) {
-  let [internalEditing, setInternalEditing] = useState(Boolean(editing));
-  let [newValue, setNewValue] = useState(value);
-  let contentRef = useRef<HTMLDivElement>(null);
+  const [internalEditing, setInternalEditing] = useState(Boolean(editing));
+  const [newValue, setNewValue] = useState(value);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (newValue !== value) {

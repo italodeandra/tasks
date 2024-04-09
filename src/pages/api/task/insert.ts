@@ -123,7 +123,7 @@ export const taskInsertApi = createApi(
               ? { ...t, order: !bottom ? t.order + 1 : t.order }
               : t
           ) || []),
-          ...(!!bottom
+          ...(bottom
             ? [
                 {
                   ...newTask,

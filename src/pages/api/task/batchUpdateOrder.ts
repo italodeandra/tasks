@@ -24,7 +24,7 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  let Task = getTask();
+  const Task = getTask();
   const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;

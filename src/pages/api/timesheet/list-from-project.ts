@@ -20,15 +20,15 @@ export const timesheetListFromProjectApi = createApi(
     res: NextApiResponse
   ) {
     await connectDb();
-    let Timesheet = getTimesheet();
-    let user = await getUserFromCookies(req, res);
+    const Timesheet = getTimesheet();
+    const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    let projectId = isomorphicObjectId(args.projectId);
+    const projectId = isomorphicObjectId(args.projectId);
 
-    let stats = await Timesheet.aggregate<{
+    const stats = await Timesheet.aggregate<{
       _id: "clock" | "payment";
       time: number;
     }>([

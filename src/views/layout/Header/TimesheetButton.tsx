@@ -5,9 +5,9 @@ import { homeState } from "../../home/home.state";
 import { useSnapshot } from "valtio";
 
 export function TimesheetButton() {
-  let { showTimesheet } = useSnapshot(homeState);
+  const { showTimesheet } = useSnapshot(homeState);
 
-  let handleClick = useCallback(() => {
+  const handleClick = useCallback(() => {
     homeState.setShowTimesheet(!homeState.showTimesheet);
   }, []);
 

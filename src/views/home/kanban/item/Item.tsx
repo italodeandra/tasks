@@ -38,7 +38,7 @@ export function ItemWithRef<T extends { _id: string }>(
     };
   }, [dragOverlay, placeholder]);
 
-  let itemElement = useMemo(
+  const itemElement = useMemo(
     () =>
       !placeholder &&
       value &&

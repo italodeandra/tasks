@@ -25,7 +25,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
-  let queryClient = new QueryClient();
+  const queryClient = new QueryClient();
   setData_authGetUser(queryClient, user as AuthUserGetApiResponse);
 
   return {

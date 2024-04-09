@@ -58,23 +58,23 @@ export function Kanban<
   disabledItems?: string[];
   hiddenColumns?: string[];
 }) {
-  let [activeId, setActiveId] = useState<string | null>(null);
-  let [items, setItems] = useState<Record<string, string[]>>({});
-  let mobileSensor = useSensor(TouchSensor, {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [items, setItems] = useState<Record<string, string[]>>({});
+  const mobileSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 500,
       tolerance: 4,
     },
   });
-  let desktopSensor = useSensor(PointerSensor, {
+  const desktopSensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 4,
     },
   });
-  let sensors = useSensors(isTouchDevice ? mobileSensor : desktopSensor);
+  const sensors = useSensors(isTouchDevice ? mobileSensor : desktopSensor);
 
   useDeepCompareEffect(() => {
-    let groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
+    const groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
       items.map((i) => i._id)
     );
     setItems({
@@ -86,10 +86,10 @@ export function Kanban<
   }, [value]);
 
   useDeepCompareEffect(() => {
-    let newValue = toPairs(items).flatMap(([columnId, items]) =>
+    const newValue = toPairs(items).flatMap(([columnId, items]) =>
       items.map((i, index) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        let item = value.find((v) => v._id === i)!;
+        const item = value.find((v) => v._id === i)!;
         return {
           ...item,
           index,
@@ -102,7 +102,7 @@ export function Kanban<
     }
   }, [activeId, items]);
 
-  let containers = useMemo(
+  const containers = useMemo(
     () => Object.keys(items) as UniqueIdentifier[],
     [items]
   );
@@ -120,11 +120,11 @@ export function Kanban<
 
       if (activeId && overId && activeId !== overId) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        let overContainer = containers.find((container) =>
+        const overContainer = containers.find((container) =>
           items[container].includes(overId)
         )!;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        let activeContainer = containers.find((container) =>
+        const activeContainer = containers.find((container) =>
           items[container].includes(activeId)
         )!;
 
@@ -156,11 +156,11 @@ export function Kanban<
       const overId = event.over?.id.toString();
 
       if (activeId && overId && activeId !== overId) {
-        let overContainer =
+        const overContainer =
           containers.find((container) => items[container].includes(overId)) ||
           overId.replace(`${PLACEHOLDER_ID}-`, "");
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        let activeContainer = containers.find((container) =>
+        const activeContainer = containers.find((container) =>
           items[container].includes(activeId)
         )!;
 

@@ -21,13 +21,13 @@ export function Timer({
   buttonVariant?: "text" | "outlined";
   className?: string;
 }) {
-  let { mutate: start, isLoading: isStarting } = useTimesheetStart();
-  let { mutate: stop, isLoading: isStopping } = useTimesheetStop();
-  let isLoading = isStarting || isStopping;
+  const { mutate: start, isLoading: isStarting } = useTimesheetStart();
+  const { mutate: stop, isLoading: isStopping } = useTimesheetStop();
+  const isLoading = isStarting || isStopping;
 
-  let currentClockIn = task.timesheet?.currentClockIn;
+  const currentClockIn = task.timesheet?.currentClockIn;
 
-  let handleClick = useCallback(
+  const handleClick = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation();
       if (currentClockIn) {
@@ -39,13 +39,13 @@ export function Timer({
     [currentClockIn, start, stop, task._id]
   );
 
-  let currentClockInTime = currentClockIn
+  const currentClockInTime = currentClockIn
     ? Date.now() - new Date(currentClockIn).getTime()
     : undefined;
 
-  let time = currentClockIn ? currentClockInTime : task.timesheet?.totalTime;
+  const time = currentClockIn ? currentClockInTime : task.timesheet?.totalTime;
 
-  let rerender = useUpdate();
+  const rerender = useUpdate();
   useInterval(
     rerender,
     !isNil(currentClockInTime)
@@ -53,7 +53,7 @@ export function Timer({
       : null
   );
 
-  let buttonProps = useMemo(
+  const buttonProps = useMemo(
     () =>
       !isNil(time)
         ? {

@@ -17,9 +17,9 @@ export function ColumnSelect({
   status: string;
   triggerClassName?: string;
 }) {
-  let [value, setValue] = useState(task.status);
-  let { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
-  let isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+  const [value, setValue] = useState(task.status);
+  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
     if (value !== task.status) {

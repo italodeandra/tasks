@@ -10,7 +10,7 @@ import { ClockIcon } from "@heroicons/react/24/outline";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 
 export function TimesheetStatus() {
-  let { data, isLoading } = timesheetStatusApi.useQuery({
+  const { data, isLoading } = timesheetStatusApi.useQuery({
     today: dayjs().startOf("day").toDate().toISOString(),
   });
 

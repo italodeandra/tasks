@@ -1,6 +1,6 @@
 export function prettyMilliseconds(milliseconds: number) {
-  let ch = 60 * 60 * 1000;
-  let cm = 60 * 1000;
+  const ch = 60 * 60 * 1000;
+  const cm = 60 * 1000;
   let h = Math.floor(milliseconds / ch);
   let m = Math.floor((milliseconds - h * ch) / cm);
   let s = Math.round((milliseconds - h * ch - m * cm) / 1000);

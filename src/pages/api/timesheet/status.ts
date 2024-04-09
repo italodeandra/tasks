@@ -16,14 +16,14 @@ export const timesheetStatusApi = createApi(
     res: NextApiResponse
   ) => {
     await connectDb();
-    let Timesheet = getTimesheet();
-    let Task = getTask();
-    let user = await getUserFromCookies(req, res);
+    const Timesheet = getTimesheet();
+    const Task = getTask();
+    const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    let today = new Date(args.today);
+    const today = new Date(args.today);
 
     return {
       currentClock: (

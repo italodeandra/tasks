@@ -86,7 +86,7 @@ export function Timesheet() {
 
   const handleAddClick = () => {
     if (project) {
-      let _id = isomorphicObjectId().toString();
+      const _id = isomorphicObjectId().toString();
       showDialog({
         _id,
         title: `Add time to ${project.name}`,

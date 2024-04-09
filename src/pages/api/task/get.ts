@@ -11,8 +11,8 @@ export const taskGetApi = createApi(
   "/api/task/get",
   async (args: { _id: string }, req: NextApiRequest, res: NextApiResponse) => {
     await connectDb();
-    let Task = getTask();
-    let Project = getProject();
+    const Task = getTask();
+    const Project = getProject();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;

@@ -37,22 +37,22 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  let Task = getTask();
-  let Timesheet = getTimesheet();
-  let Project = getProject();
-  let user = await getUserFromCookies(req, res);
+  const Task = getTask();
+  const Timesheet = getTimesheet();
+  const Project = getProject();
+  const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  let _id = isomorphicObjectId(args._id);
+  const _id = isomorphicObjectId(args._id);
 
-  let task = await Task.findById(_id);
+  const task = await Task.findById(_id);
   if (!task) {
     throw notFound;
   }
 
-  let activeTimesheet = await Timesheet.countDocuments({
+  const activeTimesheet = await Timesheet.countDocuments({
     userId: user._id,
     taskId: task._id,
     startedAt: {
@@ -68,7 +68,7 @@ async function handler(
 
   await stopClock(user._id);
 
-  let taskId = task._id;
+  const taskId = task._id;
   if (taskId) {
     await Task.updateOne(
       { _id: taskId },
@@ -82,7 +82,7 @@ async function handler(
     );
   }
 
-  let projectId = task.projectId;
+  const projectId = task.projectId;
   if (projectId) {
     await Project.updateOne(
       { _id: projectId },

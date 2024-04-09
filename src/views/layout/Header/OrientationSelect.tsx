@@ -8,7 +8,7 @@ import Group from "@italodeandra/ui/components/Group";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 
 export function OrientationSelect() {
-  let { orientation, setOrientation } = useSnapshot(homeState);
+  const { orientation, setOrientation } = useSnapshot(homeState);
 
   return (
     <Select.Root

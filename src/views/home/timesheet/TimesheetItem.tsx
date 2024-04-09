@@ -9,13 +9,13 @@ export function TimesheetItem({
 }: {
   timesheet: TimesheetListFromProjectApi["Response"]["data"][0];
 }) {
-  let time =
+  const time =
     timesheet?.time ||
     (timesheet?.startedAt
       ? Date.now() - new Date(timesheet.startedAt).getTime()
       : 0);
 
-  let rerender = useUpdate();
+  const rerender = useUpdate();
   useInterval(rerender, !timesheet?.time ? ms("1s") : null);
 
   return (

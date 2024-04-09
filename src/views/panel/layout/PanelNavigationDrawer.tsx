@@ -12,9 +12,9 @@ export default function NavigationDrawer({
 }: {
   children: ReactNode;
 }) {
-  let { data: user } = useAuthGetUser();
+  const { data: user } = useAuthGetUser();
 
-  let isAdmin = checkUserType(user, [UserType.ADMIN]);
+  const isAdmin = checkUserType(user, [UserType.ADMIN]);
 
   return (
     <UiNavigationDrawer

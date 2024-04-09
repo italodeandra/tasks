@@ -28,13 +28,13 @@ async function handler(
   res: NextApiResponse
 ) {
   await connectDb();
-  let Timesheet = getTimesheet();
-  let user = await getUserFromCookies(req, res);
+  const Timesheet = getTimesheet();
+  const user = await getUserFromCookies(req, res);
   if (!user) {
     throw unauthorized;
   }
 
-  let _id = isomorphicObjectId(args._id);
+  const _id = isomorphicObjectId(args._id);
 
   await Timesheet.deleteOne({
     _id,
