@@ -7,7 +7,9 @@ import React, { useCallback } from "react";
 import { homeState } from "../../../home/home.state";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
-export function Project(project: ProjectListApi["Response"][0]) {
+export function Project(
+  project: Pick<ProjectListApi["Response"][0], "_id" | "name">
+) {
   const { selectedProjects, setSelectedProjects } = useSnapshot(homeState);
   const { mutate: archive } = projectArchiveApi.useMutation();
 

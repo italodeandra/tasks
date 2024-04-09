@@ -6,8 +6,9 @@ import getTimesheet from "../collections/timesheet";
 
 export default async function migration() {
   console.info("Updating schemas");
-  getComment();
+
   getProject();
+  getComment();
   getTask();
   getTimesheet();
   await papr.updateSchemas();

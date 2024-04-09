@@ -9,13 +9,18 @@ export const homeState = proxy({
   },
 
   selectedProjects: [] as string[],
-  setOrientation(orientation: Orientation) {
-    homeState.orientation = orientation;
+  setSelectedProjects(projects: string[]) {
+    homeState.selectedProjects = projects;
+  },
+
+  selectedClients: [] as string[],
+  setSelectedClients(clients: string[]) {
+    homeState.selectedClients = clients;
   },
 
   orientation: Orientation.VERTICAL,
-  setSelectedProjects(projects: string[]) {
-    homeState.selectedProjects = projects;
+  setOrientation(orientation: Orientation) {
+    homeState.orientation = orientation;
   },
 
   editingTasks: [] as string[],

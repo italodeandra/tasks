@@ -3,21 +3,22 @@ import createApi from "@italodeandra/next/api/createApi";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
-import getProject, { IProject } from "../../../collections/project";
-import { ITask } from "../../../collections/task";
+import getClient, { IClient } from "../../../collections/client";
+import getTask, { ITask } from "../../../collections/task";
 
-export const projectListApi = createApi(
-  "/api/project/list",
-  async function (_args: void, req: NextApiRequest, res: NextApiResponse) {
+export const clientListApi = createApi(
+  "/api/client/list",
+  async function (_a: void, req: NextApiRequest, res: NextApiResponse) {
     await connectDb();
-    const Project = getProject();
+    const Client = getClient();
+    const Task = getTask();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    return Project.aggregate<
-      Pick<IProject, "name" | "_id"> & {
+    return Client.aggregate<
+      Pick<IClient, "name" | "_id"> & {
         lastTaskUpdatedAt: ITask["updatedAt"];
       }
     >([
@@ -31,9 +32,9 @@ export const projectListApi = createApi(
       },
       {
         $lookup: {
-          from: "tasks",
+          from: Task.collection.collectionName,
           localField: "_id",
-          foreignField: "projectId",
+          foreignField: "clientId",
           as: "lastUpdatedTask",
           pipeline: [
             {
@@ -73,6 +74,6 @@ export const projectListApi = createApi(
   }
 );
 
-export default projectListApi.handler;
+export default clientListApi.handler;
 
-export type ProjectListApi = typeof projectListApi.Types;
+export type ClientListApi = typeof clientListApi.Types;

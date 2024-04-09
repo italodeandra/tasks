@@ -4,16 +4,16 @@ import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Input from "@italodeandra/ui/components/Input/Input";
 import { useForm } from "react-hook-form";
 import { useSnapshot } from "valtio";
-import { newProjectState } from "./newProject.state";
-import { projectCreateApi } from "../../../pages/api/project/create";
+import { newClientState } from "./newClient.state";
+import { clientCreateApi } from "../../../../../pages/api/client/create";
 
 type FieldValues = {
   name: string;
 };
 
-export function NewProjectModal() {
-  const { modalOpen, closeModal } = useSnapshot(newProjectState);
-  const { mutate: create, isLoading } = projectCreateApi.useMutation({
+export function NewClientModal() {
+  const { modalOpen, closeModal } = useSnapshot(newClientState);
+  const { mutate: create, isLoading } = clientCreateApi.useMutation({
     onSuccess() {
       closeModal();
     },
@@ -31,7 +31,7 @@ export function NewProjectModal() {
     <Modal open={modalOpen} onClose={closeModal}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Container>
-          <Modal.Title>New project</Modal.Title>
+          <Modal.Title>New client</Modal.Title>
           <Stack>
             <Input
               label="Name"

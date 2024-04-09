@@ -8,19 +8,18 @@ import { useTaskBatchUpdateOrder } from "../../pages/api/task/batchUpdateOrder";
 import Loading from "@italodeandra/ui/components/Loading";
 import { TaskStatus } from "../../collections/task";
 import { renderColumn } from "./column/Column";
-import { NewProjectModal } from "./new-project/NewProjectModal";
 import { ITask } from "./task/ITask";
 import { renderTask } from "./task/renderTask";
 import { Timesheet } from "./timesheet/Timesheet";
 
 export function HomeView() {
-  let { orientation, showTimesheet, editingTasks, hiddenColumns } =
+  const { orientation, showTimesheet, editingTasks, hiddenColumns } =
     useSnapshot(homeState);
-  let { data: databaseTasks, isLoading, isFetching } = taskListApi.useQuery();
-  let { mutate: batchUpdate, isLoading: isUpdating } =
+  const { data: databaseTasks, isLoading, isFetching } = taskListApi.useQuery();
+  const { mutate: batchUpdate, isLoading: isUpdating } =
     useTaskBatchUpdateOrder();
 
-  let kanbanTasks = useMemo<ITask[] | undefined>(
+  const kanbanTasks = useMemo<ITask[] | undefined>(
     () =>
       databaseTasks?.map(({ status, order, title, ...task }) => ({
         ...task,
@@ -31,7 +30,7 @@ export function HomeView() {
     [databaseTasks]
   );
 
-  let handleKanbanChange = useCallback(
+  const handleKanbanChange = useCallback(
     (tasks: ITask[]) => {
       if (tasks.length) {
         batchUpdate(
@@ -48,7 +47,6 @@ export function HomeView() {
 
   return (
     <>
-      <NewProjectModal />
       {showTimesheet ? (
         <Timesheet />
       ) : (

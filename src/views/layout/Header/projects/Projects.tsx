@@ -5,7 +5,7 @@ import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 import { useSnapshot } from "valtio";
 import { homeState } from "../../../home/home.state";
 import { PlusIcon } from "@heroicons/react/20/solid";
-import { newProjectState } from "../../../home/new-project/newProject.state";
+import { newProjectState } from "./new-project/newProject.state";
 import { Project } from "./Project";
 
 export default function Projects() {
@@ -17,7 +17,6 @@ export default function Projects() {
       {
         _id: "NONE",
         name: "None",
-        lastTaskUpdatedAt: "",
       },
       ...(projects || []),
     ],

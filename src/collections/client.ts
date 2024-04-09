@@ -2,12 +2,11 @@ import { schema, types } from "papr";
 import { onlyServer } from "@italodeandra/next/utils/isServer";
 import db from "@italodeandra/next/db";
 
-const projectSchema = onlyServer(() =>
+const clientSchema = onlyServer(() =>
   schema(
     {
       name: types.string({ required: true }),
       userId: types.objectId({ required: true }),
-      clientId: types.objectId(),
       archived: types.boolean(),
     },
     {
@@ -16,8 +15,8 @@ const projectSchema = onlyServer(() =>
   )
 );
 
-export type IProject = (typeof projectSchema)[0];
+export type IClient = (typeof clientSchema)[0];
 
-const getProject = () => onlyServer(() => db.model("projects", projectSchema));
+const getClient = () => onlyServer(() => db.model("clients", clientSchema));
 
-export default getProject;
+export default getClient;
