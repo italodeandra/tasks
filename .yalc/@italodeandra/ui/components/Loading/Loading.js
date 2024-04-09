@@ -26,21 +26,20 @@ var react_1 = require("react");
 var ms_1 = __importDefault(require("ms"));
 function Loading(_a) {
     var className = _a.className, dotClassName = _a.dotClassName, debounce = _a.debounce;
-    var _b = __read((0, react_1.useState)(false), 2), shouldRender = _b[0], setShouldRender = _b[1];
+    var _b = __read((0, react_1.useState)(false), 2), shouldBeVisible = _b[0], setShouldBeVisible = _b[1];
     (0, react_1.useEffect)(function () {
         if (debounce) {
             setTimeout(function () {
-                setShouldRender(true);
-            }, (0, ms_1.default)(typeof debounce === "string" ? debounce : "1s"));
+                setShouldBeVisible(true);
+            }, (0, ms_1.default)(typeof debounce === "string" ? debounce : "0.5s"));
         }
         else {
-            setShouldRender(true);
+            setShouldBeVisible(true);
         }
     }, [debounce]);
     dotClassName = (0, clsx_1.default)("bg-[currentColor] w-1 h-1 rounded-full shrink-0", dotClassName);
-    if (!shouldRender) {
-        return null;
-    }
-    return ((0, jsx_runtime_1.jsxs)(Group_1.default, { className: (0, clsx_1.default)("gap-0.5 opacity-20 transition items-center justify-center", className), children: [(0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_300ms]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_600ms]", dotClassName) })] }));
+    return ((0, jsx_runtime_1.jsxs)(Group_1.default, { className: (0, clsx_1.default)("gap-0.5 opacity-0 transition items-center justify-center", {
+            "opacity-20": !shouldBeVisible,
+        }, className), children: [(0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_300ms]", dotClassName) }), (0, jsx_runtime_1.jsx)("div", { className: (0, clsx_1.default)("animate-[pulsehide_2s_cubic-bezier(0.4,0,0.6,1)_infinite_600ms]", dotClassName) })] }));
 }
 exports.default = Loading;

@@ -4,4 +4,4 @@ export type LoadingProps = {
     dotClassName?: string;
     debounce?: boolean | string;
 };
-export default function Loading({ className, dotClassName, debounce, }: LoadingProps): JSX.Element | null;
+export default function Loading({ className, dotClassName, debounce, }: LoadingProps): JSX.Element;
