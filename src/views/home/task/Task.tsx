@@ -228,28 +228,30 @@ export default function Task(task: ITask) {
             "group-hover:opacity-100 opacity-50": !task.timesheet,
           })}
         />
-        <DropdownMenu.Root>
-          <DropdownMenu.Trigger asChild>
-            <Button variant="text" size="xs" className="p-1 -m-1">
-              <EllipsisVerticalIcon className="shrink-0 w-4 h-4" />
-            </Button>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            {columns
-              .filter((c) => c !== task.columnId)
-              .map((status) => (
-                <DropdownMenu.Item
-                  key={status}
-                  onClick={handleMoveStatusClick(status)}
-                >
-                  Move to {translateTaskStatus(status)}
-                </DropdownMenu.Item>
-              ))}
-            <DropdownMenu.Item onClick={handleDeleteClick}>
-              Delete
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu.Root>
+        {isMobile && (
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <Button variant="text" size="xs" className="p-1 -m-1">
+                <EllipsisVerticalIcon className="shrink-0 w-4 h-4" />
+              </Button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              {columns
+                .filter((c) => c !== task.columnId)
+                .map((status) => (
+                  <DropdownMenu.Item
+                    key={status}
+                    onClick={handleMoveStatusClick(status)}
+                  >
+                    Move to {translateTaskStatus(status)}
+                  </DropdownMenu.Item>
+                ))}
+              <DropdownMenu.Item onClick={handleDeleteClick}>
+                Delete
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
+        )}
       </Group>
     </Group>
   );
