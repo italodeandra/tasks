@@ -9,6 +9,7 @@ import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Bars3BottomLeftIcon,
   ChatBubbleLeftIcon,
+  EllipsisVerticalIcon,
   PencilIcon,
 } from "@heroicons/react/16/solid";
 import { taskUpdateApi } from "../../../pages/api/task/update";
@@ -28,6 +29,7 @@ import { TaskDetails } from "./details/TaskDetails";
 import { Markdown } from "./Markdown";
 import { taskRemoveApi } from "../../../pages/api/task/remove";
 import { useTimesheetStop } from "../../../pages/api/timesheet/stop";
+import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 
 export default function Task(task: ITask) {
   const {
@@ -226,6 +228,28 @@ export default function Task(task: ITask) {
             "group-hover:opacity-100 opacity-50": !task.timesheet,
           })}
         />
+        <DropdownMenu.Root>
+          <DropdownMenu.Trigger asChild>
+            <Button variant="text" size="xs" className="p-1 -m-1">
+              <EllipsisVerticalIcon className="shrink-0 w-4 h-4" />
+            </Button>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content>
+            {columns
+              .filter((c) => c !== task.columnId)
+              .map((status) => (
+                <DropdownMenu.Item
+                  key={status}
+                  onClick={handleMoveStatusClick(status)}
+                >
+                  Move to {translateTaskStatus(status)}
+                </DropdownMenu.Item>
+              ))}
+            <DropdownMenu.Item onClick={handleDeleteClick}>
+              Delete
+            </DropdownMenu.Item>
+          </DropdownMenu.Content>
+        </DropdownMenu.Root>
       </Group>
     </Group>
   );
