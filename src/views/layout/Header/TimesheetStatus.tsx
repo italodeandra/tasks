@@ -24,20 +24,24 @@ export function TimesheetStatus() {
 
   return (
     <Group className="items-center">
-      {data.currentClock && (
+      {data.currentClock ? (
         <Timer task={data.currentClock} buttonVariant="outlined" />
-      )}
-      {!!data.todayClockedTime && (
-        <Tooltip
-          content={`Time clocked today: ${prettyMilliseconds(
-            data.todayClockedTime
-          )}`}
-        >
-          <Text size="sm" className="whitespace-nowrap flex items-center gap-1">
-            <ClockIcon className="shrink-0 w-4 h-4" />{" "}
-            {prettyMilliseconds(data.todayClockedTime)}
-          </Text>
-        </Tooltip>
+      ) : (
+        data.todayClockedTime && (
+          <Tooltip
+            content={`Time clocked today: ${prettyMilliseconds(
+              data.todayClockedTime
+            )}`}
+          >
+            <Text
+              size="sm"
+              className="whitespace-nowrap flex items-center gap-1"
+            >
+              <ClockIcon className="shrink-0 w-4 h-4" />{" "}
+              {prettyMilliseconds(data.todayClockedTime)}
+            </Text>
+          </Tooltip>
+        )
       )}
     </Group>
   );
