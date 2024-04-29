@@ -38,6 +38,7 @@ export function Markdown({
   const [internalEditing, setInternalEditing] = useState(Boolean(editing));
   const [newValue, setNewValue] = useState(value);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [editor, setEditor] = useState<EditorView>();
 
   useEffect(() => {
     if (newValue !== value) {
@@ -78,10 +79,27 @@ export function Markdown({
         if (e.key === "Escape") {
           e.preventDefault();
           saveChanges();
+        } else if (e.key === "Enter") {
+          if (editor) {
+            const state = editor.state;
+            if (state.selection.main.head === state.doc.length) {
+              const content = editor.state.doc.toString();
+              const trimmedContent = content.trim();
+              editor.dispatch({
+                changes: {
+                  from: 0,
+                  to: content.length,
+                  insert: trimmedContent,
+                },
+              });
+              e.preventDefault();
+              saveChanges();
+            }
+          }
         }
       }
     },
-    [internalEditing, saveChanges]
+    [editor, internalEditing, saveChanges]
   );
 
   useEffect(() => {
@@ -121,6 +139,9 @@ export function Markdown({
           basicSetup={{
             lineNumbers: false,
             foldGutter: false,
+          }}
+          onCreateEditor={(editor) => {
+            setEditor(editor);
           }}
         />
       ) : (
