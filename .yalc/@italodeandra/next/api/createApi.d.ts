@@ -10,6 +10,7 @@ export default function createApi<T extends (...args: any) => any, C extends Rec
     };
 }): {
     handler: import("next").NextApiHandler;
+    unwrappedHandler: T;
     Types: {
         Args: InferApiArgs<T>;
         Response: InferApiResponse<T>;
@@ -18,7 +19,8 @@ export default function createApi<T extends (...args: any) => any, C extends Rec
     };
     useQuery: (args?: InferApiArgs<T> | undefined, options?: UseQueryOptions<InferApiResponse<T>, unknown, InferApiResponse<T>, import("@tanstack/react-query").QueryKey> | undefined) => import("@tanstack/react-query").UseQueryResult<InferApiResponse<T>, unknown>;
     useMutation: (options?: UseMutationOptions<InferApiResponse<T>, unknown, InferApiArgs<T>, unknown> | undefined) => import("@tanstack/react-query").UseMutationResult<InferApiResponse<T>, unknown, InferApiArgs<T>, C>;
-    invalidate: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
+    invalidateQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
+    prefetchQuery: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     refetchQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     cancelQueries: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => Promise<void>;
     getQueryData: (queryClient: QueryClient, args?: InferApiArgs<T> | undefined) => InferApiResponse<T> | undefined;

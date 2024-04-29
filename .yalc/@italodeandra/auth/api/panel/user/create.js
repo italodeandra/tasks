@@ -92,37 +92,38 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var list_1 = require("./list");
 var Tenant_service_1 = require("../../../collections/tenant/Tenant.service");
 function authPanelUserCreateHandler(args, req, res, _a) {
+    var _b;
     var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, user, tenantId, _b, existingNewEmail, _id;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var User, user, tenantId, _c, existingNewEmail, _id;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res, multitenantMode)];
                 case 2:
-                    user = _c.sent();
+                    user = _d.sent();
                     if (!user && !(0, User_service_1.checkUserType)(user, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
                     if (!multitenantMode) return [3 /*break*/, 4];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 3:
-                    _b = _c.sent();
+                    _c = (_b = (_d.sent())) === null || _b === void 0 ? void 0 : _b._id;
                     return [3 /*break*/, 5];
                 case 4:
-                    _b = undefined;
-                    _c.label = 5;
+                    _c = undefined;
+                    _d.label = 5;
                 case 5:
-                    tenantId = _b;
+                    tenantId = _c;
                     return [4 /*yield*/, User.countDocuments({
                             tenantId: tenantId,
                             email: args.email,
                         })];
                 case 6:
-                    existingNewEmail = _c.sent();
+                    existingNewEmail = _d.sent();
                     if (existingNewEmail) {
                         throw (0, errors_1.conflict)(res, { status: "Existing" });
                     }
@@ -137,7 +138,7 @@ function authPanelUserCreateHandler(args, req, res, _a) {
                             customData: args.customData,
                         })];
                 case 7:
-                    _c.sent();
+                    _d.sent();
                     return [2 /*return*/, {
                             _id: _id,
                         }];

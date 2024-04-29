@@ -28,6 +28,7 @@ var update_1 = __importDefault(require("./panel/user/update"));
 var getFullUser_1 = __importDefault(require("./getFullUser"));
 var impersonate_1 = __importDefault(require("./panel/user/impersonate"));
 var stop_impersonate_1 = __importDefault(require("./panel/user/stop-impersonate"));
+var getTenant_1 = require("./getTenant");
 function Auth(config) {
     config.fallbackLocale = config.fallbackLocale || "en-US";
     config.intl = __assign({ "en-US": {
@@ -48,6 +49,7 @@ function Auth(config) {
             signUp: signUp_1.default,
             resetPassword: resetPassword_1.default,
             requestPasswordReset: requestPasswordReset_1.default,
+            getTenant: getTenant_1.authGetTenantApi.unwrappedHandler,
             panel: {
                 user: {
                     list: list_1.default,

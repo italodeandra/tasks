@@ -5,7 +5,7 @@ export type InputProps<Select extends boolean | undefined> = {
     loading?: boolean;
 } & UnstyledInputProps<Select>;
 export declare const defaultLabelClassName: string;
-export declare const defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm disabled:cursor-not-allowed dark:bg-zinc-800";
+export declare const defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm data-[disabled]:cursor-not-allowed dark:bg-zinc-800";
 export declare const defaultInputClassName: string;
 export declare const defaultHelpTextClassName: string;
 export declare const defaultTrailingClassName = "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 text-sm";

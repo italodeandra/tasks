@@ -39,22 +39,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTenantId = void 0;
+exports.getReqTenant = exports.getSubdomain = void 0;
 var Tenant_1 = __importDefault(require("./Tenant"));
-function getTenantId(req) {
-    var _a, _b;
+function getSubdomain(urlOrReq) {
+    var url = typeof urlOrReq === "string" ? urlOrReq : urlOrReq === null || urlOrReq === void 0 ? void 0 : urlOrReq.headers.host;
+    url === null || url === void 0 ? void 0 : url.replaceAll("http://", "").replaceAll("https://", "");
+    if (!url) {
+        return url;
+    }
+    if (url.startsWith("localhost")) {
+        return undefined;
+    }
+    return url.split(".")[0];
+}
+exports.getSubdomain = getSubdomain;
+function getReqTenant(req) {
     return __awaiter(this, void 0, void 0, function () {
         var Tenant;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
-                case 0:
-                    Tenant = (0, Tenant_1.default)();
-                    return [4 /*yield*/, Tenant.findOne({
-                            subdomain: (_a = req.headers.host) === null || _a === void 0 ? void 0 : _a.split(".")[0],
-                        }, { projection: { _id: 1 } })];
-                case 1: return [2 /*return*/, (_b = (_c.sent())) === null || _b === void 0 ? void 0 : _b._id];
-            }
+        return __generator(this, function (_a) {
+            Tenant = (0, Tenant_1.default)();
+            return [2 /*return*/, Tenant.findOne({
+                    subdomain: getSubdomain(req),
+                }, { projection: { _id: 1, subdomain: 1, enabledFeatures: 1 } })];
         });
     });
 }
-exports.getTenantId = getTenantId;
+exports.getReqTenant = getReqTenant;

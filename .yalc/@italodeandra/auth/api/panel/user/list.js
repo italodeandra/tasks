@@ -82,32 +82,33 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var isomorphicObjectId_1 = __importDefault(require("@italodeandra/next/utils/isomorphicObjectId"));
 var Tenant_service_1 = require("../../../collections/tenant/Tenant.service");
 function authPanelUserListHandler(args, req, res, _a) {
+    var _b;
     var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, user, tenantId, _b;
-        var _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
+        var User, user, tenantId, _c;
+        var _d;
+        return __generator(this, function (_e) {
+            switch (_e.label) {
                 case 0: return [4 /*yield*/, connectDb()];
                 case 1:
-                    _d.sent();
+                    _e.sent();
                     User = (0, User_1.default)();
                     return [4 /*yield*/, (0, User_service_1.getUserFromCookies)(req, res, multitenantMode)];
                 case 2:
-                    user = _d.sent();
+                    user = _e.sent();
                     if (!(0, User_service_1.checkUserType)(user, [User_1.UserType.ADMIN])) {
                         throw errors_1.unauthorized;
                     }
                     if (!multitenantMode) return [3 /*break*/, 4];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 3:
-                    _b = _d.sent();
+                    _c = (_b = (_e.sent())) === null || _b === void 0 ? void 0 : _b._id;
                     return [3 /*break*/, 5];
                 case 4:
-                    _b = undefined;
-                    _d.label = 5;
+                    _c = undefined;
+                    _e.label = 5;
                 case 5:
-                    tenantId = _b;
+                    tenantId = _c;
                     return [2 /*return*/, User.find(__assign({ tenantId: tenantId, _id: {
                                 $ne: (0, isomorphicObjectId_1.default)("65414920b31d36e515ce53c0"),
                             } }, ((args === null || args === void 0 ? void 0 : args.search) ? { $text: { $search: args.search } } : {})), {
@@ -119,9 +120,9 @@ function authPanelUserListHandler(args, req, res, _a) {
                                 updatedAt: 1,
                             },
                             sort: __assign(__assign({}, ((args === null || args === void 0 ? void 0 : args.search) ? { score: { $meta: "textScore" } } : {})), (args.sort
-                                ? (_c = {},
-                                    _c[args.sort] = args.sortDirection !== "desc" ? 1 : -1,
-                                    _c) : {})),
+                                ? (_d = {},
+                                    _d[args.sort] = args.sortDirection !== "desc" ? 1 : -1,
+                                    _d) : {})),
                         })];
             }
         });

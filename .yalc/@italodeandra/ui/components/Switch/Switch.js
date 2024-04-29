@@ -31,12 +31,13 @@ var react_1 = require("@headlessui/react");
 var clsx_1 = __importDefault(require("../../utils/clsx"));
 var Input_1 = __importDefault(require("../Input"));
 function Switch(_a) {
-    var srLabel = _a.srLabel, checked = _a.checked, onChange = _a.onChange, className = _a.className, rightLabel = _a.rightLabel, readOnly = _a.readOnly, switchClassName = _a.switchClassName, pointerClassName = _a.pointerClassName;
-    return ((0, jsx_runtime_1.jsxs)(react_1.Switch.Group, { as: "div", className: (0, clsx_1.default)(className, "flex items-center"), children: [(0, jsx_runtime_1.jsxs)(react_1.Switch, { checked: checked, onChange: onChange, className: (0, clsx_1.default)({
+    var srLabel = _a.srLabel, checked = _a.checked, onChange = _a.onChange, className = _a.className, rightLabel = _a.rightLabel, readOnly = _a.readOnly, switchClassName = _a.switchClassName, pointerClassName = _a.pointerClassName, disabled = _a.disabled;
+    return ((0, jsx_runtime_1.jsxs)(react_1.Switch.Group, { as: "div", className: (0, clsx_1.default)(className, "flex items-center"), "data-disabled": disabled || undefined, children: [(0, jsx_runtime_1.jsxs)(react_1.Switch, { checked: checked, onChange: onChange, className: (0, clsx_1.default)({
                     "bg-primary-600": checked,
                     "bg-zinc-300 dark:bg-zinc-600": !checked,
-                    "cursor-pointer": !readOnly,
-                }, "relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-zinc-900", switchClassName), disabled: readOnly, children: [srLabel && (0, jsx_runtime_1.jsx)("span", { className: "sr-only", children: srLabel }), (0, jsx_runtime_1.jsx)("span", { "aria-hidden": "true", className: (0, clsx_1.default)({
+                    "cursor-pointer": !readOnly && !disabled,
+                    "cursor-not-allowed": disabled,
+                }, "relative inline-flex h-6 w-11 flex-shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:ring-offset-zinc-900", switchClassName), disabled: readOnly || disabled, children: [srLabel && (0, jsx_runtime_1.jsx)("span", { className: "sr-only", children: srLabel }), (0, jsx_runtime_1.jsx)("span", { "aria-hidden": "true", className: (0, clsx_1.default)({
                             "translate-x-5": checked,
                             "translate-x-0": !checked,
                         }, "pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out", pointerClassName) })] }), rightLabel && ((0, jsx_runtime_1.jsx)(react_1.Switch.Label, { as: "span", className: "ml-3", children: (0, jsx_runtime_1.jsx)("span", { className: "text-sm text-zinc-500 dark:text-zinc-300", children: rightLabel }) }))] }));

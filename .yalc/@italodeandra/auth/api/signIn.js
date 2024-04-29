@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -50,33 +61,32 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var cookies_next_1 = require("cookies-next");
 var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 function signInHandler(args, req, res, _a) {
+    var _b;
     var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, tenantId, _b, user, token;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var User, tenantId, _c, email, user, token;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     if (!args.email || !args.password) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
                     if (!multitenantMode) return [3 /*break*/, 3];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 2:
-                    _b = _c.sent();
+                    _c = (_b = (_d.sent())) === null || _b === void 0 ? void 0 : _b._id;
                     return [3 /*break*/, 4];
                 case 3:
-                    _b = undefined;
-                    _c.label = 4;
+                    _c = undefined;
+                    _d.label = 4;
                 case 4:
-                    tenantId = _b;
-                    return [4 /*yield*/, User.findOne({
-                            tenantId: tenantId,
-                            email: args.email.toLowerCase().trim(),
-                        }, {
+                    tenantId = _c;
+                    email = args.email.toLowerCase().trim();
+                    return [4 /*yield*/, User.findOne(__assign(__assign({}, (multitenantMode ? { tenantId: tenantId } : {})), { email: email }), {
                             projection: {
                                 email: 1,
                                 type: 1,
@@ -85,9 +95,14 @@ function signInHandler(args, req, res, _a) {
                             },
                         })];
                 case 5:
-                    user = _c.sent();
-                    if (!user || !(0, User_service_1.checkUserPassword)(user, args.password)) {
-                        throw errors_1.unauthorized;
+                    user = _d.sent();
+                    if (!user) {
+                        console.error("User not found. Tenant ID: \"".concat(tenantId, "\". Email: \"").concat(email, "\"."));
+                        throw (0, errors_1.unauthorized)(res, { message: "User not found" });
+                    }
+                    if (!(0, User_service_1.checkUserPassword)(user, args.password)) {
+                        console.error("Wrong password.");
+                        throw (0, errors_1.unauthorized)(res, { message: "User not found" });
                     }
                     token = (0, User_service_1.generateToken)(user._id);
                     (0, cookies_next_1.setCookie)("auth", { token: token }, {

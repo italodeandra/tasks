@@ -13,7 +13,6 @@ var __assign = (this && this.__assign) || function () {
 /** @type {import("next").NextConfig} */
 var nextConfig = {
     reactStrictMode: true,
-    swcMinify: true,
     webpack: function (config, _a) {
         var isServer = _a.isServer;
         if (!isServer) {

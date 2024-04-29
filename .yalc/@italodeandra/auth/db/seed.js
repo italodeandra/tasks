@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -70,7 +81,7 @@ var Tenant_1 = __importDefault(require("../collections/tenant/Tenant"));
 var appEnv = process.env.APP_ENV || "development";
 exports.userId = (0, isomorphicObjectId_1.default)("62da0f38c6dc21efec2136e6");
 exports.tenantId = (0, isomorphicObjectId_1.default)("661021d7cae5964a0b9ec04a");
-function authSeed() {
+function authSeed(multiTenant) {
     return __awaiter(this, void 0, void 0, function () {
         var User, Tenant, tenant;
         return __generator(this, function (_a) {
@@ -78,7 +89,9 @@ function authSeed() {
                 case 0:
                     User = (0, User_1.default)();
                     Tenant = (0, Tenant_1.default)();
-                    if (!(appEnv === "development")) return [3 /*break*/, 7];
+                    if (!(appEnv === "development")) return [3 /*break*/, 8];
+                    tenant = void 0;
+                    if (!multiTenant) return [3 /*break*/, 2];
                     return [4 /*yield*/, Tenant.findOneAndUpdate({
                             _id: exports.tenantId,
                         }, {
@@ -89,34 +102,22 @@ function authSeed() {
                         }, { upsert: true })];
                 case 1:
                     tenant = _a.sent();
-                    return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
-                case 2:
-                    if (!!(_a.sent())) return [3 /*break*/, 4];
-                    return [4 /*yield*/, (0, User_service_1.createUser)({
-                            tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id,
-                            _id: exports.userId,
-                            email: "italodeandra@gmail.com",
-                            password: "12345678",
-                            type: User_1.UserType.ADMIN,
-                            name: "Ítalo Andrade",
-                        })];
+                    _a.label = 2;
+                case 2: return [4 /*yield*/, User.countDocuments({ email: "italodeandra@gmail.com" })];
                 case 3:
+                    if (!!(_a.sent())) return [3 /*break*/, 5];
+                    return [4 /*yield*/, (0, User_service_1.createUser)(__assign(__assign({}, (tenant ? { tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id } : {})), { _id: exports.userId, email: "italodeandra@gmail.com", password: "12345678", type: User_1.UserType.ADMIN, name: "Ítalo Andrade" }))];
+                case 4:
                     _a.sent();
-                    _a.label = 4;
-                case 4: return [4 /*yield*/, User.countDocuments({ email: "italodeandra+b@gmail.com" })];
-                case 5:
-                    if (!!(_a.sent())) return [3 /*break*/, 7];
-                    return [4 /*yield*/, (0, User_service_1.createUser)({
-                            tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id,
-                            email: "italodeandra+b@gmail.com",
-                            password: "12345678",
-                            type: User_1.UserType.ADMIN,
-                            name: "Ítalo Andrade B",
-                        })];
+                    _a.label = 5;
+                case 5: return [4 /*yield*/, User.countDocuments({ email: "italodeandra+b@gmail.com" })];
                 case 6:
+                    if (!!(_a.sent())) return [3 /*break*/, 8];
+                    return [4 /*yield*/, (0, User_service_1.createUser)(__assign(__assign({}, (tenant ? { tenantId: tenant === null || tenant === void 0 ? void 0 : tenant._id } : {})), { email: "italodeandra+b@gmail.com", password: "12345678", type: User_1.UserType.ADMIN, name: "Ítalo Andrade B" }))];
+                case 7:
                     _a.sent();
-                    _a.label = 7;
-                case 7: return [2 /*return*/];
+                    _a.label = 8;
+                case 8: return [2 /*return*/];
             }
         });
     });

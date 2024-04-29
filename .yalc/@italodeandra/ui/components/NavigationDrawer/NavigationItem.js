@@ -13,7 +13,7 @@ var defaultTheme_1 = __importDefault(require("tailwindcss/defaultTheme"));
 var useMediaQuery_1 = __importDefault(require("../../hooks/useMediaQuery"));
 function NavigationItem(_a) {
     var _b;
-    var icon = _a.icon, children = _a.children, href = _a.href, exact = _a.exact, alternativeActiveHrefs = _a.alternativeActiveHrefs, className = _a.className;
+    var icon = _a.icon, children = _a.children, href = _a.href, exact = _a.exact, alternativeActiveHrefs = _a.alternativeActiveHrefs, className = _a.className, disabled = _a.disabled;
     var router = (0, router_1.useRouter)();
     var active = exact
         ? router.pathname === href ||
@@ -24,6 +24,6 @@ function NavigationItem(_a) {
     return ((0, jsx_runtime_1.jsx)(Button_1.default, { variant: active ? "light" : "text", className: (0, clsx_1.default)("w-full justify-start border-transparent", className), leading: icon &&
             (0, react_1.cloneElement)(icon, {
                 className: (0, clsx_1.default)((_b = icon.props) === null || _b === void 0 ? void 0 : _b.className, "!w-5 mr-3"),
-            }), href: href, onClick: isMobile ? navigationDrawer_state_1.default.close : undefined, children: children }));
+            }), href: href, onClick: isMobile ? navigationDrawer_state_1.default.close : undefined, disabled: disabled, children: children }));
 }
 exports.default = NavigationItem;

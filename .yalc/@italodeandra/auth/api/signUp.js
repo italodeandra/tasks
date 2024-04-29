@@ -60,41 +60,42 @@ var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var cookies_next_1 = require("cookies-next");
 var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 function signUpHandler(args, req, res, _a) {
+    var _b;
     var connectDb = _a.connectDb, newUserDefaultType = _a.newUserDefaultType, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, tenantId, _b, existingUser, user, token;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var User, tenantId, _c, existingUser, user, token;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     if (!args.email || !args.password) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
                     if (!multitenantMode) return [3 /*break*/, 3];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 2:
-                    _b = _c.sent();
+                    _c = (_b = (_d.sent())) === null || _b === void 0 ? void 0 : _b._id;
                     return [3 /*break*/, 4];
                 case 3:
-                    _b = undefined;
-                    _c.label = 4;
+                    _c = undefined;
+                    _d.label = 4;
                 case 4:
-                    tenantId = _b;
+                    tenantId = _c;
                     return [4 /*yield*/, User.countDocuments({
                             tenantId: tenantId,
                             email: args.email.toLowerCase().trim(),
                         })];
                 case 5:
-                    existingUser = _c.sent();
+                    existingUser = _d.sent();
                     if (existingUser) {
                         throw errors_1.conflict;
                     }
                     return [4 /*yield*/, (0, User_service_1.createUser)(__assign(__assign({ tenantId: tenantId }, args), { type: newUserDefaultType || "NORMAL" }))];
                 case 6:
-                    user = _c.sent();
+                    user = _d.sent();
                     token = (0, User_service_1.generateToken)(user._id);
                     (0, cookies_next_1.setCookie)("auth", { token: token }, {
                         req: req,

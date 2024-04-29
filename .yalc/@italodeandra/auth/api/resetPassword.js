@@ -48,32 +48,33 @@ var errors_1 = require("@italodeandra/next/api/errors");
 var apiHandlerWrapper_1 = require("@italodeandra/next/api/apiHandlerWrapper");
 var Tenant_service_1 = require("../collections/tenant/Tenant.service");
 function resetPasswordHandler(args, req, res, _a) {
+    var _b;
     var connectDb = _a.connectDb, multitenantMode = _a.multitenantMode;
     return __awaiter(this, void 0, void 0, function () {
-        var User, tenantId, _b, email, user, e_1;
-        return __generator(this, function (_c) {
-            switch (_c.label) {
+        var User, tenantId, _c, email, user, e_1;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
                 case 0:
                     if (!args.token || !args.newPassword) {
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, connectDb()];
                 case 1:
-                    _c.sent();
+                    _d.sent();
                     User = (0, User_1.default)();
                     if (!multitenantMode) return [3 /*break*/, 3];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 2:
-                    _b = _c.sent();
+                    _c = (_b = (_d.sent())) === null || _b === void 0 ? void 0 : _b._id;
                     return [3 /*break*/, 4];
                 case 3:
-                    _b = undefined;
-                    _c.label = 4;
+                    _c = undefined;
+                    _d.label = 4;
                 case 4:
-                    tenantId = _b;
-                    _c.label = 5;
+                    tenantId = _c;
+                    _d.label = 5;
                 case 5:
-                    _c.trys.push([5, 8, , 9]);
+                    _d.trys.push([5, 8, , 9]);
                     email = (0, User_service_1.readResetPasswordToken)(args.token);
                     return [4 /*yield*/, User.findOne({
                             tenantId: tenantId,
@@ -82,17 +83,17 @@ function resetPasswordHandler(args, req, res, _a) {
                             projection: {},
                         })];
                 case 6:
-                    user = _c.sent();
+                    user = _d.sent();
                     if (!user) {
                         // noinspection ExceptionCaughtLocallyJS
                         throw errors_1.badRequest;
                     }
                     return [4 /*yield*/, (0, User_service_1.setUserPassword)(user._id, args.newPassword)];
                 case 7:
-                    _c.sent();
+                    _d.sent();
                     return [3 /*break*/, 9];
                 case 8:
-                    e_1 = _c.sent();
+                    e_1 = _d.sent();
                     if (e_1 instanceof jsonwebtoken_1.TokenExpiredError) {
                         // noinspection JSVoidFunctionReturnValueUsed
                         throw (0, errors_1.badRequest)(res, { status: "TokenExpired" });

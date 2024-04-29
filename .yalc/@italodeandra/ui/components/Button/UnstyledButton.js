@@ -36,7 +36,7 @@ var UnstyledButton = function (_a, ref) {
     }
     if (href) {
         var props2 = props;
-        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({}, props2, { href: href, ref: ref })));
+        return ((0, jsx_runtime_1.jsx)(link_1.default, __assign({}, props2, { href: href, ref: ref, tabIndex: props2.disabled ? -1 : undefined })));
     }
     return ((0, jsx_runtime_1.jsx)("button", __assign({}, props, { ref: ref })));
 };

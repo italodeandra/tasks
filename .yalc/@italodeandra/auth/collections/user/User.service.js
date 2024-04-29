@@ -158,40 +158,41 @@ function getAuthCookieToken(req, res) {
 }
 exports.getAuthCookieToken = getAuthCookieToken;
 function getUserFromCookies(req, res, multitenantMode) {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var User, tenantId, _a, token, userId, user, e_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var User, tenantId, _b, token, userId, user, e_1;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     User = (0, User_1.default)();
                     if (!multitenantMode) return [3 /*break*/, 2];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 1:
-                    _a = _b.sent();
+                    _b = (_a = (_c.sent())) === null || _a === void 0 ? void 0 : _a._id;
                     return [3 /*break*/, 3];
                 case 2:
-                    _a = undefined;
-                    _b.label = 3;
+                    _b = undefined;
+                    _c.label = 3;
                 case 3:
-                    tenantId = _a;
+                    tenantId = _b;
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
                     }
-                    _b.label = 4;
+                    _c.label = 4;
                 case 4:
-                    _b.trys.push([4, 6, , 7]);
+                    _c.trys.push([4, 6, , 7]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User.findOne({ tenantId: tenantId, _id: userId }, { projection: { email: 1, type: 1, name: 1 } })];
+                    return [4 /*yield*/, User.findOne(__assign(__assign({}, (multitenantMode ? { tenantId: tenantId } : {})), { _id: userId }), { projection: { email: 1, type: 1, name: 1 } })];
                 case 5:
-                    user = _b.sent();
+                    user = _c.sent();
                     if (!user) {
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
                     return [2 /*return*/, user];
                 case 6:
-                    e_1 = _b.sent();
+                    e_1 = _c.sent();
                     console.error(e_1);
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
@@ -202,31 +203,32 @@ function getUserFromCookies(req, res, multitenantMode) {
 }
 exports.getUserFromCookies = getUserFromCookies;
 function getFullUserFromCookies(req, res, multitenantMode) {
+    var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var User, tenantId, _a, token, userId, user, e_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var User, tenantId, _b, token, userId, user, e_2;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
                 case 0:
                     User = (0, User_1.default)();
                     if (!multitenantMode) return [3 /*break*/, 2];
-                    return [4 /*yield*/, (0, Tenant_service_1.getTenantId)(req)];
+                    return [4 /*yield*/, (0, Tenant_service_1.getReqTenant)(req)];
                 case 1:
-                    _a = _b.sent();
+                    _b = (_a = (_c.sent())) === null || _a === void 0 ? void 0 : _a._id;
                     return [3 /*break*/, 3];
                 case 2:
-                    _a = undefined;
-                    _b.label = 3;
+                    _b = undefined;
+                    _c.label = 3;
                 case 3:
-                    tenantId = _a;
+                    tenantId = _b;
                     token = getAuthCookieToken(req, res);
                     if (!token) {
                         return [2 /*return*/, null];
                     }
-                    _b.label = 4;
+                    _c.label = 4;
                 case 4:
-                    _b.trys.push([4, 6, , 7]);
+                    _c.trys.push([4, 6, , 7]);
                     userId = readToken(token);
-                    return [4 /*yield*/, User.findOne({ tenantId: tenantId, _id: userId }, {
+                    return [4 /*yield*/, User.findOne(__assign(__assign({}, (multitenantMode ? { tenantId: tenantId } : {})), { _id: userId }), {
                             projection: {
                                 email: 1,
                                 type: 1,
@@ -236,14 +238,14 @@ function getFullUserFromCookies(req, res, multitenantMode) {
                             },
                         })];
                 case 5:
-                    user = _b.sent();
+                    user = _c.sent();
                     if (!user) {
                         (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                         return [2 /*return*/, null];
                     }
                     return [2 /*return*/, user];
                 case 6:
-                    e_2 = _b.sent();
+                    e_2 = _c.sent();
                     (0, cookies_next_1.deleteCookie)("auth", { req: req, res: res });
                     return [2 /*return*/, null];
                 case 7: return [2 /*return*/];
