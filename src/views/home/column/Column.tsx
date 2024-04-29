@@ -23,19 +23,19 @@ function Column({ column, taskCount }: { column: string; taskCount: number }) {
         </>
       )}
       <Tooltip content="Toggle column visibility">
-        <Button icon size="xs" variant="text">
-          {isHidden ? (
-            <EyeIcon
-              onClick={() =>
-                setHiddenColumns([...hiddenColumns.filter((c) => c !== column)])
-              }
-            />
-          ) : (
-            <EyeSlashIcon
-              className="opacity-50"
-              onClick={() => setHiddenColumns([...hiddenColumns, column])}
-            />
-          )}
+        <Button
+          icon
+          size="xs"
+          variant="text"
+          onClick={() => {
+            if (isHidden) {
+              setHiddenColumns([...hiddenColumns.filter((c) => c !== column)]);
+            } else {
+              setHiddenColumns([...hiddenColumns, column]);
+            }
+          }}
+        >
+          {isHidden ? <EyeIcon /> : <EyeSlashIcon className="opacity-50" />}
         </Button>
       </Tooltip>
     </Group>
