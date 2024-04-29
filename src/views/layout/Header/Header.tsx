@@ -14,10 +14,50 @@ import Projects from "./projects/Projects";
 import { NewProjectModal } from "./projects/new-project/NewProjectModal";
 import { NewClientModal } from "./clients/new-client/NewClientModal";
 import Clients from "./clients/Clients";
+import Button from "@italodeandra/ui/components/Button";
+import { Cog6ToothIcon } from "@heroicons/react/20/solid";
+import Popover from "@italodeandra/ui/components/Popover";
 
-export default function Header() {
+function DesktopHeaderContent({ className }: { className?: string }) {
   const { showTimesheet } = useSnapshot(homeState);
 
+  return (
+    <Group className={clsx("w-full p-2 items-center rounded-lg", className)}>
+      <Clients />
+      <Projects />
+      <div className="grow" />
+      <TimesheetStatus />
+      <TimesheetButton />
+      {!showTimesheet && <OrientationSelect />}
+    </Group>
+  );
+}
+
+function MobileHeaderContent({ className }: { className?: string }) {
+  const { showTimesheet } = useSnapshot(homeState);
+
+  return (
+    <Group className={clsx("w-full p-2 items-center rounded-lg", className)}>
+      <div className="grow" />
+      <TimesheetStatus />
+      <TimesheetButton />
+      <Popover.Root>
+        <Popover.Trigger asChild>
+          <Button icon variant="text" rounded>
+            <Cog6ToothIcon />
+          </Button>
+        </Popover.Trigger>
+        <Popover.Content className="flex flex-col gap-2">
+          <Clients />
+          <Projects />
+          {!showTimesheet && <OrientationSelect />}
+        </Popover.Content>
+      </Popover.Root>
+    </Group>
+  );
+}
+
+export default function Header() {
   return (
     <>
       <NewProjectModal />
@@ -26,21 +66,8 @@ export default function Header() {
         <NextLink href="/">
           <Logo className="w-8 h-8" />
         </NextLink>
-        <Group className={clsx("w-full p-2 items-center rounded-lg")}>
-          <Group
-            className={clsx(
-              "p-2 items-center rounded-lg",
-              "bg-white/50 dark:bg-black/50"
-            )}
-          >
-            <Clients />
-            <Projects />
-          </Group>
-          <div className="grow" />
-          <TimesheetButton />
-          {!showTimesheet && <OrientationSelect />}
-        </Group>
-        <TimesheetStatus />
+        <DesktopHeaderContent className="hidden sm:flex" />
+        <MobileHeaderContent className="sm:hidden" />
         <UserMenu />
       </UiHeader>
     </>
