@@ -5,5 +5,5 @@ import { seed } from "./dev.seed";
 import migration from "./migration";
 
 export async function connectDb() {
-  await connect([migration, authMigration, authSeed, seed]);
+  await connect([migration, authMigration, () => authSeed(false), seed]);
 }

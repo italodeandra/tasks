@@ -123,5 +123,3 @@ export const taskGetApi = createApi(
 );
 
 export default taskGetApi.handler;
-
-export type TaskGetApi = typeof taskGetApi.Types;

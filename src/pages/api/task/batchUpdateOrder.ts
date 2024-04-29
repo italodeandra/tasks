@@ -79,7 +79,7 @@ export const useTaskBatchUpdateOrder = (
     {
       ...options,
       async onSuccess(...params) {
-        await taskListApi.invalidate(queryClient);
+        await taskListApi.invalidateQueries(queryClient);
         await options?.onSuccess?.(...params);
       },
     }

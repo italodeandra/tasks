@@ -62,7 +62,7 @@ export const projectArchiveApi = createApi(
   {
     mutationOptions: {
       onSuccess(_d, _v, _c, queryClient) {
-        void projectListApi.invalidate(queryClient);
+        void projectListApi.invalidateQueries(queryClient);
       },
     },
   }

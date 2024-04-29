@@ -97,5 +97,3 @@ export const timesheetStatusApi = createApi(
 );
 
 export default timesheetStatusApi.handler;
-
-export type TimesheetStatusApi = typeof timesheetStatusApi.Types;

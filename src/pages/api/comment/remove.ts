@@ -44,10 +44,10 @@ export const commentRemoveApi = createApi(
         commentListApi.setQueryData(queryClient, context?.previousData);
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void projectListApi.invalidate(queryClient);
+        void projectListApi.invalidateQueries(queryClient);
       },
       onSettled: (_d, _e, _v, _c, queryClient) => {
-        void commentListApi.invalidate(queryClient);
+        void commentListApi.invalidateQueries(queryClient);
       },
     },
   }

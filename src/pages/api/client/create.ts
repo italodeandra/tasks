@@ -31,7 +31,7 @@ export const clientCreateApi = createApi(
   {
     mutationOptions: {
       onSuccess(_d, _v, _c, queryClient) {
-        void clientListApi.invalidate(queryClient);
+        void clientListApi.invalidateQueries(queryClient);
       },
     },
   }

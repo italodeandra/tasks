@@ -39,5 +39,3 @@ export const commentListApi = createApi(
 );
 
 export default commentListApi.handler;
-
-export type CommentListApi = typeof commentListApi.Types;

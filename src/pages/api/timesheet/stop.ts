@@ -111,11 +111,11 @@ export const useTimesheetStop = (
     {
       ...options,
       onSuccess(...params) {
-        void taskListApi.invalidate(queryClient);
-        void projectListApi.invalidate(queryClient);
-        void timesheetStatusApi.invalidate(queryClient);
-        void taskGetApi.invalidate(queryClient);
-        void timesheetListFromProjectApi.invalidate(queryClient);
+        void taskListApi.invalidateQueries(queryClient);
+        void projectListApi.invalidateQueries(queryClient);
+        void timesheetStatusApi.invalidateQueries(queryClient);
+        void taskGetApi.invalidateQueries(queryClient);
+        void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

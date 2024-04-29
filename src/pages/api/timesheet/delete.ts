@@ -65,9 +65,9 @@ export const useTimesheetDelete = (
     {
       ...options,
       onSuccess(...params) {
-        void taskListApi.invalidate(queryClient);
-        void timesheetStatusApi.invalidate(queryClient);
-        void timesheetListFromProjectApi.invalidate(queryClient);
+        void taskListApi.invalidateQueries(queryClient);
+        void timesheetStatusApi.invalidateQueries(queryClient);
+        void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
       },
     }

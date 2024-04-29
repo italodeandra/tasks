@@ -134,11 +134,11 @@ export const taskUpdateApi = createApi(
         );
       },
       onSuccess: (_d, _v, _c, queryClient) => {
-        void projectListApi.invalidate(queryClient);
+        void projectListApi.invalidateQueries(queryClient);
       },
       onSettled: (_d, _e, args, _c, queryClient) => {
-        void taskListApi.invalidate(queryClient);
-        void taskGetApi.invalidate(queryClient, args);
+        void taskListApi.invalidateQueries(queryClient);
+        void taskGetApi.invalidateQueries(queryClient, args);
       },
     },
   }

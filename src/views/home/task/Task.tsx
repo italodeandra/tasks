@@ -110,7 +110,7 @@ export default function Task(task: ITask) {
 
   const handleMoveStatusClick = useCallback(
     (status: TaskStatus) => () => {
-      if (status === TaskStatus.DONE) {
+      if (task.timesheet?.currentClockIn && status === TaskStatus.DONE) {
         stop();
       }
       update({
@@ -119,7 +119,7 @@ export default function Task(task: ITask) {
         order: -1,
       });
     },
-    [stop, task._id, update]
+    [stop, task._id, task.timesheet?.currentClockIn, update]
   );
 
   const handleClearChanges = useCallback(
