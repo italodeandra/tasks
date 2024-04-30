@@ -79,7 +79,7 @@ export function Markdown({
         if (e.key === "Escape") {
           e.preventDefault();
           saveChanges();
-        } else if (e.key === "Enter") {
+        } else if (e.key === "Enter" && !e.shiftKey) {
           if (editor) {
             const state = editor.state;
             if (state.selection.main.head === state.doc.length) {
