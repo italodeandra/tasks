@@ -7,6 +7,7 @@ export function translateTaskStatus(type: TaskStatus | string) {
       [TaskStatus.DOING]: "Doing",
       [TaskStatus.TODO]: "Todo",
       [TaskStatus.BLOCKED]: "Blocked",
+      [TaskStatus.REVIEW]: "Review",
     }[type] || type
   );
 }

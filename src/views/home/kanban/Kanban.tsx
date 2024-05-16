@@ -25,7 +25,7 @@ import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { Orientation } from "./Orientation";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
-import { TaskStatus } from "../../../collections/task";
+import { columns } from "../../../consts";
 
 const PLACEHOLDER_ID = "placeholder";
 
@@ -77,12 +77,11 @@ export function Kanban<
     const groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
       items.map((i) => i._id)
     );
-    setItems({
-      [TaskStatus.DOING]: groupedItems[TaskStatus.DOING] || [],
-      [TaskStatus.BLOCKED]: groupedItems[TaskStatus.BLOCKED] || [],
-      [TaskStatus.TODO]: groupedItems[TaskStatus.TODO] || [],
-      [TaskStatus.DONE]: groupedItems[TaskStatus.DONE] || [],
-    });
+    const newItems: typeof items = {};
+    for (const column of columns) {
+      newItems[column] = groupedItems[column] || [];
+    }
+    setItems(newItems);
   }, [value]);
 
   useDeepCompareEffect(() => {

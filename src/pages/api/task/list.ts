@@ -9,6 +9,7 @@ import createApi from "@italodeandra/next/api/createApi";
 import getComment from "../../../collections/comment";
 import getClient, { IClient } from "../../../collections/client";
 import getTimesheet from "../../../collections/timesheet";
+import { columns } from "../../../consts";
 
 export const taskListApi = createApi(
   "/api/task/list",
@@ -167,12 +168,7 @@ export const taskListApi = createApi(
         $addFields: {
           statusOrder: {
             $switch: {
-              branches: [
-                TaskStatus.DOING,
-                TaskStatus.BLOCKED,
-                TaskStatus.TODO,
-                TaskStatus.DONE,
-              ].map((status, index) => ({
+              branches: columns.map((status, index) => ({
                 case: { $eq: ["$status", status] },
                 then: index,
               })),

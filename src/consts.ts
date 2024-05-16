@@ -6,8 +6,9 @@ export const appDescription = "Manage your daily tasks";
 export const appKeywords = "tasks";
 
 export const columns = [
-  TaskStatus.DOING,
-  TaskStatus.BLOCKED,
   TaskStatus.TODO,
+  TaskStatus.DOING,
+  TaskStatus.REVIEW,
+  TaskStatus.BLOCKED,
   TaskStatus.DONE,
 ];
