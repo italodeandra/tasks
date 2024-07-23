@@ -102,10 +102,12 @@ export default function Task(task: ITask) {
           title: newValue,
         });
       } else {
-        handleDeleteClick();
+        if (!task.timesheet) {
+          handleDeleteClick();
+        }
       }
     },
-    [handleDeleteClick, setEditing, task._id, update]
+    [handleDeleteClick, setEditing, task._id, task.timesheet, update]
   );
 
   const handleMoveStatusClick = useCallback(
@@ -246,9 +248,11 @@ export default function Task(task: ITask) {
                     Move to {translateTaskStatus(status)}
                   </DropdownMenu.Item>
                 ))}
-              <DropdownMenu.Item onClick={handleDeleteClick}>
-                Delete
-              </DropdownMenu.Item>
+              {!task.timesheet && (
+                <DropdownMenu.Item onClick={handleDeleteClick}>
+                  Delete
+                </DropdownMenu.Item>
+              )}
             </DropdownMenu.Content>
           </DropdownMenu.Root>
         )}
@@ -274,7 +278,11 @@ export default function Task(task: ITask) {
               Move to {translateTaskStatus(status)}
             </ContextMenu.Item>
           ))}
-        <ContextMenu.Item onClick={handleDeleteClick}>Delete</ContextMenu.Item>
+        {!task.timesheet && (
+          <ContextMenu.Item onClick={handleDeleteClick}>
+            Delete
+          </ContextMenu.Item>
+        )}
       </ContextMenu.Content>
     </ContextMenu.Root>
   );
