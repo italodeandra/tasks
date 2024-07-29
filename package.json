@@ -84,6 +84,7 @@
     "eslint-config-next": "^14.1.0",
     "mongodb-memory-server": "^8.11.5",
     "postcss": "^8.4.21",
+    "prettier": "^3.3.3",
     "shx": "^0.3.4",
     "type-fest": "^4.10.0",
     "typescript": "^5.3.3"
