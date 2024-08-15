@@ -1,5 +1,5 @@
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import { unauthorized } from "@italodeandra/next/api/errors";
+import { conflict, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { NextApiRequest, NextApiResponse } from "next";
 import { taskListApi } from "./list";
@@ -8,6 +8,7 @@ import getTask, { ITask } from "../../../collections/task";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { projectListApi } from "../project/list";
 import createApi from "@italodeandra/next/api/createApi";
+import getTimesheet from "../../../collections/timesheet";
 
 export const taskRemoveApi = createApi(
   "/api/task/remove",
@@ -18,12 +19,21 @@ export const taskRemoveApi = createApi(
   ) {
     await connectDb();
     const Task = getTask();
+    const Timesheet = getTimesheet();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
     const _id = isomorphicObjectId(args._id);
+
+    const existingTimesheet = await Timesheet.countDocuments({
+      taskId: _id,
+      userId: user._id,
+    });
+    if (existingTimesheet) {
+      throw conflict;
+    }
 
     await Task.deleteOne({
       _id,

@@ -1,6 +1,7 @@
-import { ComponentProps, ReactElement, ReactNode } from "react";
-import { DateRange, DayModifiers, Matcher, ModifiersClassNames } from "react-day-picker";
+import React, { ComponentProps, ReactElement, ReactNode } from "react";
+import { DateRange, Matcher, ModifiersClassNames } from "react-day-picker";
 import Button from "../Button";
+import { DayPickerProps } from "react-day-picker/src/types/props";
 export type { DateRange };
 export default function DatePicker({ value, onValueChange, children, buttonProps, fromDate, toDate, footer, monthFooter, modifiers, modifiersClassNames, disabled, defaultMonth, }: {
     value?: Date | string;
@@ -11,8 +12,8 @@ export default function DatePicker({ value, onValueChange, children, buttonProps
     toDate?: Date;
     footer?: ReactNode;
     monthFooter?: ReactNode;
-    modifiers?: DayModifiers;
+    modifiers?: DayPickerProps["modifiers"];
     modifiersClassNames?: ModifiersClassNames;
     disabled?: Matcher | Matcher[];
     defaultMonth?: Date;
-}): JSX.Element;
+}): React.JSX.Element;

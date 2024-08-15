@@ -1,2 +1,1 @@
-/// <reference types="react" />
-export default function Error404Page(): JSX.Element;
+export default function Error404Page(): import("react").JSX.Element;

@@ -3,15 +3,11 @@ import {
   apiHandlerWrapper,
   InferApiArgs,
   InferApiResponse,
-  mutationFnWrapper,
+  mutationFnWrapper
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import { taskListApi } from "../task/list";
@@ -27,8 +23,8 @@ import { timesheetListFromProjectApi } from "./list-from-project";
 async function handler(
   args: Jsonify<
     Pick<ITimesheet, "taskId" | "projectId" | "type" | "description"> & {
-      time: string;
-    }
+    time: string;
+  }
   >,
   req: NextApiRequest,
   res: NextApiResponse
@@ -48,8 +44,8 @@ async function handler(
       { _id: taskId },
       {
         $set: {
-          updatedAt: new Date(),
-        },
+          updatedAt: new Date()
+        }
       }
     );
   }
@@ -62,8 +58,8 @@ async function handler(
       { _id: projectId },
       {
         $set: {
-          updatedAt: new Date(),
-        },
+          updatedAt: new Date()
+        }
       }
     );
   }
@@ -74,7 +70,7 @@ async function handler(
     projectId,
     type: args.type,
     time: args.time ? ms(args.time) : undefined,
-    description: args.description,
+    description: args.description
   });
 }
 
@@ -94,11 +90,11 @@ export const useTimesheetAdd = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TimesheetAddApiArgs, TimesheetAddApiResponse>(
-      mutationKey
-    ),
     {
+      mutationKey: [mutationKey],
+      mutationFn: mutationFnWrapper<TimesheetAddApiArgs, TimesheetAddApiResponse>(
+        mutationKey
+      ),
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidateQueries(queryClient);
@@ -106,7 +102,7 @@ export const useTimesheetAdd = (
         void timesheetStatusApi.invalidateQueries(queryClient);
         void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
-      },
+      }
     }
   );
 };

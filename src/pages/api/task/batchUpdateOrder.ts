@@ -3,15 +3,11 @@ import {
   apiHandlerWrapper,
   InferApiArgs,
   InferApiResponse,
-  mutationFnWrapper,
+  mutationFnWrapper
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { taskListApi } from "./list";
 import { connectDb } from "../../../db";
@@ -38,20 +34,20 @@ async function handler(
           userId: user._id,
           $or: [
             {
-              order: { $ne: args.order },
+              order: { $ne: args.order }
             },
             {
-              status: { $ne: args.status },
-            },
-          ],
+              status: { $ne: args.status }
+            }
+          ]
         },
         update: {
           $set: {
             order: args.order,
-            status: args.status,
-          },
-        },
-      },
+            status: args.status
+          }
+        }
+      }
     }))
   );
 }
@@ -72,16 +68,16 @@ export const useTaskBatchUpdateOrder = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TaskBatchUpdateOrderArgs, TaskBatchUpdateOrderResponse>(
-      mutationKey
-    ),
     {
+      mutationKey: [mutationKey],
+      mutationFn: mutationFnWrapper<TaskBatchUpdateOrderArgs, TaskBatchUpdateOrderResponse>(
+        mutationKey
+      ),
       ...options,
       async onSuccess(...params) {
         await taskListApi.invalidateQueries(queryClient);
         await options?.onSuccess?.(...params);
-      },
+      }
     }
   );
 };

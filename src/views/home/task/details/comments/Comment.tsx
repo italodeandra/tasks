@@ -8,15 +8,15 @@ import Button from "@italodeandra/ui/components/Button";
 import { TrashIcon } from "@heroicons/react/16/solid";
 
 export function Comment({
-  _id,
-  content,
-  createdAt,
-}: {
+                          _id,
+                          content,
+                          createdAt
+                        }: {
   _id: string;
   content: string;
   createdAt: string;
 }) {
-  const { mutate: remove, isLoading: isRemoving } =
+  const { mutate: remove, isPending: isRemoving } =
     commentRemoveApi.useMutation();
 
   const markdownHtml = useMemo(
@@ -43,7 +43,7 @@ export function Comment({
             className={clsx(
               "-my-1 group-hover:opacity-100 opacity-0 transition",
               {
-                "opacity-100": isRemoving,
+                "opacity-100": isRemoving
               }
             )}
             loading={isRemoving}

@@ -4,8 +4,8 @@ declare const authState: {
 };
 export declare function clearAuthState(): void;
 export declare const hydrateAuthState: (cookies?: {
-    state?: string | undefined;
-} | undefined) => void;
+    state?: string;
+}) => void;
 export declare const useAuthSnapshot: () => {
     readonly token: string | null;
     readonly previousToken: string | null;

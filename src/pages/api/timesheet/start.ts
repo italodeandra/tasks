@@ -3,19 +3,11 @@ import {
   apiHandlerWrapper,
   InferApiArgs,
   InferApiResponse,
-  mutationFnWrapper,
+  mutationFnWrapper
 } from "@italodeandra/next/api/apiHandlerWrapper";
-import {
-  badRequest,
-  notFound,
-  unauthorized,
-} from "@italodeandra/next/api/errors";
+import { badRequest, notFound, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import getTask, { TaskStatus } from "../../../collections/task";
@@ -56,11 +48,11 @@ async function handler(
     userId: user._id,
     taskId: task._id,
     startedAt: {
-      $exists: true,
+      $exists: true
     },
     stoppedAt: {
-      $exists: false,
-    },
+      $exists: false
+    }
   });
   if (activeTimesheet) {
     throw badRequest;
@@ -76,8 +68,8 @@ async function handler(
         $set: {
           updatedAt: new Date(),
           status: TaskStatus.DOING,
-          order: -1,
-        },
+          order: -1
+        }
       }
     );
   }
@@ -88,8 +80,8 @@ async function handler(
       { _id: projectId },
       {
         $set: {
-          updatedAt: new Date(),
-        },
+          updatedAt: new Date()
+        }
       }
     );
   }
@@ -99,7 +91,7 @@ async function handler(
     userId: user._id,
     projectId,
     type: TimesheetType.CLOCK_IN_OUT,
-    startedAt: new Date(),
+    startedAt: new Date()
   });
 }
 
@@ -119,11 +111,11 @@ export const useTimesheetStart = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TimesheetStartApiArgs, TimesheetStartApiResponse>(
-      mutationKey
-    ),
     {
+      mutationKey: [mutationKey],
+      mutationFn: mutationFnWrapper<TimesheetStartApiArgs, TimesheetStartApiResponse>(
+        mutationKey
+      ),
       ...options,
       async onSuccess(...params) {
         void taskListApi.invalidateQueries(queryClient);
@@ -132,7 +124,7 @@ export const useTimesheetStart = (
         void taskGetApi.invalidateQueries(queryClient);
         void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
-      },
+      }
     }
   );
 };

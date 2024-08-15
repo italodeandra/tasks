@@ -101,14 +101,14 @@ export type ButtonProps<T extends HTMLElement = HTMLButtonElement> = Omit<Unstyl
     rounded?: boolean;
 };
 declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledButtonProps<HTMLElement>, "size"> & {
-    variant?: "text" | "light" | "filled" | "outlined" | "custom" | undefined;
-    color?: "default" | "success" | "error" | "primary" | "gray" | undefined;
-    size?: "xs" | "sm" | "lg" | "xl" | "md" | undefined;
-    icon?: boolean | undefined;
-    leading?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
-    trailing?: ReactElement<any, string | import("react").JSXElementConstructor<any>> | undefined;
-    loading?: boolean | undefined;
-    disabled?: boolean | undefined;
-    rounded?: boolean | undefined;
+    variant?: keyof (typeof styles)["variant"];
+    color?: keyof (typeof styles)["color"];
+    size?: keyof (typeof styles)["size"];
+    icon?: boolean;
+    leading?: ReactElement;
+    trailing?: ReactElement;
+    loading?: boolean;
+    disabled?: boolean;
+    rounded?: boolean;
 } & import("react").RefAttributes<HTMLElement>>;
 export default _default;

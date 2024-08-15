@@ -1,5 +1,6 @@
 {
   "name": "@italodeandra/ui",
   "version": "2.0.0",
-  "yalcSig": "d66b019f7938bd63fbb7a02a7555a9ce"
+  "type": "module",
+  "yalcSig": "48b0765a48aa8274203f6712060c4a57"
 }

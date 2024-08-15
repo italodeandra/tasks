@@ -24,4 +24,4 @@ declare const _default: import("react").ForwardRefExoticComponent<FileSelectProp
 export default _default;
 export declare function FileSelectProvider({ children }: {
     children: ReactNode;
-}): JSX.Element;
+}): import("react").JSX.Element;

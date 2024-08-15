@@ -62,7 +62,7 @@ export default function Header() {
     <>
       <NewProjectModal />
       <NewClientModal />
-      <UiHeader className="gap-2 px-3.5 md:px-3.5">
+      <UiHeader className="gap-2 px-3.5 md:px-3.5 dark:bg-zinc-950/95 dark:[@supports(backdrop-filter:blur(0))]:bg-zinc-950/75 not-scrolled:!bg-zinc-950/75">
         <NextLink href="/">
           <Logo className="w-8 h-8" />
         </NextLink>

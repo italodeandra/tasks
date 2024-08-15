@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { projectListApi } from "../../../../pages/api/project/list";
 import Button from "@italodeandra/ui/components/Button";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
@@ -13,26 +13,28 @@ export default function Projects() {
     useSnapshot(homeState);
   const { data: projects, isLoading: isLoading } = projectListApi.useQuery(
     {
-      clientsIds: selectedClients as string[],
-    },
-    {
-      onSuccess(projects) {
-        setSelectedProjects([
-          ...selectedProjects.filter((p) =>
-            projects.map((p) => p._id).includes(p)
-          ),
-        ]);
-      },
+      clientsIds: selectedClients as string[]
     }
   );
+
+  useEffect(() => {
+    if (projects) {
+      setSelectedProjects([
+        ...selectedProjects.filter((p) =>
+          projects.map((p) => p._id).includes(p)
+        )
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projects]);
 
   const projectsWithNone = useMemo(
     () => [
       {
         _id: "NONE",
-        name: "None",
+        name: "None"
       },
-      ...(projects || []),
+      ...(projects || [])
     ],
     [projects]
   );
@@ -53,8 +55,8 @@ export default function Projects() {
           selectedProjects.length === projectsWithNone.length
             ? "All projects"
             : `Project${
-                selectedProjectsNames.length === 1 ? "" : "s"
-              }: ${selectedProjectsNames.join(", ")}`}
+              selectedProjectsNames.length === 1 ? "" : "s"
+            }: ${selectedProjectsNames.join(", ")}`}
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>

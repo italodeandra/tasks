@@ -6,6 +6,8 @@ export type CheckboxProps = {
     descriptionClassName?: string;
     inputClassName?: string;
     labelOuterClassName?: string;
+    error?: boolean;
+    helpText?: ReactNode;
 } & DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
-declare const _default: import("react").ForwardRefExoticComponent<Pick<CheckboxProps, "description" | "label" | "key" | "labelClassName" | "descriptionClassName" | "inputClassName" | "labelOuterClassName" | keyof InputHTMLAttributes<HTMLInputElement>> & import("react").RefAttributes<HTMLInputElement>>;
+declare const _default: import("react").ForwardRefExoticComponent<Omit<CheckboxProps, "ref"> & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

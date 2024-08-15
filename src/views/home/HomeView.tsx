@@ -16,7 +16,7 @@ export function HomeView() {
   const { orientation, showTimesheet, editingTasks, hiddenColumns } =
     useSnapshot(homeState);
   const { data: databaseTasks, isLoading, isFetching } = taskListApi.useQuery();
-  const { mutate: batchUpdate, isLoading: isUpdating } =
+  const { mutate: batchUpdate, isPending: isUpdating } =
     useTaskBatchUpdateOrder();
 
   const kanbanTasks = useMemo<ITask[] | undefined>(
@@ -25,7 +25,7 @@ export function HomeView() {
         ...task,
         columnId: status,
         index: order,
-        content: title,
+        content: title
       })),
     [databaseTasks]
   );
@@ -37,7 +37,7 @@ export function HomeView() {
           tasks.map((task) => ({
             _id: task._id,
             status: task.columnId as TaskStatus,
-            order: task.index,
+            order: task.index
           }))
         );
       }

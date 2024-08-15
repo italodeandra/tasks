@@ -78,22 +78,23 @@ export const taskUpdateApi = createApi(
       }
     ))!;
 
-    if (
-      oldTask.projectId &&
-      newTask.projectId &&
-      !oldTask.projectId.equals(newTask.projectId)
-    ) {
+    if (!newTask.projectId || !oldTask.projectId?.equals(newTask.projectId)) {
       await Timesheet.updateMany(
         {
           taskId: _id,
-          projectId: oldTask.projectId,
           userId: user._id,
         },
-        {
-          $set: {
-            projectId: newTask.projectId,
-          },
-        }
+        newTask.projectId
+          ? {
+              $set: {
+                projectId: newTask.projectId,
+              },
+            }
+          : {
+              $unset: {
+                projectId: "",
+              },
+            }
       );
     }
   },

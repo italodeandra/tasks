@@ -49,7 +49,7 @@ export const taskListApi = createApi(
             {
               status: TaskStatus.DONE,
               updatedAt: {
-                $gte: dayjs().subtract(1, "week").toDate(),
+                $gte: dayjs().subtract(1, "month").toDate(),
               },
             },
           ],

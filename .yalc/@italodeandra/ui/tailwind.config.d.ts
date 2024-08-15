@@ -1,2 +1,3 @@
-declare const _exports: import("tailwindcss").Config;
-export = _exports;
+import { Config } from "tailwindcss";
+declare const config: Config;
+export default config;

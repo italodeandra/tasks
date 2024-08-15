@@ -15,10 +15,10 @@ type FieldValues = {
 
 export function NewProjectModal() {
   const { modalOpen, closeModal } = useSnapshot(newProjectState);
-  const { mutate: create, isLoading } = projectCreateApi.useMutation({
+  const { mutate: create, isPending } = projectCreateApi.useMutation({
     onSuccess() {
       closeModal();
-    },
+    }
   });
   const { data: clients, isLoading: isLoadingClients } =
     clientListApi.useQuery();
@@ -26,7 +26,7 @@ export function NewProjectModal() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<FieldValues>();
 
   const onSubmit = (data: FieldValues) => create(data);
@@ -41,7 +41,7 @@ export function NewProjectModal() {
               label="Name"
               required
               {...register("name", {
-                required: "Please fill with a name",
+                required: "Please fill with a name"
               })}
               error={!!errors.name}
               helpText={errors.name?.message}
@@ -69,7 +69,7 @@ export function NewProjectModal() {
               color="primary"
               className="w-full"
               type="submit"
-              loading={isLoading}
+              loading={isPending}
             >
               Save
             </Button>

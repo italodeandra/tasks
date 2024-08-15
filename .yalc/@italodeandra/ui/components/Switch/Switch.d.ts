@@ -11,6 +11,6 @@ export interface SwitchProps {
     disabled?: boolean;
     onChange?(checked: boolean): void;
 }
-export default function Switch({ srLabel, checked, onChange, className, rightLabel, readOnly, switchClassName, pointerClassName, disabled, }: SwitchProps): JSX.Element;
+export default function Switch({ srLabel, checked, onChange, className, rightLabel, readOnly, switchClassName, pointerClassName, disabled, }: SwitchProps): import("react").JSX.Element;
 export type SwitchInputProps = UnstyledInputCommonProps & SwitchProps;
-export declare function SwitchInput({ inputClassName, checked, ...props }: SwitchInputProps): JSX.Element;
+export declare function SwitchInput({ inputClassName, checked, ...props }: SwitchInputProps): import("react").JSX.Element;

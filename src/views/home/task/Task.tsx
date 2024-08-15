@@ -6,12 +6,7 @@ import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import { Orientation } from "../kanban/Orientation";
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import {
-  Bars3BottomLeftIcon,
-  ChatBubbleLeftIcon,
-  EllipsisVerticalIcon,
-  PencilIcon,
-} from "@heroicons/react/16/solid";
+import { Bars3BottomLeftIcon, ChatBubbleLeftIcon, EllipsisVerticalIcon, PencilIcon } from "@heroicons/react/16/solid";
 import { taskUpdateApi } from "../../../pages/api/task/update";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { ProjectSelect } from "./ProjectSelect";
@@ -37,7 +32,7 @@ export default function Task(task: ITask) {
     selectedProjects,
     editingTasks,
     setEditingTasks,
-    selectedClients,
+    selectedClients
   } = useSnapshot(homeState);
   const { mutate: stop } = useTimesheetStop();
 
@@ -69,7 +64,7 @@ export default function Task(task: ITask) {
     if (debouncedOneClicked) {
       setOneClicked(false);
       showDialog({
-        content: <TaskDetails _id={task._id} />,
+        content: <TaskDetails _id={task._id} />
       });
     }
   }, [debouncedOneClicked, task._id]);
@@ -88,10 +83,10 @@ export default function Task(task: ITask) {
   const { mutate: remove } = taskRemoveApi.useMutation();
   const handleDeleteClick = useCallback(() => {
     remove({
-      _id: task._id,
+      _id: task._id
     });
   }, [remove, task._id]);
-  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const { mutate: update, isPending: isUpdating } = taskUpdateApi.useMutation();
   const handleSaveClick = useCallback(
     (newValue: string) => {
       setEditing(false);
@@ -99,13 +94,15 @@ export default function Task(task: ITask) {
       if (newValue) {
         update({
           _id: task._id,
-          title: newValue,
+          title: newValue
         });
       } else {
-        handleDeleteClick();
+        if (!task.timesheet) {
+          handleDeleteClick();
+        }
       }
     },
-    [handleDeleteClick, setEditing, task._id, update]
+    [handleDeleteClick, setEditing, task._id, task.timesheet, update]
   );
 
   const handleMoveStatusClick = useCallback(
@@ -116,7 +113,7 @@ export default function Task(task: ITask) {
       update({
         _id: task._id,
         status,
-        order: -1,
+        order: -1
       });
     },
     [stop, task._id, task.timesheet?.currentClockIn, update]
@@ -148,7 +145,7 @@ export default function Task(task: ITask) {
   }, [selectedProjects, selectedClients, task.project?._id, task.client?._id]);
 
   const taskClassName = clsx("w-full rounded bg-zinc-200 dark:bg-zinc-900", {
-    "flex-col": orientation === Orientation.HORIZONTAL,
+    "flex-col": orientation === Orientation.HORIZONTAL
   });
 
   const handleContextMenu = useCallback(
@@ -161,7 +158,7 @@ export default function Task(task: ITask) {
       className={clsx(taskClassName, "flex p-1 group overflow-hidden", {
         "opacity-40": dimmed,
         "gap-2": orientation === Orientation.VERTICAL,
-        "gap-1": orientation === Orientation.HORIZONTAL,
+        "gap-1": orientation === Orientation.HORIZONTAL
       })}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -180,7 +177,7 @@ export default function Task(task: ITask) {
       <Group
         className={clsx({
           "items-center ml-auto": orientation === Orientation.VERTICAL,
-          "items-end justify-end": orientation === Orientation.HORIZONTAL,
+          "items-end justify-end": orientation === Orientation.HORIZONTAL
         })}
         wrap
       >
@@ -225,7 +222,7 @@ export default function Task(task: ITask) {
         <Timer
           task={task}
           className={clsx("-m-1 transition", {
-            "group-hover:opacity-100 opacity-50": !task.timesheet,
+            "group-hover:opacity-100 opacity-50": !task.timesheet
           })}
         />
         {isMobile && (
@@ -246,9 +243,11 @@ export default function Task(task: ITask) {
                     Move to {translateTaskStatus(status)}
                   </DropdownMenu.Item>
                 ))}
-              <DropdownMenu.Item onClick={handleDeleteClick}>
-                Delete
-              </DropdownMenu.Item>
+              {!task.timesheet && (
+                <DropdownMenu.Item onClick={handleDeleteClick}>
+                  Delete
+                </DropdownMenu.Item>
+              )}
             </DropdownMenu.Content>
           </DropdownMenu.Root>
         )}
@@ -274,7 +273,11 @@ export default function Task(task: ITask) {
               Move to {translateTaskStatus(status)}
             </ContextMenu.Item>
           ))}
-        <ContextMenu.Item onClick={handleDeleteClick}>Delete</ContextMenu.Item>
+        {!task.timesheet && (
+          <ContextMenu.Item onClick={handleDeleteClick}>
+            Delete
+          </ContextMenu.Item>
+        )}
       </ContextMenu.Content>
     </ContextMenu.Root>
   );

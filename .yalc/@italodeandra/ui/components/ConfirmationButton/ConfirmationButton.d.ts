@@ -14,4 +14,4 @@ export type ConfirmationButtonProps = {
     buttonProps?: Partial<ButtonProps>;
     menuProps?: Partial<MenuProps>;
 };
-export default function ConfirmationButton({ label, confirm, confirmation, onConfirm, loading, className, cancel, position, buttonClassName, buttonProps, menuProps, }: ConfirmationButtonProps): JSX.Element;
+export default function ConfirmationButton({ label, confirm, confirmation, onConfirm, loading, className, cancel, position, buttonClassName, buttonProps, menuProps, }: ConfirmationButtonProps): import("react").JSX.Element;

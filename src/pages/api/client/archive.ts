@@ -4,21 +4,22 @@ import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { clientListApi } from "./list";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
-import getClient from "../../../collections/client";
+import getClient, { IClient } from "../../../collections/client";
 import { connectDb } from "../../../db";
 import getTask from "../../../collections/task";
 import createApi from "@italodeandra/next/api/createApi";
-import { IClient } from "../../../collections/client";
+import getProject from "../../../collections/project";
 
 export const clientArchiveApi = createApi(
   "/api/client/archive",
   async function (
     args: Jsonify<Pick<IClient, "_id">>,
     req: NextApiRequest,
-    res: NextApiResponse
+    res: NextApiResponse,
   ) {
     await connectDb();
     const Client = getClient();
+    const Project = getProject();
     const Task = getTask();
     const user = await getUserFromCookies(req, res);
     if (!user) {
@@ -28,10 +29,10 @@ export const clientArchiveApi = createApi(
     const _id = isomorphicObjectId(args._id);
 
     if (
-      (await Client.countDocuments({
+      !(await Client.countDocuments({
         _id,
         userId: user._id,
-      })) === 0
+      }))
     ) {
       throw notFound;
     }
@@ -39,7 +40,20 @@ export const clientArchiveApi = createApi(
     if (
       await Task.countDocuments({
         userId: user._id,
-        clientId: _id,
+        projectId: {
+          $in: (
+            await Project.find(
+              {
+                clientId: _id,
+              },
+              {
+                projection: {
+                  _id: 1,
+                },
+              },
+            )
+          ).map((p) => p._id),
+        },
       })
     ) {
       await Client.updateOne(
@@ -51,7 +65,7 @@ export const clientArchiveApi = createApi(
           $set: {
             archived: true,
           },
-        }
+        },
       );
     } else {
       await Client.deleteOne({
@@ -66,7 +80,7 @@ export const clientArchiveApi = createApi(
         void clientListApi.invalidateQueries(queryClient);
       },
     },
-  }
+  },
 );
 
 export default clientArchiveApi.handler;

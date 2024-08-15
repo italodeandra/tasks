@@ -1,5 +1,4 @@
-import { DetailedHTMLProps, HTMLAttributes } from "react";
-import { ComponentProps } from "react";
+import { ComponentProps, DetailedHTMLProps, HTMLAttributes } from "react";
 import NextLink from "next/link";
 export declare const defaultTextStyles: {
     variant: {
@@ -17,27 +16,10 @@ export declare const defaultTextStyles: {
         "2xl": string;
     };
 };
-export type TextProps<Inline extends boolean | undefined, Href extends string | undefined> = {
+export type TextProps = {
     variant?: keyof (typeof defaultTextStyles)["variant"];
     size?: keyof (typeof defaultTextStyles)["size"];
-    inline?: Inline;
-    href?: Href;
-    target?: string;
-    rel?: string;
-} & (Href extends true ? ComponentProps<typeof NextLink> : Inline extends true ? DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> : DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>);
-declare const _default: import("react").ForwardRefExoticComponent<(Pick<{
-    variant?: "link" | "label" | "default" | "secondary" | undefined;
-    size?: "base" | "xs" | "sm" | "lg" | "xl" | "2xl" | undefined;
-    inline?: boolean | undefined;
-    href?: string | undefined;
-    target?: string | undefined;
-    rel?: string | undefined;
-} & import("react").ClassAttributes<HTMLSpanElement> & HTMLAttributes<HTMLSpanElement>, "size" | "variant" | "href" | "rel" | "target" | "inline" | "key" | keyof HTMLAttributes<HTMLSpanElement>> | Pick<{
-    variant?: "link" | "label" | "default" | "secondary" | undefined;
-    size?: "base" | "xs" | "sm" | "lg" | "xl" | "2xl" | undefined;
-    inline?: boolean | undefined;
-    href?: string | undefined;
-    target?: string | undefined;
-    rel?: string | undefined;
-} & import("react").ClassAttributes<HTMLDivElement> & HTMLAttributes<HTMLDivElement>, "size" | "variant" | "href" | "rel" | "target" | "inline" | "key" | keyof HTMLAttributes<HTMLDivElement>>) & import("react").RefAttributes<HTMLDivElement>>;
+    inline?: boolean;
+} & Partial<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> & DetailedHTMLProps<HTMLAttributes<HTMLSpanElement>, HTMLSpanElement> & ComponentProps<typeof NextLink>>;
+declare const _default: import("react").ForwardRefExoticComponent<Omit<TextProps, "ref"> & import("react").RefAttributes<HTMLDivElement | HTMLAnchorElement>>;
 export default _default;

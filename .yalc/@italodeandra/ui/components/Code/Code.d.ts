@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { Language, PrismTheme } from "prism-react-renderer";
 export type CodeProps = {
     children: string;
@@ -9,4 +8,4 @@ export type CodeProps = {
     copiedText?: string;
     theme?: PrismTheme;
 };
-export default function Code({ children, language, className, copy, copyText, copiedText, theme, }: CodeProps): JSX.Element;
+export default function Code({ children, language, className, copy, copyText, copiedText, theme, }: CodeProps): import("react").JSX.Element;

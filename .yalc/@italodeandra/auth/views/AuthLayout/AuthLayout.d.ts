@@ -6,4 +6,4 @@ export default function AuthLayout({ title, subtitle, children, backgroundImage,
     children: ReactNode;
     backgroundImage?: string | StaticImageData;
     backgroundDescription?: ReactNode;
-}): JSX.Element;
+}): import("react").JSX.Element;

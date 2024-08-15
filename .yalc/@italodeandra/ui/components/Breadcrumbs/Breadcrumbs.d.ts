@@ -1,4 +1,3 @@
-/// <reference types="react" />
 export type BreadcrumbsProps = {
     pages?: {
         title: string;
@@ -9,4 +8,4 @@ export type BreadcrumbsProps = {
     className?: string;
     loading?: boolean;
 };
-export default function Breadcrumbs({ pages, homeHref, className, loading, }: BreadcrumbsProps): JSX.Element | null;
+export default function Breadcrumbs({ pages, homeHref, className, loading, }: BreadcrumbsProps): import("react").JSX.Element | null;

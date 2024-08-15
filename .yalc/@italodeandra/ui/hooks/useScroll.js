@@ -1,53 +1,31 @@
-"use strict";
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.useScrollYMovement = exports.useScrollY = exports.useIsScrolled = void 0;
-var react_1 = require("react");
-var isBrowser_1 = require("../utils/isBrowser");
+import { useEffect, useRef, useState } from "react";
+import { isBrowser } from "../utils/isBrowser";
 // noinspection JSUnusedGlobalSymbols
-function useIsScrolled(disabled) {
+export function useIsScrolled(disabled) {
     return useScrollY(disabled) > 0;
 }
-exports.useIsScrolled = useIsScrolled;
-function useScrollY(disabled) {
-    var _a = __read((0, react_1.useState)(isBrowser_1.isBrowser ? window.scrollY : 0), 2), scrollY = _a[0], setScrollY = _a[1];
-    (0, react_1.useEffect)(function () {
+export function useScrollY(disabled) {
+    const [scrollY, setScrollY] = useState(isBrowser ? window.scrollY : 0);
+    useEffect(() => {
         function onScroll() {
             setScrollY(window.scrollY);
         }
         if (!disabled) {
             onScroll();
             window.addEventListener("scroll", onScroll, { passive: true });
-            return function () {
+            return () => {
                 window.removeEventListener("scroll", onScroll);
             };
         }
     }, [disabled]);
     return scrollY;
 }
-exports.useScrollY = useScrollY;
-function useScrollYMovement(max, callback, disabled) {
-    if (max === void 0) { max = Infinity; }
-    var scrollYMovement = (0, react_1.useRef)(0);
-    var previousScrollYMovement = (0, react_1.useRef)(0);
-    (0, react_1.useEffect)(function () {
+export function useScrollYMovement(max = Infinity, callback, disabled) {
+    const scrollYMovement = useRef(0);
+    const previousScrollYMovement = useRef(0);
+    useEffect(() => {
         function onScroll() {
-            var movement = window.scrollY - previousScrollYMovement.current;
+            const movement = window.scrollY - previousScrollYMovement.current;
             scrollYMovement.current = scrollYMovement.current + movement;
             scrollYMovement.current =
                 scrollYMovement.current > max
@@ -61,10 +39,9 @@ function useScrollYMovement(max, callback, disabled) {
         if (!disabled) {
             onScroll();
             window.addEventListener("scroll", onScroll, { passive: true });
-            return function () {
+            return () => {
                 window.removeEventListener("scroll", onScroll);
             };
         }
     }, [callback, max, disabled]);
 }
-exports.useScrollYMovement = useScrollYMovement;

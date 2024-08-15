@@ -1,4 +1,35 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var modeScript = "\n  let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')\n\n  updateMode()\n  darkModeMediaQuery.addEventListener('change', updateModeWithoutTransitions)\n  window.addEventListener('storage', updateModeWithoutTransitions)\n\n  function updateMode() {\n    let isSystemDarkMode = darkModeMediaQuery.matches\n    let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)\n\n    if (isDarkMode) {\n      document.documentElement.classList.add('dark')\n    } else {\n      document.documentElement.classList.remove('dark')\n    }\n\n    if (isDarkMode === isSystemDarkMode) {\n      delete window.localStorage.isDarkMode\n    }\n  }\n\n  function disableTransitionsTemporarily() {\n    document.documentElement.classList.add('[&_*]:!transition-none')\n    window.setTimeout(() => {\n      document.documentElement.classList.remove('[&_*]:!transition-none')\n    }, 0)\n  }\n\n  function updateModeWithoutTransitions() {\n    disableTransitionsTemporarily()\n    updateMode()\n  }\n";
-exports.default = modeScript;
+const modeScript = `
+  let darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+  updateMode()
+  darkModeMediaQuery.addEventListener('change', updateModeWithoutTransitions)
+  window.addEventListener('storage', updateModeWithoutTransitions)
+
+  function updateMode() {
+    let isSystemDarkMode = darkModeMediaQuery.matches
+    let isDarkMode = window.localStorage.isDarkMode === 'true' || (!('isDarkMode' in window.localStorage) && isSystemDarkMode)
+
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    if (isDarkMode === isSystemDarkMode) {
+      delete window.localStorage.isDarkMode
+    }
+  }
+
+  function disableTransitionsTemporarily() {
+    document.documentElement.classList.add('[&_*]:!transition-none')
+    window.setTimeout(() => {
+      document.documentElement.classList.remove('[&_*]:!transition-none')
+    }, 0)
+  }
+
+  function updateModeWithoutTransitions() {
+    disableTransitionsTemporarily()
+    updateMode()
+  }
+`;
+export default modeScript;

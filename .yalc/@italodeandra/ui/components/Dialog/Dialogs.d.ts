@@ -1,2 +1,1 @@
-/// <reference types="react" />
-export default function Dialogs(): JSX.Element;
+export default function Dialogs(): import("react").JSX.Element;

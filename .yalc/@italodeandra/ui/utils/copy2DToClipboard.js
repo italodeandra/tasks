@@ -1,8 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 // copied from https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
 function fallbackCopyTextToClipboard(text) {
-    var textArea = document.createElement("textarea");
+    const textArea = document.createElement("textarea");
     textArea.value = text;
     // Avoid scrolling to bottom
     textArea.style.top = "0";
@@ -31,8 +29,8 @@ function copyTextToClipboard(text) {
         console.error("Async: Could not copy text: ", err);
     });
 }
-function copy2DToClipboard(array) {
-    var csv = "", row, cell;
+export default function copy2DToClipboard(array) {
+    let csv = "", row, cell;
     for (row = 0; row < array.length; row++) {
         for (cell = 0; cell < array[row].length; cell++) {
             csv += (array[row][cell] + "").replace(/[\n\t]+/g, " ");
@@ -44,4 +42,3 @@ function copy2DToClipboard(array) {
     }
     copyTextToClipboard(csv);
 }
-exports.default = copy2DToClipboard;

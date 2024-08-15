@@ -1,35 +1,9 @@
-"use strict";
-/* eslint-disable @typescript-eslint/no-var-requires */
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
-};
-var colors = require("tailwindcss/colors");
-var defaultTheme = require("tailwindcss/defaultTheme");
-var plugin = require("tailwindcss/plugin");
-/** @type {import("tailwindcss").Config} */
-module.exports = {
+import colors from "tailwindcss/colors";
+import defaultTheme from "tailwindcss/defaultTheme";
+import plugin from "tailwindcss/plugin";
+import typography from "@tailwindcss/typography";
+import forms from "@tailwindcss/forms";
+const config = {
     darkMode: "class",
     content: [
         "./node_modules/@italodeandra/ui/**/*.{js,ts,jsx,tsx}",
@@ -48,7 +22,7 @@ module.exports = {
                 current: "currentColor",
             },
             fontFamily: {
-                sans: __spreadArray(["Inter Variable"], __read(defaultTheme.fontFamily.sans), false),
+                sans: ["Inter Variable", ...defaultTheme.fontFamily.sans],
             },
             fontWeight: {
                 inherit: "inherit",
@@ -58,35 +32,55 @@ module.exports = {
             },
             keyframes: {
                 slideDownAndFade: {
-                    from: { opacity: 0, transform: "translateY(-2px)" },
-                    to: { opacity: 1, transform: "translateY(0)" },
+                    from: { opacity: "0", transform: "translateY(-2px)" },
+                    to: { opacity: "1", transform: "translateY(0)" },
                 },
                 slideLeftAndFade: {
-                    from: { opacity: 0, transform: "translateX(2px)" },
-                    to: { opacity: 1, transform: "translateX(0)" },
+                    "0%": { opacity: "0", transform: "translateX(2px)" },
+                    "100%": { opacity: "1", transform: "translateX(0)" },
                 },
                 slideUpAndFade: {
-                    from: { opacity: 0, transform: "translateY(2px)" },
-                    to: { opacity: 1, transform: "translateY(0)" },
+                    from: { opacity: "0", transform: "translateY(2px)" },
+                    to: { opacity: "1", transform: "translateY(0)" },
                 },
                 slideRightAndFade: {
-                    from: { opacity: 0, transform: "translateX(-2px)" },
-                    to: { opacity: 1, transform: "translateX(0)" },
+                    from: { opacity: "0", transform: "translateX(-2px)" },
+                    to: { opacity: "1", transform: "translateX(0)" },
+                },
+                elasticSlideDownAndFade: {
+                    "0%": { opacity: "0", transform: "translateY(-4px) scale(0.8)" },
+                    "50%": { opacity: "1", transform: "translateY(1px) scale(1)" },
+                    "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+                },
+                elasticSlideLeftAndFade: {
+                    "0%": { opacity: "0", transform: "translateX(-4px) scale(0.8)" },
+                    "50%": { opacity: "1", transform: "translateX(-1px) scale(1)" },
+                    "100%": { opacity: "1", transform: "translateX(0) scale(1)" },
+                },
+                elasticSlideUpAndFade: {
+                    "0%": { opacity: "0", transform: "translateY(4px) scale(0.8)" },
+                    "50%": { opacity: "1", transform: "translateY(-1px) scale(1)" },
+                    "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+                },
+                elasticSlideRightAndFade: {
+                    "0%": { opacity: "0", transform: "translateX(4px) scale(0.8)" },
+                    "50%": { opacity: "1", transform: "translateX(1px) scale(1)" },
+                    "100%": { opacity: "1", transform: "translateX(0) scale(1)" },
                 },
                 fadeIn: {
-                    from: { opacity: 0 },
-                    to: { opacity: 1 },
+                    from: { opacity: "0" },
+                    to: { opacity: "1" },
                 },
                 fadeOut: {
-                    from: { opacity: 1 },
-                    to: { opacity: 0 },
+                    from: { opacity: "1" },
+                    to: { opacity: "0" },
                 },
                 pulsehide: {
                     "0%, 100%": {
-                        opacity: 0,
+                        opacity: "0",
                     },
                     "50%": {
-                        opacity: 1,
+                        opacity: "1",
                     },
                 },
             },
@@ -95,19 +89,23 @@ module.exports = {
                 slideLeftAndFade: "slideLeftAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)",
                 slideUpAndFade: "slideUpAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)",
                 slideRightAndFade: "slideRightAndFade 150ms cubic-bezier(0.16, 1, 0.3, 1)",
+                elasticSlideDownAndFade: "elasticSlideDownAndFade 350ms cubic-bezier(0.16, 1, 0.3, 1)",
+                elasticSlideLeftAndFade: "elasticSlideLeftAndFade 350ms cubic-bezier(0.16, 1, 0.3, 1)",
+                elasticSlideUpAndFade: "elasticSlideUpAndFade 350ms cubic-bezier(0.16, 1, 0.3, 1)",
+                elasticSlideRightAndFade: "elasticSlideRightAndFade 350ms cubic-bezier(0.16, 1, 0.3, 1)",
                 fadeOut: "fadeOut 150ms ease-in",
                 fadeIn: "fadeIn 150ms ease-in",
             },
         },
     },
     plugins: [
-        require("@tailwindcss/typography"),
-        require("@tailwindcss/forms"),
-        plugin(function (_a) {
-            var addVariant = _a.addVariant;
+        typography,
+        forms,
+        plugin(function ({ addVariant }) {
             addVariant("scrolled", "html.scrolled &");
             addVariant("not-scrolled", "html:not(.scrolled) &");
             addVariant("not-dark", "html:not(.dark) &");
         }),
     ],
 };
+export default config;

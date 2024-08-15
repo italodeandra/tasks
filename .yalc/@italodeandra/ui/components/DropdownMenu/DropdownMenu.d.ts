@@ -2,16 +2,16 @@ import React, { ComponentProps } from "react";
 import * as RDropdownMenu from "@radix-ui/react-dropdown-menu";
 declare function DropdownMenuContent({ className, arrowClassName, children, sideOffset, collisionPadding, ...props }: ComponentProps<typeof RDropdownMenu.Content> & {
     arrowClassName?: string;
-}): JSX.Element;
-declare function DropdownMenuSeparator({ className, ...props }: ComponentProps<typeof RDropdownMenu.Separator>): JSX.Element;
+}): React.JSX.Element;
+declare function DropdownMenuSeparator({ className, ...props }: ComponentProps<typeof RDropdownMenu.Separator>): React.JSX.Element;
 declare function DropdownMenuItem({ className, href, ...props }: ComponentProps<typeof RDropdownMenu.Item> & {
     href?: string;
-}): JSX.Element;
-declare function DropdownMenuLabel({ className, ...props }: ComponentProps<typeof RDropdownMenu.Item>): JSX.Element;
-declare function DropdownMenuItemIndicator({ className, ...props }: ComponentProps<typeof RDropdownMenu.ItemIndicator>): JSX.Element;
+}): React.JSX.Element;
+declare function DropdownMenuLabel({ className, ...props }: ComponentProps<typeof RDropdownMenu.Item>): React.JSX.Element;
+declare function DropdownMenuItemIndicator({ className, ...props }: ComponentProps<typeof RDropdownMenu.ItemIndicator>): React.JSX.Element;
 declare function DropdownMenuCheckboxItem({ className, children, indicatorClassName, ...props }: ComponentProps<typeof RDropdownMenu.CheckboxItem> & {
     indicatorClassName?: string;
-}): JSX.Element;
+}): React.JSX.Element;
 declare const DropdownMenu: {
     Root: React.FC<RDropdownMenu.DropdownMenuProps>;
     Trigger: React.ForwardRefExoticComponent<RDropdownMenu.DropdownMenuTriggerProps & React.RefAttributes<HTMLButtonElement>>;

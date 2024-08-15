@@ -1,27 +1,23 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var cookies_next_1 = require("cookies-next");
-var ms_1 = __importDefault(require("ms"));
-var valtio_1 = require("valtio");
+import { setCookie } from "cookies-next";
+import ms from "ms";
+import { snapshot, subscribe } from "valtio";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function createStateHydration(cookieName, state) {
-    (0, valtio_1.subscribe)(state, function () {
-        (0, cookies_next_1.setCookie)(cookieName, (0, valtio_1.snapshot)(state), {
-            maxAge: (0, ms_1.default)("30d"),
+export default function createStateHydration(cookieName, state) {
+    subscribe(state, () => {
+        setCookie(cookieName, snapshot(state), {
+            maxAge: ms("30d"),
             path: "/",
         });
     });
     return function hydrate(cookies) {
-        if (cookies === null || cookies === void 0 ? void 0 : cookies[cookieName]) {
+        if (cookies?.[cookieName]) {
             try {
-                var cookieValueString = cookies[cookieName];
-                var cookieValue = JSON.parse(cookieValueString);
+                const cookieValueString = cookies[cookieName];
+                const cookieValue = JSON.parse(cookieValueString);
                 if (typeof cookieValue === "object") {
                     Object.assign(state, cookieValue);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }
             catch (e) {
                 // do nothing
@@ -29,4 +25,3 @@ function createStateHydration(cookieName, state) {
         }
     };
 }
-exports.default = createStateHydration;

@@ -1,15 +1,12 @@
 import { ReactNode } from "react";
+import { DialogProps } from "./Dialog";
 export type IDialog = {
     _id: string;
     open: boolean;
     props: {
-        title?: ReactNode;
-        description?: ReactNode;
         content: ReactNode;
-        contentClassName?: string;
-        contentOverflowClassName?: string;
         onClose?: (_id: string) => void;
-    };
+    } & DialogProps;
 };
 declare const dialogsState: {
     rendered: boolean;

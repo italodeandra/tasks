@@ -1,4 +1,3 @@
-/// <reference types="react" />
 export interface TableFooterWithPaginationProps {
     itemsPerPage: number;
     totalItems?: number;
@@ -11,4 +10,4 @@ export interface TableFooterWithPaginationProps {
     ofText?: string;
     resultsText?: string;
 }
-export default function TableFooterWithPagination({ itemsPerPage, totalItems, currentPage, onChangePage, previousText, nextText, showingText, toText, ofText, resultsText, }: TableFooterWithPaginationProps): JSX.Element;
+export default function TableFooterWithPagination({ itemsPerPage, totalItems, currentPage, onChangePage, previousText, nextText, showingText, toText, ofText, resultsText, }: TableFooterWithPaginationProps): import("react").JSX.Element;

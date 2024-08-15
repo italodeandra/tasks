@@ -1,10 +1,9 @@
 import { ReactNode } from "react";
+import { ButtonProps } from "../Button";
 export default function Tabs({ children, className, }: {
     children: ReactNode;
     className?: string;
-}): JSX.Element;
-export declare function Tab({ children, selected, onClick, }: {
-    children: ReactNode;
+}): import("react").JSX.Element;
+export declare function Tab({ children, selected, onClick, className, ...props }: Omit<ButtonProps, "variant"> & {
     selected?: boolean;
-    onClick?: () => void;
-}): JSX.Element;
+}): import("react").JSX.Element;

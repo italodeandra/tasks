@@ -1,21 +1,22 @@
-/// <reference types="react" />
-declare const _default: import("react").ForwardRefExoticComponent<Pick<Pick<import("../Input").InputProps<false>, "label" | "name" | "className" | "id" | "onMouseOut" | "onMouseOver" | "required" | "error" | "helpText"> & Omit<import("../FileSelect").FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
-    readOnly?: boolean | undefined;
-    value?: import("../FileInput").FileInputFile[] | undefined;
-    onChange?: ((event: {
+declare const _default: import("react").ForwardRefExoticComponent<Omit<Pick<import("../Input").InputProps<false>, "label" | "name" | "required" | "error" | "className" | "id" | "onMouseOut" | "onMouseOver" | "helpText"> & Omit<import("../FileSelect").FileSelectProps, "onAcceptFiles" | "onRejectFiles"> & {
+    readOnly?: boolean;
+    value?: import("../FileInput").FileInputFile[];
+    onChange?: (event: {
         target: {
             value: import("../FileInput").FileInputFile[];
         };
-    }) => void) | undefined;
-    emptyText?: string | undefined;
-    downloadText?: string | undefined;
-    openText?: string | undefined;
-    preview?: boolean | undefined;
-    asyncUpload?: ((file: import("../FileInput").FileFile & {
+    }) => void;
+    emptyText?: string;
+    downloadText?: string;
+    openText?: string;
+    preview?: boolean;
+    asyncUpload?: (file: import("../FileInput").FileFile & {
         _id: string;
     }) => Promise<import("../FileInput").FileUrl & {
         _id: string;
-    }>) | undefined;
-    onRejectFiles?: ((files: File[], reason: "size" | "type" | "limit" | "upload-error") => void) | undefined;
-} & import("react").RefAttributes<HTMLInputElement>, "label" | "name" | "onChange" | "className" | "id" | "onMouseOut" | "onMouseOver" | "key" | "disabled" | "readOnly" | "required" | "value" | "error" | "icon" | "helpText" | "emptyText" | "maxFileSize" | "allowedFileTypes" | "limit" | "uploadAFileText" | "orDragAndDropText" | "upToText" | "anyFileText" | "dropFilesHereText" | "uploadingText" | "uploading" | "additionalBottomInfo" | "onRejectFiles" | "helperText" | "downloadText" | "openText" | "preview" | "asyncUpload"> & import("react").RefAttributes<HTMLInputElement>>;
+    }>;
+    onRejectFiles?: (files: File[], reason: "type" | "size" | "limit" | "upload-error") => void;
+    loading?: boolean;
+    maxConcurrentUploads?: number;
+} & import("react").RefAttributes<HTMLInputElement>, "ref"> & import("react").RefAttributes<HTMLInputElement>>;
 export default _default;

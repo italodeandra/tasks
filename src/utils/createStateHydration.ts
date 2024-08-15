@@ -7,7 +7,7 @@ export default function createStateHydration(cookieName: string, state: any) {
   subscribe(state, () => {
     setCookie(cookieName, snapshot(state), {
       maxAge: ms("30d"),
-      path: "/",
+      path: "/"
     });
   });
 
@@ -16,11 +16,12 @@ export default function createStateHydration(cookieName: string, state: any) {
       try {
         const cookieValueString = cookies[
           cookieName as keyof typeof cookies
-        ] as string;
+          ] as string;
         const cookieValue = JSON.parse(cookieValueString);
         if (typeof cookieValue === "object") {
           Object.assign(state, cookieValue);
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         // do nothing
       }

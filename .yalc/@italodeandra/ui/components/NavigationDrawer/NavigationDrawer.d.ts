@@ -6,4 +6,4 @@ export default function NavigationDrawer({ children, navigationChildren, positio
     title?: ReactNode;
     noPadding?: boolean;
     panelClassName?: string;
-}): JSX.Element;
+}): import("react").JSX.Element;

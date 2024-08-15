@@ -4,4 +4,4 @@ export type TableHeaderProps = {
     subtitle?: ReactNode;
     children?: ReactNode;
 };
-export default function TableHeader({ title, subtitle, children, }: TableHeaderProps): JSX.Element;
+export default function TableHeader({ title, subtitle, children, }: TableHeaderProps): import("react").JSX.Element;

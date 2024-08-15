@@ -1,2 +1,1 @@
-/// <reference types="react" />
-export default function Error500Page(): JSX.Element;
+export default function Error500Page(): import("react").JSX.Element;

@@ -13,16 +13,16 @@ import { isNil } from "lodash";
 import { NextSeo } from "next-seo";
 
 export function Timer({
-  task,
-  buttonVariant = "text",
-  className,
-}: {
+                        task,
+                        buttonVariant = "text",
+                        className
+                      }: {
   task: Pick<TaskListApi["Response"][number], "_id" | "timesheet">;
   buttonVariant?: "text" | "outlined";
   className?: string;
 }) {
-  const { mutate: start, isLoading: isStarting } = useTimesheetStart();
-  const { mutate: stop, isLoading: isStopping } = useTimesheetStop();
+  const { mutate: start, isPending: isStarting } = useTimesheetStart();
+  const { mutate: stop, isPending: isStopping } = useTimesheetStop();
   const isLoading = isStarting || isStopping;
 
   const currentClockIn = task.timesheet?.currentClockIn;
@@ -57,21 +57,21 @@ export function Timer({
     () =>
       !isNil(time)
         ? {
-            leading: isLoading ? (
-              <Loading className="w-4 h-4 text-inherit" />
-            ) : (
-              <ClockIcon className="shrink-0 w-4 h-4" />
-            ),
-            children: prettyMilliseconds(time),
-          }
+          leading: isLoading ? (
+            <Loading className="w-4 h-4 text-inherit" />
+          ) : (
+            <ClockIcon className="shrink-0 w-4 h-4" />
+          ),
+          children: prettyMilliseconds(time)
+        }
         : {
-            icon: true,
-            children: isLoading ? (
-              <Loading className="w-4 h-4 text-inherit" />
-            ) : (
-              <ClockIcon className="shrink-0 w-4 h-4" />
-            ),
-          },
+          icon: true,
+          children: isLoading ? (
+            <Loading className="w-4 h-4 text-inherit" />
+          ) : (
+            <ClockIcon className="shrink-0 w-4 h-4" />
+          )
+        },
     [isLoading, time]
   );
 
@@ -89,7 +89,7 @@ export function Timer({
         className={clsx(
           "whitespace-nowrap p-1",
           {
-            "px-1.5": !!time,
+            "px-1.5": !!time
           },
           className
         )}
