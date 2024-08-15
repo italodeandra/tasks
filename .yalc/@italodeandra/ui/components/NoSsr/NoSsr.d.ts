@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 export default function NoSsr({ children }: {
     children: ReactNode;
-}): JSX.Element | null;
+}): React.JSX.Element | null;

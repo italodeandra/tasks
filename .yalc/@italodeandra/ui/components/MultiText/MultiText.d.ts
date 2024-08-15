@@ -12,6 +12,11 @@ export interface MultiTextProps {
     validate?: (value: string) => boolean;
     invalidHelpText?: string;
     error?: boolean;
+    format?: (item: string) => string;
+    readOnly?: boolean;
+    loading?: boolean;
+    type?: string;
+    required?: boolean;
 }
 declare const _default: import("react").ForwardRefExoticComponent<MultiTextProps & import("react").RefAttributes<HTMLDivElement>>;
 export default _default;

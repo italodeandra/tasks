@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import React from "react";
 export default function Slider({ step, max, min, className, value, onValueChange, thumbClassName, }: {
     step?: number;
     max?: number;
@@ -7,4 +7,4 @@ export default function Slider({ step, max, min, className, value, onValueChange
     min?: number;
     value?: number[];
     onValueChange?: (value: number[]) => void;
-}): JSX.Element;
+}): React.JSX.Element;

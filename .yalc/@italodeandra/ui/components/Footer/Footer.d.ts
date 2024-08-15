@@ -13,4 +13,4 @@ export type FooterProps = {
     allRightsReserved?: string;
     children: ReactNode;
 };
-export default function Footer({ main, social, companyName, allRightsReserved, children, }: FooterProps): JSX.Element;
+export default function Footer({ main, social, companyName, allRightsReserved, children, }: FooterProps): import("react").JSX.Element;

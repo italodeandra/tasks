@@ -13,16 +13,16 @@ type FieldValues = {
 
 export function NewClientModal() {
   const { modalOpen, closeModal } = useSnapshot(newClientState);
-  const { mutate: create, isLoading } = clientCreateApi.useMutation({
+  const { mutate: create, isPending } = clientCreateApi.useMutation({
     onSuccess() {
       closeModal();
-    },
+    }
   });
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<FieldValues>();
 
   const onSubmit = (data: FieldValues) => create({ ...data });
@@ -37,7 +37,7 @@ export function NewClientModal() {
               label="Name"
               required
               {...register("name", {
-                required: "Please fill with a name",
+                required: "Please fill with a name"
               })}
               error={!!errors.name}
               helpText={errors.name?.message}
@@ -50,7 +50,7 @@ export function NewClientModal() {
               color="primary"
               className="w-full"
               type="submit"
-              loading={isLoading}
+              loading={isPending}
             >
               Save
             </Button>

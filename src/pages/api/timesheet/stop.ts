@@ -3,14 +3,10 @@ import {
   apiHandlerWrapper,
   InferApiArgs,
   InferApiResponse,
-  mutationFnWrapper,
+  mutationFnWrapper
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import { taskListApi } from "../task/list";
@@ -30,11 +26,11 @@ export async function stopClock(userId: ObjectId) {
   const activeTimesheet = await Timesheet.findOne({
     userId: userId,
     startedAt: {
-      $exists: true,
+      $exists: true
     },
     stoppedAt: {
-      $exists: false,
-    },
+      $exists: false
+    }
   });
   if (activeTimesheet?.startedAt) {
     const stoppedAt = new Date();
@@ -46,8 +42,8 @@ export async function stopClock(userId: ObjectId) {
         { _id: taskId },
         {
           $set: {
-            updatedAt: new Date(),
-          },
+            updatedAt: new Date()
+          }
         }
       );
     }
@@ -58,21 +54,21 @@ export async function stopClock(userId: ObjectId) {
         { _id: projectId },
         {
           $set: {
-            updatedAt: new Date(),
-          },
+            updatedAt: new Date()
+          }
         }
       );
     }
 
     await Timesheet.updateOne(
       {
-        _id: activeTimesheet._id,
+        _id: activeTimesheet._id
       },
       {
         $set: {
           stoppedAt,
-          time: (activeTimesheet.time || 0) + addedTime,
-        },
+          time: (activeTimesheet.time || 0) + addedTime
+        }
       }
     );
   }
@@ -104,11 +100,11 @@ export const useTimesheetStop = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TimesheetStopApiArgs, TimesheetStopApiResponse>(
-      mutationKey
-    ),
     {
+      mutationKey: [mutationKey],
+      mutationFn: mutationFnWrapper<TimesheetStopApiArgs, TimesheetStopApiResponse>(
+        mutationKey
+      ),
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidateQueries(queryClient);
@@ -117,7 +113,7 @@ export const useTimesheetStop = (
         void taskGetApi.invalidateQueries(queryClient);
         void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
-      },
+      }
     }
   );
 };

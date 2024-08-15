@@ -1,6 +1,5 @@
-/// <reference types="react" />
 import Routes from "./Routes";
-export declare type IAuthContext = {
+export type IAuthContext = {
     Routes: Routes;
     intl?: {
         "There was an unexpected error. Try again later."?: string;
@@ -52,6 +51,9 @@ export declare type IAuthContext = {
         here?: string;
         "to sign in"?: string;
         Impersonate?: string;
+        Disabled?: string;
+        "User is disabled"?: string;
+        "User is enabled"?: string;
     } & Record<string, string>;
     disableModeToggle?: boolean;
 };

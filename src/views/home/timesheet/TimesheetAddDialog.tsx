@@ -13,33 +13,33 @@ interface FieldValues {
 }
 
 export function TimesheetAddDialog({
-  projectId,
-  onSubmit: onSubmitDialog,
-}: {
+                                     projectId,
+                                     onSubmit: onSubmitDialog
+                                   }: {
   projectId: string;
   onSubmit: () => void;
 }) {
-  const { mutate, isLoading } = useTimesheetAdd({
+  const { mutate, isPending } = useTimesheetAdd({
     onSuccess() {
       onSubmitDialog();
-    },
+    }
   });
 
   const {
     register,
     formState: { errors },
-    handleSubmit,
+    handleSubmit
   } = useForm<FieldValues>({
     defaultValues: {
-      type: TimesheetType.MANUAL,
-    },
+      type: TimesheetType.MANUAL
+    }
   });
 
   function onSubmit(values: FieldValues) {
-    if (!isLoading) {
+    if (!isPending) {
       mutate({
         ...values,
-        projectId,
+        projectId
       });
     }
   }
@@ -51,7 +51,7 @@ export function TimesheetAddDialog({
           label="Type"
           select
           {...register("type", {
-            required: "Select the type",
+            required: "Select the type"
           })}
           required
           error={!!errors.type}
@@ -64,7 +64,7 @@ export function TimesheetAddDialog({
           label="Time"
           required
           {...register("time", {
-            required: "Fill with the time",
+            required: "Fill with the time"
           })}
           error={!!errors.time}
           helpText={errors.time?.message}

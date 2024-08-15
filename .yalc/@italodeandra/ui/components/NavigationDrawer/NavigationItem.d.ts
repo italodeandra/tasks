@@ -1,5 +1,5 @@
 import { ReactElement, ReactNode } from "react";
-export default function NavigationItem({ icon, children, href, exact, alternativeActiveHrefs, className, disabled, }: {
+export default function NavigationItem({ icon, children, href, exact, alternativeActiveHrefs, className, disabled, active, }: {
     icon?: ReactElement;
     children: ReactNode;
     href: string;
@@ -7,4 +7,5 @@ export default function NavigationItem({ icon, children, href, exact, alternativ
     alternativeActiveHrefs?: string[];
     className?: string;
     disabled?: boolean;
-}): JSX.Element;
+    active?: boolean;
+}): import("react").JSX.Element;

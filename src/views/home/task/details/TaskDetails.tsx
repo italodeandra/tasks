@@ -14,17 +14,17 @@ import { Comments } from "./comments/Comments";
 
 export function TaskDetails({ _id }: { _id: string }) {
   const { data } = taskGetApi.useQuery({
-    _id,
+    _id
   });
 
-  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const { mutate: update, isPending: isUpdating } = taskUpdateApi.useMutation();
 
   const handleTitleSave = useCallback(
     (title: string) => {
       if (!isUpdating) {
         update({
           _id,
-          title,
+          title
         });
       }
     },
@@ -36,7 +36,7 @@ export function TaskDetails({ _id }: { _id: string }) {
       if (!isUpdating) {
         update({
           _id,
-          description,
+          description
         });
       }
     },

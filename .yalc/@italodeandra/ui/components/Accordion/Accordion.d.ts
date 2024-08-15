@@ -1,13 +1,13 @@
 import { ReactNode } from "react";
 declare function Accordion({ children }: {
     children?: ReactNode;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare namespace Accordion {
     var Item: typeof AccordionItem;
 }
 export default Accordion;
-declare function AccordionItem({ children, title, defaultOpen, }: {
+declare function AccordionItem({ children, title, value, }: {
     children?: ReactNode;
     title: ReactNode;
-    defaultOpen?: boolean;
-}): JSX.Element;
+    value?: string;
+}): import("react").JSX.Element;

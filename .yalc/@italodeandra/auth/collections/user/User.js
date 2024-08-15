@@ -1,47 +1,40 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserType = void 0;
-var papr_1 = require("papr");
-var isServer_1 = require("@italodeandra/next/utils/isServer");
-var db_1 = __importDefault(require("@italodeandra/next/db"));
-exports.UserType = {
+import { schema, types } from "papr";
+import { onlyServer } from "@italodeandra/next/utils/isServer";
+import db from "@italodeandra/next/db";
+export const UserType = {
     NORMAL: "NORMAL",
     ADMIN: "ADMIN",
 };
-var userSchema = (0, isServer_1.onlyServer)(function () {
-    return (0, papr_1.schema)({
-        _id: papr_1.types.objectId({ required: true }),
-        email: papr_1.types.string({
-            required: true,
-            maxLength: 255,
-        }),
-        emailVerified: papr_1.types.date(),
-        type: papr_1.types.string({ required: true }),
-        password: papr_1.types.string({
-            required: true,
-            maxLength: 130,
-        }),
-        passwordSalt: papr_1.types.string({
-            required: true,
-            maxLength: 60,
-        }),
-        name: papr_1.types.string({
-            maxLength: 100,
-        }),
-        phoneNumber: papr_1.types.string(),
-        createdAt: papr_1.types.date({ required: true }),
-        updatedAt: papr_1.types.date({ required: true }),
-        customData: papr_1.types.any(),
-        tenantId: papr_1.types.objectId(),
-    }, {
-        defaults: {
-            type: exports.UserType.NORMAL,
-        },
-        timestamps: true,
-    });
-});
-var getUser = function () { return (0, isServer_1.onlyServer)(function () { return db_1.default.model("users", userSchema); }); };
-exports.default = getUser;
+const userSchema = onlyServer(() => schema({
+    _id: types.objectId({ required: true }),
+    email: types.string({
+        required: true,
+        maxLength: 255,
+    }),
+    emailVerified: types.date(),
+    type: types.string({ required: true }),
+    password: types.string({
+        required: true,
+        maxLength: 130,
+    }),
+    passwordSalt: types.string({
+        required: true,
+        maxLength: 60,
+    }),
+    name: types.string({
+        maxLength: 100,
+    }),
+    phoneNumber: types.string(),
+    createdAt: types.date({ required: true }),
+    updatedAt: types.date({ required: true }),
+    customData: types.any(),
+    tenantId: types.objectId(),
+    disabled: types.boolean(),
+}, {
+    defaults: {
+        type: UserType.NORMAL,
+    },
+    timestamps: true,
+}));
+const getUser = () => onlyServer(() => db.model("users", userSchema));
+export default getUser;

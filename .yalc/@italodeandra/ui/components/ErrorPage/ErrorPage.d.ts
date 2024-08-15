@@ -8,4 +8,4 @@ export type ErrorProps = {
     defaultActionHref?: string;
     action?: ReactNode;
 };
-export default function ErrorPage({ error, background, title, description, defaultActionLabel, defaultActionHref, action, }: ErrorProps): JSX.Element;
+export default function ErrorPage({ error, background, title, description, defaultActionLabel, defaultActionHref, action, }: ErrorProps): import("react").JSX.Element;

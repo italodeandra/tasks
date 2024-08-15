@@ -3,15 +3,11 @@ import {
   apiHandlerWrapper,
   InferApiArgs,
   InferApiResponse,
-  mutationFnWrapper,
+  mutationFnWrapper
 } from "@italodeandra/next/api/apiHandlerWrapper";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, UseMutationOptions, useQueryClient } from "@tanstack/react-query";
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectDb } from "../../../db";
 import { taskListApi } from "../task/list";
@@ -38,7 +34,7 @@ async function handler(
 
   await Timesheet.deleteOne({
     _id,
-    userId: user._id,
+    userId: user._id
   });
 }
 
@@ -58,18 +54,18 @@ export const useTimesheetDelete = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation(
-    [mutationKey],
-    mutationFnWrapper<TimesheetDeleteApiArgs, TimesheetDeleteApiResponse>(
-      mutationKey
-    ),
     {
+      mutationKey: [mutationKey],
+      mutationFn: mutationFnWrapper<TimesheetDeleteApiArgs, TimesheetDeleteApiResponse>(
+        mutationKey
+      ),
       ...options,
       onSuccess(...params) {
         void taskListApi.invalidateQueries(queryClient);
         void timesheetStatusApi.invalidateQueries(queryClient);
         void timesheetListFromProjectApi.invalidateQueries(queryClient);
         return options?.onSuccess?.(...params);
-      },
+      }
     }
   );
 };

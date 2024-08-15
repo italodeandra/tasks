@@ -1,11 +1,9 @@
-/// <reference types="node" />
 import { ObjectId } from "bson";
 import { IUser, IUserType } from "./User";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextApiRequestCookies } from "next/dist/server/api-utils";
 import { ServerResponse } from "http";
-import { OptionsType } from "cookies-next/lib/types";
-import { GetServerSidePropsContext } from "next/types";
+import type { OptionsType } from "cookies-next/src/types";
 export declare function hashPassword(plainPassword: string, salt: string): string;
 export declare function generateSalt(): string;
 export declare function checkUserPassword(user: Pick<IUser, "password" | "passwordSalt">, plainPassword: string): boolean;
@@ -16,39 +14,41 @@ export declare function readResetPasswordToken(token: string): string;
 export declare function checkUserType(user: Pick<IUser, "type"> | undefined | null, typesToCheck: IUser["type"][]): boolean;
 export declare function convertToUserType(userType: string): "NORMAL" | "ADMIN";
 export declare function createUser(doc: Pick<IUser, "email" | "password" | "name"> & Partial<Omit<IUser, "email" | "password" | "name">>): Promise<{
+    _id: ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: ObjectId;
-    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: import("./User").UserCustomData | undefined;
 }>;
-export declare type Request = {
+export type Request = {
     cookies: NextApiRequestCookies;
 };
-export declare type Response = NextApiResponse | ServerResponse;
+export type Response = NextApiResponse | ServerResponse;
 export declare function getAuthCookieToken(req: OptionsType["req"], res: OptionsType["res"]): any;
-export declare function getUserFromCookies(req: NextApiRequest | GetServerSidePropsContext["req"], res: NextApiResponse | GetServerSidePropsContext["res"], multitenantMode?: boolean): Promise<import("mongodb").WithId<Pick<{
+export declare function getUserFromCookies(req: OptionsType["req"], res: OptionsType["res"], multitenantMode?: boolean): Promise<import("mongodb").WithId<Pick<{
+    _id: ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: ObjectId;
-    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "email" | "type" | "_id" | "name">> | null>;
-export declare function getFullUserFromCookies(req: NextApiRequest | GetServerSidePropsContext["req"], res: NextApiResponse | GetServerSidePropsContext["res"], multitenantMode?: boolean): Promise<null | Pick<IUser, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData">>;
+}, "_id" | "email" | "type" | "name">> | null>;
+export declare function getFullUserFromCookies(req: NextApiRequest, res: NextApiResponse, multitenantMode?: boolean): Promise<null | Pick<IUser, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData">>;
 export declare function setUserPassword(userId: IUser["_id"], plainPassword: string): Promise<void>;
 export declare const userTypeTranslations: Record<keyof IUserType, string>;
 export declare function translateUserType(userType: string): string;

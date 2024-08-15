@@ -10,22 +10,22 @@ import { TaskStatus } from "../../../../collections/task";
 import { columns } from "../../../../consts";
 
 export function ColumnSelect({
-  triggerClassName,
-  ...task
-}: {
+                               triggerClassName,
+                               ...task
+                             }: {
   _id: string;
   status: string;
   triggerClassName?: string;
 }) {
   const [value, setValue] = useState(task.status);
-  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const { mutate: update, isPending: isUpdating } = taskUpdateApi.useMutation();
   const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
     if (value !== task.status) {
       update({
         _id: task._id,
-        status: value as TaskStatus,
+        status: value as TaskStatus
       });
     }
   }, [task._id, task.status, update, value]);
@@ -34,7 +34,7 @@ export function ColumnSelect({
     "rounded px-1 min-h-[18px] flex items-center",
     "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     {
-      "animate-pulse": isUpdating,
+      "animate-pulse": isUpdating
     },
     triggerClassName
   );

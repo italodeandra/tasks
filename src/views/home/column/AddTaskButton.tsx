@@ -9,7 +9,7 @@ import { taskInsertApi } from "../../../pages/api/task/insert";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 
 export function AddTaskButton({ column }: { column: string }) {
-  const { mutate: insert, isLoading } = taskInsertApi.useMutation();
+  const { mutate: insert, isPending } = taskInsertApi.useMutation();
 
   const handleAdd = useCallback(
     (bottom?: boolean) => () => {
@@ -22,7 +22,7 @@ export function AddTaskButton({ column }: { column: string }) {
           homeState.selectedProjects.length === 1
             ? homeState.selectedProjects[0]
             : undefined,
-        bottom,
+        bottom
       });
     },
     [column, insert]
@@ -37,7 +37,7 @@ export function AddTaskButton({ column }: { column: string }) {
               icon
               size="xs"
               variant="text"
-              loading={isLoading}
+              loading={isPending}
               onClick={handleAdd()}
             >
               <PlusIcon />

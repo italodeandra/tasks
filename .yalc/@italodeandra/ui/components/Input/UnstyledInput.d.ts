@@ -19,5 +19,5 @@ export type UnstyledInputCommonProps = {
 export type UnstyledInputProps<Select extends boolean | undefined> = UnstyledInputCommonProps & {
     select?: Select;
 } & (Select extends string ? DetailedHTMLProps<InputHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> : DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>);
-declare const _default: import("react").ForwardRefExoticComponent<Pick<UnstyledInputProps<boolean | undefined>, "select" | "key" | keyof InputHTMLAttributes<HTMLInputElement> | keyof UnstyledInputCommonProps> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
+declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledInputProps<boolean | undefined>, "ref"> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
 export default _default;

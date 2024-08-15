@@ -10,7 +10,7 @@ declare function Modal({ open, onClose, children, overlayClassName, panelClassNa
     dialogOuterPanelClassName?: string;
     dialogOverflowClassName?: string;
     style?: CSSProperties;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare namespace Modal {
     var Container: typeof ModalContainer;
     var Title: typeof ModalTitle;
@@ -23,20 +23,20 @@ export default Modal;
 declare function ModalContainer({ children, className, }: {
     children?: ReactNode;
     className?: string;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare function ModalTitle({ children, className, }: {
     children?: ReactNode;
     className?: string;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare function ModalContent({ children, className, }: {
     children?: ReactNode;
     className?: string;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare function ModalActions({ children, className, }: {
     children?: ReactNode;
     className?: string;
-}): JSX.Element;
+}): import("react").JSX.Element;
 declare function ModalIcon({ children }: {
     children?: ReactElement;
-}): JSX.Element;
-declare function ModalCloseButton({ className, ...props }: ComponentPropsWithoutRef<typeof Button>): JSX.Element;
+}): import("react").JSX.Element;
+declare function ModalCloseButton({ className, ...props }: ComponentPropsWithoutRef<typeof Button>): import("react").JSX.Element;

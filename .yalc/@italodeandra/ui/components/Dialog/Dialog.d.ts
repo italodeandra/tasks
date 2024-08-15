@@ -1,10 +1,14 @@
 import { ReactNode } from "react";
-export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, }: {
-    children: ReactNode;
+export interface DialogProps {
     title?: ReactNode;
     description?: ReactNode;
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
     contentClassName?: string;
     contentOverflowClassName?: string;
-}): JSX.Element;
+    closeButtonClassName?: string;
+    overlayClassName?: string;
+}
+export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, }: {
+    children: ReactNode;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+} & DialogProps): import("react").JSX.Element;

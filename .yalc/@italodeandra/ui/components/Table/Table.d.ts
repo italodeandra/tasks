@@ -12,7 +12,7 @@ export type TableProps = {
     hideBorder?: boolean;
     autoHeight?: boolean;
 };
-declare function Table({ children, className, hideBorder, autoHeight, }: TableProps): JSX.Element;
+declare function Table({ children, className, hideBorder, autoHeight, }: TableProps): import("react").JSX.Element;
 declare namespace Table {
     var Row: import("react").ForwardRefExoticComponent<import("./TableRow").TableRowProps & import("react").RefAttributes<HTMLTableRowElement>>;
     var Head: typeof TableHead;

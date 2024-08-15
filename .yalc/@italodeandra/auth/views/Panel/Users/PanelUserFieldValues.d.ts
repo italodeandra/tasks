@@ -1,7 +1,8 @@
 import { UserCustomData } from "../../../collections/user/User";
-export declare type PanelUserFieldValues = {
+export type PanelUserFieldValues = {
     email: string;
     name: string;
     type: string;
     customData: UserCustomData;
+    disabled: boolean;
 };

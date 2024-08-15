@@ -1,4 +1,3 @@
-/// <reference types="react" />
 import { UnstyledInputProps } from "../Input/UnstyledInput";
 export type InputProps<Select extends boolean | undefined> = {
     error?: boolean;
@@ -12,5 +11,5 @@ export declare const defaultTrailingClassName = "pointer-events-none absolute in
 export declare const defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 text-sm";
 export declare const defaultLeadingInputClassName = "pl-10";
 export declare const defaultTrailingInputClassName = "pr-10";
-declare const _default: import("react").ForwardRefExoticComponent<Pick<InputProps<boolean | undefined>, "select" | "key" | keyof import("react").InputHTMLAttributes<HTMLInputElement> | keyof import("../Input/UnstyledInput").UnstyledInputCommonProps | "loading"> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
+declare const _default: import("react").ForwardRefExoticComponent<Omit<InputProps<boolean | undefined>, "ref"> & import("react").RefAttributes<HTMLInputElement | HTMLSelectElement>>;
 export default _default;

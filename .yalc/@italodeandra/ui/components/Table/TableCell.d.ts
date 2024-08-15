@@ -6,4 +6,4 @@ export type TableCellProps = {
     colSpan?: number;
     title?: string;
 };
-export default function TableCell({ children, className, actions, colSpan, title, }: TableCellProps): JSX.Element;
+export default function TableCell({ children, className, actions, colSpan, title, }: TableCellProps): import("react").JSX.Element;

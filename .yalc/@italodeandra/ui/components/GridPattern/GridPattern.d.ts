@@ -1,2 +1,1 @@
-/// <reference types="react" />
-export default function GridPattern(props: JSX.IntrinsicElements["pattern"]): JSX.Element;
+export default function GridPattern(props: JSX.IntrinsicElements["pattern"]): import("react").JSX.Element;

@@ -20,4 +20,4 @@ export interface AuthConfig {
     newUserDefaultType?: IUserType[keyof IUserType];
     multitenantMode?: boolean;
 }
-export default function Auth(config: AuthConfig): import("next").NextApiHandler<any>;
+export default function Auth(config: AuthConfig): import("next").NextApiHandler;

@@ -9,20 +9,20 @@ import Button from "@italodeandra/ui/components/Button";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 
 export function NewComment({
-  taskId,
-  onSubmit,
-}: {
+                             taskId,
+                             onSubmit
+                           }: {
   taskId: string;
   onSubmit: () => void;
 }) {
   const [content, setContent] = useState("");
-  const { mutate, isLoading } = commentAddApi.useMutation();
+  const { mutate, isPending } = commentAddApi.useMutation();
 
   const handleSubmit = () => {
     mutate({
       _id: isomorphicObjectId().toString(),
       taskId,
-      content: content.trim(),
+      content: content.trim()
     });
     onSubmit();
   };
@@ -35,9 +35,9 @@ export function NewComment({
         onChange: setContent,
         extensions: [
           EditorView.lineWrapping,
-          markdown({ base: markdownLanguage }),
+          markdown({ base: markdownLanguage })
         ],
-        theme: vscodeDark,
+        theme: vscodeDark
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       } as any)}
       value={content}
@@ -57,7 +57,7 @@ export function NewComment({
           variant="text"
           className="pointer-events-auto"
           size="sm"
-          loading={isLoading}
+          loading={isPending}
           onClick={handleSubmit}
         >
           <PaperAirplaneIcon />

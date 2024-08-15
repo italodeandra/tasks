@@ -1,4 +1,4 @@
-import { ComponentProps, ReactElement, ReactNode } from "react";
+import React, { ComponentProps, ReactElement, ReactNode } from "react";
 import { DateRange } from "react-day-picker";
 import Button from "../Button";
 export type { DateRange };
@@ -13,4 +13,4 @@ export default function DateRangePicker({ value, onValueChange, children, button
     max?: number;
     footer?: ReactNode;
     monthFooter?: ReactNode;
-}): JSX.Element;
+}): React.JSX.Element;

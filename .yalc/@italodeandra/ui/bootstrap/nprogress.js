@@ -1,16 +1,10 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var colors_1 = __importDefault(require("tailwindcss/colors"));
-var bar_of_progress_1 = __importDefault(require("@badrap/bar-of-progress"));
-var router_1 = __importDefault(require("next/router"));
-function setupNProgress(color) {
-    if (color === void 0) { color = colors_1.default.sky[500]; }
-    var progress = new bar_of_progress_1.default({
+import colors from "tailwindcss/colors";
+import ProgressBar from "@badrap/bar-of-progress";
+import Router from "next/router";
+export default function setupNProgress(color = colors.sky[500]) {
+    const progress = new ProgressBar({
         size: 2,
-        color: color,
+        color,
         className: "bar-of-progress",
         delay: 100,
     });
@@ -20,8 +14,7 @@ function setupNProgress(color) {
         progress.start();
         progress.finish();
     }
-    router_1.default.events.on("routeChangeStart", function () { return progress.start(); });
-    router_1.default.events.on("routeChangeComplete", function () { return progress.finish(); });
-    router_1.default.events.on("routeChangeError", function () { return progress.finish(); });
+    Router.events.on("routeChangeStart", () => progress.start());
+    Router.events.on("routeChangeComplete", () => progress.finish());
+    Router.events.on("routeChangeError", () => progress.finish());
 }
-exports.default = setupNProgress;

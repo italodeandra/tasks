@@ -27,5 +27,5 @@ export type AlertProps = {
     children?: ReactNode;
     actions?: ReactNode;
 } & Omit<DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement>, "title">;
-export default function Alert({ variant, title, children, className, actions, ...props }: AlertProps): JSX.Element;
+export default function Alert({ variant, title, children, className, actions, ...props }: AlertProps): import("react").JSX.Element;
 export {};

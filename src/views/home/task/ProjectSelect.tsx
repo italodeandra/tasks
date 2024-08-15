@@ -9,19 +9,19 @@ import defaultTheme from "tailwindcss/defaultTheme";
 import { ITask } from "./ITask";
 
 export function ProjectSelect({
-  triggerClassName,
-  ...task
-}: Pick<ITask, "project" | "_id"> & { triggerClassName?: string }) {
+                                triggerClassName,
+                                ...task
+                              }: Pick<ITask, "project" | "_id"> & { triggerClassName?: string }) {
   const [value, setValue] = useState(task.project?._id);
   const { data: projects, isLoading } = projectListApi.useQuery();
-  const { mutate: update, isLoading: isUpdating } = taskUpdateApi.useMutation();
+  const { mutate: update, isPending: isUpdating } = taskUpdateApi.useMutation();
   const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
 
   useUpdateEffect(() => {
     if (value !== task.project?._id) {
       update({
         _id: task._id,
-        projectId: value,
+        projectId: value
       });
     }
   }, [value]);
@@ -37,7 +37,7 @@ export function ProjectSelect({
     "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
     {
       "animate-pulse": isLoading || isUpdating,
-      "opacity-100": !!value,
+      "opacity-100": !!value
     },
     triggerClassName
   );

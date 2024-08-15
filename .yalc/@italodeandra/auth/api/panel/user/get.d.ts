@@ -7,30 +7,32 @@ import { InferApiArgs, InferApiResponse } from "@italodeandra/next/api/apiHandle
 export default function panelUserGetHandler(args: Jsonify<{
     _id: ObjectId;
 }>, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<import("mongodb").WithId<Pick<{
+    _id: ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: ObjectId;
-    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "email" | "type" | "_id" | "name" | "customData">>>;
-export declare type AuthPanelUserGetApiResponse = InferApiResponse<typeof panelUserGetHandler>;
-export declare type AuthPanelUserGetApiArgs = InferApiArgs<typeof panelUserGetHandler>;
+}, "_id" | "email" | "type" | "name" | "disabled" | "customData">>>;
+export type AuthPanelUserGetApiResponse = InferApiResponse<typeof panelUserGetHandler>;
+export type AuthPanelUserGetApiArgs = InferApiArgs<typeof panelUserGetHandler>;
 export declare const useAuthPanelUserGet: (args?: AuthPanelUserGetApiArgs, options?: UseQueryOptions<AuthPanelUserGetApiResponse>) => import("@tanstack/react-query").UseQueryResult<{
     email: string;
     type: string;
     name?: string | undefined;
+    disabled?: boolean | undefined;
     customData?: {} | undefined;
     _id: string;
-}, unknown>;
-export declare const prefetch_authPanelUserGet: (queryClient: QueryClient, args_0: {
+}, Error>;
+export declare const prefetch_authPanelUserGet: (queryClient: QueryClient, args: {
     _id: string;
-}, args_1: NextApiRequest, args_2: NextApiResponse<any>, args_3: AuthConfig) => Promise<void>;
+}, req: NextApiRequest, res: NextApiResponse, args_3: AuthConfig) => Promise<void>;
 export declare const invalidate_authPanelUserGet: (queryClient: QueryClient, args: Parameters<typeof panelUserGetHandler>[0]) => Promise<void>;
 export declare const remove_authPanelUserGet: (queryClient: QueryClient, args: Parameters<typeof panelUserGetHandler>[0]) => void;

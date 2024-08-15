@@ -9,25 +9,26 @@ export default function signInHandler(args: {
     email: string;
     password: string;
 }, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<Pick<import("mongodb").WithId<Pick<{
+    _id: import("bson").ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: import("bson").ObjectID;
-    tenantId?: import("bson").ObjectID | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: import("bson").ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "email" | "type" | "password" | "passwordSalt" | "_id">>, "email" | "type" | "_id">>;
-export declare type AuthSignInApiArgs = InferApiArgs<typeof signInHandler>;
-export declare type AuthSignInApiResponse = InferApiResponse<typeof signInHandler>;
+}, "_id" | "email" | "type" | "password" | "passwordSalt" | "disabled">>, "_id" | "email" | "type">>;
+export type AuthSignInApiArgs = InferApiArgs<typeof signInHandler>;
+export type AuthSignInApiResponse = InferApiResponse<typeof signInHandler>;
 export declare const useAuthSignIn: (options?: UseMutationOptions<AuthSignInApiResponse, AuthSignInApiError, AuthSignInApiArgs>) => import("@tanstack/react-query").UseMutationResult<{
+    _id: string;
     email: string;
     type: string;
-    _id: string;
 }, AuthSignInApiError, {
     email: string;
     password: string;

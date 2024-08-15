@@ -1,4 +1,3 @@
-import { ObjectId } from "bson";
 export interface IUserType {
     NORMAL: "NORMAL";
     ADMIN: "ADMIN";
@@ -7,17 +6,18 @@ export declare const UserType: IUserType;
 export interface UserCustomData {
 }
 declare const userSchema: [{
+    _id: import("bson").ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: ObjectId;
-    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: import("bson").ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: UserCustomData | undefined;
 }, {
     defaults: {
@@ -26,17 +26,18 @@ declare const userSchema: [{
     timestamps: true;
 }];
 declare const getUser: () => import("papr").Model<{
+    _id: import("bson").ObjectId;
     email: string;
     type: string;
     password: string;
     passwordSalt: string;
     createdAt: Date;
     updatedAt: Date;
-    _id: ObjectId;
-    tenantId?: ObjectId | undefined;
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    tenantId?: import("bson").ObjectId | undefined;
+    disabled?: boolean | undefined;
     customData?: UserCustomData | undefined;
 }, {
     defaults: {
@@ -44,5 +45,5 @@ declare const getUser: () => import("papr").Model<{
     };
     timestamps: true;
 }>;
-export declare type IUser = (typeof userSchema)[0];
+export type IUser = (typeof userSchema)[0];
 export default getUser;

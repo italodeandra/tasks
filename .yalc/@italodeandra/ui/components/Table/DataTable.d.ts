@@ -49,4 +49,4 @@ export type DataTableProps<RowData> = {
     resultsText?: string;
     tableClassName?: string;
 };
-export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, onChangeSort, sort: defaultSort, previousText, nextText, showingText, toText, ofText, resultsText, tableClassName, }: DataTableProps<RowData>): JSX.Element;
+export default function DataTable<RowData>({ title, subtitle, headerContent, data, idAccessor, actions, columns, isLoading, noRecords: noRecordsText, onRowClick, rowWrapper, pagination, currentPage, onChangePage, totalItems, itemsPerPage, className, autoHeight, onChangeSort, sort: defaultSort, previousText, nextText, showingText, toText, ofText, resultsText, tableClassName, }: DataTableProps<RowData>): import("react").JSX.Element;

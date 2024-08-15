@@ -4,10 +4,7 @@ import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.ser
 import routes from "../Routes";
 import { deleteCookie, getCookies } from "cookies-next";
 import { dehydrate, QueryClient } from "@tanstack/query-core";
-import {
-  AuthUserGetApiResponse,
-  setData_authGetUser,
-} from "@italodeandra/auth/api/getUser";
+import { AuthUserGetApiResponse, setData_authGetUser } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
 import getLayout from "../views/layout/layout";
 import { HomeView } from "../views/home/HomeView";
@@ -20,19 +17,19 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     return {
       redirect: {
         destination: routes.SignIn,
-        permanent: false,
-      },
+        permanent: false
+      }
     };
   }
 
   const queryClient = new QueryClient();
-  setData_authGetUser(queryClient, user as AuthUserGetApiResponse);
+  setData_authGetUser(queryClient, user as unknown as AuthUserGetApiResponse);
 
   return {
     props: {
       cookies: getCookies({ req, res }),
-      dehydratedState: bsonToJson(dehydrate(queryClient)),
-    },
+      dehydratedState: bsonToJson(dehydrate(queryClient))
+    }
   };
 };
 

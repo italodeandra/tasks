@@ -3,10 +3,7 @@ import { ExclamationTriangleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import {
-  setData_authGetUser,
-  useAuthGetUser,
-} from "@italodeandra/auth/api/getUser";
+import { setData_authGetUser, useAuthGetUser } from "@italodeandra/auth/api/getUser";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import { deleteCookie } from "cookies-next";
 import authState, { useAuthSnapshot } from "@italodeandra/auth/auth.state";
@@ -24,7 +21,7 @@ export default function UserMenu() {
   const { token, previousToken } = useAuthSnapshot();
   const { data: user, isLoading: isLoadingUser, isError } = useAuthGetUser();
   const router = useRouter();
-  const { mutate: stopImpersonate, isLoading: isStoppingImpersonate } =
+  const { mutate: stopImpersonate, isPending: isStoppingImpersonate } =
     useAuthPanelUserStopImpersonate();
   const isAdmin = checkUserType(user, [UserType.ADMIN]);
 

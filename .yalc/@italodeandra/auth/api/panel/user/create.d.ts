@@ -7,17 +7,18 @@ import { AuthConfig } from "../..";
 interface UserCreateError extends Error {
     status: "Existing";
 }
-export default function authPanelUserCreateHandler(args: Jsonify<Pick<IUser, "name" | "email" | "type" | "customData">>, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<{
-    _id: import("bson").ObjectID;
+export default function authPanelUserCreateHandler(args: Jsonify<Pick<IUser, "name" | "email" | "type" | "customData" | "disabled">>, req: NextApiRequest, res: NextApiResponse, { connectDb, multitenantMode }: AuthConfig): Promise<{
+    _id: import("bson").ObjectId;
 }>;
-export declare type AuthPanelUserCreateResponse = InferApiResponse<typeof authPanelUserCreateHandler>;
-export declare type AuthPanelUserCreateArgs = InferApiArgs<typeof authPanelUserCreateHandler>;
+export type AuthPanelUserCreateResponse = InferApiResponse<typeof authPanelUserCreateHandler>;
+export type AuthPanelUserCreateArgs = InferApiArgs<typeof authPanelUserCreateHandler>;
 export declare const useAuthPanelUserCreate: (options?: UseMutationOptions<AuthPanelUserCreateResponse, UserCreateError, AuthPanelUserCreateArgs>) => import("@tanstack/react-query").UseMutationResult<{
     _id: string;
 }, UserCreateError, {
     email: string;
     type: string;
     name?: string | undefined;
+    disabled?: boolean | undefined;
     customData?: {} | undefined;
 }, unknown>;
 export {};
