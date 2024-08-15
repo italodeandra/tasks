@@ -58,12 +58,12 @@ function Card({
   return (
     <div
       className={clsx(
-        "p-2 bg-zinc-800 rounded-lg shadow-md outline-0 transition-colors",
+        "rounded-lg bg-zinc-800 p-2 shadow-md outline-0 transition-colors",
         {
-          "grayscale opacity-30": dragging,
+          "opacity-30 grayscale": dragging,
           "cursor-pointer": !editing,
           "ring-2 ring-zinc-700 focus:ring-primary-500": editing,
-        }
+        },
       )}
       data-is-card={true}
       contentEditable={editing}
@@ -150,13 +150,13 @@ export function Trello() {
         originalElement,
       });
     },
-    []
+    [],
   );
 
   const handleListMouseDown = useCallback(
     (list: List) => (event: MouseEvent) => {
       const isNotOverCard = (event.target as HTMLDivElement).getAttribute(
-        "data-is-card"
+        "data-is-card",
       );
       if (!isNotOverCard) {
         const originalElement = event.currentTarget as HTMLDivElement;
@@ -171,7 +171,7 @@ export function Trello() {
         });
       }
     },
-    []
+    [],
   );
 
   const handleKanbanMouseMove = useCallback(
@@ -183,6 +183,7 @@ export function Trello() {
         if (!dragElement) {
           const originalElementRect = originalElement.getBoundingClientRect();
           dragElement = originalElement.cloneNode(true) as HTMLDivElement;
+          draggingCardRef.current.dragElement = dragElement;
           dragElement.style.left = `${originalElementRect.left}px`;
           dragElement.style.top = `${originalElementRect.top}px`;
           dragElement.style.width = `${originalElementRect.width}px`;
@@ -194,7 +195,7 @@ export function Trello() {
             "translate-y-[--y]",
             "pointer-events-none",
             "z-10",
-            "opacity-90"
+            "opacity-90",
           );
           originalElement.parentElement!.prepend(dragElement);
           setDraggingCard({
@@ -205,11 +206,11 @@ export function Trello() {
 
         dragElement.style.setProperty(
           "--x",
-          `${event.clientX - startMousePos.x}px`
+          `${event.clientX - startMousePos.x}px`,
         );
         dragElement.style.setProperty(
           "--y",
-          `${event.clientY - startMousePos.y}px`
+          `${event.clientY - startMousePos.y}px`,
         );
       }
       if (draggingListRef.current) {
@@ -219,6 +220,7 @@ export function Trello() {
         if (!dragElement) {
           const originalElementRect = originalElement.getBoundingClientRect();
           dragElement = originalElement.cloneNode(true) as HTMLDivElement;
+          draggingListRef.current.dragElement = dragElement;
           dragElement.style.left = `${originalElementRect.left}px`;
           dragElement.style.top = `${originalElementRect.top}px`;
           dragElement.style.width = `${originalElementRect.width}px`;
@@ -230,7 +232,7 @@ export function Trello() {
             "translate-y-[--y]",
             "pointer-events-none",
             "z-10",
-            "opacity-90"
+            "opacity-90",
           );
           originalElement.parentElement!.prepend(dragElement);
           setDraggingList({
@@ -241,19 +243,19 @@ export function Trello() {
 
         dragElement.style.setProperty(
           "--x",
-          `${event.clientX - startMousePos.x}px`
+          `${event.clientX - startMousePos.x}px`,
         );
         dragElement.style.setProperty(
           "--y",
-          `${event.clientY - startMousePos.y}px`
+          `${event.clientY - startMousePos.y}px`,
         );
       }
     },
-    [draggingCardRef, draggingListRef]
+    [draggingCardRef, draggingListRef],
   );
 
   const handleCardMouseMove = useCallback(
-    (card: Card, list: List) => () => {
+    (card: Card, list: List) => (e: MouseEvent<HTMLDivElement>) => {
       if (draggingCardRef.current) {
         if (draggingCardRef.current.card._id !== card._id) {
           if (draggingCardRef.current.list._id === list._id) {
@@ -267,8 +269,24 @@ export function Trello() {
               const nextIndex = findIndex(listToUpdate.cards, {
                 _id: card._id,
               });
-              move(listToUpdate.cards, previousIndex, nextIndex);
-              setData(newData);
+              const hoveredElementRect =
+                e.currentTarget.getBoundingClientRect();
+              const movingElementRect =
+                draggingCardRef.current.dragElement?.getBoundingClientRect();
+              if (
+                movingElementRect &&
+                ((nextIndex > previousIndex &&
+                  e.clientY >
+                    hoveredElementRect.top +
+                      hoveredElementRect.height -
+                      movingElementRect.height) ||
+                  (nextIndex < previousIndex &&
+                    e.clientY <
+                      hoveredElementRect.top + movingElementRect.height))
+              ) {
+                move(listToUpdate.cards, previousIndex, nextIndex);
+                setData(newData);
+              }
             }
           } else {
             const newData = { ...dataRef.current };
@@ -301,13 +319,13 @@ export function Trello() {
         }
       }
     },
-    [dataRef, draggingCardRef]
+    [dataRef, draggingCardRef],
   );
 
   const handleListDropAreaMouseMove = useCallback(
     (list: List) => (event: MouseEvent) => {
       const isNotOverCard = (event.target as HTMLDivElement).getAttribute(
-        "data-is-card"
+        "data-is-card",
       );
       if (draggingCardRef.current && !isNotOverCard) {
         if (draggingCardRef.current.list._id !== list._id) {
@@ -340,7 +358,7 @@ export function Trello() {
         }
       }
     },
-    [dataRef, draggingCardRef]
+    [dataRef, draggingCardRef],
   );
 
   const handleListMouseMove = useCallback(
@@ -361,14 +379,14 @@ export function Trello() {
         }
       }
     },
-    [dataRef, draggingListRef]
+    [dataRef, draggingListRef],
   );
 
   const handleKanbanMouseUp = useCallback(() => {
     if (draggingCardRef.current) {
       if (draggingCardRef.current.dragElement) {
         draggingCardRef.current.dragElement.parentElement!.removeChild(
-          draggingCardRef.current.dragElement
+          draggingCardRef.current.dragElement,
         );
       }
       draggingCardRef.current.originalElement.classList.remove("opacity-50");
@@ -377,7 +395,7 @@ export function Trello() {
     if (draggingListRef.current) {
       if (draggingListRef.current.dragElement) {
         draggingListRef.current.dragElement.parentElement!.removeChild(
-          draggingListRef.current.dragElement
+          draggingListRef.current.dragElement,
         );
       }
       draggingListRef.current.originalElement.classList.remove("opacity-50");
@@ -388,7 +406,7 @@ export function Trello() {
 
   return (
     <div
-      className="p-2 flex gap-2 h-full"
+      className="flex h-full gap-2 p-2"
       onMouseUp={handleKanbanMouseUp}
       onMouseLeave={handleKanbanMouseUp}
       onMouseMove={handleKanbanMouseMove}
@@ -400,14 +418,14 @@ export function Trello() {
           onMouseMove={handleListMouseMove(list)}
         >
           <div
-            className={clsx("p-2 bg-zinc-900 rounded-xl flex flex-col gap-2", {
-              "grayscale opacity-30":
+            className={clsx("flex flex-col gap-2 rounded-xl bg-zinc-900 p-2", {
+              "opacity-30 grayscale":
                 draggingList?.dragElement &&
                 draggingList?.list._id === list._id,
             })}
             onMouseDown={handleListMouseDown(list)}
           >
-            <div className="font-medium text-sm px-1">{list.title}</div>
+            <div className="px-1 text-sm font-medium">{list.title}</div>
             {list.cards?.map((card) => (
               <Card
                 key={card._id.toString()}
@@ -423,8 +441,8 @@ export function Trello() {
             ))}
             <Button
               variant="text"
-              className="rounded-lg text-left justify-start p-2"
-              leading={<PlusIcon className="w-4 h-4 mr-1" />}
+              className="justify-start rounded-lg p-2 text-left"
+              leading={<PlusIcon className="mr-1 h-4 w-4" />}
               onMouseMove={handleListDropAreaMouseMove(list)}
               onMouseDown={(e) => e.stopPropagation()}
             >
@@ -440,5 +458,3 @@ export function Trello() {
     </div>
   );
 }
-
-// TODO: fix dragging small task into big task
