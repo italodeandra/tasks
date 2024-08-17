@@ -1,6 +1,6 @@
 import { proxy } from "valtio";
 import { Orientation } from "./kanban/Orientation";
-import createStateHydration from "../../utils/createStateHydration";
+import createStateHydration from "@italodeandra/ui/utils/createStateHydration";
 
 export const homeState = proxy({
   showTimesheet: false,

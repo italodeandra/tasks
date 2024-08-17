@@ -9,7 +9,7 @@ export default function Breadcrumbs({ pages, homeHref = "/", className, loading,
         return null;
     }
     return (<nav className={clsx("flex", className)} aria-label="Breadcrumb">
-      <ol role="list" className="flex w-full space-x-4 bg-white px-6 shadow md:w-auto md:rounded-md dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:dark:border-x">
+      <ol role="list" className="flex w-full space-x-4 bg-white px-6 shadow dark:border-y dark:border-zinc-800 dark:bg-zinc-900 md:w-auto md:rounded-md md:dark:border-x">
         <li className="flex">
           <div className="flex items-center">
             <NextLink href={homeHref} className="text-zinc-400 hover:text-zinc-500 dark:hover:text-zinc-200">
@@ -34,7 +34,7 @@ export default function Breadcrumbs({ pages, homeHref = "/", className, loading,
               </div>
             </li>);
         })}
-        {loading && (<li className="!ml-auto items-center flex">
+        {loading && (<li className="!ml-auto flex items-center">
             <Loading className="-mr-3 ml-4"/>
           </li>)}
       </ol>

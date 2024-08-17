@@ -1,7 +1,7 @@
 import { ComponentPropsWithoutRef, ReactElement, ReactNode, Ref } from "react";
 import Button from "../Button/Button";
 import { UnstyledButtonProps } from "../Button/UnstyledButton";
-import { TextProps } from "../Text/Text";
+import { TextProps } from "../Text";
 export declare const defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
 export type MenuProps = {
     className?: string;

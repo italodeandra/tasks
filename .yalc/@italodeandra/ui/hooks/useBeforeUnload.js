@@ -4,6 +4,7 @@ export default function useBeforeUnload(message) {
         if (message) {
             const handleBeforeUnload = (e) => {
                 e.preventDefault();
+                // noinspection JSDeprecatedSymbols
                 e.returnValue = message; // This message is not shown in most browsers
                 return message; // Some older browsers may display this message
             };

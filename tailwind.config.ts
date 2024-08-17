@@ -1,4 +1,4 @@
-import { merge } from "lodash";
+import { merge } from "lodash-es";
 import tailwindConfig from "@italodeandra/ui/tailwind.config";
 import { Config } from "tailwindcss";
 

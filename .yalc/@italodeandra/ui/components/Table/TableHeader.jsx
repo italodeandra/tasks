@@ -1,5 +1,5 @@
-import Text from "../Text/Text";
-import Stack from "../Stack/Stack";
+import Text from "../Text";
+import Stack from "../Stack";
 export default function TableHeader({ title, subtitle, children, }) {
     return (<div className="px-4 md:px-0">
       <div className="sm:flex sm:items-center">
@@ -9,7 +9,7 @@ export default function TableHeader({ title, subtitle, children, }) {
               </Text>)}
             {subtitle && <Text variant="secondary">{subtitle}</Text>}
           </Stack>)}
-        {children && (<div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">{children}</div>)}
+        {children && (<div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">{children}</div>)}
       </div>
     </div>);
 }

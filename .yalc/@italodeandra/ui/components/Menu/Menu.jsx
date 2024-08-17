@@ -4,7 +4,7 @@ import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import clsx from "../../utils/clsx";
 import Button from "../Button/Button";
 import UnstyledButton from "../Button/UnstyledButton";
-import Text from "../Text/Text";
+import Text from "../Text";
 import { useMount } from "react-use";
 export const defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
 const Item = function MenuItem({ className, icon, children, ...props }) {

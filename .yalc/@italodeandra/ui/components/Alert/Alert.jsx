@@ -44,7 +44,7 @@ export default function Alert({ variant = "default", title, children, className,
                 {children}
               </div>)}
           </div>
-          {actions && (<Group className={clsx("-mx-4 mt-1 -mb-2 sm:-mx-2 sm:-my-2", styles.variants[variant].content)}>
+          {actions && (<Group className={clsx("-mx-4 -mb-2 mt-1 sm:-mx-2 sm:-my-2", styles.variants[variant].content)}>
               {actions}
             </Group>)}
         </div>

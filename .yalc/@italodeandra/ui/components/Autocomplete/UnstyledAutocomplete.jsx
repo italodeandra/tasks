@@ -5,7 +5,7 @@ import { defaultInputClassName, defaultLeadingInputClassName, defaultTrailingCla
 import clsx from "../../utils/clsx";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { useUpdateEffect } from "react-use";
-import { take } from "lodash";
+import { take } from "lodash-es";
 export default function UnstyledAutocomplete({ placeholder, emptyText, items = [], renderProperty = "title", renderFunction, filterProperty = "title", filterFunction, onSelect, query: defaultQuery = "", onChangeQuery, loading, emptyTextClassName, optionsClassName, optionClassName, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, displayValue, value, readOnly, itemsRenderLimit, disabledItems, ...props }) {
     displayValue =
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

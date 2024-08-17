@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useId, useRef, useState, } from "react";
-import { isEqual } from "lodash";
+import { isEqual } from "lodash-es";
 import { useDeepCompareEffect } from "react-use";
 import { XMarkIcon } from "@heroicons/react/20/solid";
 import InputWrapper from "../Input2/InputWrapper";

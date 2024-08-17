@@ -6,7 +6,12 @@ import { useSnapshot } from "valtio";
 import { homeState } from "../home.state";
 import { Orientation } from "../kanban/Orientation";
 import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { Bars3BottomLeftIcon, ChatBubbleLeftIcon, EllipsisVerticalIcon, PencilIcon } from "@heroicons/react/16/solid";
+import {
+  Bars3BottomLeftIcon,
+  ChatBubbleLeftIcon,
+  EllipsisVerticalIcon,
+  PencilIcon,
+} from "@heroicons/react/16/solid";
 import { taskUpdateApi } from "../../../pages/api/task/update";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { ProjectSelect } from "./ProjectSelect";
@@ -17,7 +22,7 @@ import { ITask } from "./ITask";
 import { columns } from "../../../consts";
 import { translateTaskStatus } from "../../../utils/translateTaskStatus";
 import { TaskStatus } from "../../../collections/task";
-import { pull } from "lodash";
+import { pull } from "lodash-es";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { TaskDetails } from "./details/TaskDetails";
@@ -32,7 +37,7 @@ export default function Task(task: ITask) {
     selectedProjects,
     editingTasks,
     setEditingTasks,
-    selectedClients
+    selectedClients,
   } = useSnapshot(homeState);
   const { mutate: stop } = useTimesheetStop();
 
@@ -42,10 +47,10 @@ export default function Task(task: ITask) {
       setEditingTasks(
         editing
           ? [...editingTasks, task._id]
-          : pull([...editingTasks], task._id)
+          : pull([...editingTasks], task._id),
       );
     },
-    [editingTasks, setEditingTasks, task._id]
+    [editingTasks, setEditingTasks, task._id],
   );
 
   const [newValue, setNewValue] = useState(task.content);
@@ -64,7 +69,7 @@ export default function Task(task: ITask) {
     if (debouncedOneClicked) {
       setOneClicked(false);
       showDialog({
-        content: <TaskDetails _id={task._id} />
+        content: <TaskDetails _id={task._id} />,
       });
     }
   }, [debouncedOneClicked, task._id]);
@@ -83,7 +88,7 @@ export default function Task(task: ITask) {
   const { mutate: remove } = taskRemoveApi.useMutation();
   const handleDeleteClick = useCallback(() => {
     remove({
-      _id: task._id
+      _id: task._id,
     });
   }, [remove, task._id]);
   const { mutate: update, isPending: isUpdating } = taskUpdateApi.useMutation();
@@ -94,7 +99,7 @@ export default function Task(task: ITask) {
       if (newValue) {
         update({
           _id: task._id,
-          title: newValue
+          title: newValue,
         });
       } else {
         if (!task.timesheet) {
@@ -102,7 +107,7 @@ export default function Task(task: ITask) {
         }
       }
     },
-    [handleDeleteClick, setEditing, task._id, task.timesheet, update]
+    [handleDeleteClick, setEditing, task._id, task.timesheet, update],
   );
 
   const handleMoveStatusClick = useCallback(
@@ -113,10 +118,10 @@ export default function Task(task: ITask) {
       update({
         _id: task._id,
         status,
-        order: -1
+        order: -1,
       });
     },
-    [stop, task._id, task.timesheet?.currentClockIn, update]
+    [stop, task._id, task.timesheet?.currentClockIn, update],
   );
 
   const handleClearChanges = useCallback(
@@ -124,7 +129,7 @@ export default function Task(task: ITask) {
       e.stopPropagation();
       setNewValue(task.content);
     },
-    [task.content]
+    [task.content],
   );
 
   const dimmed = useMemo(() => {
@@ -145,20 +150,20 @@ export default function Task(task: ITask) {
   }, [selectedProjects, selectedClients, task.project?._id, task.client?._id]);
 
   const taskClassName = clsx("w-full rounded bg-zinc-200 dark:bg-zinc-900", {
-    "flex-col": orientation === Orientation.HORIZONTAL
+    "flex-col": orientation === Orientation.HORIZONTAL,
   });
 
   const handleContextMenu = useCallback(
     (e: MouseEvent) => e.preventDefault(),
-    []
+    [],
   );
 
   const taskElement = (
     <Group
-      className={clsx(taskClassName, "flex p-1 group overflow-hidden", {
+      className={clsx(taskClassName, "group flex overflow-hidden p-1", {
         "opacity-40": dimmed,
         "gap-2": orientation === Orientation.VERTICAL,
-        "gap-1": orientation === Orientation.HORIZONTAL
+        "gap-1": orientation === Orientation.HORIZONTAL,
       })}
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
@@ -166,7 +171,7 @@ export default function Task(task: ITask) {
     >
       <Markdown
         value={task.content}
-        className="text-sm flex-1 overflow-hidden px-0.5 [&_.task-list-item]:pl-0.5"
+        className="flex-1 overflow-hidden px-0.5 text-sm [&_.task-list-item]:pl-0.5"
         onChange={handleSaveClick}
         editable
         loading={isUpdating}
@@ -176,19 +181,19 @@ export default function Task(task: ITask) {
       />
       <Group
         className={clsx({
-          "items-center ml-auto": orientation === Orientation.VERTICAL,
-          "items-end justify-end": orientation === Orientation.HORIZONTAL
+          "ml-auto items-center": orientation === Orientation.VERTICAL,
+          "items-end justify-end": orientation === Orientation.HORIZONTAL,
         })}
         wrap
       >
         {(task.description || task.comments) && (
           <>
             {task.description && (
-              <Bars3BottomLeftIcon className="w-3 h-3 my-0.5" />
+              <Bars3BottomLeftIcon className="my-0.5 h-3 w-3" />
             )}
             {task.comments && (
               <Group className="items-center gap-1">
-                <ChatBubbleLeftIcon className="w-3 h-3" />
+                <ChatBubbleLeftIcon className="h-3 w-3" />
                 <div className="text-xs">{task.comments}</div>
               </Group>
             )}
@@ -199,12 +204,12 @@ export default function Task(task: ITask) {
           <Button
             size="xs"
             className={clsx(
-              "rounded px-0.5 py-0 text-xs flex gap-1 items-center border-transparent dark:border-transparent",
-              "bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 group/changes"
+              "flex items-center gap-1 rounded border-transparent px-0.5 py-0 text-xs dark:border-transparent",
+              "group/changes bg-zinc-300 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300",
             )}
             onClick={handleClearChanges}
           >
-            <PencilIcon className="w-4 h-4" />{" "}
+            <PencilIcon className="h-4 w-4" />{" "}
             <span className="group-hover/changes:hidden">Unsaved</span>
             <span className="hidden group-hover/changes:inline">
               Clear
@@ -215,21 +220,21 @@ export default function Task(task: ITask) {
         <ProjectSelect {...task} />
         <div
           title={`Created at ${dayjs(task.createdAt).format("LLL")}`}
-          className="text-zinc-500 text-xs whitespace-nowrap"
+          className="whitespace-nowrap text-xs text-zinc-500"
         >
           {dayjs(task.createdAt).fromNow(true)}
         </div>
         <Timer
           task={task}
           className={clsx("-m-1 transition", {
-            "group-hover:opacity-100 opacity-50": !task.timesheet
+            "opacity-50 group-hover:opacity-100": !task.timesheet,
           })}
         />
         {isMobile && (
           <DropdownMenu.Root>
             <DropdownMenu.Trigger asChild>
-              <Button variant="text" size="xs" className="p-1 -m-1">
-                <EllipsisVerticalIcon className="shrink-0 w-4 h-4" />
+              <Button variant="text" size="xs" className="-m-1 p-1">
+                <EllipsisVerticalIcon className="h-4 w-4 shrink-0" />
               </Button>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>

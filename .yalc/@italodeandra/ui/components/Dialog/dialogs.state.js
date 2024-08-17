@@ -1,6 +1,6 @@
 import { proxy, ref } from "valtio";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { find } from "lodash";
+import { find } from "lodash-es";
 const dialogsState = proxy({
     rendered: false,
     setRendered(rendered) {

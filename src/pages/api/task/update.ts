@@ -10,7 +10,7 @@ import Jsonify from "@italodeandra/next/utils/Jsonify";
 import { projectListApi } from "../project/list";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import getProject from "../../../collections/project";
-import { omit, pick } from "lodash";
+import { omit, pick } from "lodash-es";
 import { taskGetApi } from "./get";
 import getTimesheet from "../../../collections/timesheet";
 
@@ -26,7 +26,7 @@ export const taskUpdateApi = createApi(
       }
     >,
     req: NextApiRequest,
-    res: NextApiResponse
+    res: NextApiResponse,
   ) => {
     await connectDb();
     const Task = getTask();
@@ -63,7 +63,7 @@ export const taskUpdateApi = createApi(
           $set: {
             updatedAt: new Date(),
           },
-        }
+        },
       );
     }
 
@@ -75,7 +75,7 @@ export const taskUpdateApi = createApi(
       {
         $set,
         $unset,
-      }
+      },
     ))!;
 
     if (!newTask.projectId || !oldTask.projectId?.equals(newTask.projectId)) {
@@ -94,7 +94,7 @@ export const taskUpdateApi = createApi(
               $unset: {
                 projectId: "",
               },
-            }
+            },
       );
     }
   },
@@ -105,7 +105,7 @@ export const taskUpdateApi = createApi(
         const previousTaskListData = taskListApi.getQueryData(queryClient);
         taskListApi.setQueryData(queryClient, (data) => [
           ...(data?.map((t) =>
-            t._id === args._id ? { ...t, ...omit(args, "description") } : t
+            t._id === args._id ? { ...t, ...omit(args, "description") } : t,
           ) || []),
         ]);
 
@@ -118,7 +118,7 @@ export const taskUpdateApi = createApi(
               ...data,
               ...args,
             },
-          args
+          args,
         );
 
         return {
@@ -131,7 +131,7 @@ export const taskUpdateApi = createApi(
         taskGetApi.setQueryData(
           queryClient,
           context?.previousTaskGetData,
-          args
+          args,
         );
       },
       onSuccess: (_d, _v, _c, queryClient) => {
@@ -142,7 +142,7 @@ export const taskUpdateApi = createApi(
         void taskGetApi.invalidateQueries(queryClient, args);
       },
     },
-  }
+  },
 );
 
 export default taskUpdateApi.handler;

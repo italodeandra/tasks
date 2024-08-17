@@ -3,7 +3,7 @@ import * as RContextMenu from "@radix-ui/react-context-menu";
 import { CheckIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import clsx from "../../utils/clsx";
-import { dropdownCheckboxItemClassName, dropdownItemIndicatorClassName, dropdownItemClassName, dropdownSeparatorClassName, } from "../../styles/Dropdown.classNames";
+import { dropdownCheckboxItemClassName, dropdownItemClassName, dropdownItemIndicatorClassName, dropdownSeparatorClassName, } from "../../styles/Dropdown.classNames";
 import { modalContentClassName } from "../../styles/Modal.classNames";
 function ContextMenuContent({ className, children, ...props }) {
     return (<RContextMenu.Portal>

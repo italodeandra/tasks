@@ -97,7 +97,7 @@ const Button = ({ variant = "outlined", color = "default", size = "md", classNam
             children = <Loading className="my-auto"/>;
         }
         else {
-            trailing = <Loading className="w-auto h-auto mr-0"/>;
+            trailing = <Loading className="mr-0 h-auto w-auto"/>;
         }
     }
     return (<UnstyledButton ref={ref} {...props} className={clsx(styles.root, styles.variant[variant], variant !== "custom" && styles.color[color], variant !== "custom" && styles.variantColor[`${variant}-${color}`], icon ? styles.icon[size].button : styles.size[size].button, rounded ? "rounded-full" : "rounded", {

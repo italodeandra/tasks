@@ -1,5 +1,5 @@
 import { proxy, useSnapshot } from "valtio";
-import createStateHydration from "./utils/createStateHydration";
+import createStateHydration from "@italodeandra/ui/utils/createStateHydration";
 import { deleteCookie } from "cookies-next";
 const authState = proxy({
     token: null,

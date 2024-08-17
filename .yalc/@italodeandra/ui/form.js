@@ -1,6 +1,6 @@
 import { proxy, ref, useSnapshot } from "valtio";
 import { useCallback } from "react";
-import { cloneDeep, get, isNil, merge, set, unset } from "lodash";
+import { cloneDeep, get, isNil, merge, set, unset } from "lodash-es";
 import { useUnmount } from "react-use";
 export function createFormState(options) {
     const defaultValues = cloneDeep(options.defaultValues);

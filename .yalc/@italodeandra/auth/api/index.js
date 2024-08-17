@@ -4,7 +4,7 @@ import signUp from "./signUp";
 import resetPassword from "./resetPassword";
 import requestPasswordReset from "./requestPasswordReset";
 import { apiHandlerWrapper } from "@italodeandra/next/api/apiHandlerWrapper";
-import { get } from "lodash";
+import { get } from "lodash-es";
 import list from "./panel/user/list";
 import panelGet from "./panel/user/get";
 import create from "./panel/user/create";
@@ -47,8 +47,6 @@ export default function Auth(config) {
                     stopImpersonate,
                 },
             },
-        }, route.join(".")
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        )(args, req, res, config);
+        }, route.join("."))(args, req, res, config);
     });
 }

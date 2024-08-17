@@ -20,7 +20,7 @@ import {
 import { SortableItem } from "./item/SortableItem";
 import { DragOverEvent } from "@dnd-kit/core/dist/types";
 import { Item } from "./item/Item";
-import { groupBy, isEqual, mapValues, toPairs } from "lodash";
+import { groupBy, isEqual, mapValues, toPairs } from "lodash-es";
 import { useDeepCompareEffect } from "react-use";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { Orientation } from "./Orientation";
@@ -40,7 +40,7 @@ const dropAnimation = {
 };
 
 export function Kanban<
-  T extends { _id: string; columnId: string; index: number }
+  T extends { _id: string; columnId: string; index: number },
 >({
   value,
   onChangeValue,
@@ -75,7 +75,7 @@ export function Kanban<
 
   useDeepCompareEffect(() => {
     const groupedItems = mapValues(groupBy(value, "columnId"), (items) =>
-      items.map((i) => i._id)
+      items.map((i) => i._id),
     );
     const newItems: typeof items = {};
     for (const column of columns) {
@@ -94,7 +94,7 @@ export function Kanban<
           index,
           columnId,
         };
-      })
+      }),
     );
     if (!activeId && !isEqual(newValue, value)) {
       onChangeValue?.(newValue);
@@ -103,7 +103,7 @@ export function Kanban<
 
   const containers = useMemo(
     () => Object.keys(items) as UniqueIdentifier[],
-    [items]
+    [items],
   );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -120,11 +120,11 @@ export function Kanban<
       if (activeId && overId && activeId !== overId) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const overContainer = containers.find((container) =>
-          items[container].includes(overId)
+          items[container].includes(overId),
         )!;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const activeContainer = containers.find((container) =>
-          items[container].includes(activeId)
+          items[container].includes(activeId),
         )!;
 
         if (overContainer === activeContainer) {
@@ -137,7 +137,7 @@ export function Kanban<
               [overContainer]: arrayMove(
                 items[overContainer],
                 oldIndex,
-                newIndex
+                newIndex,
               ),
             };
           });
@@ -146,7 +146,7 @@ export function Kanban<
 
       setActiveId(null);
     },
-    [containers, items]
+    [containers, items],
   );
 
   const handleDragOver = useCallback(
@@ -160,7 +160,7 @@ export function Kanban<
           overId.replace(`${PLACEHOLDER_ID}-`, "");
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const activeContainer = containers.find((container) =>
-          items[container].includes(activeId)
+          items[container].includes(activeId),
         )!;
 
         if (overContainer !== activeContainer) {
@@ -171,7 +171,7 @@ export function Kanban<
             return {
               ...items,
               [activeContainer]: items[activeContainer].filter(
-                (id) => id !== activeId
+                (id) => id !== activeId,
               ),
               [overContainer]: [
                 ...items[overContainer].slice(0, newIndex),
@@ -183,7 +183,7 @@ export function Kanban<
         }
       }
     },
-    [containers, items]
+    [containers, items],
   );
 
   return (
@@ -196,7 +196,7 @@ export function Kanban<
         onDragOver={handleDragOver}
       >
         <div
-          className={clsx("flex gap-2 p-2 overflow-auto", {
+          className={clsx("flex gap-2 overflow-auto p-2", {
             "flex-col": orientation === Orientation.VERTICAL,
           })}
         >
@@ -212,7 +212,7 @@ export function Kanban<
                   "w-full": orientation === Orientation.HORIZONTAL && !isHidden,
                 })}
               >
-                <div className="text-sm font-medium flex">
+                <div className="flex text-sm font-medium">
                   {renderColumn(container.toString(), containerItems.length)}
                 </div>
                 <SortableContext

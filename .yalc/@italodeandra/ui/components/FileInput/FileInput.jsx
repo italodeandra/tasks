@@ -4,8 +4,8 @@ import { useDeepCompareEffect, useUpdateEffect } from "react-use";
 import { defaultHelpTextClassName, defaultLabelClassName, } from "../Input";
 import FileSelect from "../FileSelect";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { isEqual } from "lodash";
-import Text from "../Text/Text";
+import { isEqual } from "lodash-es";
+import Text from "../Text";
 import { PreviewFile } from "./PreviewFile";
 import concurrentForOf from "@italodeandra/next/utils/concurrentForOf";
 function FileInput({ error, className, helpText, onChange, name, limit, label, id, required, onMouseOver, onMouseOut, readOnly, value, emptyText = "No files", downloadText = "Download", openText = "Open", preview, asyncUpload, onRejectFiles, loading, maxConcurrentUploads = 1, ...props }, ref) {

@@ -8,7 +8,7 @@ import { invalidate_authPanelUserList } from "./list";
 import { invalidate_authPanelUserGet } from "./get";
 import { getReqTenant } from "../../../collections/tenant/Tenant.service";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
-import { omit } from "lodash";
+import { omit } from "lodash-es";
 export default async function authPanelUserUpdateHandler(args, req, res, { connectDb, multitenantMode }) {
     await connectDb();
     const User = getUser();

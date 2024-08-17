@@ -28,7 +28,7 @@ export default function Notifications({ notificationClassName, }) {
             return (<motion.li key={_id} layout initial={{ opacity: 0, y: 50, scale: 0.3 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.2 } }} className={clsx("pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-lg ring-1 ring-black/5 dark:bg-zinc-800 dark:ring-white/10", notificationClassName, className)} style={style}>
                 <div className="p-4">
                   <div className="flex items-start">
-                    {icon && (<div className="mr-2 flex-shrink-0 ">
+                    {icon && (<div className="mr-2 flex-shrink-0">
                         {typeof icon === "string"
                         ? icon
                         : cloneElement(icon, {

@@ -3,7 +3,7 @@ import { checkUserPassword, generateToken, } from "../collections/user/User.serv
 import ms from "ms";
 import { useMutation } from "@tanstack/react-query";
 import { badRequest, unauthorized } from "@italodeandra/next/api/errors";
-import { pick } from "lodash";
+import { pick } from "lodash-es";
 import { mutationFnWrapper, } from "@italodeandra/next/api/apiHandlerWrapper";
 import { setCookie } from "cookies-next";
 import { getReqTenant } from "../collections/tenant/Tenant.service";

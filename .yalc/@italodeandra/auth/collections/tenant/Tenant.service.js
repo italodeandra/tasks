@@ -1,6 +1,7 @@
 import getTenant from "./Tenant";
 export function getSubdomain(urlOrReq) {
     const url = typeof urlOrReq === "string" ? urlOrReq : urlOrReq?.headers.host;
+    // noinspection HttpUrlsUsage
     url?.replaceAll("http://", "").replaceAll("https://", "");
     if (!url) {
         return url;

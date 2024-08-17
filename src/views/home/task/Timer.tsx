@@ -9,14 +9,14 @@ import clsx from "clsx";
 import { TaskListApi } from "../../../pages/api/task/list";
 import { prettyMilliseconds } from "../../../utils/prettyMilliseconds";
 import Loading from "@italodeandra/ui/components/Loading";
-import { isNil } from "lodash";
+import { isNil } from "lodash-es";
 import { NextSeo } from "next-seo";
 
 export function Timer({
-                        task,
-                        buttonVariant = "text",
-                        className
-                      }: {
+  task,
+  buttonVariant = "text",
+  className,
+}: {
   task: Pick<TaskListApi["Response"][number], "_id" | "timesheet">;
   buttonVariant?: "text" | "outlined";
   className?: string;
@@ -36,7 +36,7 @@ export function Timer({
         start({ _id: task._id });
       }
     },
-    [currentClockIn, start, stop, task._id]
+    [currentClockIn, start, stop, task._id],
   );
 
   const currentClockInTime = currentClockIn
@@ -50,29 +50,29 @@ export function Timer({
     rerender,
     !isNil(currentClockInTime)
       ? ms(currentClockInTime < ms("1m") ? "1s" : "1m")
-      : null
+      : null,
   );
 
   const buttonProps = useMemo(
     () =>
       !isNil(time)
         ? {
-          leading: isLoading ? (
-            <Loading className="w-4 h-4 text-inherit" />
-          ) : (
-            <ClockIcon className="shrink-0 w-4 h-4" />
-          ),
-          children: prettyMilliseconds(time)
-        }
+            leading: isLoading ? (
+              <Loading className="h-4 w-4 text-inherit" />
+            ) : (
+              <ClockIcon className="h-4 w-4 shrink-0" />
+            ),
+            children: prettyMilliseconds(time),
+          }
         : {
-          icon: true,
-          children: isLoading ? (
-            <Loading className="w-4 h-4 text-inherit" />
-          ) : (
-            <ClockIcon className="shrink-0 w-4 h-4" />
-          )
-        },
-    [isLoading, time]
+            icon: true,
+            children: isLoading ? (
+              <Loading className="h-4 w-4 text-inherit" />
+            ) : (
+              <ClockIcon className="h-4 w-4 shrink-0" />
+            ),
+          },
+    [isLoading, time],
   );
 
   return (
@@ -89,9 +89,9 @@ export function Timer({
         className={clsx(
           "whitespace-nowrap p-1",
           {
-            "px-1.5": !!time
+            "px-1.5": !!time,
           },
-          className
+          className,
         )}
         {...buttonProps}
       />

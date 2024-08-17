@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { get } from "lodash";
+import { get } from "lodash-es";
 export default function useTranslation(intl, prePath) {
     return useCallback((sentence, path) => {
         return (get(intl, [

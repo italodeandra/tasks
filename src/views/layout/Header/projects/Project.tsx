@@ -2,7 +2,7 @@ import { ProjectListApi } from "../../../../pages/api/project/list";
 import { useSnapshot } from "valtio";
 import { projectArchiveApi } from "../../../../pages/api/project/archive";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import { pull } from "lodash";
+import { pull } from "lodash-es";
 import React, { useCallback } from "react";
 import { homeState } from "../../../home/home.state";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";

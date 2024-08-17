@@ -3,7 +3,7 @@ import Loading from "../Loading";
 import { useCallback, useEffect, useMemo, useRef, useState, } from "react";
 import { defaultInputClassName, defaultLabelClassName, defaultLeadingInputClassName, defaultTrailingClassName, defaultTrailingInputClassName, UnstyledInput, } from "../Input";
 import clsx from "../../utils/clsx";
-import { isEqual, take } from "lodash";
+import { isEqual, take } from "lodash-es";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import Badge from "../Badge";
 const defaultMenuItemsClassName = "z-10 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-zinc-800";
@@ -22,7 +22,7 @@ function MultiSelectInput({ className, selectedItems, doRender, removeItem, valu
         </div>)}
       {!readOnly && (<Combobox.Input 
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        {...props} ref={ref} className="rounded-md border-none !ring-transparent disabled:cursor-not-allowed disabled:text-zinc-500 sm:text-sm dark:bg-zinc-800 dark:disabled:bg-zinc-900/90" readOnly={readOnly}/>)}
+        {...props} ref={ref} className="rounded-md border-none !ring-transparent disabled:cursor-not-allowed disabled:text-zinc-500 dark:bg-zinc-800 dark:disabled:bg-zinc-900/90 sm:text-sm" readOnly={readOnly}/>)}
     </div>);
 }
 export default function MultiSelect({ placeholder, emptyText = "No item found.", items = [], renderProperty = "title", renderFunction, filterProperty = "title", filterFunction, onChange, query: defaultQuery = "", onChangeQuery, loading, inputInnerClassName, inputElementClassName, as, trailing, trailingClassName, trailingInputClassName, leadingInputClassName, static: isStatic, 
@@ -92,7 +92,7 @@ displayValue = (item) => item?.[renderProperty] || "", value, labelClassName, cr
 
             {!readOnly &&
                 ((creatable && query) || filteredItems.length > 0) && (<Combobox.Options static={isStatic} className={clsx(defaultMenuItemsClassName, "absolute z-10 mt-1 max-h-72 w-full scroll-py-2 overflow-y-auto py-2 text-sm text-zinc-800 dark:text-zinc-200")}>
-                  {creatable && !filteredItems.length && !!query && (<Combobox.Option value={query} className={({ active }) => clsx("cursor-default select-none px-4 py-2", {
+                  {creatable && !!query && (<Combobox.Option value={query} className={({ active }) => clsx("cursor-default select-none px-4 py-2", {
                         "bg-primary-600 text-white": active,
                     })}>
                       {({ selected }) => (<div className="flex">

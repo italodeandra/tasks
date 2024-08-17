@@ -6,10 +6,10 @@ import { modalContentClassName } from "../../styles/Modal.classNames";
 export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, }) {
     return (<RDialog.Root open={open} onOpenChange={onOpenChange}>
       <RDialog.Portal>
-        <RDialog.Overlay className={clsx("ui-dialog-overlay", "z-20 bg-black/50 fixed inset-0 flex items-center justify-center", "data-[state=open]:animate-slideUpAndFade data-[state=closed]:animate-fadeOut will-change-[opacity,transform]", overlayClassName)}>
-          <RDialog.Content className={clsx(modalContentClassName, "ui-dialog-content", "focus:outline-none relative p-0", contentClassName)}>
-            <div className={clsx("flex flex-col gap-3 p-4 max-h-[85vh] w-[90vw] max-w-[450px] overflow-auto", contentOverflowClassName)}>
-              {title && (<RDialog.Title className={clsx("ui-dialog-title", "text-zinc-900 dark:text-zinc-50 text-lg font-medium -mb-1")}>
+        <RDialog.Overlay className={clsx("ui-dialog-overlay", "fixed inset-0 z-20 flex items-center justify-center bg-black/50", "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade", overlayClassName)}>
+          <RDialog.Content className={clsx(modalContentClassName, "ui-dialog-content", "relative p-0 focus:outline-none", contentClassName)}>
+            <div className={clsx("flex max-h-[85vh] w-[90vw] max-w-[450px] flex-col gap-3 overflow-auto p-4", contentOverflowClassName)}>
+              {title && (<RDialog.Title className={clsx("ui-dialog-title", "-mb-1 text-lg font-medium text-zinc-900 dark:text-zinc-50")}>
                   {title}
                 </RDialog.Title>)}
               {description && (<RDialog.Description className={clsx("ui-dialog-description", "text-zinc-700 dark:text-zinc-300")}>
@@ -17,7 +17,7 @@ export default function Dialog({ children, title, description, open, onOpenChang
                 </RDialog.Description>)}
               {children}
               <RDialog.Close asChild>
-                <Button className={clsx("ui-dialog-close-button", "absolute top-1 right-1", closeButtonClassName)} aria-label="Close" variant="text" icon size="sm">
+                <Button className={clsx("ui-dialog-close-button", "absolute right-1 top-1", closeButtonClassName)} aria-label="Close" variant="text" icon size="sm">
                   <XMarkIcon />
                 </Button>
               </RDialog.Close>
