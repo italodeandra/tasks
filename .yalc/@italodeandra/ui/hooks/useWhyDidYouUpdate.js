@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { isEqual } from "lodash-es";
 export default function useWhyDidYouUpdate(name, props) {
     // create a reference to track the previous data
     const previousProps = useRef({});
@@ -13,8 +14,7 @@ export default function useWhyDidYouUpdate(name, props) {
                 // if both are object
                 if (typeof props[key] === "object" &&
                     typeof previousProps.current[key] === "object") {
-                    if (JSON.stringify(previousProps.current[key]) !==
-                        JSON.stringify(props[key])) {
+                    if (isEqual(previousProps.current[key], props[key])) {
                         // add to changesObj
                         changesObj[key] = {
                             from: previousProps.current[key],

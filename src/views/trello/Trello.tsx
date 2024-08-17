@@ -1,110 +1,58 @@
-import { HTMLAttributes, MouseEvent, useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { ObjectId } from "bson";
-import { find, findIndex, pullAt, remove, uniqBy } from "lodash";
+import { find, findIndex, remove, uniqBy } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
-import { PlusIcon } from "@heroicons/react/16/solid";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
-import clsx from "@italodeandra/ui/utils/clsx";
+import { move } from "./move";
+import { ICard } from "./ICard";
+import { IList } from "./IList";
+import { Card } from "./Card";
+import { List } from "./List";
+import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 
-interface Card {
-  _id: ObjectId;
-  title: string;
+function removeDragElements() {
+  const elementsToRemove = document.querySelectorAll("[data-drag-element]");
+  for (const elementToRemove of Array.from(elementsToRemove)) {
+    elementToRemove.parentElement?.removeChild(elementToRemove);
+  }
 }
 
-interface List {
-  _id: ObjectId;
-  title: string;
-  cards?: Card[];
-}
-
-interface Data {
-  lists?: List[];
-}
-
-function move<T>(array: T[], fromIndex: number, toIndex: number): T[] {
-  // Remove the item from the original index
-  const item: T = pullAt(array, fromIndex)[0];
-
-  // Insert the item at the new index
-  array.splice(toIndex, 0, item);
-
-  return array;
-}
-
-function Card({
-  title,
-  dragging,
-  onMouseDown,
-  ...props
-}: {
-  title: string;
-  dragging?: boolean;
-} & HTMLAttributes<HTMLDivElement>) {
-  const [editing, setEditing] = useState(false);
-
-  const handleDoubleClick = useCallback((e: MouseEvent<HTMLDivElement>) => {
-    setEditing(true);
-    const target = e.currentTarget;
-    setTimeout(() => {
-      target.focus();
-    });
-  }, []);
-
-  const handleBlur = useCallback(() => {
-    setEditing(false);
-  }, []);
-
-  return (
-    <div
-      className={clsx(
-        "rounded-lg bg-zinc-800 p-2 shadow-md outline-0 transition-colors",
-        {
-          "opacity-30 grayscale": dragging,
-          "cursor-pointer": !editing,
-          "ring-2 ring-zinc-700 focus:ring-primary-500": editing,
-        },
-      )}
-      data-is-card={true}
-      contentEditable={editing}
-      {...props}
-      onDoubleClick={handleDoubleClick}
-      onMouseDown={!editing ? onMouseDown : undefined}
-      onBlur={handleBlur}
-      dangerouslySetInnerHTML={{
-        __html: title,
-      }}
-    />
-  );
+function getMousePos(event: MouseEvent | TouchEvent) {
+  return (event as TouchEvent).touches?.[0]
+    ? (event as TouchEvent).touches[0]
+    : (event as MouseEvent);
 }
 
 export function Trello() {
-  const [data, setData] = useState<Data>({
+  const [data, setData] = useState<{
+    lists?: IList[];
+  }>({
     lists: [
       {
-        _id: isomorphicObjectId("665e78c7b3d3cf0f86db4c8d"),
+        _id: "665e78c7b3d3cf0f86db4c8d",
         title: "Todo",
         cards: [
           {
-            _id: isomorphicObjectId("665e78f7c9e5ab7e262c1e9a"),
+            _id: "665e78f7c9e5ab7e262c1e9a",
             title: "Buy milk",
           },
           {
-            _id: isomorphicObjectId("665e78f9f32b8de9e1532975"),
+            _id: "665e78f9f32b8de9e1532975",
             title: "Buy bread",
           },
           {
-            _id: isomorphicObjectId("665f2378c6316ed4eefbaed8"),
+            _id: "665f2378c6316ed4eefbaed8",
             title: "Buy eggs",
           },
         ],
       },
       {
-        _id: isomorphicObjectId("665f23b72ca02db00eafcb23"),
+        _id: "665f23b72ca02db00eafcb23",
         title: "Doing",
         cards: [
           {
-            _id: isomorphicObjectId("665fdb6c403542034d819d2f"),
+            _id: "665fdb6c403542034d819d2f",
             title: "Coding<br><br>Test",
           },
         ],
@@ -112,10 +60,11 @@ export function Trello() {
     ],
   });
   const dataRef = useLatest(data);
+  const trelloRef = useRef<HTMLDivElement>(null);
 
   const [draggingCard, setDraggingCard] = useState<{
-    card: Card;
-    list: List;
+    card: ICard;
+    list: IList;
     originalElement: HTMLDivElement;
     dragElement?: HTMLDivElement;
     startMousePos: {
@@ -126,7 +75,7 @@ export function Trello() {
   const draggingCardRef = useLatest(draggingCard);
 
   const [draggingList, setDraggingList] = useState<{
-    list: List;
+    list: IList;
     originalElement: HTMLDivElement;
     dragElement?: HTMLDivElement;
     startMousePos: {
@@ -136,325 +85,430 @@ export function Trello() {
   } | null>(null);
   const draggingListRef = useLatest(draggingList);
 
-  const handleCardMouseDown = useCallback(
-    (card: Card, list: List) => (event: MouseEvent) => {
-      const originalElement = event.currentTarget as HTMLDivElement;
-
-      setDraggingCard({
-        card,
-        list,
-        startMousePos: {
-          x: event.clientX,
-          y: event.clientY,
-        },
-        originalElement,
-      });
-    },
-    [],
-  );
-
-  const handleListMouseDown = useCallback(
-    (list: List) => (event: MouseEvent) => {
-      const isNotOverCard = (event.target as HTMLDivElement).getAttribute(
-        "data-is-card",
-      );
-      if (!isNotOverCard) {
-        const originalElement = event.currentTarget as HTMLDivElement;
-
-        setDraggingList({
-          list,
-          startMousePos: {
-            x: event.clientX,
-            y: event.clientY,
-          },
-          originalElement,
-        });
+  const getMousePosTargetCardIdAndListId = useCallback(
+    (event: MouseEvent | TouchEvent) => {
+      const mousePos = getMousePos(event);
+      if (isTouchDevice) {
+        trelloRef.current!.classList.remove("pointer-events-none");
       }
+      const target = document.elementFromPoint(
+        mousePos.clientX,
+        mousePos.clientY,
+      ) as HTMLDivElement;
+      if (isTouchDevice) {
+        trelloRef.current!.classList.add("pointer-events-none");
+      }
+      const cardId = target
+        .closest("[data-card-id]")
+        ?.getAttribute("data-card-id");
+      const listId = target
+        .closest("[data-list-id]")
+        ?.getAttribute("data-list-id");
+      return {
+        cardId,
+        listId,
+        mousePos,
+        target,
+      };
     },
     [],
   );
 
-  const handleKanbanMouseMove = useCallback(
-    (event: MouseEvent) => {
-      if (draggingCardRef.current) {
-        document.body.classList.add("select-none");
-        const { startMousePos, originalElement } = draggingCardRef.current;
-        let dragElement = draggingCardRef.current.dragElement;
-        if (!dragElement) {
-          const originalElementRect = originalElement.getBoundingClientRect();
-          dragElement = originalElement.cloneNode(true) as HTMLDivElement;
-          draggingCardRef.current.dragElement = dragElement;
-          dragElement.style.left = `${originalElementRect.left}px`;
-          dragElement.style.top = `${originalElementRect.top}px`;
-          dragElement.style.width = `${originalElementRect.width}px`;
-          dragElement.style.height = `${originalElementRect.height}px`;
-          dragElement.classList.add(
-            "absolute",
-            "rotate-6",
-            "translate-x-[--x]",
-            "translate-y-[--y]",
-            "pointer-events-none",
-            "z-10",
-            "opacity-90",
-          );
-          originalElement.parentElement!.prepend(dragElement);
-          setDraggingCard({
-            ...draggingCardRef.current,
-            dragElement,
-          });
-        }
+  useEffect(() => {
+    if (isTouchDevice) {
+      trelloRef.current!.classList.add("pointer-events-none");
+    }
 
-        dragElement.style.setProperty(
-          "--x",
-          `${event.clientX - startMousePos.x}px`,
-        );
-        dragElement.style.setProperty(
-          "--y",
-          `${event.clientY - startMousePos.y}px`,
-        );
+    const handleKanbanMouseUp = () => {
+      removeDragElements();
+      if (draggingCardRef.current) {
+        draggingCardRef.current.originalElement.classList.remove("opacity-50");
+        setDraggingCard(null);
       }
       if (draggingListRef.current) {
-        document.body.classList.add("select-none");
-        const { startMousePos, originalElement } = draggingListRef.current;
-        let dragElement = draggingListRef.current.dragElement;
-        if (!dragElement) {
-          const originalElementRect = originalElement.getBoundingClientRect();
-          dragElement = originalElement.cloneNode(true) as HTMLDivElement;
-          draggingListRef.current.dragElement = dragElement;
-          dragElement.style.left = `${originalElementRect.left}px`;
-          dragElement.style.top = `${originalElementRect.top}px`;
-          dragElement.style.width = `${originalElementRect.width}px`;
-          dragElement.style.height = `${originalElementRect.height}px`;
-          dragElement.classList.add(
-            "absolute",
-            "rotate-6",
-            "translate-x-[--x]",
-            "translate-y-[--y]",
-            "pointer-events-none",
-            "z-10",
-            "opacity-90",
-          );
-          originalElement.parentElement!.prepend(dragElement);
-          setDraggingList({
-            ...draggingListRef.current,
-            dragElement,
-          });
-        }
-
-        dragElement.style.setProperty(
-          "--x",
-          `${event.clientX - startMousePos.x}px`,
-        );
-        dragElement.style.setProperty(
-          "--y",
-          `${event.clientY - startMousePos.y}px`,
-        );
+        draggingListRef.current.originalElement?.classList.remove("opacity-50");
+        setDraggingList(null);
       }
-    },
-    [draggingCardRef, draggingListRef],
-  );
+      document.body.classList.remove("select-none");
+    };
 
-  const handleCardMouseMove = useCallback(
-    (card: Card, list: List) => (e: MouseEvent<HTMLDivElement>) => {
+    const handleCardMouseMove = (event: MouseEvent | TouchEvent) => {
+      const { cardId, listId, target, mousePos } =
+        getMousePosTargetCardIdAndListId(event);
+
       if (draggingCardRef.current) {
-        if (draggingCardRef.current.card._id !== card._id) {
-          if (draggingCardRef.current.list._id === list._id) {
-            const newData = { ...dataRef.current };
-            const lists = newData.lists || [];
-            const listToUpdate = find(lists, { _id: list._id });
-            if (listToUpdate?.cards) {
-              const previousIndex = findIndex(listToUpdate.cards, {
-                _id: draggingCardRef.current.card._id,
-              });
-              const nextIndex = findIndex(listToUpdate.cards, {
-                _id: card._id,
-              });
-              const hoveredElementRect =
-                e.currentTarget.getBoundingClientRect();
-              const movingElementRect =
-                draggingCardRef.current.dragElement?.getBoundingClientRect();
-              if (
-                movingElementRect &&
-                ((nextIndex > previousIndex &&
-                  e.clientY >
-                    hoveredElementRect.top +
-                      hoveredElementRect.height -
-                      movingElementRect.height) ||
-                  (nextIndex < previousIndex &&
-                    e.clientY <
-                      hoveredElementRect.top + movingElementRect.height))
-              ) {
-                move(listToUpdate.cards, previousIndex, nextIndex);
-                setData(newData);
+        if (draggingCardRef.current.card._id !== cardId) {
+          if (draggingCardRef.current.list._id === listId) {
+            if (cardId) {
+              const newData = { ...dataRef.current };
+              const lists = newData.lists || [];
+              const listToUpdate = find(lists, { _id: listId });
+              if (listToUpdate?.cards) {
+                const previousIndex = findIndex(listToUpdate.cards, {
+                  _id: draggingCardRef.current.card._id,
+                });
+                const nextIndex = findIndex(listToUpdate.cards, {
+                  _id: cardId,
+                });
+                const hoveredElementRect = target.getBoundingClientRect();
+                const movingElementRect =
+                  draggingCardRef.current.dragElement?.getBoundingClientRect();
+                if (
+                  movingElementRect &&
+                  ((nextIndex > previousIndex &&
+                    mousePos.clientY >
+                      hoveredElementRect.top +
+                        hoveredElementRect.height -
+                        movingElementRect.height) ||
+                    (nextIndex < previousIndex &&
+                      mousePos.clientY <
+                        hoveredElementRect.top + movingElementRect.height))
+                ) {
+                  move(listToUpdate.cards, previousIndex, nextIndex);
+                  setData(newData);
+                }
               }
             }
           } else {
-            const newData = { ...dataRef.current };
-            const lists = dataRef.current.lists || [];
-            const previousList = find(lists, {
-              _id: draggingCardRef.current.list._id,
-            });
-            const nextList = find(lists, { _id: list._id });
-            if (previousList?.cards && nextList?.cards) {
-              remove(previousList.cards, {
-                _id: draggingCardRef.current.card._id,
+            if (listId) {
+              const newData = { ...dataRef.current };
+              const lists = dataRef.current.lists || [];
+              const previousList = find(lists, {
+                _id: draggingCardRef.current.list._id,
               });
-              const nextIndex = findIndex(nextList.cards, {
-                _id: card._id,
-              });
-              nextList.cards.splice(nextIndex, 0, draggingCardRef.current.card);
-              setData({
-                ...newData,
-                lists: lists.map((l) => ({
-                  ...l,
-                  cards: uniqBy(l.cards, (c) => c._id.toString()),
-                })),
-              });
-              setDraggingCard({
-                ...draggingCardRef.current!,
-                list: nextList,
-              });
+              const nextList = find(lists, { _id: listId });
+              if (previousList?.cards && nextList?.cards) {
+                remove(previousList.cards, {
+                  _id: draggingCardRef.current.card._id,
+                });
+                const nextIndex = cardId
+                  ? findIndex(nextList.cards, {
+                      _id: cardId,
+                    })
+                  : nextList.cards.length;
+                nextList.cards.splice(
+                  nextIndex,
+                  0,
+                  draggingCardRef.current.card,
+                );
+                setData({
+                  ...newData,
+                  lists: lists.map((l) => ({
+                    ...l,
+                    cards: uniqBy(l.cards, (c) => c._id.toString()),
+                  })),
+                });
+                setDraggingCard({
+                  ...draggingCardRef.current!,
+                  list: nextList,
+                });
+              }
             }
           }
         }
       }
-    },
-    [dataRef, draggingCardRef],
-  );
+    };
 
-  const handleListDropAreaMouseMove = useCallback(
-    (list: List) => (event: MouseEvent) => {
-      const isNotOverCard = (event.target as HTMLDivElement).getAttribute(
-        "data-is-card",
-      );
-      if (draggingCardRef.current && !isNotOverCard) {
-        if (draggingCardRef.current.list._id !== list._id) {
-          const newData = { ...dataRef.current };
-          const lists = dataRef.current.lists || [];
-          const previousList = find(lists, {
-            _id: draggingCardRef.current.list._id,
-          });
-          const nextList = find(lists, { _id: list._id });
-          if (previousList?.cards && nextList) {
-            remove(previousList.cards, {
-              _id: draggingCardRef.current.card._id,
-            });
-            nextList.cards = [
-              ...(nextList.cards || []),
-              draggingCardRef.current.card,
-            ];
-            setData({
-              ...newData,
-              lists: lists.map((l) => ({
-                ...l,
-                cards: uniqBy(l.cards, (c) => c._id.toString()),
-              })),
-            });
-            setDraggingCard({
-              ...draggingCardRef.current!,
-              list: nextList,
-            });
-          }
-        }
-      }
-    },
-    [dataRef, draggingCardRef],
-  );
-
-  const handleListMouseMove = useCallback(
-    (list: List) => () => {
-      if (draggingListRef.current) {
-        if (draggingListRef.current.list._id !== list._id) {
+    const handleListMouseMove = (event: MouseEvent | TouchEvent) => {
+      const { listId } = getMousePosTargetCardIdAndListId(event);
+      if (draggingListRef.current && listId) {
+        if (draggingListRef.current.list._id !== listId) {
           const newData = { ...dataRef.current };
           if (newData.lists) {
             const previousIndex = findIndex(newData.lists, {
               _id: draggingListRef.current.list._id,
             });
             const nextIndex = findIndex(newData.lists, {
-              _id: list._id,
+              _id: listId,
             });
             move(newData.lists, previousIndex, nextIndex);
             setData(newData);
           }
         }
       }
+    };
+
+    const handleKanbanMouseMove = (event: MouseEvent | TouchEvent) => {
+      handleCardMouseMove(event);
+      handleListMouseMove(event);
+
+      const mousePos = getMousePos(event);
+
+      if (draggingCardRef.current) {
+        document.body.classList.add("select-none");
+        const { startMousePos, originalElement } = draggingCardRef.current;
+        if (
+          Math.abs(
+            mousePos.clientX -
+              startMousePos.x +
+              (mousePos.clientY - startMousePos.y),
+          ) > 10
+        ) {
+          let dragElement = draggingCardRef.current.dragElement;
+          if (!dragElement) {
+            const originalElementRect = originalElement.getBoundingClientRect();
+            dragElement = originalElement.cloneNode(true) as HTMLDivElement;
+            dragElement.setAttribute("data-drag-element", "");
+            dragElement.style.left = `${originalElementRect.left}px`;
+            dragElement.style.top = `${originalElementRect.top}px`;
+            dragElement.style.width = `${originalElementRect.width}px`;
+            dragElement.style.height = `${originalElementRect.height}px`;
+            dragElement.classList.add(
+              "absolute",
+              "rotate-6",
+              "translate-x-[--x]",
+              "translate-y-[--y]",
+              "pointer-events-none",
+              "z-10",
+              "opacity-90",
+            );
+            removeDragElements();
+            originalElement.parentElement!.prepend(dragElement);
+            setDraggingCard({
+              ...draggingCardRef.current,
+              dragElement,
+            });
+          }
+
+          dragElement.style.setProperty(
+            "--x",
+            `${mousePos.clientX - startMousePos.x}px`,
+          );
+          dragElement.style.setProperty(
+            "--y",
+            `${mousePos.clientY - startMousePos.y}px`,
+          );
+        }
+      }
+      if (draggingListRef.current) {
+        document.body.classList.add("select-none");
+        const { startMousePos, originalElement } = draggingListRef.current;
+        if (
+          Math.abs(
+            mousePos.clientX -
+              startMousePos.x +
+              (mousePos.clientY - startMousePos.y),
+          ) > 10
+        ) {
+          let dragElement = draggingListRef.current.dragElement;
+          if (!dragElement) {
+            const originalElementRect = originalElement.getBoundingClientRect();
+            dragElement = originalElement.cloneNode(true) as HTMLDivElement;
+            draggingListRef.current.dragElement = dragElement;
+            dragElement.setAttribute("data-drag-element", "");
+            dragElement.style.left = `${originalElementRect.left}px`;
+            dragElement.style.top = `${originalElementRect.top}px`;
+            dragElement.style.width = `${originalElementRect.width}px`;
+            dragElement.style.height = `${originalElementRect.height}px`;
+            dragElement.classList.add(
+              "absolute",
+              "rotate-6",
+              "translate-x-[--x]",
+              "translate-y-[--y]",
+              "pointer-events-none",
+              "z-10",
+              "opacity-90",
+            );
+            removeDragElements();
+            originalElement.parentElement!.prepend(dragElement);
+            setDraggingList({
+              ...draggingListRef.current,
+              dragElement,
+            });
+          }
+
+          dragElement.style.setProperty(
+            "--x",
+            `${mousePos.clientX - startMousePos.x}px`,
+          );
+          dragElement.style.setProperty(
+            "--y",
+            `${mousePos.clientY - startMousePos.y}px`,
+          );
+        }
+      }
+    };
+
+    const handleListMouseDown = (event: MouseEvent | TouchEvent) => {
+      const { listId, mousePos, target } =
+        getMousePosTargetCardIdAndListId(event);
+
+      if (listId) {
+        const list = find(dataRef.current.lists, { _id: listId });
+        if (list) {
+          if (!target.classList.contains("pointer-events-auto")) {
+            event.preventDefault();
+            setDraggingList({
+              list,
+              startMousePos: {
+                x: mousePos.clientX,
+                y: mousePos.clientY,
+              },
+              originalElement: target.closest("[data-list-id]")!,
+            });
+          }
+        }
+      }
+    };
+
+    const handleCardMouseDown = (event: MouseEvent | TouchEvent) => {
+      removeDragElements();
+      const { cardId, listId, mousePos, target } =
+        getMousePosTargetCardIdAndListId(event);
+      if (!cardId) {
+        handleListMouseDown(event);
+      } else {
+        if (listId && cardId) {
+          const list = find(dataRef.current.lists, { _id: listId });
+          if (list) {
+            const card = find(list.cards, { _id: cardId });
+            if (card) {
+              event.preventDefault();
+              setDraggingCard({
+                card,
+                list,
+                startMousePos: {
+                  x: mousePos.clientX,
+                  y: mousePos.clientY,
+                },
+                originalElement: target,
+              });
+            }
+          }
+        }
+      }
+    };
+
+    document.addEventListener("mouseup", handleKanbanMouseUp);
+    document.addEventListener("touchend", handleKanbanMouseUp);
+    document.addEventListener("mouseleave", handleKanbanMouseUp);
+    document.addEventListener("touchcancel", handleKanbanMouseUp);
+    document.addEventListener("mousemove", handleKanbanMouseMove);
+    document.addEventListener("touchmove", handleKanbanMouseMove);
+    document.addEventListener("mousedown", handleCardMouseDown);
+    document.addEventListener("touchstart", handleCardMouseDown, {
+      passive: false,
+    });
+
+    return () => {
+      document.removeEventListener("mouseup", handleKanbanMouseUp);
+      document.removeEventListener("touchend", handleKanbanMouseUp);
+      document.removeEventListener("mouseleave", handleKanbanMouseUp);
+      document.removeEventListener("touchcancel", handleKanbanMouseUp);
+      document.removeEventListener("mousemove", handleKanbanMouseMove);
+      document.removeEventListener("touchmove", handleKanbanMouseMove);
+      document.removeEventListener("mousedown", handleCardMouseDown);
+      document.removeEventListener("touchstart", handleCardMouseDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleAddNewTaskClick = useCallback(
+    (list: IList) => () => {
+      const newData = { ...dataRef.current };
+      const lists = newData.lists || [];
+      const listToUpdate = find(lists, { _id: list._id });
+      if (listToUpdate) {
+        listToUpdate.cards = [
+          ...(listToUpdate.cards || []),
+          {
+            _id: isomorphicObjectId().toString(),
+            title: "New task",
+          },
+        ];
+        setData(newData);
+      }
     },
-    [dataRef, draggingListRef],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
 
-  const handleKanbanMouseUp = useCallback(() => {
-    if (draggingCardRef.current) {
-      if (draggingCardRef.current.dragElement) {
-        draggingCardRef.current.dragElement.parentElement!.removeChild(
-          draggingCardRef.current.dragElement,
-        );
+  const handleAddNewListClick = useCallback(() => {
+    const newData = { ...dataRef.current };
+    const lists = newData.lists || [];
+    lists.push({
+      _id: isomorphicObjectId().toString(),
+      title: "New list",
+    });
+    setData(newData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleListDelete = useCallback(
+    (list: IList) => () => {
+      const newData = { ...dataRef.current };
+      const lists = newData.lists || [];
+      remove(lists, { _id: list._id });
+      setData(newData);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
+  const handleTaskDelete = useCallback(
+    (card: ICard, list: IList) => () => {
+      const newData = { ...dataRef.current };
+      const lists = newData.lists || [];
+      const listToUpdate = find(lists, { _id: list._id });
+      if (listToUpdate?.cards) {
+        remove(listToUpdate.cards, { _id: card._id });
+        setData(newData);
       }
-      draggingCardRef.current.originalElement.classList.remove("opacity-50");
-      setDraggingCard(null);
-    }
-    if (draggingListRef.current) {
-      if (draggingListRef.current.dragElement) {
-        draggingListRef.current.dragElement.parentElement!.removeChild(
-          draggingListRef.current.dragElement,
-        );
-      }
-      draggingListRef.current.originalElement.classList.remove("opacity-50");
-      setDraggingList(null);
-    }
-    document.body.classList.remove("select-none");
-  }, [draggingCardRef, draggingListRef]);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   return (
     <div
-      className="flex h-full gap-2 p-2"
-      onMouseUp={handleKanbanMouseUp}
-      onMouseLeave={handleKanbanMouseUp}
-      onMouseMove={handleKanbanMouseMove}
+      className="group/kanban flex h-full gap-2 p-2"
+      data-is-dragging={!!draggingCard}
+      ref={trelloRef}
     >
       {data.lists?.map((list) => (
-        <div
-          key={list._id.toString()}
-          className="flex flex-col"
-          onMouseMove={handleListMouseMove(list)}
-        >
-          <div
-            className={clsx("flex flex-col gap-2 rounded-xl bg-zinc-900 p-2", {
-              "opacity-30 grayscale":
-                draggingList?.dragElement &&
-                draggingList?.list._id === list._id,
-            })}
-            onMouseDown={handleListMouseDown(list)}
+        <div key={list._id.toString()} className="flex shrink-0 flex-col">
+          <List
+            title={list.title}
+            dragging={
+              draggingList?.dragElement && draggingList?.list._id === list._id
+            }
+            onDelete={handleListDelete(list)}
+            data-list-id={list._id}
           >
-            <div className="px-1 text-sm font-medium">{list.title}</div>
             {list.cards?.map((card) => (
               <Card
                 key={card._id.toString()}
+                title={card.title}
                 dragging={
                   draggingCard?.dragElement &&
                   draggingCard?.card._id === card._id &&
                   draggingCard?.list._id === list._id
                 }
-                onMouseDown={handleCardMouseDown(card, list)}
-                onMouseMove={handleCardMouseMove(card, list)}
-                title={card.title}
+                onDelete={handleTaskDelete(card, list)}
+                data-card-id={card._id}
               />
             ))}
             <Button
               variant="text"
-              className="justify-start rounded-lg p-2 text-left"
-              leading={<PlusIcon className="mr-1 h-4 w-4" />}
-              onMouseMove={handleListDropAreaMouseMove(list)}
-              onMouseDown={(e) => e.stopPropagation()}
+              className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
+              leading={<PlusIcon className="-ml-0.5 mr-1" />}
+              onClick={handleAddNewTaskClick(list)}
             >
               Add new task
             </Button>
-          </div>
-          <div
-            onMouseMove={handleListDropAreaMouseMove(list)}
-            className="grow"
-          />
+          </List>
         </div>
       ))}
+      <div className="flex shrink-0 flex-col">
+        <Button
+          variant="text"
+          className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
+          leading={<PlusIcon className="-ml-0.5 mr-1" />}
+          onClick={handleAddNewListClick}
+        >
+          Add new list
+        </Button>
+      </div>
     </div>
   );
 }
