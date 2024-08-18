@@ -55,9 +55,10 @@ export function Card({
     setTimeout(() => {
       editableRef.current!.parentElement?.focus();
     });
-    onChangeTitle?.(editableRef.current!.innerText);
+    const newTitle = editableRef.current!.innerText;
+    onChangeTitle?.(newTitle);
     editableRef.current!.innerHTML = markdownConverter.makeHtml(
-      editableRef.current!.innerText,
+      newTitle.replaceAll(" ", ""),
     );
   }, [onChangeTitle]);
 
@@ -84,7 +85,7 @@ export function Card({
         <div
           {...props}
           className={clsx(
-            "group rounded-lg bg-zinc-800 shadow-md outline-none transition-colors",
+            "group max-w-96 rounded-lg bg-zinc-800 shadow-md outline-none transition-colors",
             "ring-zinc-700 focus:ring-2 focus:ring-primary-800",
             {
               "group-data-[is-dragging=false]/kanban:hover:bg-zinc-700":
@@ -105,12 +106,12 @@ export function Card({
             <div
               ref={editableRef}
               dangerouslySetInnerHTML={{
-                __html: markdownConverter.makeHtml(title),
+                __html: markdownConverter.makeHtml(title.replaceAll(" ", "")),
               }}
               onKeyDown={handleKeyDown}
               onBlur={handleBlur}
               contentEditable={editing}
-              className={clsx("px-2.5 py-2 outline-none", markdownClassNames, {
+              className={clsx("p-3 outline-none", markdownClassNames, {
                 "pointer-events-auto": editing,
                 "cursor-pointer": !editing && onChangeTitle,
               })}

@@ -8,4 +8,7 @@ export const markdownConverter = new showdown.Converter({
   openLinksInNewWindow: true,
   extensions: [showdownHighlight({ pre: true })],
   simpleLineBreaks: true,
+  emoji: true,
+  moreStyling: true,
+  disableForced4SpacesIndentedSublists: true,
 });
