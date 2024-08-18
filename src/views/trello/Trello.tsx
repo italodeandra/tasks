@@ -75,7 +75,13 @@ export function Trello({
         cards: [
           {
             _id: "665fdb6c403542034d819d2f",
-            title: "Coding<br><br>Test",
+            title: `Coding
+
+When there's \`code\` in the middle of text
+
+\`\`\`js
+const thisIsCode = 2;
+\`\`\``,
           },
         ],
       },

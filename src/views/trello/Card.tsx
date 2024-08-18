@@ -1,5 +1,4 @@
 import {
-  FocusEvent,
   HTMLAttributes,
   KeyboardEvent,
   useCallback,
@@ -11,6 +10,8 @@ import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import Button from "@italodeandra/ui/components/Button";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
+import { markdownConverter } from "../../utils/markdownConverter";
+import { markdownClassNames } from "./markdown.classNames";
 
 export function Card({
   title,
@@ -32,11 +33,13 @@ export function Card({
 
   const handleEdit = useCallback(() => {
     setEditing(true);
+    editableRef.current!.innerText = title;
+    const target = editableRef.current;
     setTimeout(() => {
-      if (editableRef.current) {
-        editableRef.current.focus();
+      if (target) {
+        target.focus();
         const range = document.createRange();
-        range.selectNodeContents(editableRef.current);
+        range.selectNodeContents(target);
         const selection = window.getSelection();
         if (selection) {
           selection.removeAllRanges();
@@ -44,19 +47,19 @@ export function Card({
         }
       }
     });
-  }, []);
+  }, [title]);
 
-  const handleBlur = useCallback(
-    (e: FocusEvent<HTMLDivElement>) => {
-      setEditing(false);
-      window.getSelection()?.removeAllRanges();
-      setTimeout(() => {
-        editableRef.current?.parentElement?.focus();
-      });
-      onChangeTitle?.(e.currentTarget.innerHTML);
-    },
-    [onChangeTitle],
-  );
+  const handleBlur = useCallback(() => {
+    setEditing(false);
+    window.getSelection()?.removeAllRanges();
+    setTimeout(() => {
+      editableRef.current!.parentElement?.focus();
+    });
+    onChangeTitle?.(editableRef.current!.innerText);
+    editableRef.current!.innerHTML = markdownConverter.makeHtml(
+      editableRef.current!.innerText,
+    );
+  }, [onChangeTitle]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -102,12 +105,12 @@ export function Card({
             <div
               ref={editableRef}
               dangerouslySetInnerHTML={{
-                __html: title,
+                __html: markdownConverter.makeHtml(title),
               }}
               onKeyDown={handleKeyDown}
               onBlur={handleBlur}
               contentEditable={editing}
-              className={clsx("px-2.5 py-2 outline-none", {
+              className={clsx("px-2.5 py-2 outline-none", markdownClassNames, {
                 "pointer-events-auto": editing,
                 "cursor-pointer": !editing && onChangeTitle,
               })}

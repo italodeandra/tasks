@@ -18,6 +18,7 @@
     "@codemirror/basic-setup": "^0.20.0",
     "@codemirror/lang-markdown": "^6.2.5",
     "@dnd-kit/sortable": "^8.0.0",
+    "@fontsource-variable/fira-code": "^5.0.19",
     "@fontsource-variable/inter": "^5.0.20",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",

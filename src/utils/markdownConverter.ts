@@ -7,4 +7,5 @@ export const markdownConverter = new showdown.Converter({
   tasklists: true,
   openLinksInNewWindow: true,
   extensions: [showdownHighlight({ pre: true })],
+  simpleLineBreaks: true,
 });

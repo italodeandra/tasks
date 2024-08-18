@@ -19,6 +19,7 @@ import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutatio
 import "highlight.js/styles/github-dark.css";
 import { hydrateHomeState } from "../views/home/home.state";
 import getQueryClient from "@italodeandra/next/api/getQueryClient";
+import "@fontsource-variable/fira-code";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -46,67 +47,67 @@ function MyApp({ Component, pageProps }: AppProps) {
               url: "/favicons/android-chrome-512x512.png",
               height: 512,
               width: 512,
-              alt: appName
-            }
-          ]
+              alt: appName,
+            },
+          ],
         }}
         additionalLinkTags={[
           {
             rel: "apple-touch-icon",
             sizes: "180x180",
-            href: "/favicons/apple-touch-icon.png"
+            href: "/favicons/apple-touch-icon.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "32x32",
-            href: "/favicons/favicon-32x32.png"
+            href: "/favicons/favicon-32x32.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "16x16",
-            href: "/favicons/favicon-16x16.png"
+            href: "/favicons/favicon-16x16.png",
           },
           {
             rel: "mask-icon",
             href: "/favicons/safari-pinned-tab.svg",
-            color: primaryColor
+            color: primaryColor,
           },
           {
             rel: "manifest",
-            href: "/favicons/site.webmanifest"
-          }
+            href: "/favicons/site.webmanifest",
+          },
         ]}
         additionalMetaTags={[
           {
             name: "apple-mobile-web-app-title",
-            content: appName
+            content: appName,
           },
           {
             name: "application-name",
-            content: appName
+            content: appName,
           },
           {
             name: "msapplication-TileColor",
-            content: primaryColor
+            content: primaryColor,
           },
           {
             name: "msapplication-config",
-            content: "/favicons/browserconfig.xml"
+            content: "/favicons/browserconfig.xml",
           },
           {
             name: "theme-color",
-            content: primaryColor
+            content: primaryColor,
           },
           {
             name: "viewport",
-            content: "initial-scale=1, width=device-width, maximum-scale=1"
+            content: "initial-scale=1, width=device-width, maximum-scale=1",
           },
           {
             name: "keywords",
-            content: appKeywords
-          }
+            content: appKeywords,
+          },
         ]}
       />
       <QueryClientProvider client={queryClient}>
