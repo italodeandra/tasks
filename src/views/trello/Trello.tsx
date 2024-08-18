@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { find, findIndex, remove, uniqBy } from "lodash-es";
+import { find, findIndex, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
@@ -10,6 +10,7 @@ import { IList } from "./IList";
 import { Card } from "./Card";
 import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
+import clsx from "@italodeandra/ui/utils/clsx";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -18,13 +19,34 @@ function removeDragElements() {
   }
 }
 
-function getMousePos(event: MouseEvent | TouchEvent) {
-  return (event as TouchEvent).touches?.[0]
+function getMousePos(
+  event: MouseEvent | TouchEvent,
+): Pick<MouseEvent | Touch, "clientX" | "clientY"> {
+  const eventWithPos = (event as TouchEvent).touches?.[0]
     ? (event as TouchEvent).touches[0]
-    : (event as MouseEvent);
+    : (event as TouchEvent).changedTouches?.[0]
+      ? (event as TouchEvent).changedTouches[0]
+      : (event as MouseEvent);
+  return {
+    clientX: eventWithPos.clientX,
+    clientY: eventWithPos.clientY,
+  };
 }
 
-export function Trello() {
+function getMousePosTarget(
+  mousePos: Pick<MouseEvent | Touch, "clientX" | "clientY">,
+) {
+  return document.elementFromPoint(
+    mousePos.clientX,
+    mousePos.clientY,
+  ) as HTMLDivElement;
+}
+
+export function Trello({
+  orientation = "horizontal",
+}: {
+  orientation?: "horizontal" | "vertical";
+}) {
   const [data, setData] = useState<{
     lists?: IList[];
   }>({
@@ -71,6 +93,7 @@ export function Trello() {
       x: number;
       y: number;
     };
+    unstick?: boolean;
   } | null>(null);
   const draggingCardRef = useLatest(draggingCard);
 
@@ -82,6 +105,7 @@ export function Trello() {
       x: number;
       y: number;
     };
+    unstick?: boolean;
   } | null>(null);
   const draggingListRef = useLatest(draggingList);
 
@@ -91,10 +115,7 @@ export function Trello() {
       if (isTouchDevice) {
         trelloRef.current!.classList.remove("pointer-events-none");
       }
-      const target = document.elementFromPoint(
-        mousePos.clientX,
-        mousePos.clientY,
-      ) as HTMLDivElement;
+      const target = getMousePosTarget(mousePos);
       if (isTouchDevice) {
         trelloRef.current!.classList.add("pointer-events-none");
       }
@@ -119,9 +140,35 @@ export function Trello() {
       trelloRef.current!.classList.add("pointer-events-none");
     }
 
-    const handleKanbanMouseUp = () => {
+    const handleKanbanMouseUp = (event: MouseEvent | TouchEvent) => {
       removeDragElements();
+
       if (draggingCardRef.current) {
+        const mousePos = getMousePos(event);
+        const target = getMousePosTarget(mousePos);
+        const newListButton = target.closest("[data-new-list-button]");
+        if (newListButton) {
+          const newData = { ...dataRef.current };
+          const lists = dataRef.current.lists || [];
+          const previousList = find(lists, {
+            _id: draggingCardRef.current.list._id,
+          });
+          if (previousList?.cards) {
+            remove(previousList.cards, {
+              _id: draggingCardRef.current.card._id,
+            });
+            lists.push({
+              _id: isomorphicObjectId().toString(),
+              title: "New list",
+              cards: [draggingCardRef.current.card],
+            });
+            setData({
+              ...newData,
+              lists,
+            });
+          }
+        }
+
         draggingCardRef.current.originalElement.classList.remove("opacity-50");
         setDraggingCard(null);
       }
@@ -132,10 +179,11 @@ export function Trello() {
       document.body.classList.remove("select-none");
     };
 
-    const handleCardMouseMove = (event: MouseEvent | TouchEvent) => {
+    const handleKanbanMouseMove = (event: MouseEvent | TouchEvent) => {
       const { cardId, listId, target, mousePos } =
         getMousePosTargetCardIdAndListId(event);
 
+      // moving card
       if (draggingCardRef.current) {
         if (draggingCardRef.current.card._id !== cardId) {
           if (draggingCardRef.current.list._id === listId) {
@@ -177,40 +225,42 @@ export function Trello() {
                 _id: draggingCardRef.current.list._id,
               });
               const nextList = find(lists, { _id: listId });
-              if (previousList?.cards && nextList?.cards) {
-                remove(previousList.cards, {
-                  _id: draggingCardRef.current.card._id,
-                });
-                const nextIndex = cardId
-                  ? findIndex(nextList.cards, {
-                      _id: cardId,
-                    })
-                  : nextList.cards.length;
-                nextList.cards.splice(
-                  nextIndex,
-                  0,
-                  draggingCardRef.current.card,
-                );
-                setData({
-                  ...newData,
-                  lists: lists.map((l) => ({
-                    ...l,
-                    cards: uniqBy(l.cards, (c) => c._id.toString()),
-                  })),
-                });
-                setDraggingCard({
-                  ...draggingCardRef.current!,
-                  list: nextList,
-                });
+              if (previousList?.cards && nextList) {
+                nextList.cards = nextList.cards || [];
+                if (
+                  !nextList.cards.some(
+                    (c) => c._id === draggingCardRef.current!.card._id,
+                  )
+                ) {
+                  remove(previousList.cards, {
+                    _id: draggingCardRef.current.card._id,
+                  });
+                  const nextIndex = cardId
+                    ? findIndex(nextList.cards, {
+                        _id: cardId,
+                      })
+                    : nextList.cards.length;
+                  nextList.cards.splice(
+                    nextIndex,
+                    0,
+                    draggingCardRef.current.card,
+                  );
+                  setData({
+                    ...newData,
+                    lists,
+                  });
+                  setDraggingCard({
+                    ...draggingCardRef.current!,
+                    list: nextList,
+                  });
+                }
               }
             }
           }
         }
       }
-    };
 
-    const handleListMouseMove = (event: MouseEvent | TouchEvent) => {
-      const { listId } = getMousePosTargetCardIdAndListId(event);
+      // moving list
       if (draggingListRef.current && listId) {
         if (draggingListRef.current.list._id !== listId) {
           const newData = { ...dataRef.current };
@@ -226,16 +276,9 @@ export function Trello() {
           }
         }
       }
-    };
 
-    const handleKanbanMouseMove = (event: MouseEvent | TouchEvent) => {
-      handleCardMouseMove(event);
-      handleListMouseMove(event);
-
-      const mousePos = getMousePos(event);
-
+      // dragging card element
       if (draggingCardRef.current) {
-        document.body.classList.add("select-none");
         const { startMousePos, originalElement } = draggingCardRef.current;
         if (
           Math.abs(
@@ -244,6 +287,11 @@ export function Trello() {
               (mousePos.clientY - startMousePos.y),
           ) > 10
         ) {
+          draggingCardRef.current.unstick = true;
+        }
+        if (draggingCardRef.current.unstick) {
+          (document.activeElement as HTMLElement | undefined)?.blur();
+          document.body.classList.add("select-none");
           let dragElement = draggingCardRef.current.dragElement;
           if (!dragElement) {
             const originalElementRect = originalElement.getBoundingClientRect();
@@ -254,8 +302,8 @@ export function Trello() {
             dragElement.style.width = `${originalElementRect.width}px`;
             dragElement.style.height = `${originalElementRect.height}px`;
             dragElement.classList.add(
-              "absolute",
-              "rotate-6",
+              "fixed",
+              orientation === "horizontal" ? "rotate-6" : "rotate-1",
               "translate-x-[--x]",
               "translate-y-[--y]",
               "pointer-events-none",
@@ -280,8 +328,9 @@ export function Trello() {
           );
         }
       }
+
+      // dragging list element
       if (draggingListRef.current) {
-        document.body.classList.add("select-none");
         const { startMousePos, originalElement } = draggingListRef.current;
         if (
           Math.abs(
@@ -290,6 +339,11 @@ export function Trello() {
               (mousePos.clientY - startMousePos.y),
           ) > 10
         ) {
+          draggingListRef.current.unstick = true;
+        }
+        if (draggingListRef.current.unstick) {
+          (document.activeElement as HTMLElement | undefined)?.blur();
+          document.body.classList.add("select-none");
           let dragElement = draggingListRef.current.dragElement;
           if (!dragElement) {
             const originalElementRect = originalElement.getBoundingClientRect();
@@ -301,8 +355,8 @@ export function Trello() {
             dragElement.style.width = `${originalElementRect.width}px`;
             dragElement.style.height = `${originalElementRect.height}px`;
             dragElement.classList.add(
-              "absolute",
-              "rotate-6",
+              "fixed",
+              orientation === "horizontal" ? "rotate-6" : "rotate-1",
               "translate-x-[--x]",
               "translate-y-[--y]",
               "pointer-events-none",
@@ -329,54 +383,62 @@ export function Trello() {
       }
     };
 
-    const handleListMouseDown = (event: MouseEvent | TouchEvent) => {
-      const { listId, mousePos, target } =
-        getMousePosTargetCardIdAndListId(event);
-
-      if (listId) {
-        const list = find(dataRef.current.lists, { _id: listId });
-        if (list) {
-          if (!target.classList.contains("pointer-events-auto")) {
-            event.preventDefault();
-            setDraggingList({
-              list,
-              startMousePos: {
-                x: mousePos.clientX,
-                y: mousePos.clientY,
-              },
-              originalElement: target.closest("[data-list-id]")!,
-            });
-          }
-        }
-      }
-    };
-
     const handleCardMouseDown = (event: MouseEvent | TouchEvent) => {
-      removeDragElements();
       const { cardId, listId, mousePos, target } =
         getMousePosTargetCardIdAndListId(event);
-      if (!cardId) {
-        handleListMouseDown(event);
-      } else {
-        if (listId && cardId) {
-          const list = find(dataRef.current.lists, { _id: listId });
-          if (list) {
-            const card = find(list.cards, { _id: cardId });
-            if (card) {
-              event.preventDefault();
-              setDraggingCard({
-                card,
-                list,
-                startMousePos: {
-                  x: mousePos.clientX,
-                  y: mousePos.clientY,
-                },
-                originalElement: target,
-              });
+      if (!draggingCardRef.current?.unstick) {
+        if (
+          cardId &&
+          isTouchDevice &&
+          !target.getAttribute("class")?.includes("pointer-events-auto")
+        ) {
+          target.focus();
+        }
+      }
+      if (target.getAttribute("data-is-editing") !== "true")
+        if (!cardId) {
+          if (listId) {
+            const list = find(dataRef.current.lists, { _id: listId });
+            if (list) {
+              if (
+                !target.getAttribute("class")?.includes("pointer-events-auto")
+              ) {
+                event.preventDefault();
+                setDraggingList({
+                  list,
+                  startMousePos: {
+                    x: mousePos.clientX,
+                    y: mousePos.clientY,
+                  },
+                  originalElement: target.closest("[data-list-id]")!,
+                });
+              }
+            }
+          }
+        } else {
+          if (listId && cardId) {
+            const list = find(dataRef.current.lists, { _id: listId });
+            if (list) {
+              const card = find(list.cards, { _id: cardId });
+              if (card) {
+                if (
+                  !target.getAttribute("class")?.includes("pointer-events-auto")
+                ) {
+                  event.preventDefault();
+                  setDraggingCard({
+                    card,
+                    list,
+                    startMousePos: {
+                      x: mousePos.clientX,
+                      y: mousePos.clientY,
+                    },
+                    originalElement: target,
+                  });
+                }
+              }
             }
           }
         }
-      }
     };
 
     document.addEventListener("mouseup", handleKanbanMouseUp);
@@ -445,6 +507,20 @@ export function Trello() {
     [],
   );
 
+  const handleListTitleChange = useCallback(
+    (list: IList) => (title: string) => {
+      const newData = { ...dataRef.current };
+      const lists = newData.lists || [];
+      const listToUpdate = find(lists, { _id: list._id });
+      if (listToUpdate) {
+        listToUpdate.title = title;
+        setData(newData);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const handleTaskDelete = useCallback(
     (card: ICard, list: IList) => () => {
       const newData = { ...dataRef.current };
@@ -459,10 +535,29 @@ export function Trello() {
     [],
   );
 
+  const handleTaskTitleChange = useCallback(
+    (card: ICard, list: IList) => (title: string) => {
+      const newData = { ...dataRef.current };
+      const lists = newData.lists || [];
+      const listToUpdate = find(lists, { _id: list._id });
+      if (listToUpdate?.cards) {
+        const cardToUpdate = find(listToUpdate.cards, { _id: card._id });
+        if (cardToUpdate) {
+          cardToUpdate.title = title;
+          setData(newData);
+        }
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   return (
     <div
-      className="group/kanban flex h-full gap-2 p-2"
-      data-is-dragging={!!draggingCard}
+      className={clsx("group/kanban flex h-full gap-2 p-2", {
+        "flex-col": orientation === "vertical",
+      })}
+      data-is-dragging={!!draggingCard?.unstick}
       ref={trelloRef}
     >
       {data.lists?.map((list) => (
@@ -473,7 +568,8 @@ export function Trello() {
               draggingList?.dragElement && draggingList?.list._id === list._id
             }
             onDelete={handleListDelete(list)}
-            data-list-id={list._id}
+            _id={list._id}
+            onChangeTitle={handleListTitleChange(list)}
           >
             {list.cards?.map((card) => (
               <Card
@@ -485,12 +581,13 @@ export function Trello() {
                   draggingCard?.list._id === list._id
                 }
                 onDelete={handleTaskDelete(card, list)}
-                data-card-id={card._id}
+                _id={card._id}
+                onChangeTitle={handleTaskTitleChange(card, list)}
               />
             ))}
             <Button
               variant="text"
-              className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
+              className="dark:hover:bg-tranparent hover:bg-tranparent pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500 group-data-[is-dragging=false]/kanban:hover:bg-zinc-500/5 group-data-[is-dragging=false]/kanban:dark:hover:bg-white/5"
               leading={<PlusIcon className="-ml-0.5 mr-1" />}
               onClick={handleAddNewTaskClick(list)}
             >
@@ -505,6 +602,7 @@ export function Trello() {
           className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
           leading={<PlusIcon className="-ml-0.5 mr-1" />}
           onClick={handleAddNewListClick}
+          data-new-list-button=""
         >
           Add new list
         </Button>

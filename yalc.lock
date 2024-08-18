@@ -2,7 +2,7 @@
   "version": "v1",
   "packages": {
     "@italodeandra/ui": {
-      "signature": "928477588a98177c7fc2231870592cb8",
+      "signature": "8cb550ac99bc0d5b75e4c519327fabd2",
       "file": true
     },
     "@italodeandra/auth": {

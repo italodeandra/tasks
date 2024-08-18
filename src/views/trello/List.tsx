@@ -1,4 +1,5 @@
 import {
+  FocusEvent,
   HTMLAttributes,
   KeyboardEvent,
   MouseEvent,
@@ -15,12 +16,16 @@ export function List({
   dragging,
   className,
   onDelete,
+  onChangeTitle,
+  _id,
   ...props
 }: {
   title: string;
   children: ReactNode;
   dragging?: boolean;
   onDelete?: () => void;
+  onChangeTitle?: (title: string) => void;
+  _id: string;
 } & HTMLAttributes<HTMLDivElement>) {
   const [editing, setEditing] = useState(false);
 
@@ -29,12 +34,23 @@ export function List({
     const target = e.currentTarget;
     setTimeout(() => {
       target.focus();
+      const range = document.createRange();
+      range.selectNodeContents(target);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+        selection.addRange(range);
+      }
     });
   }, []);
 
-  const handleBlur = useCallback(() => {
-    setEditing(false);
-  }, []);
+  const handleBlur = useCallback(
+    (e: FocusEvent<HTMLDivElement>) => {
+      setEditing(false);
+      onChangeTitle?.(e.currentTarget.innerHTML);
+    },
+    [onChangeTitle],
+  );
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
@@ -45,6 +61,7 @@ export function List({
 
   return (
     <div
+      {...props}
       className={clsx(
         "flex flex-col gap-2 rounded-xl bg-zinc-900 p-2",
         {
@@ -52,7 +69,7 @@ export function List({
         },
         className,
       )}
-      {...props}
+      data-list-id={_id}
     >
       <ContextMenu.Root>
         <ContextMenu.Trigger asChild>
@@ -68,6 +85,7 @@ export function List({
               __html: title,
             }}
             onKeyDown={handleKeyDown}
+            data-is-editing={editing}
           />
         </ContextMenu.Trigger>
         <ContextMenu.Content>

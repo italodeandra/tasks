@@ -105,6 +105,7 @@ const config = {
             addVariant("scrolled", "html.scrolled &");
             addVariant("not-scrolled", "html:not(.scrolled) &");
             addVariant("not-dark", "html:not(.dark) &");
+            addVariant("touch", "html.touch &");
         }),
     ],
 };
