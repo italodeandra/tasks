@@ -12,6 +12,7 @@ import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -570,8 +571,24 @@ const thisIsCode = 2;
 
   const handleTaskClick = useCallback(() => {
     showDialog({
-      title: "Task title",
-      content: "Task content",
+      title: (
+        <MarkdownEditor
+          value="Task title"
+          onChange={console.log}
+          className="-mx-1 -mt-0.5 rounded-md px-1"
+          editOnDoubleClick
+          editHighlight
+        />
+      ),
+      content: (
+        <MarkdownEditor
+          value="Task content"
+          onChange={console.log}
+          className="-mx-1 rounded-md px-1"
+          editOnDoubleClick
+          editHighlight
+        />
+      ),
     });
   }, []);
 
