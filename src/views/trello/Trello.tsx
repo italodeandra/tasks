@@ -395,19 +395,20 @@ const thisIsCode = 2;
     const handleCardMouseDown = (event: MouseEvent | TouchEvent) => {
       const { cardId, listId, mousePos, target } =
         getMousePosTargetCardIdAndListId(event);
-      if (!draggingCardRef.current?.unstick) {
-        if (document.activeElement === target) {
-          clearTimeout(taskClickTimeout.current);
-          taskClickTimeout.current = window.setTimeout(() => {
-            handleTaskClick();
-          }, 300);
-        }
-        if (
-          cardId &&
-          isTouchDevice &&
-          !target.getAttribute("class")?.includes("pointer-events-auto")
-        ) {
-          target.focus();
+      if (isTouchDevice) {
+        if (!draggingCardRef.current?.unstick) {
+          if (document.activeElement === target) {
+            clearTimeout(taskClickTimeout.current);
+            taskClickTimeout.current = window.setTimeout(() => {
+              handleTaskClick();
+            }, 300);
+          }
+          if (
+            cardId &&
+            !target.getAttribute("class")?.includes("pointer-events-auto")
+          ) {
+            target.focus();
+          }
         }
       }
       if (target.getAttribute("data-is-editing") !== "true")

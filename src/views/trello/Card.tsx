@@ -11,9 +11,8 @@ import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import Button from "@italodeandra/ui/components/Button";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
-import { markdownConverter } from "../../utils/markdownConverter";
-import { markdownClassNames } from "./markdown.classNames";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
+import { MarkdownEditor } from "./MarkdownEditor";
 
 export function Card({
   title,
@@ -38,34 +37,7 @@ export function Card({
 
   const handleEdit = useCallback(() => {
     setEditing(true);
-    editableRef.current!.innerText = title;
-    const target = editableRef.current;
-    setTimeout(() => {
-      if (target) {
-        target.focus();
-        const range = document.createRange();
-        range.selectNodeContents(target);
-        const selection = window.getSelection();
-        if (selection) {
-          selection.removeAllRanges();
-          selection.addRange(range);
-        }
-      }
-    });
-  }, [title]);
-
-  const handleBlur = useCallback(() => {
-    setEditing(false);
-    window.getSelection()?.removeAllRanges();
-    setTimeout(() => {
-      editableRef.current!.parentElement?.focus();
-    });
-    const newTitle = editableRef.current!.innerText;
-    onChangeTitle?.(newTitle);
-    editableRef.current!.innerHTML = markdownConverter.makeHtml(
-      newTitle.replaceAll(" ", ""),
-    );
-  }, [onChangeTitle]);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -127,19 +99,13 @@ export function Card({
           onTouchStart={!editing ? handleClick : undefined}
         >
           <div className="pointer-events-none relative">
-            <div
+            <MarkdownEditor
               ref={editableRef}
-              dangerouslySetInnerHTML={{
-                __html: markdownConverter.makeHtml(title.replaceAll(" ", "")),
-              }}
-              onKeyDown={handleKeyDown}
-              onBlur={handleBlur}
-              contentEditable={editing}
-              className={clsx("p-3 outline-none", markdownClassNames, {
-                "pointer-events-auto": editing,
-                "cursor-pointer": !editing && onChangeTitle,
-              })}
-              data-is-editing={editing}
+              value={title}
+              onChange={onChangeTitle}
+              editing={editing}
+              onChangeEditing={setEditing}
+              className="p-3"
             />
             {!editing && (
               <Button
