@@ -11,8 +11,6 @@ import { Card } from "./Card";
 import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
-import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { MarkdownEditor } from "./MarkdownEditor";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -46,52 +44,23 @@ function getMousePosTarget(
 
 export function Trello({
   orientation = "horizontal",
+  onClickCard,
+  data: dataProp,
+  cardName = "card",
 }: {
   orientation?: "horizontal" | "vertical";
+  onClickCard?: () => void;
+  data: {
+    lists?: IList[];
+  };
+  cardName?: string;
 }) {
   const [data, setData] = useState<{
     lists?: IList[];
-  }>({
-    lists: [
-      {
-        _id: "665e78c7b3d3cf0f86db4c8d",
-        title: "Todo",
-        cards: [
-          {
-            _id: "665e78f7c9e5ab7e262c1e9a",
-            title: "Buy milk",
-          },
-          {
-            _id: "665e78f9f32b8de9e1532975",
-            title: "Buy bread",
-          },
-          {
-            _id: "665f2378c6316ed4eefbaed8",
-            title: "Buy eggs",
-          },
-        ],
-      },
-      {
-        _id: "665f23b72ca02db00eafcb23",
-        title: "Doing",
-        cards: [
-          {
-            _id: "665fdb6c403542034d819d2f",
-            title: `Coding
-
-When there's \`code\` in the middle of text
-
-\`\`\`js
-const thisIsCode = 2;
-\`\`\``,
-          },
-        ],
-      },
-    ],
-  });
+  }>(dataProp);
   const dataRef = useLatest(data);
   const trelloRef = useRef<HTMLDivElement>(null);
-  const taskClickTimeout = useRef(0);
+  const cardClickTimeout = useRef(0);
 
   const [draggingCard, setDraggingCard] = useState<{
     card: ICard;
@@ -296,7 +265,7 @@ const thisIsCode = 2;
               (mousePos.clientY - startMousePos.y),
           ) > 10
         ) {
-          clearTimeout(taskClickTimeout.current);
+          clearTimeout(cardClickTimeout.current);
           draggingCardRef.current.unstick = true;
         }
         if (draggingCardRef.current.unstick) {
@@ -398,10 +367,10 @@ const thisIsCode = 2;
         getMousePosTargetCardIdAndListId(event);
       if (isTouchDevice) {
         if (!draggingCardRef.current?.unstick) {
-          if (document.activeElement === target) {
-            clearTimeout(taskClickTimeout.current);
-            taskClickTimeout.current = window.setTimeout(() => {
-              handleTaskClick();
+          if (document.activeElement === target && onClickCard) {
+            clearTimeout(cardClickTimeout.current);
+            cardClickTimeout.current = window.setTimeout(() => {
+              onClickCard();
             }, 300);
           }
           if (
@@ -482,7 +451,7 @@ const thisIsCode = 2;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleAddNewTaskClick = useCallback(
+  const handleAddNewCardClick = useCallback(
     (list: IList) => () => {
       const newData = { ...dataRef.current };
       const lists = newData.lists || [];
@@ -492,7 +461,7 @@ const thisIsCode = 2;
           ...(listToUpdate.cards || []),
           {
             _id: isomorphicObjectId().toString(),
-            title: "New task",
+            title: `New ${cardName}`, // TODO show be a new empty card already being edited and focused
           },
         ];
         setData(newData);
@@ -538,7 +507,7 @@ const thisIsCode = 2;
     [],
   );
 
-  const handleTaskDelete = useCallback(
+  const handleCardDelete = useCallback(
     (card: ICard, list: IList) => () => {
       const newData = { ...dataRef.current };
       const lists = newData.lists || [];
@@ -552,7 +521,7 @@ const thisIsCode = 2;
     [],
   );
 
-  const handleTaskTitleChange = useCallback(
+  const handleCardTitleChange = useCallback(
     (card: ICard, list: IList) => (title: string) => {
       const newData = { ...dataRef.current };
       const lists = newData.lists || [];
@@ -568,29 +537,6 @@ const thisIsCode = 2;
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
-
-  const handleTaskClick = useCallback(() => {
-    showDialog({
-      title: (
-        <MarkdownEditor
-          value="Task title"
-          onChange={console.log}
-          className="-mx-1 -mt-0.5 rounded-md px-1"
-          editOnDoubleClick
-          editHighlight
-        />
-      ),
-      content: (
-        <MarkdownEditor
-          value="Task content"
-          onChange={console.log}
-          className="-mx-1 rounded-md px-1"
-          editOnDoubleClick
-          editHighlight
-        />
-      ),
-    });
-  }, []);
 
   return (
     <div
@@ -621,19 +567,20 @@ const thisIsCode = 2;
                   draggingCard?.card._id === card._id &&
                   draggingCard?.list._id === list._id
                 }
-                onDelete={handleTaskDelete(card, list)}
+                onDelete={handleCardDelete(card, list)}
                 _id={card._id}
-                onChangeTitle={handleTaskTitleChange(card, list)}
-                onClick={handleTaskClick}
+                onChangeTitle={handleCardTitleChange(card, list)}
+                onClick={onClickCard}
+                cardName={cardName}
               />
             ))}
             <Button
               variant="text"
               className="dark:hover:bg-tranparent hover:bg-tranparent pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500 group-data-[is-dragging=false]/kanban:hover:bg-zinc-500/5 group-data-[is-dragging=false]/kanban:dark:hover:bg-white/5"
               leading={<PlusIcon className="-ml-0.5 mr-1" />}
-              onClick={handleAddNewTaskClick(list)}
+              onClick={handleAddNewCardClick(list)}
             >
-              Add new task
+              Add new {cardName}
             </Button>
           </List>
         </div>

@@ -5,6 +5,7 @@ import {
   useEffect,
   useRef,
   useState,
+  MouseEvent,
 } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
@@ -22,6 +23,7 @@ export function Card({
   onChangeTitle,
   onClick,
   _id,
+  cardName,
   ...props
 }: {
   title: string;
@@ -29,6 +31,7 @@ export function Card({
   onDelete?: () => void;
   onChangeTitle?: (title: string) => void;
   onClick?: () => void;
+  cardName: string;
   _id: string;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
@@ -70,6 +73,15 @@ export function Card({
     }
   }, [onClick]);
 
+  const handleMouseLeftDown = useCallback(
+    (event: MouseEvent) => {
+      if (event.button === 0) {
+        handleClick();
+      }
+    },
+    [handleClick],
+  );
+
   useEffect(() => {
     clearTimeout(clickTimeout.current);
   }, [dragging]);
@@ -95,7 +107,7 @@ export function Card({
           onKeyDown={handleKeyDown}
           tabIndex={0}
           data-card-id={_id}
-          onMouseDown={!editing ? handleClick : undefined}
+          onMouseDown={!editing ? handleMouseLeftDown : undefined}
           onTouchStart={!editing ? handleClick : undefined}
         >
           <div className="pointer-events-none relative">
@@ -128,8 +140,12 @@ export function Card({
         </div>
       </ContextMenu.Trigger>
       <ContextMenu.Content>
-        <ContextMenu.Item onClick={handleEdit}>Edit task</ContextMenu.Item>
-        <ContextMenu.Item onClick={onDelete}>Delete task</ContextMenu.Item>
+        <ContextMenu.Item onClick={handleEdit}>
+          Edit {cardName}
+        </ContextMenu.Item>
+        <ContextMenu.Item onClick={onDelete}>
+          Delete {cardName}
+        </ContextMenu.Item>
       </ContextMenu.Content>
     </ContextMenu.Root>
   );
