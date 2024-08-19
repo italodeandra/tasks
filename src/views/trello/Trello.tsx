@@ -457,14 +457,21 @@ export function Trello({
       const lists = newData.lists || [];
       const listToUpdate = find(lists, { _id: list._id });
       if (listToUpdate) {
+        const _id = isomorphicObjectId().toString();
         listToUpdate.cards = [
           ...(listToUpdate.cards || []),
           {
-            _id: isomorphicObjectId().toString(),
-            title: `New ${cardName}`, // TODO show be a new empty card already being edited and focused
+            _id,
+            title: "",
           },
         ];
         setData(newData);
+        setTimeout(() => {
+          const target = trelloRef.current?.querySelector(
+            `[data-card-id="${_id}"]`,
+          );
+          target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+        });
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -523,15 +530,19 @@ export function Trello({
 
   const handleCardTitleChange = useCallback(
     (card: ICard, list: IList) => (title: string) => {
-      const newData = { ...dataRef.current };
-      const lists = newData.lists || [];
-      const listToUpdate = find(lists, { _id: list._id });
-      if (listToUpdate?.cards) {
-        const cardToUpdate = find(listToUpdate.cards, { _id: card._id });
-        if (cardToUpdate) {
-          cardToUpdate.title = title;
-          setData(newData);
+      if (title) {
+        const newData = { ...dataRef.current };
+        const lists = newData.lists || [];
+        const listToUpdate = find(lists, { _id: list._id });
+        if (listToUpdate?.cards) {
+          const cardToUpdate = find(listToUpdate.cards, { _id: card._id });
+          if (cardToUpdate) {
+            cardToUpdate.title = title;
+            setData(newData);
+          }
         }
+      } else {
+        handleCardDelete(card, list)();
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

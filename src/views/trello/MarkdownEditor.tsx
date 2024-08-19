@@ -78,7 +78,9 @@ function MarkdownEditorWithRef(
     setEditing(false);
     window.getSelection()?.removeAllRanges();
     setTimeout(() => {
-      innerRef.current!.parentElement?.focus();
+      if (innerRef.current?.parentElement) {
+        innerRef.current.parentElement.focus();
+      }
     });
     const newTitle = innerRef.current!.innerText;
     onChange?.(newTitle);
