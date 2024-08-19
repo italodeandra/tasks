@@ -2,6 +2,7 @@ import {
   HTMLAttributes,
   KeyboardEvent,
   useCallback,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -12,6 +13,7 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import { markdownConverter } from "../../utils/markdownConverter";
 import { markdownClassNames } from "./markdown.classNames";
+import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 
 export function Card({
   title,
@@ -19,6 +21,7 @@ export function Card({
   className,
   onDelete,
   onChangeTitle,
+  onClick,
   _id,
   ...props
 }: {
@@ -26,10 +29,12 @@ export function Card({
   dragging?: boolean;
   onDelete?: () => void;
   onChangeTitle?: (title: string) => void;
+  onClick?: () => void;
   _id: string;
-} & HTMLAttributes<HTMLDivElement>) {
+} & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
+  const clickTimeout = useRef(0);
 
   const handleEdit = useCallback(() => {
     setEditing(true);
@@ -79,6 +84,24 @@ export function Card({
     [editing, handleEdit],
   );
 
+  const handleDoubleClick = useCallback(() => {
+    clearTimeout(clickTimeout.current);
+    handleEdit();
+  }, [handleEdit]);
+
+  const handleClick = useCallback(() => {
+    clearTimeout(clickTimeout.current);
+    if (onClick) {
+      clickTimeout.current = window.setTimeout(() => {
+        onClick();
+      }, 300);
+    }
+  }, [onClick]);
+
+  useEffect(() => {
+    clearTimeout(clickTimeout.current);
+  }, [dragging]);
+
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>
@@ -90,17 +113,18 @@ export function Card({
             {
               "group-data-[is-dragging=false]/kanban:hover:bg-zinc-700":
                 !editing && onChangeTitle,
-            },
-            {
-              "opacity-30 grayscale": dragging,
+              "cursor-grab opacity-30 grayscale": dragging,
               "ring-2 ring-primary-500": editing,
+              "cursor-pointer": onClick && !editing,
             },
             className,
           )}
-          onDoubleClick={onChangeTitle ? handleEdit : undefined}
+          onDoubleClick={onChangeTitle ? handleDoubleClick : undefined}
           onKeyDown={handleKeyDown}
           tabIndex={0}
           data-card-id={_id}
+          onMouseDown={!editing ? handleClick : undefined}
+          onTouchStart={!editing ? handleClick : undefined}
         >
           <div className="pointer-events-none relative">
             <div
@@ -128,6 +152,8 @@ export function Card({
                 )}
                 tabIndex={-1}
                 onClick={handleEdit}
+                onTouchStart={stopPropagation}
+                onMouseDown={stopPropagation}
               >
                 <PencilIcon className="pointer-events-none" />
               </Button>

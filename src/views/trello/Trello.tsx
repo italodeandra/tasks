@@ -11,6 +11,7 @@ import { Card } from "./Card";
 import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
+import { showDialog } from "@italodeandra/ui/components/Dialog";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -89,6 +90,7 @@ const thisIsCode = 2;
   });
   const dataRef = useLatest(data);
   const trelloRef = useRef<HTMLDivElement>(null);
+  const taskClickTimeout = useRef(0);
 
   const [draggingCard, setDraggingCard] = useState<{
     card: ICard;
@@ -293,6 +295,7 @@ const thisIsCode = 2;
               (mousePos.clientY - startMousePos.y),
           ) > 10
         ) {
+          clearTimeout(taskClickTimeout.current);
           draggingCardRef.current.unstick = true;
         }
         if (draggingCardRef.current.unstick) {
@@ -393,6 +396,12 @@ const thisIsCode = 2;
       const { cardId, listId, mousePos, target } =
         getMousePosTargetCardIdAndListId(event);
       if (!draggingCardRef.current?.unstick) {
+        if (document.activeElement === target) {
+          clearTimeout(taskClickTimeout.current);
+          taskClickTimeout.current = window.setTimeout(() => {
+            handleTaskClick();
+          }, 300);
+        }
         if (
           cardId &&
           isTouchDevice &&
@@ -558,10 +567,18 @@ const thisIsCode = 2;
     [],
   );
 
+  const handleTaskClick = useCallback(() => {
+    showDialog({
+      title: "Task title",
+      content: "Task content",
+    });
+  }, []);
+
   return (
     <div
       className={clsx("group/kanban flex h-full gap-2 p-2", {
         "flex-col": orientation === "vertical",
+        "[&_*]:cursor-grab": !!draggingCard?.unstick,
       })}
       data-is-dragging={!!draggingCard?.unstick}
       ref={trelloRef}
@@ -589,6 +606,7 @@ const thisIsCode = 2;
                 onDelete={handleTaskDelete(card, list)}
                 _id={card._id}
                 onChangeTitle={handleTaskTitleChange(card, list)}
+                onClick={handleTaskClick}
               />
             ))}
             <Button
