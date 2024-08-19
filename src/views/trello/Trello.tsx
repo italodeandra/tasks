@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { find, findIndex, remove } from "lodash-es";
+import { find, findIndex, isEqual, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
@@ -11,6 +11,7 @@ import { Card } from "./Card";
 import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
+import { produce } from "immer";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -47,20 +48,32 @@ export function Trello({
   onClickCard,
   data: dataProp,
   cardName = "card",
+  onChange,
 }: {
   orientation?: "horizontal" | "vertical";
-  onClickCard?: () => void;
-  data: {
-    lists?: IList[];
-  };
+  onClickCard?: (selected: { cardId: string; listId: string }) => void;
+  data: IList[];
   cardName?: string;
+  onChange?: (data: IList[]) => void;
 }) {
-  const [data, setData] = useState<{
-    lists?: IList[];
-  }>(dataProp);
+  const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
   const trelloRef = useRef<HTMLDivElement>(null);
   const cardClickTimeout = useRef(0);
+
+  useEffect(() => {
+    if (onChange && !isEqual(data, dataProp)) {
+      onChange(data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  useEffect(() => {
+    if (!isEqual(data, dataProp)) {
+      setData(dataProp);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataProp]);
 
   const [draggingCard, setDraggingCard] = useState<{
     card: ICard;
@@ -126,25 +139,22 @@ export function Trello({
         const target = getMousePosTarget(mousePos);
         const newListButton = target.closest("[data-new-list-button]");
         if (newListButton) {
-          const newData = { ...dataRef.current };
-          const lists = dataRef.current.lists || [];
-          const previousList = find(lists, {
-            _id: draggingCardRef.current.list._id,
+          const lists = produce(dataRef.current, (draft) => {
+            const previousList = find(draft, {
+              _id: draggingCardRef.current!.list._id,
+            });
+            if (previousList?.cards) {
+              remove(previousList.cards, {
+                _id: draggingCardRef.current!.card._id,
+              });
+              lists.push({
+                _id: isomorphicObjectId().toString(),
+                title: "New list",
+                cards: [draggingCardRef.current!.card],
+              });
+            }
           });
-          if (previousList?.cards) {
-            remove(previousList.cards, {
-              _id: draggingCardRef.current.card._id,
-            });
-            lists.push({
-              _id: isomorphicObjectId().toString(),
-              title: "New list",
-              cards: [draggingCardRef.current.card],
-            });
-            setData({
-              ...newData,
-              lists,
-            });
-          }
+          setData(lists);
         }
 
         draggingCardRef.current.originalElement.classList.remove("opacity-50");
@@ -166,73 +176,70 @@ export function Trello({
         if (draggingCardRef.current.card._id !== cardId) {
           if (draggingCardRef.current.list._id === listId) {
             if (cardId) {
-              const newData = { ...dataRef.current };
-              const lists = newData.lists || [];
-              const listToUpdate = find(lists, { _id: listId });
-              if (listToUpdate?.cards) {
-                const previousIndex = findIndex(listToUpdate.cards, {
-                  _id: draggingCardRef.current.card._id,
-                });
-                const nextIndex = findIndex(listToUpdate.cards, {
-                  _id: cardId,
-                });
-                const hoveredElementRect = target.getBoundingClientRect();
-                const movingElementRect =
-                  draggingCardRef.current.dragElement?.getBoundingClientRect();
-                if (
-                  movingElementRect &&
-                  ((nextIndex > previousIndex &&
-                    mousePos.clientY >
-                      hoveredElementRect.top +
-                        hoveredElementRect.height -
-                        movingElementRect.height) ||
-                    (nextIndex < previousIndex &&
-                      mousePos.clientY <
-                        hoveredElementRect.top + movingElementRect.height))
-                ) {
-                  move(listToUpdate.cards, previousIndex, nextIndex);
-                  setData(newData);
+              const lists = produce(dataRef.current, (draft) => {
+                const listToUpdate = find(draft, { _id: listId });
+                if (listToUpdate?.cards) {
+                  const previousIndex = findIndex(listToUpdate.cards, {
+                    _id: draggingCardRef.current!.card._id,
+                  });
+                  const nextIndex = findIndex(listToUpdate.cards, {
+                    _id: cardId,
+                  });
+                  const hoveredElementRect = target.getBoundingClientRect();
+                  const movingElementRect =
+                    draggingCardRef.current!.dragElement?.getBoundingClientRect();
+                  if (
+                    movingElementRect &&
+                    ((nextIndex > previousIndex &&
+                      mousePos.clientY >
+                        hoveredElementRect.top +
+                          hoveredElementRect.height -
+                          movingElementRect.height) ||
+                      (nextIndex < previousIndex &&
+                        mousePos.clientY <
+                          hoveredElementRect.top + movingElementRect.height))
+                  ) {
+                    move(listToUpdate.cards, previousIndex, nextIndex);
+                  }
                 }
-              }
+              });
+              setData(lists);
             }
           } else {
             if (listId) {
-              const newData = { ...dataRef.current };
-              const lists = dataRef.current.lists || [];
-              const previousList = find(lists, {
-                _id: draggingCardRef.current.list._id,
-              });
-              const nextList = find(lists, { _id: listId });
-              if (previousList?.cards && nextList) {
-                nextList.cards = nextList.cards || [];
-                if (
-                  !nextList.cards.some(
-                    (c) => c._id === draggingCardRef.current!.card._id,
-                  )
-                ) {
-                  remove(previousList.cards, {
-                    _id: draggingCardRef.current.card._id,
-                  });
-                  const nextIndex = cardId
-                    ? findIndex(nextList.cards, {
-                        _id: cardId,
-                      })
-                    : nextList.cards.length;
-                  nextList.cards.splice(
-                    nextIndex,
-                    0,
-                    draggingCardRef.current.card,
-                  );
-                  setData({
-                    ...newData,
-                    lists,
-                  });
-                  setDraggingCard({
-                    ...draggingCardRef.current!,
-                    list: nextList,
-                  });
+              const lists = produce(dataRef.current, (draft) => {
+                const previousList = find(draft, {
+                  _id: draggingCardRef.current!.list._id,
+                });
+                const nextList = find(draft, { _id: listId });
+                if (previousList?.cards && nextList) {
+                  nextList.cards = nextList.cards || [];
+                  if (
+                    !nextList.cards.some(
+                      (c) => c._id === draggingCardRef.current!.card._id,
+                    )
+                  ) {
+                    remove(previousList.cards, {
+                      _id: draggingCardRef.current!.card._id,
+                    });
+                    const nextIndex = cardId
+                      ? findIndex(nextList.cards, {
+                          _id: cardId,
+                        })
+                      : nextList.cards.length;
+                    nextList.cards.splice(
+                      nextIndex,
+                      0,
+                      draggingCardRef.current!.card,
+                    );
+                    setDraggingCard({
+                      ...draggingCardRef.current!,
+                      list: nextList,
+                    });
+                  }
                 }
-              }
+              });
+              setData(lists);
             }
           }
         }
@@ -241,17 +248,16 @@ export function Trello({
       // moving list
       if (draggingListRef.current && listId) {
         if (draggingListRef.current.list._id !== listId) {
-          const newData = { ...dataRef.current };
-          if (newData.lists) {
-            const previousIndex = findIndex(newData.lists, {
-              _id: draggingListRef.current.list._id,
+          const newData = produce(dataRef.current, (draft) => {
+            const previousIndex = findIndex(draft, {
+              _id: draggingListRef.current!.list._id,
             });
-            const nextIndex = findIndex(newData.lists, {
+            const nextIndex = findIndex(draft, {
               _id: listId,
             });
-            move(newData.lists, previousIndex, nextIndex);
-            setData(newData);
-          }
+            move(draft, previousIndex, nextIndex);
+          });
+          setData(newData);
         }
       }
 
@@ -370,7 +376,7 @@ export function Trello({
           if (document.activeElement === target && onClickCard) {
             clearTimeout(cardClickTimeout.current);
             cardClickTimeout.current = window.setTimeout(() => {
-              onClickCard();
+              onClickCard({ cardId: cardId!, listId: listId! });
             }, 300);
           }
           if (
@@ -384,7 +390,7 @@ export function Trello({
       if (target.getAttribute("data-is-editing") !== "true")
         if (!cardId) {
           if (listId) {
-            const list = find(dataRef.current.lists, { _id: listId });
+            const list = find(dataRef.current, { _id: listId });
             if (list) {
               if (
                 !target.getAttribute("class")?.includes("pointer-events-auto")
@@ -403,7 +409,7 @@ export function Trello({
           }
         } else {
           if (listId && cardId) {
-            const list = find(dataRef.current.lists, { _id: listId });
+            const list = find(dataRef.current, { _id: listId });
             if (list) {
               const card = find(list.cards, { _id: cardId });
               if (card) {
@@ -453,48 +459,48 @@ export function Trello({
 
   const handleAddNewCardClick = useCallback(
     (list: IList) => () => {
-      const newData = { ...dataRef.current };
-      const lists = newData.lists || [];
-      const listToUpdate = find(lists, { _id: list._id });
-      if (listToUpdate) {
-        const _id = isomorphicObjectId().toString();
-        listToUpdate.cards = [
-          ...(listToUpdate.cards || []),
-          {
-            _id,
-            title: "",
-          },
-        ];
-        setData(newData);
-        setTimeout(() => {
-          const target = trelloRef.current?.querySelector(
-            `[data-card-id="${_id}"]`,
-          );
-          target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
-        });
-      }
+      const _id = isomorphicObjectId().toString();
+      const lists = produce(dataRef.current, (draft) => {
+        const listToUpdate = find(draft, { _id: list._id });
+        if (listToUpdate) {
+          listToUpdate.cards = [
+            ...(listToUpdate.cards || []),
+            {
+              _id,
+              title: "",
+            },
+          ];
+        }
+      });
+      setData(lists);
+      setTimeout(() => {
+        const target = trelloRef.current?.querySelector(
+          `[data-card-id="${_id}"]`,
+        );
+        target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
   const handleAddNewListClick = useCallback(() => {
-    const newData = { ...dataRef.current };
-    const lists = newData.lists || [];
-    lists.push({
-      _id: isomorphicObjectId().toString(),
-      title: "New list",
+    const lists = produce(dataRef.current, (draft) => {
+      draft.push({
+        _id: isomorphicObjectId().toString(),
+        title: "New list",
+      });
     });
-    setData(newData);
+    setData(lists);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleListDelete = useCallback(
     (list: IList) => () => {
-      const newData = { ...dataRef.current };
-      const lists = newData.lists || [];
-      remove(lists, { _id: list._id });
-      setData(newData);
+      const lists = produce(dataRef.current, (draft) => {
+        remove(draft, { _id: list._id });
+      });
+      setData(lists);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -502,13 +508,13 @@ export function Trello({
 
   const handleListTitleChange = useCallback(
     (list: IList) => (title: string) => {
-      const newData = { ...dataRef.current };
-      const lists = newData.lists || [];
-      const listToUpdate = find(lists, { _id: list._id });
-      if (listToUpdate) {
-        listToUpdate.title = title;
-        setData(newData);
-      }
+      const lists = produce(dataRef.current, (draft) => {
+        const listToUpdate = find(draft, { _id: list._id });
+        if (listToUpdate) {
+          listToUpdate.title = title;
+        }
+      });
+      setData(lists);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -516,13 +522,13 @@ export function Trello({
 
   const handleCardDelete = useCallback(
     (card: ICard, list: IList) => () => {
-      const newData = { ...dataRef.current };
-      const lists = newData.lists || [];
-      const listToUpdate = find(lists, { _id: list._id });
-      if (listToUpdate?.cards) {
-        remove(listToUpdate.cards, { _id: card._id });
-        setData(newData);
-      }
+      const lists = produce(dataRef.current, (draft) => {
+        const listToUpdate = find(draft, { _id: list._id });
+        if (listToUpdate?.cards) {
+          remove(listToUpdate.cards, { _id: card._id });
+        }
+      });
+      setData(lists);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -531,22 +537,32 @@ export function Trello({
   const handleCardTitleChange = useCallback(
     (card: ICard, list: IList) => (title: string) => {
       if (title) {
-        const newData = { ...dataRef.current };
-        const lists = newData.lists || [];
-        const listToUpdate = find(lists, { _id: list._id });
-        if (listToUpdate?.cards) {
-          const cardToUpdate = find(listToUpdate.cards, { _id: card._id });
-          if (cardToUpdate) {
-            cardToUpdate.title = title;
-            setData(newData);
+        const lists = produce(dataRef.current, (draft) => {
+          const listToUpdate = find(draft, { _id: list._id });
+          if (listToUpdate?.cards) {
+            const cardToUpdate = find(listToUpdate.cards, { _id: card._id });
+            if (cardToUpdate) {
+              cardToUpdate.title = title;
+            }
           }
-        }
+        });
+        setData(lists);
       } else {
         handleCardDelete(card, list)();
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
+  );
+
+  const handleCardClick = useCallback(
+    (card: ICard, list: IList) => () => {
+      onClickCard?.({
+        cardId: card._id,
+        listId: list._id,
+      });
+    },
+    [onClickCard],
   );
 
   return (
@@ -558,7 +574,7 @@ export function Trello({
       data-is-dragging={!!draggingCard?.unstick}
       ref={trelloRef}
     >
-      {data.lists?.map((list) => (
+      {data.map((list) => (
         <div key={list._id.toString()} className="flex shrink-0 flex-col">
           <List
             title={list.title}
@@ -581,7 +597,7 @@ export function Trello({
                 onDelete={handleCardDelete(card, list)}
                 _id={card._id}
                 onChangeTitle={handleCardTitleChange(card, list)}
-                onClick={onClickCard}
+                onClick={handleCardClick(card, list)}
                 cardName={cardName}
               />
             ))}
