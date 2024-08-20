@@ -12,6 +12,7 @@ import { List } from "./List";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { produce } from "immer";
+import { showNotification } from "@italodeandra/ui/components/Notifications/notifications.state";
 
 function removeDragElements() {
   const elementsToRemove = document.querySelectorAll("[data-drag-element]");
@@ -48,12 +49,14 @@ export function Trello({
   onClickCard,
   data: dataProp,
   cardName = "card",
+  listName = "list",
   onChange,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
   data: IList[];
   cardName?: string;
+  listName?: string;
   onChange?: (data: IList[]) => void;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
@@ -485,18 +488,33 @@ export function Trello({
   );
 
   const handleAddNewListClick = useCallback(() => {
+    const _id = isomorphicObjectId().toString();
     const lists = produce(dataRef.current, (draft) => {
       draft.push({
-        _id: isomorphicObjectId().toString(),
-        title: "New list",
+        _id,
+        title: "",
       });
     });
     setData(lists);
+    setTimeout(() => {
+      const target = trelloRef.current?.querySelector(
+        `[data-list-id="${_id}"] [data-is-markdown]`,
+      );
+      target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleListDelete = useCallback(
     (list: IList) => () => {
+      const listUpdated = find(dataRef.current, { _id: list._id });
+      if (listUpdated?.cards?.length) {
+        showNotification({
+          icon: "error",
+          message: "You can't delete a status with tasks",
+        });
+        return;
+      }
       const lists = produce(dataRef.current, (draft) => {
         remove(draft, { _id: list._id });
       });
@@ -508,13 +526,17 @@ export function Trello({
 
   const handleListTitleChange = useCallback(
     (list: IList) => (title: string) => {
-      const lists = produce(dataRef.current, (draft) => {
-        const listToUpdate = find(draft, { _id: list._id });
-        if (listToUpdate) {
-          listToUpdate.title = title;
-        }
-      });
-      setData(lists);
+      if (title) {
+        const lists = produce(dataRef.current, (draft) => {
+          const listToUpdate = find(draft, { _id: list._id });
+          if (listToUpdate) {
+            listToUpdate.title = title;
+          }
+        });
+        setData(lists);
+      } else {
+        handleListDelete(list)();
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -620,7 +642,7 @@ export function Trello({
           onClick={handleAddNewListClick}
           data-new-list-button=""
         >
-          Add new list
+          Add new {listName}
         </Button>
       </div>
     </div>

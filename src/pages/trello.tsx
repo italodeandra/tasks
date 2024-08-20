@@ -134,6 +134,7 @@ const thisIsCode = 2;
       onChange={handleDataChange}
       onClickCard={handleTaskClick}
       cardName="task"
+      listName="status"
     />
   );
 }

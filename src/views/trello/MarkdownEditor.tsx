@@ -22,6 +22,7 @@ function MarkdownEditorWithRef(
     className,
     editOnDoubleClick,
     editHighlight,
+    ...props
   }: {
     value: string;
     onChange?: (value: string) => void;
@@ -85,10 +86,10 @@ function MarkdownEditorWithRef(
     const newTitle = innerRef.current!.innerText;
     onChange?.(newTitle);
     innerRef.current!.innerHTML = markdownConverter.makeHtml(
-      newTitle.replaceAll(" ", ""),
+      value.replaceAll(" ", ""),
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [value]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
@@ -109,6 +110,7 @@ function MarkdownEditorWithRef(
 
   return (
     <div
+      {...props}
       ref={mergeRefs([innerRef, ref])}
       dangerouslySetInnerHTML={{
         __html: markdownConverter.makeHtml(value.replaceAll(" ", "")),
@@ -128,6 +130,7 @@ function MarkdownEditorWithRef(
       )}
       data-is-editing={editing}
       onDoubleClick={editOnDoubleClick ? handleEdit : undefined}
+      data-is-markdown=""
     />
   );
 }
