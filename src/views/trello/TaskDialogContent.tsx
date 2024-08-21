@@ -5,9 +5,10 @@ import { find } from "lodash-es";
 import { MarkdownEditor } from "../../components/Trello/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Button from "@italodeandra/ui/components/Button";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
+import fakeArray from "@italodeandra/ui/utils/fakeArray";
 
 export function TaskDialogContent({
   selected,
@@ -36,6 +37,7 @@ export function TaskDialogContent({
   return (
     <div className="grid grid-cols-2 gap-2">
       <MarkdownEditor
+        placeholder="Add a description"
         value={task?.description || ""}
         onChange={handleDescriptionChange}
         className="-mx-1 rounded-md px-1"
@@ -60,18 +62,6 @@ export function TaskDialogContent({
             <div className="w-24 bg-white/[0.05] px-2.5 py-2">Project</div>
             <div className="flex-1 bg-white/[0.03] px-2.5 py-2">Tasks</div>
           </div>
-          <div className="flex text-xs text-zinc-300">
-            <div className="w-24 bg-white/[0.05] px-2.5 py-2">Created at</div>
-            <div className="flex-1 bg-white/[0.03] px-2.5 py-2">
-              2 minutes ago
-            </div>
-          </div>
-          <div className="flex text-xs text-zinc-300">
-            <div className="w-24 bg-white/[0.05] px-2.5 py-2">Updated at</div>
-            <div className="flex-1 bg-white/[0.03] px-2.5 py-2">
-              2 minutes ago
-            </div>
-          </div>
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-sm font-medium">Timesheet</div>
@@ -95,7 +85,7 @@ export function TaskDialogContent({
         </div>
         <div className="flex flex-col gap-2">
           <div className="text-sm font-medium">History</div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
             <Textarea
               placeholder="Add new comment"
               trailing={
@@ -111,6 +101,56 @@ export function TaskDialogContent({
               inputClassName="dark:border-transparent"
               trailingClassName="pr-0.5 items-end pb-0.5"
             />
+            <div className="flex gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-xs text-zinc-500">
+                <InformationCircleIcon />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <div className="flex h-6 items-center">
+                  <div className="flex items-end gap-2">
+                    <div>Task moved to Doing</div>
+                    <div className="mb-px text-xs text-zinc-400">
+                      10 seconds ago
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {fakeArray(10).map((n) => (
+              <div className="flex gap-2" key={n}>
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
+                  IA
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex h-6 items-center">
+                    <div className="flex items-end gap-2">
+                      <div className="font-medium leading-none">
+                        Ítalo Andrade
+                      </div>
+                      <div className="text-xs leading-none text-zinc-400">
+                        10 seconds ago
+                      </div>
+                    </div>
+                  </div>
+                  <div>This is a comment</div>
+                </div>
+              </div>
+            ))}
+            <div className="flex gap-2">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-xs text-zinc-500">
+                <InformationCircleIcon />
+              </div>
+              <div className="flex flex-col gap-0.5">
+                <div className="flex h-6 items-center">
+                  <div className="flex items-end gap-2">
+                    <div>Task created</div>
+                    <div className="mb-px text-xs text-zinc-400">
+                      10 seconds ago
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

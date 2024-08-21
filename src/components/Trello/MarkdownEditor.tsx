@@ -20,8 +20,10 @@ function MarkdownEditorWithRef(
     editing: editingProp,
     onChangeEditing,
     className,
+    editOnClick,
     editOnDoubleClick,
     editHighlight,
+    placeholder,
     ...props
   }: {
     value: string;
@@ -29,8 +31,10 @@ function MarkdownEditorWithRef(
     editing?: boolean;
     onChangeEditing?: (editing: boolean) => void;
     className?: string;
+    editOnClick?: boolean;
     editOnDoubleClick?: boolean;
     editHighlight?: boolean;
+    placeholder?: string;
   },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -85,9 +89,10 @@ function MarkdownEditorWithRef(
     });
     const newTitle = innerRef.current!.innerText;
     onChange?.(newTitle);
-    innerRef.current!.innerHTML = markdownConverter.makeHtml(
-      value.replaceAll(" ", ""),
-    );
+    innerRef.current!.innerHTML = value
+      ? markdownConverter.makeHtml(value.replaceAll(" ", ""))
+      : placeholder || "";
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
@@ -113,7 +118,9 @@ function MarkdownEditorWithRef(
       {...props}
       ref={mergeRefs([innerRef, ref])}
       dangerouslySetInnerHTML={{
-        __html: markdownConverter.makeHtml(value.replaceAll(" ", "")),
+        __html: value
+          ? markdownConverter.makeHtml(value.replaceAll(" ", ""))
+          : placeholder || "",
       }}
       onKeyDown={handleKeyDown}
       onBlur={handleBlur}
@@ -125,11 +132,13 @@ function MarkdownEditorWithRef(
           "cursor-pointer": !editing && onChange,
           "ring-2 ring-zinc-700 focus:ring-primary-500":
             editing && editHighlight,
+          "text-zinc-500": !value,
         },
         className,
       )}
       data-is-editing={editing}
       onDoubleClick={editOnDoubleClick ? handleEdit : undefined}
+      onClick={editOnClick ? handleEdit : undefined}
       data-is-markdown=""
     />
   );

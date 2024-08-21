@@ -1,17 +1,16 @@
 import {
   HTMLAttributes,
   KeyboardEvent,
+  MouseEvent,
   useCallback,
   useEffect,
   useRef,
   useState,
-  MouseEvent,
 } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import Button from "@italodeandra/ui/components/Button";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { MarkdownEditor } from "./MarkdownEditor";
 
@@ -44,14 +43,6 @@ export function Card({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
-      if (
-        editing &&
-        (e.key === "Escape" ||
-          (e.key === "Enter" && !e.shiftKey && !isTouchDevice))
-      ) {
-        e.preventDefault();
-        e.currentTarget.blur();
-      }
       if (!editing && e.key === "Enter") {
         handleEdit();
       }
