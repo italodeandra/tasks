@@ -2,7 +2,6 @@ import { useSnapshot } from "valtio";
 import { state } from "./state";
 import { useMemo } from "react";
 import { find } from "lodash-es";
-import { produce } from "immer";
 import { MarkdownEditor } from "../../components/Trello/MarkdownEditor";
 
 export function TaskDialogTitle({
@@ -19,13 +18,11 @@ export function TaskDialogTitle({
   }, [data, selected.cardId, selected.listId]);
 
   const handleTitleChange = (title: string) => {
-    state.data = produce(state.data, (draft) => {
-      const list = find(draft, { _id: selected.listId });
-      if (!list) return;
-      const task = find(list.tasks, { _id: selected.cardId });
-      if (!task) return;
-      task.title = title;
-    });
+    const list = find(state.data, { _id: selected.listId });
+    if (!list) return;
+    const task = find(list.tasks, { _id: selected.cardId });
+    if (!task) return;
+    task.title = title;
   };
 
   return (
