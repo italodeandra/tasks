@@ -6,8 +6,10 @@ export interface DialogProps {
     contentOverflowClassName?: string;
     closeButtonClassName?: string;
     overlayClassName?: string;
+    titleClassName?: string;
+    descriptionClassName?: string;
 }
-export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, }: {
+export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, titleClassName, descriptionClassName, }: {
     children: ReactNode;
     open: boolean;
     onOpenChange: (open: boolean) => void;

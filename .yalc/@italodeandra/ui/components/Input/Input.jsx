@@ -6,11 +6,11 @@ import { cloneElement, forwardRef } from "react";
 import recursiveChildrenMap from "../../utils/recursiveChildrenMap";
 import clsx from "../../utils/clsx";
 export const defaultLabelClassName = `ui-input-label block ${defaultTextStyles.variant.label} mb-1`;
-export const defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm data-[disabled]:cursor-not-allowed dark:bg-zinc-800";
+export const defaultInputClassNameUncolored = "block w-full rounded-md shadow-sm sm:text-sm data-[disabled]:cursor-not-allowed dark:bg-zinc-800 dark:placeholder:text-zinc-500 px-2.5";
 export const defaultInputClassName = clsx("ui-input-input", defaultInputClassNameUncolored, "border-zinc-300 focus:border-primary-500 focus:ring-primary-500 data-[disabled]:border-zinc-200 data-[disabled]:bg-zinc-50", "dark:border-zinc-700 dark:focus:border-primary-500 dark:data-[disabled]:border-zinc-800 dark:data-[disabled]:bg-zinc-900/90 data-[disabled]:text-zinc-500");
 export const defaultHelpTextClassName = `mt-2 ${defaultTextStyles.variant.secondary}`;
-export const defaultTrailingClassName = "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 text-sm";
-export const defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500 text-sm";
+export const defaultTrailingClassName = "pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-zinc-500 text-sm";
+export const defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-zinc-500 text-sm";
 export const defaultLeadingInputClassName = "pl-10";
 export const defaultTrailingInputClassName = "pr-10";
 function Input({ error, trailing, labelClassName, inputClassName, helpTextClassName, trailingClassName, leadingClassName, leadingInputClassName, trailingInputClassName, required, label, loading, readOnly, children, disabled, ...props }, ref) {
