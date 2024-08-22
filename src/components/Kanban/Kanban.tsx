@@ -160,7 +160,7 @@ export function Kanban({
               });
               draft.push({
                 _id: isomorphicObjectId().toString(),
-                title: "New list",
+                title: `New ${listName}`,
                 cards: [draggingCardRef.current!.card],
               });
             }
