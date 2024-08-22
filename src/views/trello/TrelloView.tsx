@@ -1,5 +1,5 @@
 import { Kanban } from "../../components/Kanban/Kanban";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { isEqual, omit, pick } from "lodash-es";
 import { IList } from "../../components/Kanban/IList";
@@ -56,7 +56,7 @@ export function TrelloView() {
   const taskList = taskListApi.useQuery();
   useEffect(() => {
     if (!isEqual(taskList.data, data)) {
-      state.data = taskList.data || [];
+      // state.data = taskList.data || []; // TODO this should be uncommented when API is ready
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
@@ -82,14 +82,10 @@ export function TrelloView() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedData]);
 
-  const mappedData = useMemo(
-    () =>
-      data.map((list) => ({
-        ...pick(list, ["_id", "title"]),
-        cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
-      })),
-    [data],
-  );
+  const mappedData = data.map((list) => ({
+    ...pick(list, ["_id", "title"]),
+    cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
+  }));
 
   return (
     <>

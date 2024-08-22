@@ -1,6 +1,6 @@
 import { ComponentType, useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { find, findIndex, isEqual, remove } from "lodash-es";
+import { cloneDeep, find, findIndex, isEqual, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
@@ -62,8 +62,8 @@ export function Kanban({
   cardName?: string;
   listName?: string;
   onChange?: (data: IList[]) => void;
-  cardAdditionalContent?: ComponentType<{ cardId: string }>;
-  cardAdditionalActions?: ComponentType<{ cardId: string }>;
+  cardAdditionalContent?: ComponentType<{ cardId: string; listId: string }>;
+  cardAdditionalActions?: ComponentType<{ cardId: string; listId: string }>;
   className?: string;
   uploadClipboardImage?: (image: string) => Promise<string>;
 }) {
@@ -614,6 +614,44 @@ export function Kanban({
     [onClickCard],
   );
 
+  const handleDuplicateTo = useCallback(
+    (card: ICard, fromList: IList) => (toListId?: string) => {
+      const lists = produce(dataRef.current, (draft) => {
+        const fromListRef = find(draft, { _id: fromList._id });
+        const clonedCard = find(fromListRef?.cards, { _id: card._id });
+        if (toListId) {
+          const toListToUpdate = find(draft, { _id: toListId });
+          if (fromListRef && toListToUpdate) {
+            if (clonedCard) {
+              toListToUpdate.cards = [
+                cloneDeep({
+                  ...clonedCard,
+                  _id: isomorphicObjectId().toString(),
+                }),
+                ...(toListToUpdate.cards || []),
+              ];
+            }
+          }
+        } else {
+          if (clonedCard) {
+            draft.push({
+              _id: isomorphicObjectId().toString(),
+              title: "New status",
+              cards: [
+                cloneDeep({
+                  ...clonedCard,
+                  _id: isomorphicObjectId().toString(),
+                }),
+              ],
+            });
+          }
+        }
+      });
+      setData(lists);
+    },
+    [dataRef],
+  );
+
   return (
     <div
       className={clsx(
@@ -649,12 +687,16 @@ export function Kanban({
                 }
                 onDelete={handleCardDelete(card, list)}
                 _id={card._id}
+                listId={list._id}
                 onChangeTitle={handleCardTitleChange(card, list)}
                 onClick={handleCardClick(card, list)}
                 cardName={cardName}
                 cardAdditionalContent={cardAdditionalContent}
                 cardAdditionalActions={cardAdditionalActions}
                 uploadClipboardImage={uploadClipboardImage}
+                lists={data}
+                onDuplicateTo={handleDuplicateTo(card, list)}
+                listName={listName}
               />
             ))}
             <Button

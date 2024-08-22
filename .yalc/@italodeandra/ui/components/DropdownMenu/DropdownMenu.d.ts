@@ -12,6 +12,10 @@ declare function DropdownMenuItemIndicator({ className, ...props }: ComponentPro
 declare function DropdownMenuCheckboxItem({ className, children, indicatorClassName, ...props }: ComponentProps<typeof RDropdownMenu.CheckboxItem> & {
     indicatorClassName?: string;
 }): React.JSX.Element;
+declare function DropdownMenuSubContent({ className, children, sideOffset, alignOffset, ...props }: ComponentProps<typeof RDropdownMenu.SubContent>): React.JSX.Element;
+declare function DropdownMenuSubTrigger({ className, href, children, ...props }: ComponentProps<typeof RDropdownMenu.SubTrigger> & {
+    href?: string;
+}): React.JSX.Element;
 declare const DropdownMenu: {
     Root: React.FC<RDropdownMenu.DropdownMenuProps>;
     Trigger: React.ForwardRefExoticComponent<RDropdownMenu.DropdownMenuTriggerProps & React.RefAttributes<HTMLButtonElement>>;
@@ -21,5 +25,8 @@ declare const DropdownMenu: {
     CheckboxItem: typeof DropdownMenuCheckboxItem;
     Label: typeof DropdownMenuLabel;
     ItemIndicator: typeof DropdownMenuItemIndicator;
+    Sub: React.FC<RDropdownMenu.DropdownMenuSubProps>;
+    SubContent: typeof DropdownMenuSubContent;
+    SubTrigger: typeof DropdownMenuSubTrigger;
 };
 export default DropdownMenu;

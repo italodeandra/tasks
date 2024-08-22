@@ -14,6 +14,9 @@ import Button from "@italodeandra/ui/components/Button";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { MarkdownEditor } from "./MarkdownEditor";
+import { dropdownItemIndicatorClassName } from "@italodeandra/ui/styles/Dropdown.classNames";
+import { PlusIcon } from "@heroicons/react/16/solid";
+import { IList } from "./IList";
 
 export function Card({
   title,
@@ -23,10 +26,14 @@ export function Card({
   onChangeTitle,
   onClick,
   _id,
+  listId,
   cardName,
   cardAdditionalContent: CardAdditionalContent,
   cardAdditionalActions: CardAdditionalActions,
   uploadClipboardImage,
+  onDuplicateTo,
+  lists,
+  listName,
   ...props
 }: {
   title: string;
@@ -36,9 +43,13 @@ export function Card({
   onClick?: () => void;
   cardName: string;
   _id: string;
-  cardAdditionalContent?: ComponentType<{ cardId: string }>;
-  cardAdditionalActions?: ComponentType<{ cardId: string }>;
+  listId: string;
+  cardAdditionalContent?: ComponentType<{ cardId: string; listId: string }>;
+  cardAdditionalActions?: ComponentType<{ cardId: string; listId: string }>;
   uploadClipboardImage?: (image: string) => Promise<string>;
+  onDuplicateTo?: (listId?: string) => void;
+  listName: string;
+  lists: IList[];
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
@@ -84,6 +95,13 @@ export function Card({
     clearTimeout(clickTimeout.current);
   }, [dragging]);
 
+  const handleDuplicateTo = useCallback(
+    (toList?: (typeof lists)[0]) => () => {
+      onDuplicateTo?.(toList?._id);
+    },
+    [onDuplicateTo],
+  );
+
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger asChild>
@@ -119,7 +137,7 @@ export function Card({
               uploadClipboardImage={uploadClipboardImage}
             />
             {!editing && CardAdditionalContent && (
-              <CardAdditionalContent cardId={_id} />
+              <CardAdditionalContent cardId={_id} listId={listId} />
             )}
             {!editing && (
               <Button
@@ -142,7 +160,30 @@ export function Card({
         </div>
       </ContextMenu.Trigger>
       <ContextMenu.Content>
-        {CardAdditionalActions && <CardAdditionalActions cardId={_id} />}
+        {CardAdditionalActions && (
+          <CardAdditionalActions cardId={_id} listId={listId} />
+        )}
+        {!!lists.length && (
+          <ContextMenu.Sub>
+            <ContextMenu.SubTrigger>Duplicate to</ContextMenu.SubTrigger>
+            <ContextMenu.SubContent>
+              {lists.map((list) => (
+                <ContextMenu.Item
+                  key={list._id}
+                  onClick={handleDuplicateTo(list)}
+                >
+                  {list.title}
+                </ContextMenu.Item>
+              ))}
+              <ContextMenu.Item onClick={handleDuplicateTo()}>
+                <div className={dropdownItemIndicatorClassName}>
+                  <PlusIcon />
+                </div>
+                New {listName}
+              </ContextMenu.Item>
+            </ContextMenu.SubContent>
+          </ContextMenu.Sub>
+        )}
         <ContextMenu.Item onClick={handleEdit}>
           Edit {cardName}
         </ContextMenu.Item>
