@@ -53,15 +53,13 @@ export function UserSection() {
         <Button
           variant="filled"
           rounded
-          className="group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
+          className="group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs uppercase dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
           onClick={stopPropagation}
         >
           {isLoading ? (
             <Loading className="h-4 w-4" />
           ) : user ? (
-            <span className="text-sm font-medium uppercase">
-              {getInitials(user.name || user.email)}
-            </span>
+            getInitials(user.name || user.email)
           ) : (
             <UserIcon className="h-4 w-4" />
           )}
