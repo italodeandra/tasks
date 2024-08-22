@@ -1,7 +1,7 @@
 import { Kanban } from "../../components/Kanban/Kanban";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { pick } from "lodash-es";
+import { isEqual, omit, pick } from "lodash-es";
 import { IList } from "../../components/Kanban/IList";
 import { useSnapshot } from "valtio";
 import { state } from "./state";
@@ -11,6 +11,10 @@ import { TaskAdditionalActions } from "./TaskAdditionalActions";
 import { TaskAdditionalContent } from "./TaskAdditionalContent";
 import { imageUploadApi } from "../../pages/api/image-upload";
 import { Header } from "./header/Header";
+import { taskListApi } from "../../pages/api/task2/list";
+import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
+import { useQueryClient } from "@tanstack/react-query";
+import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 
 export function TrelloView() {
   const { data } = useSnapshot(state);
@@ -48,6 +52,35 @@ export function TrelloView() {
     },
     [imageUpload],
   );
+
+  const taskList = taskListApi.useQuery();
+  useEffect(() => {
+    if (!isEqual(taskList.data, data)) {
+      state.data = taskList.data || [];
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [taskList.data]);
+
+  const queryClient = useQueryClient();
+  const debouncedData = useDebouncedValue(data, "2s");
+  useEffect(() => {
+    if (taskList.data && !isEqual(debouncedData, taskList.data)) {
+      const isStatusOrderChanged = taskList.data.some(
+        (status, index) =>
+          debouncedData[index] && status._id !== debouncedData[index]?._id,
+      );
+      console.log("isStatusOrderChanged", isStatusOrderChanged);
+      const statusChanges = getArrayDiff(
+        taskList.data.map((l) => omit(l, "tasks")),
+        debouncedData.map((l) => omit(l, "tasks")),
+        "_id",
+      );
+      console.log("status changes", statusChanges);
+      // fake set api changes this should be done on the useMutation hook
+      taskListApi.setQueryData(queryClient, debouncedData as any);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedData]);
 
   const mappedData = useMemo(
     () =>
