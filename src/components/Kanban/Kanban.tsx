@@ -617,7 +617,7 @@ export function Kanban({
   return (
     <div
       className={clsx(
-        "group/kanban flex h-full gap-2",
+        "group/kanban flex gap-2",
         {
           "flex-col": orientation === "vertical",
           "[&_*]:cursor-grab": !!draggingCard?.unstick,
