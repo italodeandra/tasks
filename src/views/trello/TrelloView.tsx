@@ -55,8 +55,8 @@ export function TrelloView() {
 
   const taskList = taskListApi.useQuery();
   useEffect(() => {
-    if (!isEqual(taskList.data, data)) {
-      // state.data = taskList.data || []; // TODO this should be uncommented when API is ready
+    if (taskList.data && !isEqual(taskList.data, data)) {
+      state.data = taskList.data;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
