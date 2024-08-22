@@ -1,4 +1,5 @@
 import {
+  ComponentType,
   HTMLAttributes,
   KeyboardEvent,
   MouseEvent,
@@ -23,6 +24,9 @@ export function Card({
   onClick,
   _id,
   cardName,
+  cardAdditionalContent: CardAdditionalContent,
+  cardAdditionalActions: CardAdditionalActions,
+  uploadClipboardImage,
   ...props
 }: {
   title: string;
@@ -32,6 +36,9 @@ export function Card({
   onClick?: () => void;
   cardName: string;
   _id: string;
+  cardAdditionalContent?: ComponentType<{ cardId: string }>;
+  cardAdditionalActions?: ComponentType<{ cardId: string }>;
+  uploadClipboardImage?: (image: string) => Promise<string>;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
@@ -109,7 +116,11 @@ export function Card({
               editing={editing}
               onChangeEditing={setEditing}
               className="p-3"
+              uploadClipboardImage={uploadClipboardImage}
             />
+            {!editing && CardAdditionalContent && (
+              <CardAdditionalContent cardId={_id} />
+            )}
             {!editing && (
               <Button
                 icon
@@ -131,6 +142,7 @@ export function Card({
         </div>
       </ContextMenu.Trigger>
       <ContextMenu.Content>
+        {CardAdditionalActions && <CardAdditionalActions cardId={_id} />}
         <ContextMenu.Item onClick={handleEdit}>
           Edit {cardName}
         </ContextMenu.Item>

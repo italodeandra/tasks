@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { ComponentType, useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { find, findIndex, isEqual, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
@@ -44,13 +44,17 @@ function getMousePosTarget(
   ) as HTMLDivElement;
 }
 
-export function Trello({
+export function Kanban({
   orientation = "horizontal",
   onClickCard,
   data: dataProp,
   cardName = "card",
   listName = "list",
   onChange,
+  cardAdditionalContent,
+  cardAdditionalActions,
+  className,
+  uploadClipboardImage,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -58,10 +62,14 @@ export function Trello({
   cardName?: string;
   listName?: string;
   onChange?: (data: IList[]) => void;
+  cardAdditionalContent?: ComponentType<{ cardId: string }>;
+  cardAdditionalActions?: ComponentType<{ cardId: string }>;
+  className?: string;
+  uploadClipboardImage?: (image: string) => Promise<string>;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
-  const trelloRef = useRef<HTMLDivElement>(null);
+  const kanbanRef = useRef<HTMLDivElement>(null);
   const cardClickTimeout = useRef(0);
 
   useEffect(() => {
@@ -107,17 +115,17 @@ export function Trello({
     (event: MouseEvent | TouchEvent) => {
       const mousePos = getMousePos(event);
       if (isTouchDevice) {
-        trelloRef.current!.classList.remove("pointer-events-none");
+        kanbanRef.current!.classList.remove("pointer-events-none");
       }
       const target = getMousePosTarget(mousePos);
       if (isTouchDevice) {
-        trelloRef.current!.classList.add("pointer-events-none");
+        kanbanRef.current!.classList.add("pointer-events-none");
       }
       const cardId = target
-        .closest("[data-card-id]")
+        ?.closest("[data-card-id]")
         ?.getAttribute("data-card-id");
       const listId = target
-        .closest("[data-list-id]")
+        ?.closest("[data-list-id]")
         ?.getAttribute("data-list-id");
       return {
         cardId,
@@ -131,7 +139,7 @@ export function Trello({
 
   useEffect(() => {
     if (isTouchDevice) {
-      trelloRef.current!.classList.add("pointer-events-none");
+      kanbanRef.current!.classList.add("pointer-events-none");
     }
 
     const handleKanbanMouseUp = (event: MouseEvent | TouchEvent) => {
@@ -150,7 +158,7 @@ export function Trello({
               remove(previousList.cards, {
                 _id: draggingCardRef.current!.card._id,
               });
-              lists.push({
+              draft.push({
                 _id: isomorphicObjectId().toString(),
                 title: "New list",
                 cards: [draggingCardRef.current!.card],
@@ -235,13 +243,16 @@ export function Trello({
                       0,
                       draggingCardRef.current!.card,
                     );
-                    setDraggingCard({
-                      ...draggingCardRef.current!,
-                      list: nextList,
-                    });
                   }
                 }
               });
+              const nextList = find(lists, { _id: listId });
+              if (nextList) {
+                setDraggingCard({
+                  ...draggingCardRef.current!,
+                  list: nextList,
+                });
+              }
               setData(lists);
             }
           }
@@ -477,7 +488,7 @@ export function Trello({
       });
       setData(lists);
       setTimeout(() => {
-        const target = trelloRef.current?.querySelector(
+        const target = kanbanRef.current?.querySelector(
           `[data-card-id="${_id}"]`,
         );
         target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
@@ -497,7 +508,7 @@ export function Trello({
     });
     setData(lists);
     setTimeout(() => {
-      const target = trelloRef.current?.querySelector(
+      const target = kanbanRef.current?.querySelector(
         `[data-list-id="${_id}"] [data-is-markdown]`,
       );
       target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
@@ -579,6 +590,7 @@ export function Trello({
 
   const handleCardClick = useCallback(
     (card: ICard, list: IList) => () => {
+      setDraggingCard(null);
       onClickCard?.({
         cardId: card._id,
         listId: list._id,
@@ -589,12 +601,16 @@ export function Trello({
 
   return (
     <div
-      className={clsx("group/kanban flex h-full gap-2 p-2", {
-        "flex-col": orientation === "vertical",
-        "[&_*]:cursor-grab": !!draggingCard?.unstick,
-      })}
+      className={clsx(
+        "group/kanban flex h-full gap-2",
+        {
+          "flex-col": orientation === "vertical",
+          "[&_*]:cursor-grab": !!draggingCard?.unstick,
+        },
+        className,
+      )}
       data-is-dragging={!!draggingCard?.unstick}
-      ref={trelloRef}
+      ref={kanbanRef}
     >
       {data.map((list) => (
         <div key={list._id.toString()} className="flex shrink-0 flex-col">
@@ -621,6 +637,9 @@ export function Trello({
                 onChangeTitle={handleCardTitleChange(card, list)}
                 onClick={handleCardClick(card, list)}
                 cardName={cardName}
+                cardAdditionalContent={cardAdditionalContent}
+                cardAdditionalActions={cardAdditionalActions}
+                uploadClipboardImage={uploadClipboardImage}
               />
             ))}
             <Button

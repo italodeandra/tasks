@@ -2,7 +2,7 @@ import { useSnapshot } from "valtio";
 import { state } from "./state";
 import { useMemo } from "react";
 import { find } from "lodash-es";
-import { MarkdownEditor } from "../../components/Trello/MarkdownEditor";
+import { MarkdownEditor } from "../../components/Kanban/MarkdownEditor";
 
 export function TaskDialogTitle({
   selected,

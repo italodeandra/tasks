@@ -1,4 +1,5 @@
 import {
+  ClipboardEvent,
   ForwardedRef,
   forwardRef,
   KeyboardEvent,
@@ -24,6 +25,7 @@ function MarkdownEditorWithRef(
     editOnDoubleClick,
     editHighlight,
     placeholder,
+    uploadClipboardImage,
     ...props
   }: {
     value: string;
@@ -35,6 +37,7 @@ function MarkdownEditorWithRef(
     editOnDoubleClick?: boolean;
     editHighlight?: boolean;
     placeholder?: string;
+    uploadClipboardImage?: (image: string) => Promise<string>;
   },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -113,6 +116,55 @@ function MarkdownEditorWithRef(
     [editing, handleEdit],
   );
 
+  const handlePaste = useCallback(
+    (e: ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (uploadClipboardImage) {
+        const clipboard = e.clipboardData;
+        if (clipboard) {
+          const items = clipboard.items;
+          for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf("image") !== -1) {
+              const blob = items[i].getAsFile();
+              if (blob) {
+                const reader = new FileReader();
+                reader.onload = async function (event) {
+                  const base64 = event.target?.result as string | undefined;
+                  if (base64) {
+                    const imageUrl = uploadClipboardImage
+                      ? await uploadClipboardImage(base64)
+                      : base64;
+                    const markdownImage = `![image](${imageUrl})`;
+
+                    // Insert the markdown image at the cursor position in the contentEditable div
+                    const selection = window.getSelection();
+                    if (selection && selection.rangeCount > 0) {
+                      const range = selection.getRangeAt(0);
+                      range.deleteContents();
+
+                      // Create a new text node with the markdown image
+                      const markdownNode =
+                        document.createTextNode(markdownImage);
+                      range.insertNode(markdownNode);
+
+                      // Move the cursor to the end of the inserted text
+                      range.setStartAfter(markdownNode);
+                      range.setEndAfter(markdownNode);
+                      selection.removeAllRanges();
+                      selection.addRange(range);
+                    }
+                  }
+                };
+                reader.readAsDataURL(blob);
+              }
+            }
+          }
+        }
+      }
+    },
+    [uploadClipboardImage],
+  );
+
   return (
     <div
       {...props}
@@ -132,7 +184,7 @@ function MarkdownEditorWithRef(
           "cursor-pointer": !editing && onChange,
           "ring-2 ring-zinc-700 focus:ring-primary-500":
             editing && editHighlight,
-          "text-zinc-500": !value,
+          "text-zinc-500": !editing && !value,
         },
         className,
       )}
@@ -140,6 +192,7 @@ function MarkdownEditorWithRef(
       onDoubleClick={editOnDoubleClick ? handleEdit : undefined}
       onClick={editOnClick ? handleEdit : undefined}
       data-is-markdown=""
+      onPaste={handlePaste}
     />
   );
 }

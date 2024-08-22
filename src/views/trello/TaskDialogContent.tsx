@@ -2,13 +2,15 @@ import { useSnapshot } from "valtio";
 import { state } from "./state";
 import { useCallback, useMemo } from "react";
 import { find } from "lodash-es";
-import { MarkdownEditor } from "../../components/Trello/MarkdownEditor";
+import { MarkdownEditor } from "../../components/Kanban/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Button from "@italodeandra/ui/components/Button";
-import { ClockIcon, InformationCircleIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, InformationCircleIcon } from "@heroicons/react/20/solid";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
+import { PlusIcon } from "@heroicons/react/16/solid";
+import { imageUploadApi } from "../../pages/api/image-upload";
 
 export function TaskDialogContent({
   selected,
@@ -34,6 +36,17 @@ export function TaskDialogContent({
     [selected.cardId, selected.listId],
   );
 
+  const imageUpload = imageUploadApi.useMutation();
+  const uploadClipboardImage = useCallback(
+    async (image: string) => {
+      const data = await imageUpload.mutateAsync({
+        image,
+      });
+      return data.imageUrl;
+    },
+    [imageUpload],
+  );
+
   return (
     <div className="grid grid-cols-2 gap-2">
       <MarkdownEditor
@@ -43,6 +56,7 @@ export function TaskDialogContent({
         className="-mx-1 rounded-md px-1"
         editOnDoubleClick
         editHighlight
+        uploadClipboardImage={uploadClipboardImage}
       />
       <div className="flex flex-col gap-4">
         <div
@@ -53,14 +67,43 @@ export function TaskDialogContent({
           )}
         >
           <div className="flex">
-            <div className="w-24 bg-white/[0.05] px-2.5 py-2">Status</div>
+            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Status</div>
             <div className="flex-1 rounded-tr bg-white/[0.03] px-2.5 py-2">
               Todo
             </div>
           </div>
           <div className="flex">
-            <div className="w-24 bg-white/[0.05] px-2.5 py-2">Project</div>
+            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Project</div>
             <div className="flex-1 bg-white/[0.03] px-2.5 py-2">Tasks</div>
+          </div>
+          <div className="flex">
+            <div className="flex w-28 items-center bg-white/[0.05] px-2.5 py-2">
+              Assigned to
+            </div>
+            <div className="flex flex-1 flex-wrap gap-2 bg-white/[0.03] px-2.5 py-1.5">
+              <div className="flex items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
+                  IA
+                </div>
+                <span>Ítalo Andrade</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-center text-xs">
+                  CA
+                </div>
+                <span>Cairo Andrade</span>
+              </div>
+              <Button
+                icon
+                variant="filled"
+                color="gray"
+                rounded
+                size="xs"
+                className="h-6 w-6 bg-zinc-700 p-0"
+              >
+                <PlusIcon />
+              </Button>
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -102,14 +145,20 @@ export function TaskDialogContent({
               trailingClassName="pr-0.5 items-end pb-0.5"
             />
             <div className="flex gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-xs text-zinc-500">
-                <InformationCircleIcon />
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
+                IA
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex h-6 items-center">
                   <div className="flex items-end gap-2">
-                    <div>Task moved to Doing</div>
-                    <div className="mb-px text-xs text-zinc-400">
+                    <div className="text-zinc-300">
+                      <span className="font-medium text-white">
+                        Ítalo Andrade
+                      </span>{" "}
+                      moved task to{" "}
+                      <span className="font-medium text-white">Doing</span>
+                    </div>
+                    <div className="mb-px text-xs text-zinc-500">
                       10 seconds ago
                     </div>
                   </div>
@@ -127,24 +176,24 @@ export function TaskDialogContent({
                       <div className="font-medium leading-none">
                         Ítalo Andrade
                       </div>
-                      <div className="text-xs leading-none text-zinc-400">
+                      <div className="text-xs leading-none text-zinc-500">
                         10 seconds ago
                       </div>
                     </div>
                   </div>
-                  <div>This is a comment</div>
+                  <div className="text-zinc-300">This is a comment</div>
                 </div>
               </div>
             ))}
             <div className="flex gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-xs text-zinc-500">
-                <InformationCircleIcon />
+                <InformationCircleIcon className="h-5 w-5" />
               </div>
               <div className="flex flex-col gap-0.5">
                 <div className="flex h-6 items-center">
                   <div className="flex items-end gap-2">
-                    <div>Task created</div>
-                    <div className="mb-px text-xs text-zinc-400">
+                    <div className="text-zinc-300">Task created</div>
+                    <div className="mb-px text-xs text-zinc-500">
                       10 seconds ago
                     </div>
                   </div>
