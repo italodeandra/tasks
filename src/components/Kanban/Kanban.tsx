@@ -269,7 +269,22 @@ export function Kanban({
             const nextIndex = findIndex(draft, {
               _id: listId,
             });
-            move(draft, previousIndex, nextIndex);
+            const hoveredElementRect = target.getBoundingClientRect();
+            const movingElementRect =
+              draggingListRef.current!.dragElement?.getBoundingClientRect();
+            if (
+              movingElementRect &&
+              ((nextIndex > previousIndex &&
+                mousePos.clientX >
+                  hoveredElementRect.left +
+                    hoveredElementRect.width -
+                    movingElementRect.width) ||
+                (nextIndex < previousIndex &&
+                  mousePos.clientX <
+                    hoveredElementRect.left + movingElementRect.width))
+            ) {
+              move(draft, previousIndex, nextIndex);
+            }
           });
           setData(newData);
         }
