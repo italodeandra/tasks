@@ -1,7 +1,7 @@
 import { Kanban } from "../../components/Kanban/Kanban";
 import { useCallback, useEffect } from "react";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { isEqual, omit, pick } from "lodash-es";
+import { find, isEqual, omit, pick } from "lodash-es";
 import { IList } from "../../components/Kanban/IList";
 import { useSnapshot } from "valtio";
 import { state } from "./state";
@@ -15,6 +15,7 @@ import { taskListApi } from "../../pages/api/task2/list";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import { useQueryClient } from "@tanstack/react-query";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
+import { WritableDeep } from "type-fest";
 
 export function TrelloView() {
   const { data } = useSnapshot(state);
@@ -62,7 +63,7 @@ export function TrelloView() {
   }, [taskList.data]);
 
   const queryClient = useQueryClient();
-  const debouncedData = useDebouncedValue(data, "2s");
+  const debouncedData = useDebouncedValue(data, "1s");
   useEffect(() => {
     if (taskList.data && !isEqual(debouncedData, taskList.data)) {
       const isStatusOrderChanged = taskList.data.some(
@@ -76,6 +77,68 @@ export function TrelloView() {
         "_id",
       );
       console.log("status changes", statusChanges);
+      const tasksChanges = debouncedData.map((debouncedList) => {
+        const list = find(taskList.data, { _id: debouncedList._id });
+        const isTasksOrderChanged = !!(
+          list &&
+          list.tasks?.some(
+            (task, index) =>
+              debouncedList.tasks?.[index] &&
+              task._id !== debouncedList.tasks[index]._id,
+          )
+        );
+        return {
+          listId: debouncedList._id,
+          isTasksOrderChanged,
+          tasksChanges: getArrayDiff(
+            list?.tasks || [],
+            (debouncedList.tasks as WritableDeep<typeof debouncedList.tasks>) ||
+              [],
+            "_id",
+          ),
+        };
+      });
+      const tasksChangesMoved = (
+        tasksChanges as (Omit<(typeof tasksChanges)[0], "tasksChanges"> & {
+          tasksChanges: (Omit<
+            (typeof tasksChanges)[0]["tasksChanges"][0],
+            "type"
+          > & {
+            type:
+              | (typeof tasksChanges)[0]["tasksChanges"][0]["type"]
+              | "moved-out"
+              | "moved-in";
+          })[];
+        })[]
+      ).map((list, i, tasksChanges) => {
+        for (const taskChange of list.tasksChanges) {
+          if (taskChange.type === "deleted") {
+            const isTaskSomewhereElse = tasksChanges.find((status) =>
+              status.tasksChanges.find(
+                (task) =>
+                  task.type === "inserted" &&
+                  task.after?._id === taskChange.before?._id,
+              ),
+            );
+            if (isTaskSomewhereElse) {
+              taskChange.type = "moved-out";
+            }
+          } else if (taskChange.type === "inserted") {
+            const isTaskSomewhereElse = tasksChanges.find((status) =>
+              status.tasksChanges.find(
+                (task) =>
+                  task.type === "moved-out" &&
+                  task.before?._id === taskChange.after?._id,
+              ),
+            );
+            if (isTaskSomewhereElse) {
+              taskChange.type = "moved-in";
+            }
+          }
+        }
+        return list;
+      });
+      console.log("tasksChangesMoved", tasksChangesMoved);
       // fake set api changes this should be done on the useMutation hook
       taskListApi.setQueryData(queryClient, debouncedData as any);
     }
