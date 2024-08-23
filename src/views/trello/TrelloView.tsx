@@ -16,6 +16,7 @@ import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import { useQueryClient } from "@tanstack/react-query";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { WritableDeep } from "type-fest";
+import { taskBatchUpdateApi } from "../../pages/api/task2/batch-update";
 
 export function TrelloView() {
   const { data } = useSnapshot(state);
@@ -53,6 +54,8 @@ export function TrelloView() {
     },
     [imageUpload],
   );
+
+  const taskBatchUpdate = taskBatchUpdateApi.useMutation();
 
   const taskList = taskListApi.useQuery();
   useEffect(() => {
@@ -139,8 +142,39 @@ export function TrelloView() {
         return list;
       });
       console.log("tasksChangesMoved", tasksChangesMoved);
-      // fake set api changes this should be done on the useMutation hook
-      taskListApi.setQueryData(queryClient, debouncedData as any);
+      (async () => {
+        const previousData = taskListApi.getQueryData(queryClient);
+        taskListApi.setQueryData(
+          queryClient,
+          debouncedData as WritableDeep<typeof debouncedData>,
+        );
+        try {
+          await taskBatchUpdate.mutateAsync({
+            statusOrderChange: isStatusOrderChanged
+              ? debouncedData.map((l) => l._id)
+              : undefined,
+            statusChanges: statusChanges.length
+              ? statusChanges.map((s) => {
+                  const status = (
+                    ["inserted", "updated"].includes(s.type)
+                      ? s.after
+                      : s.before
+                  )!;
+                  return {
+                    type: s.type,
+                    _id: status._id,
+                    title: ["inserted", "updated"].includes(s.type)
+                      ? status.title
+                      : undefined,
+                  };
+                })
+              : undefined,
+          });
+        } catch (e) {
+          console.error(e);
+          taskListApi.setQueryData(queryClient, previousData);
+        }
+      })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedData]);
