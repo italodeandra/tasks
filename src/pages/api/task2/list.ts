@@ -18,9 +18,7 @@ export const taskListApi = createApi(
     }
 
     const status = await TaskStatus.find(
-      {
-        createdByUserId: user._id,
-      },
+      {},
       {
         sort: {
           order: 1,
@@ -48,71 +46,6 @@ export const taskListApi = createApi(
         tasks,
       } as typeof s & { tasks?: typeof tasks };
     });
-
-    // const tasks = await Task.aggregate<
-    //   Pick<ITask, "_id" | "title"> & {
-    //     status: Pick<ITaskStatus, "_id" | "title">;
-    //     // project?: Pick<IProject, "_id" | "name">;
-    //   }
-    // >([
-    //   {
-    //     $match: {
-    //       createdByUserId: user._id,
-    //     },
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: TaskStatus.collection.collectionName,
-    //       localField: "statusId",
-    //       foreignField: "_id",
-    //       as: "status",
-    //     },
-    //   },
-    //   {
-    //     $unwind: "$status",
-    //   },
-    //   {
-    //     $lookup: {
-    //       from: Project.collection.collectionName,
-    //       localField: "projectId",
-    //       foreignField: "_id",
-    //       as: "project",
-    //     },
-    //   },
-    //   {
-    //     $unwind: {
-    //       path: "$project",
-    //       preserveNullAndEmptyArrays: true,
-    //     },
-    //   },
-    //   {
-    //     $match: {
-    //       "project.participants": {
-    //         $in: [user._id],
-    //       },
-    //     },
-    //   },
-    //   {
-    //     $project: {
-    //       title: 1,
-    //       "status.title": 1,
-    //       // "project.name": 1,
-    //     },
-    //   },
-    // ]);
-    //
-    // return toPairs(groupBy(tasks, "status._id")).map(([statusId, tasks]) => {
-    //   const mappedTasks = tasks.map((t) => omit(t, "status"));
-    //   return {
-    //     _id: statusId,
-    //     title: tasks[0].status.title,
-    //     tasks: mappedTasks,
-    //   } as {
-    //     _id: string;
-    //     title: string;
-    //     tasks?: typeof mappedTasks;
-    //   };
-    // });
   },
 );
 

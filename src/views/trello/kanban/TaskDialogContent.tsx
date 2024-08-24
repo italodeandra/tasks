@@ -1,8 +1,8 @@
 import { useSnapshot } from "valtio";
-import { state } from "./state";
+import { state } from "../state";
 import { useCallback, useMemo } from "react";
 import { find } from "lodash-es";
-import { MarkdownEditor } from "../../components/Kanban/MarkdownEditor";
+import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Button from "@italodeandra/ui/components/Button";
 import { ClockIcon, InformationCircleIcon } from "@heroicons/react/20/solid";
@@ -10,7 +10,7 @@ import Textarea from "@italodeandra/ui/components/Textarea";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
 import { PlusIcon } from "@heroicons/react/16/solid";
-import { imageUploadApi } from "../../pages/api/image-upload";
+import { imageUploadApi } from "../../../pages/api/image-upload";
 
 export function TaskDialogContent({
   selected,

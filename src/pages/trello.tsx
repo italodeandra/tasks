@@ -10,8 +10,11 @@ import {
   setData_authGetUser,
 } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
+import { taskListApi } from "./api/task2/list";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const queryClient = new QueryClient();
+
   await connectDb();
   const user = await getUserFromCookies(req, res);
   if (!user) {
@@ -24,8 +27,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
-  const queryClient = new QueryClient();
   setData_authGetUser(queryClient, user as unknown as AuthUserGetApiResponse);
+
+  await taskListApi.prefetchQuery(queryClient, undefined, req, res);
 
   return {
     props: {

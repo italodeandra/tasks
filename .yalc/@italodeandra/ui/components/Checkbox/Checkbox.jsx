@@ -1,9 +1,11 @@
-import { forwardRef, useId, } from "react";
+import { forwardRef, useEffect, useId, useRef, } from "react";
 import { defaultTextStyles } from "../Text";
 import clsx from "../../utils/clsx";
+import { mergeRefs } from "react-merge-refs";
 const defaultLabelClassName = defaultTextStyles.variant.label;
 const defaultDescriptionClassName = defaultTextStyles.variant.secondary;
-function Checkbox({ id, label, description, className, labelClassName, descriptionClassName, inputClassName, labelOuterClassName, type = "checkbox", error, helpText, ...props }, ref) {
+function Checkbox({ id, label, description, className, labelClassName, descriptionClassName, inputClassName, labelOuterClassName, type = "checkbox", error, helpText, indeterminate, ...props }, ref) {
+    const innerRef = useRef(null);
     const defaultInputId = useId();
     const descriptionId = useId();
     id = id || defaultInputId;
@@ -21,9 +23,14 @@ function Checkbox({ id, label, description, className, labelClassName, descripti
             descriptionClassName = clsx(descriptionClassName, "text-error-400 dark:text-error-600");
         }
     }
+    useEffect(() => {
+        if (innerRef.current) {
+            innerRef.current.indeterminate = !!indeterminate;
+        }
+    }, [indeterminate]);
     return (<div className={clsx("relative flex items-start", className)}>
       <div className="flex h-5 items-center">
-        <input {...props} id={id} aria-describedby={descriptionId} type={type} className={inputClassName} ref={ref}/>
+        <input {...props} id={id} aria-describedby={descriptionId} type={type} className={inputClassName} ref={mergeRefs([ref, innerRef])}/>
       </div>
       {(label || description) && (<div className={clsx("ml-3 text-sm", labelOuterClassName)}>
           {label && (<label htmlFor={id} className={labelClassName}>
