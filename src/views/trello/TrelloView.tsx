@@ -73,13 +73,11 @@ export function TrelloView() {
         (status, index) =>
           debouncedData[index] && status._id !== debouncedData[index]?._id,
       );
-      console.log("isStatusOrderChanged", isStatusOrderChanged);
       const statusChanges = getArrayDiff(
         taskList.data.map((l) => omit(l, "tasks")),
         debouncedData.map((l) => omit(l, "tasks")),
         "_id",
       );
-      console.log("status changes", statusChanges);
       const tasksChanges = debouncedData.map((debouncedList) => {
         const list = find(taskList.data, { _id: debouncedList._id });
         const isTasksOrderChanged = !!(
@@ -113,13 +111,13 @@ export function TrelloView() {
               | "moved-in";
           })[];
         })[]
-      ).map((list, i, tasksChanges) => {
+      ).map((list, _, tasksChanges) => {
         for (const taskChange of list.tasksChanges) {
           if (taskChange.type === "deleted") {
             const isTaskSomewhereElse = tasksChanges.find((status) =>
               status.tasksChanges.find(
                 (task) =>
-                  task.type === "inserted" &&
+                  ["inserted", "moved-in"].includes(task.type) &&
                   task.after?._id === taskChange.before?._id,
               ),
             );
@@ -130,7 +128,7 @@ export function TrelloView() {
             const isTaskSomewhereElse = tasksChanges.find((status) =>
               status.tasksChanges.find(
                 (task) =>
-                  task.type === "moved-out" &&
+                  ["deleted", "moved-out"].includes(task.type) &&
                   task.before?._id === taskChange.after?._id,
               ),
             );
@@ -141,7 +139,7 @@ export function TrelloView() {
         }
         return list;
       });
-      console.log("tasksChangesMoved", tasksChangesMoved);
+
       (async () => {
         const previousData = taskListApi.getQueryData(queryClient);
         taskListApi.setQueryData(
@@ -169,10 +167,40 @@ export function TrelloView() {
                   };
                 })
               : undefined,
+            tasksChanges: tasksChangesMoved.length
+              ? tasksChangesMoved.map((s) => {
+                  return {
+                    _id: s.listId,
+                    tasksOrderChange: s.isTasksOrderChanged
+                      ? debouncedData
+                          .find((l) => l._id === s.listId)
+                          ?.tasks?.map((t) => t._id)
+                      : undefined,
+                    tasks: s.tasksChanges.length
+                      ? s.tasksChanges.map((t) => {
+                          const task = (
+                            ["inserted", "updated", "moved-in"].includes(t.type)
+                              ? t.after
+                              : t.before
+                          )!;
+                          return {
+                            _id: task._id,
+                            type: t.type,
+                            title: ["inserted", "updated"].includes(t.type)
+                              ? task.title
+                              : undefined,
+                          };
+                        })
+                      : undefined,
+                  };
+                })
+              : undefined,
           });
         } catch (e) {
           console.error(e);
           taskListApi.setQueryData(queryClient, previousData);
+        } finally {
+          void taskListApi.invalidateQueries(queryClient);
         }
       })();
     }
