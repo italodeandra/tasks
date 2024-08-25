@@ -8,6 +8,7 @@ const taskStatusSchema = onlyServer(() =>
       title: types.string({ required: true }),
       createdByUserId: types.objectId({ required: true }),
       order: types.number({ required: true }),
+      archived: types.boolean(),
     },
     {
       timestamps: true,

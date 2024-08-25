@@ -69,6 +69,8 @@ export default function Task(task: ITask) {
     if (debouncedOneClicked) {
       setOneClicked(false);
       showDialog({
+        title: "Task",
+        hideTitle: true,
         content: <TaskDetails _id={task._id} />,
       });
     }

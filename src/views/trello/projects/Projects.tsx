@@ -6,6 +6,10 @@ import Button from "@italodeandra/ui/components/Button";
 import Checkbox from "@italodeandra/ui/components/Checkbox";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { uniq, xor } from "lodash-es";
+import { PencilIcon } from "@heroicons/react/24/solid";
+import Tooltip from "@italodeandra/ui/components/Tooltip";
+import { showDialog } from "@italodeandra/ui/components/Dialog";
+import { ProjectsDialogContent } from "./dialog-content/ProjectsDialogContent";
 
 const clients = [
   {
@@ -101,6 +105,14 @@ const clients = [
 export function Projects() {
   const [selected, setSelected] = useState<string[]>([]);
 
+  const handleEditClick = () => {
+    showDialog({
+      title: "Projects",
+      hideTitle: true,
+      content: <ProjectsDialogContent />,
+    });
+  };
+
   return (
     <div className="flex px-2">
       <div
@@ -130,7 +142,7 @@ export function Projects() {
                 </Button>
               )}
             </div>
-            <Accordion.Content className="data-[state=open]:animate-expand data-[state=closed]:animate-collapse overflow-hidden">
+            <Accordion.Content className="overflow-hidden data-[state=closed]:animate-collapse data-[state=open]:animate-expand">
               <div className="flex gap-1 pt-1">
                 <div className="flex flex-col gap-1 rounded-lg bg-black/20 p-2">
                   <label className="flex items-center gap-1.5 text-sm">
@@ -191,7 +203,7 @@ export function Projects() {
                           </span>
                           <ChevronDownIcon className="-ml-0.5 h-4 w-4 group-data-[state=open]/project:rotate-180" />
                         </Accordion.Trigger>
-                        <Accordion.Content className="data-[state=open]:animate-expand data-[state=closed]:animate-collapse overflow-hidden">
+                        <Accordion.Content className="overflow-hidden data-[state=closed]:animate-collapse data-[state=open]:animate-expand">
                           <div className="flex flex-col gap-1 rounded-lg bg-white/[0.01] p-2">
                             {client.projects.map((project) => (
                               <label
@@ -217,6 +229,17 @@ export function Projects() {
                     </Accordion.Root>
                   );
                 })}
+                <Tooltip content="Edit projects">
+                  <Button
+                    icon
+                    variant="text"
+                    size="sm"
+                    className="my-auto p-1"
+                    onClick={handleEditClick}
+                  >
+                    <PencilIcon />
+                  </Button>
+                </Tooltip>
               </div>
             </Accordion.Content>
           </Accordion.Item>

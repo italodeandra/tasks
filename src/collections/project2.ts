@@ -8,8 +8,6 @@ const projectSchema = onlyServer(() =>
       name: types.string({ required: true }),
       clientId: types.objectId(),
       archived: types.boolean(),
-      createdByUserId: types.objectId({ required: true }),
-      participants: types.array(types.objectId({ required: true })),
     },
     {
       timestamps: true,

@@ -11,6 +11,7 @@ const taskSchema = onlyServer(() =>
       projectId: types.objectId(),
       createdByUserId: types.objectId({ required: true }),
       order: types.number({ required: true }),
+      archived: types.boolean(),
     },
     {
       timestamps: true,

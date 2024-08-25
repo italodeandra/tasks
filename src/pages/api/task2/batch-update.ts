@@ -100,9 +100,14 @@ export const taskBatchUpdateApi = createApi(
           });
         } else if (statusChange.type === "deleted") {
           statusOperations.push({
-            deleteOne: {
+            updateOne: {
               filter: {
                 _id: isomorphicObjectId(statusChange._id),
+              },
+              update: {
+                $set: {
+                  archived: true,
+                },
               },
             },
           });
@@ -203,10 +208,15 @@ export const taskBatchUpdateApi = createApi(
               });
             } else if (taskChange.type === "deleted") {
               taskOperations.push({
-                deleteOne: {
+                updateOne: {
                   filter: {
                     statusId,
                     _id: isomorphicObjectId(taskChange._id),
+                  },
+                  update: {
+                    $set: {
+                      archived: true,
+                    },
                   },
                 },
               });
