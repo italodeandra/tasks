@@ -55,6 +55,9 @@ export function Kanban({
   cardAdditionalActions,
   className,
   uploadClipboardImage,
+  canAddList,
+  canMoveList,
+  canEditList,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -66,6 +69,9 @@ export function Kanban({
   cardAdditionalActions?: ComponentType<{ cardId: string; listId: string }>;
   className?: string;
   uploadClipboardImage?: (image: string) => Promise<string>;
+  canAddList?: boolean;
+  canMoveList?: boolean;
+  canEditList?: boolean;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
@@ -417,7 +423,7 @@ export function Kanban({
         }
       }
       if (target.getAttribute("data-is-editing") !== "true")
-        if (!cardId) {
+        if (canMoveList && !cardId) {
           if (listId) {
             const list = find(dataRef.current, { _id: listId });
             if (list) {
@@ -675,6 +681,7 @@ export function Kanban({
             onDelete={handleListDelete(list)}
             _id={list._id}
             onChangeTitle={handleListTitleChange(list)}
+            canEdit={canEditList}
           >
             {list.cards?.map((card) => (
               <Card
@@ -710,17 +717,19 @@ export function Kanban({
           </List>
         </div>
       ))}
-      <div className="flex shrink-0 flex-col">
-        <Button
-          variant="text"
-          className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
-          leading={<PlusIcon className="-ml-0.5 mr-1" />}
-          onClick={handleAddNewListClick}
-          data-new-list-button=""
-        >
-          Add new {listName}
-        </Button>
-      </div>
+      {canAddList && (
+        <div className="flex shrink-0 flex-col">
+          <Button
+            variant="text"
+            className="pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500"
+            leading={<PlusIcon className="-ml-0.5 mr-1" />}
+            onClick={handleAddNewListClick}
+            data-new-list-button=""
+          >
+            Add new {listName}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

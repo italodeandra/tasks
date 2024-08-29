@@ -4,10 +4,10 @@ import { projectsDialogState } from "../projectsDialog.state";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { useSnapshot } from "valtio";
-import { projectCreateApi } from "../../../../pages/api/project2/create";
+import { projectCreateApi } from "../../../../pages/api/project/create";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
-import { projectDeleteApi } from "../../../../pages/api/project2/delete";
-import { projectUpdateApi } from "../../../../pages/api/project2/update";
+import { projectDeleteApi } from "../../../../pages/api/project/delete";
+import { projectUpdateApi } from "../../../../pages/api/project/update";
 
 export function ProjectForm() {
   const { query } = useSnapshot(projectsDialogState);

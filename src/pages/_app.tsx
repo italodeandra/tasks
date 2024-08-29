@@ -17,7 +17,6 @@ import { Dialogs } from "@italodeandra/ui/components/Dialog";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutationWindowCloseProtection";
 import "highlight.js/styles/github-dark.css";
-import { hydrateHomeState } from "../views/home/home.state";
 import getQueryClient from "@italodeandra/next/api/getQueryClient";
 import "@fontsource-variable/fira-code";
 
@@ -29,7 +28,6 @@ setupNProgress(primaryColor);
 function MyApp({ Component, pageProps }: AppProps) {
   hydrateNavigationDrawerState(pageProps.cookies);
   hydrateAuthState(pageProps.cookies);
-  hydrateHomeState(pageProps.cookies);
 
   const queryClient = getQueryClient();
 
@@ -115,7 +113,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         <HydrationBoundary state={pageProps.dehydratedState}>
           <Dialogs />
           <AuthProvider Routes={routes}>
-            {getLayout(<Component {...pageProps} />)}
+            {getLayout(<Component {...pageProps} />, Component.layoutProps)}
             <ReactQueryDevtools buttonPosition="bottom-right" />
           </AuthProvider>
         </HydrationBoundary>

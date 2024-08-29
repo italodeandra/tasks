@@ -1,11 +1,11 @@
 import { useForm } from "react-hook-form";
-import { clientCreateApi } from "../../../../pages/api/client2/create";
+import { clientCreateApi } from "../../../../pages/api/client/create";
 import { useEffect } from "react";
 import { projectsDialogState } from "../projectsDialog.state";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { useSnapshot } from "valtio";
-import { clientUpdateApi } from "../../../../pages/api/client2/update";
+import { clientUpdateApi } from "../../../../pages/api/client/update";
 
 export function ClientForm() {
   const { query } = useSnapshot(projectsDialogState);

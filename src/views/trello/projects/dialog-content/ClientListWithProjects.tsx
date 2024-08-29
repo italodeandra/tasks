@@ -1,4 +1,4 @@
-import { clientListWithProjectsApi } from "../../../../pages/api/client2/list-with-projects";
+import { clientListWithProjectsApi } from "../../../../pages/api/client/list-with-projects";
 import Table from "@italodeandra/ui/components/Table";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import dayjs from "dayjs";

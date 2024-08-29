@@ -4,45 +4,34 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import createApi from "@italodeandra/next/api/createApi";
-import getProject, { IProject } from "../../../collections/project";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import getProject, { IProject } from "../../../collections/project";
 import { clientListWithProjectsApi } from "../client/list-with-projects";
-import getClient from "../../../collections/client";
 
-export const projectCreateApi = createApi(
-  "/api/project/create",
+export const projectUpdateApi = createApi(
+  "/api/project/update",
   async function (
-    args: Jsonify<Pick<IProject, "name" | "clientId">>,
+    args: Jsonify<Pick<IProject, "_id" | "name">>,
     req: NextApiRequest,
     res: NextApiResponse,
   ) {
     await connectDb();
     const Project = getProject();
-    const Client = getClient();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    const clientId = args.clientId
-      ? isomorphicObjectId(args.clientId)
-      : undefined;
-
-    await Project.insertOne({
-      name: args.name,
-      clientId,
-    });
-
-    if (args.clientId) {
-      await Client.updateOne(
-        {
-          _id: clientId,
+    await Project.updateOne(
+      {
+        _id: isomorphicObjectId(args._id),
+      },
+      {
+        $set: {
+          name: args.name,
         },
-        {
-          $set: {},
-        },
-      );
-    }
+      },
+    );
   },
   {
     mutationOptions: {
@@ -53,4 +42,4 @@ export const projectCreateApi = createApi(
   },
 );
 
-export default projectCreateApi.handler;
+export default projectUpdateApi.handler;

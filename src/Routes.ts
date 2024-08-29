@@ -1,18 +1,16 @@
-class Routes {
-  static Home = "/";
-  static SignUp = "/sign-up";
-  static SignIn = "/sign-in";
-  static ForgotPassword = "/forgot-password";
-  static ResetPassword(token: string) {
-    return `/reset-password/${token}`;
-  }
+const Routes = {
+  Home: "/",
+  SignUp: "/sign-up",
+  SignIn: "/sign-in",
+  ForgotPassword: "/forgot-password",
+  ResetPassword: (token: string) => `/reset-password/${token}`,
 
-  static Panel = "/panel";
-  static PanelUsers = `${Routes.Panel}/users`;
-  static PanelNewUser = `${Routes.Panel}/user/new`;
-  static PanelUser(id: string) {
-    return `${Routes.Panel}/user/${id}`;
-  }
-}
+  Board: (_id: string) => `/board/${_id}`,
+
+  Panel: "/panel",
+  PanelUsers: "/panel/users",
+  PanelNewUser: "/panel/user/new",
+  PanelUser: (_id: string) => `/panel/user/${_id}`,
+};
 
 export default Routes;

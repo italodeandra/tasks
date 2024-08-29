@@ -1,11 +1,13 @@
 import { ReactNode } from "react";
-import Header from "./Header/Header";
+import { Header } from "./header/Header";
 
-export default function getLayout(children: ReactNode) {
+export function getLayout(
+  children: ReactNode,
+  layoutProps?: { headerContent: ReactNode },
+) {
   return (
     <>
-      <Header />
-      <div className="h-16" />
+      <Header>{layoutProps?.headerContent}</Header>
       {children}
     </>
   );

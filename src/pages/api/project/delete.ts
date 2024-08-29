@@ -7,39 +7,38 @@ import createApi from "@italodeandra/next/api/createApi";
 import getProject, { IProject } from "../../../collections/project";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { clientListWithProjectsApi } from "../client/list-with-projects";
-import getClient from "../../../collections/client";
+import getTask from "../../../collections/task";
 
-export const projectCreateApi = createApi(
-  "/api/project/create",
+export const projectDeleteApi = createApi(
+  "/api/project/delete",
   async function (
-    args: Jsonify<Pick<IProject, "name" | "clientId">>,
+    args: Jsonify<Pick<IProject, "_id">>,
     req: NextApiRequest,
     res: NextApiResponse,
   ) {
     await connectDb();
     const Project = getProject();
-    const Client = getClient();
+    const Task = getTask();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
-    const clientId = args.clientId
-      ? isomorphicObjectId(args.clientId)
-      : undefined;
+    const _id = isomorphicObjectId(args._id);
 
-    await Project.insertOne({
-      name: args.name,
-      clientId,
-    });
-
-    if (args.clientId) {
-      await Client.updateOne(
+    if (!(await Task.countDocuments({ projectId: _id }))) {
+      await Project.deleteOne({
+        _id,
+      });
+    } else {
+      await Project.updateOne(
         {
-          _id: clientId,
+          _id,
         },
         {
-          $set: {},
+          $set: {
+            archived: true,
+          },
         },
       );
     }
@@ -53,4 +52,4 @@ export const projectCreateApi = createApi(
   },
 );
 
-export default projectCreateApi.handler;
+export default projectDeleteApi.handler;

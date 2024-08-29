@@ -189,7 +189,7 @@ function MarkdownEditorWithRef(
         className,
       )}
       data-is-editing={editing}
-      onDoubleClick={editOnDoubleClick ? handleEdit : undefined}
+      onDoubleClick={editOnDoubleClick && onChange ? handleEdit : undefined}
       onClick={editOnClick ? handleEdit : undefined}
       data-is-markdown=""
       onPaste={handlePaste}

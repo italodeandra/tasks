@@ -11,6 +11,7 @@ export function List({
   onDelete,
   onChangeTitle,
   _id,
+  canEdit,
   ...props
 }: {
   title: string;
@@ -19,6 +20,7 @@ export function List({
   onDelete?: () => void;
   onChangeTitle?: (title: string) => void;
   _id: string;
+  canEdit?: boolean;
 } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -36,7 +38,7 @@ export function List({
         <ContextMenu.Trigger asChild>
           <MarkdownEditor
             value={title}
-            onChange={onChangeTitle}
+            onChange={canEdit ? onChangeTitle : undefined}
             className="rounded-md px-1 text-sm font-medium outline-0"
             editOnDoubleClick
             editHighlight

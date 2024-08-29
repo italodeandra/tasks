@@ -6,7 +6,7 @@ const teamSchema = onlyServer(() =>
   schema(
     {
       name: types.string({ required: true }),
-      members: types.array(types.objectId({ required: true })),
+      members: types.array(types.objectId(), { required: true }),
     },
     {
       timestamps: true,

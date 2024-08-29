@@ -1,23 +1,24 @@
-import { connectDb } from "../db";
 import { GetServerSideProps } from "next";
+import { connectDb } from "../db";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
+import { getCookies } from "cookies-next";
 import routes from "../Routes";
-import { deleteCookie, getCookies } from "cookies-next";
-import { dehydrate } from "@tanstack/query-core";
+import { dehydrate, QueryClient } from "@tanstack/query-core";
 import {
   AuthUserGetApiResponse,
   setData_authGetUser,
 } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
-import getLayout from "../views/layout/layout";
-import { HomeView } from "../views/home/HomeView";
-import getQueryClient from "@italodeandra/next/api/getQueryClient";
+import { Home } from "../views/home/Home";
+import { boardListApi } from "./api/board/list";
+import { getLayout } from "../views/layout/layout";
 
 export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+  const queryClient = new QueryClient();
+
   await connectDb();
   const user = await getUserFromCookies(req, res);
   if (!user) {
-    deleteCookie("auth", { req, res });
     return {
       redirect: {
         destination: routes.SignIn,
@@ -26,12 +27,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     };
   }
 
-  const queryClient = getQueryClient({
-    queries: {
-      staleTime: 60 * 1000,
-    },
-  });
   setData_authGetUser(queryClient, user as unknown as AuthUserGetApiResponse);
+
+  await boardListApi.prefetchQuery(queryClient, undefined, req, res);
 
   return {
     props: {
@@ -41,8 +39,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
   };
 };
 
-export default function Index() {
-  return <HomeView />;
+export default function Page() {
+  return <Home />;
 }
 
-Index.getLayout = getLayout;
+Page.getLayout = getLayout;

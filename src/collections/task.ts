@@ -2,29 +2,23 @@ import { schema, types } from "papr";
 import { onlyServer } from "@italodeandra/next/utils/isServer";
 import db from "@italodeandra/next/db";
 
-export enum TaskStatus {
-  TODO = "TODO",
-  DOING = "DOING",
-  REVIEW = "REVIEW",
-  BLOCKED = "BLOCKED",
-  DONE = "DONE",
-}
-
 const taskSchema = onlyServer(() =>
   schema(
     {
       title: types.string({ required: true }),
       description: types.string(),
-      status: types.enum(Object.values(TaskStatus), { required: true }),
+      statusId: types.objectId(),
+      columnId: types.objectId({ required: true }),
       projectId: types.objectId(),
-      userId: types.objectId({ required: true }),
+      clientId: types.objectId(),
       order: types.number({ required: true }),
-      tags: types.array(types.string({ required: true })),
+      archived: types.boolean(),
+      assignees: types.array(types.objectId()),
     },
     {
       timestamps: true,
-    }
-  )
+    },
+  ),
 );
 
 export type ITask = (typeof taskSchema)[0];

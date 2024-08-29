@@ -9,15 +9,15 @@ import { TaskDialogTitle } from "./TaskDialogTitle";
 import { TaskDialogContent } from "./TaskDialogContent";
 import { IList } from "../../../components/Kanban/IList";
 import { imageUploadApi } from "../../../pages/api/image-upload";
-import { taskBatchUpdateApi } from "../../../pages/api/task2/batch-update";
-import { taskListApi } from "../../../pages/api/task2/list";
+import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
+import { taskListApi } from "../../../pages/api/task/list";
 import { find, isEqual, omit, pick } from "lodash-es";
 import { useQueryClient } from "@tanstack/react-query";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { WritableDeep } from "type-fest";
 
-export function TrelloKanban() {
+export function TrelloKanban({ boardId }: { boardId: string }) {
   const { data } = useSnapshot(state);
 
   const handleTaskClick = useCallback(
@@ -27,6 +27,7 @@ export function TrelloKanban() {
         contentOverflowClassName: "max-w-screen-xl gap-4",
         title: <TaskDialogTitle selected={selected} />,
         content: <TaskDialogContent selected={selected} />,
+        closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
       });
     },
     [],
@@ -56,7 +57,7 @@ export function TrelloKanban() {
 
   const taskBatchUpdate = taskBatchUpdateApi.useMutation();
 
-  const taskList = taskListApi.useQuery();
+  const taskList = taskListApi.useQuery({ boardId });
   useEffect(() => {
     if (taskList.data && !isEqual(taskList.data, data)) {
       state.data = taskList.data;
@@ -144,17 +145,21 @@ export function TrelloKanban() {
       });
 
       (async () => {
-        const previousData = taskListApi.getQueryData(queryClient);
+        const previousData = taskListApi.getQueryData(queryClient, { boardId });
         taskListApi.setQueryData(
           queryClient,
           debouncedData as WritableDeep<typeof debouncedData>,
+          {
+            boardId,
+          },
         );
         try {
           await taskBatchUpdate.mutateAsync({
-            statusOrderChange: isStatusOrderChanged
+            boardId,
+            columnOrderChange: isStatusOrderChanged
               ? debouncedData.map((l) => l._id)
               : undefined,
-            statusChanges: statusChanges.length
+            columnChanges: statusChanges.length
               ? statusChanges.map((s) => {
                   const status = (
                     ["inserted", "updated"].includes(s.type)
@@ -201,9 +206,9 @@ export function TrelloKanban() {
           });
         } catch (e) {
           console.error(e);
-          taskListApi.setQueryData(queryClient, previousData);
+          taskListApi.setQueryData(queryClient, previousData, { boardId });
         } finally {
-          void taskListApi.invalidateQueries(queryClient);
+          void taskListApi.invalidateQueries(queryClient, { boardId });
         }
       })();
     }
@@ -222,7 +227,7 @@ export function TrelloKanban() {
       onChange={handleDataChange}
       onClickCard={handleTaskClick}
       cardName="task"
-      listName="status"
+      listName="column"
       cardAdditionalContent={TaskAdditionalContent}
       cardAdditionalActions={TaskAdditionalActions}
       uploadClipboardImage={uploadClipboardImage}

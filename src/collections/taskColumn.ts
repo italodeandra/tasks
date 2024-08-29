@@ -2,12 +2,13 @@ import { schema, types } from "papr";
 import { onlyServer } from "@italodeandra/next/utils/isServer";
 import db from "@italodeandra/next/db";
 
-const taskStatusSchema = onlyServer(() =>
+const taskColumnSchema = onlyServer(() =>
   schema(
     {
       boardId: types.objectId({ required: true }),
       title: types.string({ required: true }),
-      color: types.string({ required: true }),
+      order: types.number({ required: true }),
+      archived: types.boolean(),
     },
     {
       timestamps: true,
@@ -15,9 +16,9 @@ const taskStatusSchema = onlyServer(() =>
   ),
 );
 
-export type ITaskStatus = (typeof taskStatusSchema)[0];
+export type ITaskColumn = (typeof taskColumnSchema)[0];
 
-const getTaskStatus = () =>
-  onlyServer(() => db.model("taskStatuses", taskStatusSchema));
+const getTaskColumn = () =>
+  onlyServer(() => db.model("taskColumns", taskColumnSchema));
 
-export default getTaskStatus;
+export default getTaskColumn;

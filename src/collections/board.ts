@@ -3,11 +3,10 @@ import { onlyServer } from "@italodeandra/next/utils/isServer";
 import db from "@italodeandra/next/db";
 import { permission } from "./permission";
 
-const clientSchema = onlyServer(() =>
+const boardSchema = onlyServer(() =>
   schema(
     {
       name: types.string({ required: true }),
-      archived: types.boolean(),
       permissions: types.array(permission, { required: true }),
     },
     {
@@ -16,8 +15,8 @@ const clientSchema = onlyServer(() =>
   ),
 );
 
-export type IClient = (typeof clientSchema)[0];
+export type IBoard = (typeof boardSchema)[0];
 
-const getClient = () => onlyServer(() => db.model("clients2", clientSchema));
+const getBoard = () => onlyServer(() => db.model("boards", boardSchema));
 
-export default getClient;
+export default getBoard;
