@@ -14,6 +14,7 @@ const taskSchema = onlyServer(() =>
       order: types.number({ required: true }),
       archived: types.boolean(),
       assignees: types.array(types.objectId()),
+      priority: types.number(),
     },
     {
       timestamps: true,
