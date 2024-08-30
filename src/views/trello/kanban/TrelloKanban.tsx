@@ -64,6 +64,10 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
     if (taskList.data && !isEqual(taskList.data, data)) {
       state.data = taskList.data;
     }
+
+    return () => {
+      state.data = undefined;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
 

@@ -19,6 +19,8 @@ import { useRouter } from "next/router";
 import { getLayout } from "../../views/layout/layout";
 import { BoardTitle } from "../../views/board/BoardTitle";
 import { taskListApi } from "../api/task/list";
+import getTaskColumn from "../../collections/taskColumn";
+import getTaskStatus from "../../collections/taskStatus";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -27,6 +29,8 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   const queryClient = new QueryClient();
   const Board = getBoard();
+  const TaskColumn = getTaskColumn();
+  const TaskStatus = getTaskStatus();
 
   await connectDb();
   const user = await getUserFromCookies(req, res);
@@ -57,6 +61,57 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
     await Board.insertOne(newBoardDoc);
 
+    await TaskColumn.insertMany([
+      {
+        boardId: newBoardId,
+        title: "Todo",
+        order: 1,
+      },
+      {
+        boardId: newBoardId,
+        title: "Doing",
+        order: 2,
+      },
+      {
+        boardId: newBoardId,
+        title: "Done",
+        order: 3,
+      },
+    ]);
+
+    await TaskColumn.insertMany([
+      {
+        boardId: newBoardId,
+        title: "Todo",
+        order: 1,
+      },
+      {
+        boardId: newBoardId,
+        title: "Doing",
+        order: 2,
+      },
+      {
+        boardId: newBoardId,
+        title: "Done",
+        order: 3,
+      },
+    ]);
+
+    await TaskStatus.insertMany([
+      {
+        boardId: newBoardId,
+        title: "Todo",
+      },
+      {
+        boardId: newBoardId,
+        title: "Doing",
+      },
+      {
+        boardId: newBoardId,
+        title: "Done",
+      },
+    ]);
+
     return {
       redirect: {
         destination: Routes.Board(newBoardId.toString()),
@@ -69,6 +124,14 @@ export const getServerSideProps: GetServerSideProps = async ({
     queryClient,
     {
       _id,
+    },
+    req,
+    res,
+  );
+  await taskListApi.prefetchQuery(
+    queryClient,
+    {
+      boardId: _id,
     },
     req,
     res,

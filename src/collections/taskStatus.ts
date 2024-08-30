@@ -7,7 +7,6 @@ const taskStatusSchema = onlyServer(() =>
     {
       boardId: types.objectId({ required: true }),
       title: types.string({ required: true }),
-      color: types.string({ required: true }),
     },
     {
       timestamps: true,
