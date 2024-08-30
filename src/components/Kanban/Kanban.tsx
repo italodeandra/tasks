@@ -489,7 +489,7 @@ export function Kanban({
       document.removeEventListener("touchstart", handleCardMouseDown);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [canMoveList]);
 
   const handleAddNewCardClick = useCallback(
     (list: IList) => () => {
