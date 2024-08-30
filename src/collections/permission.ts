@@ -12,6 +12,6 @@ export const permission = onlyServer(() =>
     userId: types.objectId(),
     teamId: types.objectId(),
     public: types.boolean(),
-    level: types.enum(Object.values(PermissionLevel), { required: true }),
+    level: types.enum(Object.values(PermissionLevel)),
   }),
 );
