@@ -681,6 +681,7 @@ export function Kanban({
             _id={list._id}
             onChangeTitle={handleListTitleChange(list)}
             canEdit={canEditList}
+            listName={listName}
           >
             {list.cards?.map((card) => (
               <Card

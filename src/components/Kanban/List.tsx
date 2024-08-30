@@ -12,6 +12,7 @@ export function List({
   onChangeTitle,
   _id,
   canEdit,
+  listName,
   ...props
 }: {
   title: string;
@@ -21,6 +22,7 @@ export function List({
   onChangeTitle?: (title: string) => void;
   _id: string;
   canEdit?: boolean;
+  listName?: string;
 } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -44,9 +46,13 @@ export function List({
             editHighlight
           />
         </ContextMenu.Trigger>
-        <ContextMenu.Content>
-          <ContextMenu.Item onClick={onDelete}>Delete list</ContextMenu.Item>
-        </ContextMenu.Content>
+        {canEdit && (
+          <ContextMenu.Content>
+            <ContextMenu.Item onClick={onDelete}>
+              Delete {listName}
+            </ContextMenu.Item>
+          </ContextMenu.Content>
+        )}
       </ContextMenu.Root>
       {children}
     </div>
