@@ -1,62 +1,34 @@
-import { projectsDialogState } from "../projectsDialog.state";
-import { useSnapshot } from "valtio";
 import { ClientForm } from "./ClientForm";
-import { ClientListWithProjects } from "./ClientListWithProjects";
 import { ProjectForm } from "./ProjectForm";
 
-export function ProjectsDialogContent() {
-  const { route, query } = useSnapshot(projectsDialogState);
-
+export function ProjectsDialogContent({
+  boardId,
+  dialogId,
+  route,
+  query,
+}: {
+  boardId: string;
+  dialogId: string;
+  route: "new-project" | "new-client" | "edit-client" | "edit-project";
+  query?: {
+    _id?: string;
+    name?: string;
+    client?: { _id: string; name: string };
+  };
+}) {
   if (route === "edit-project" && query) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50">
-          Edit {query.name}
-        </div>
-        <ProjectForm />
-      </div>
-    );
+    return <ProjectForm dialogId={dialogId} query={query} />;
   }
 
   if (route === "new-project" && query) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50">
-          New project at {query.client?.name}
-        </div>
-        <ProjectForm />
-      </div>
-    );
+    return <ProjectForm dialogId={dialogId} query={query} />;
   }
 
   if (route === "edit-client" && query) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50">
-          Edit {query.name}
-        </div>
-        <ClientForm />
-      </div>
-    );
+    return <ClientForm dialogId={dialogId} query={query} boardId={boardId} />;
   }
 
   if (route === "new-client") {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50">
-          New client
-        </div>
-        <ClientForm />
-      </div>
-    );
+    return <ClientForm dialogId={dialogId} query={query} boardId={boardId} />;
   }
-
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50">
-        Projects
-      </div>
-      <ClientListWithProjects />
-    </div>
-  );
 }

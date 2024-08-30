@@ -16,6 +16,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { WritableDeep } from "type-fest";
+import { boardGetApi } from "../../../pages/api/board/get";
 
 export function TrelloKanban({ boardId }: { boardId: string }) {
   const { data } = useSnapshot(state);
@@ -55,6 +56,7 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
     [imageUpload],
   );
 
+  const boardGet = boardGetApi.useQuery({ _id: boardId });
   const taskBatchUpdate = taskBatchUpdateApi.useMutation();
 
   const taskList = taskListApi.useQuery({ boardId });
@@ -222,7 +224,7 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
 
   return (
     <Kanban
-      className="px-2 pb-2"
+      className="overflow-auto px-2 pb-2"
       data={mappedData}
       onChange={handleDataChange}
       onClickCard={handleTaskClick}
@@ -231,6 +233,9 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
       cardAdditionalContent={TaskAdditionalContent}
       cardAdditionalActions={TaskAdditionalActions}
       uploadClipboardImage={uploadClipboardImage}
+      canAddList={boardGet.data?.canEdit}
+      canEditList={boardGet.data?.canEdit}
+      canMoveList={boardGet.data?.canEdit}
     />
   );
 }

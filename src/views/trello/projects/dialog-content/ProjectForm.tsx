@@ -1,16 +1,24 @@
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
-import { projectsDialogState } from "../projectsDialog.state";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
-import { useSnapshot } from "valtio";
 import { projectCreateApi } from "../../../../pages/api/project/create";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
 import { projectDeleteApi } from "../../../../pages/api/project/delete";
 import { projectUpdateApi } from "../../../../pages/api/project/update";
+import { closeDialog } from "@italodeandra/ui/components/Dialog";
 
-export function ProjectForm() {
-  const { query } = useSnapshot(projectsDialogState);
+export function ProjectForm({
+  query,
+  dialogId,
+}: {
+  dialogId: string;
+  query?: {
+    _id?: string;
+    name?: string;
+    client?: { _id: string; name: string };
+  };
+}) {
   const { register, handleSubmit, watch, reset } = useForm<{ name: string }>();
 
   useEffect(() => {
@@ -24,29 +32,33 @@ export function ProjectForm() {
   const projectCreate = projectCreateApi.useMutation();
   useEffect(() => {
     if (projectCreate.isSuccess) {
-      projectsDialogState.route = "list";
+      closeDialog(dialogId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectCreate.isSuccess]);
+
   const projectUpdate = projectUpdateApi.useMutation();
   useEffect(() => {
     if (projectUpdate.isSuccess) {
-      projectsDialogState.route = "list";
+      closeDialog(dialogId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectUpdate.isSuccess]);
 
   const isSaving = projectCreate.isPending || projectUpdate.isPending;
 
   const onSubmit = () => {
-    if (!isSaving) {
+    if (!isSaving && query?.client?._id) {
       if (query?._id) {
         projectUpdate.mutate({
           ...watch(),
           _id: query._id,
+          clientId: query.client._id,
         });
       } else {
         projectCreate.mutate({
           ...watch(),
-          clientId: query?.client?._id,
+          clientId: query.client._id,
         });
       }
     }
@@ -55,8 +67,9 @@ export function ProjectForm() {
   const projectDelete = projectDeleteApi.useMutation();
   useEffect(() => {
     if (projectDelete.isSuccess) {
-      projectsDialogState.route = "list";
+      closeDialog(dialogId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectDelete.isSuccess]);
 
   return (
@@ -67,16 +80,15 @@ export function ProjectForm() {
         required
       />
       <div className="flex w-full gap-2">
-        <Button
-          variant="filled"
-          onClick={() => (projectsDialogState.route = "list")}
-        >
-          Go back
-        </Button>
         {query?._id && (
           <ConfirmationButton
             onConfirm={() => {
-              projectDelete.mutate({ _id: query._id! });
+              if (query._id && query.client?._id) {
+                projectDelete.mutate({
+                  _id: query._id,
+                  clientId: query.client._id,
+                });
+              }
             }}
             confirmation="Are you sure you want to delete this project?"
             label="Delete"

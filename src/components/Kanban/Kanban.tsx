@@ -38,10 +38,9 @@ function getMousePos(
 function getMousePosTarget(
   mousePos: Pick<MouseEvent | Touch, "clientX" | "clientY">,
 ) {
-  return document.elementFromPoint(
-    mousePos.clientX,
-    mousePos.clientY,
-  ) as HTMLDivElement;
+  return document.elementFromPoint(mousePos.clientX, mousePos.clientY) as
+    | HTMLDivElement
+    | undefined;
 }
 
 export function Kanban({
@@ -154,7 +153,7 @@ export function Kanban({
       if (draggingCardRef.current) {
         const mousePos = getMousePos(event);
         const target = getMousePosTarget(mousePos);
-        const newListButton = target.closest("[data-new-list-button]");
+        const newListButton = target?.closest("[data-new-list-button]");
         if (newListButton) {
           const lists = produce(dataRef.current, (draft) => {
             const previousList = find(draft, {
@@ -192,7 +191,7 @@ export function Kanban({
       if (draggingCardRef.current) {
         if (draggingCardRef.current.card._id !== cardId) {
           if (draggingCardRef.current.list._id === listId) {
-            if (cardId) {
+            if (target && cardId) {
               const lists = produce(dataRef.current, (draft) => {
                 const listToUpdate = find(draft, { _id: listId });
                 if (listToUpdate?.cards) {
@@ -266,7 +265,7 @@ export function Kanban({
       }
 
       // moving list
-      if (draggingListRef.current && listId) {
+      if (target && draggingListRef.current && listId) {
         if (draggingListRef.current.list._id !== listId) {
           const newData = produce(dataRef.current, (draft) => {
             const previousIndex = findIndex(draft, {
@@ -406,7 +405,7 @@ export function Kanban({
     const handleCardMouseDown = (event: MouseEvent | TouchEvent) => {
       const { cardId, listId, mousePos, target } =
         getMousePosTargetCardIdAndListId(event);
-      if (isTouchDevice) {
+      if (target && isTouchDevice) {
         if (!draggingCardRef.current?.unstick) {
           if (document.activeElement === target && onClickCard) {
             clearTimeout(cardClickTimeout.current);
@@ -422,7 +421,7 @@ export function Kanban({
           }
         }
       }
-      if (target.getAttribute("data-is-editing") !== "true")
+      if (target && target.getAttribute("data-is-editing") !== "true")
         if (canMoveList && !cardId) {
           if (listId) {
             const list = find(dataRef.current, { _id: listId });

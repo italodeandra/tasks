@@ -1,8 +1,8 @@
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 
 export function TaskAdditionalActions({
-  cardId,
-  listId,
+  cardId, // TODO
+  listId, // TODO
 }: {
   cardId: string;
   listId: string;

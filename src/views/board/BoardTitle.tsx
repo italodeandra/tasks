@@ -11,7 +11,7 @@ export function BoardTitle() {
 
   const _id = router.query._id as string;
 
-  const boardGet = boardGetApi.useQuery({ _id: _id });
+  const boardGet = boardGetApi.useQuery({ _id });
   const boardUpdate = boardUpdateApi.useMutation();
 
   const [name, setName] = useState(boardGet.data?.name || "");
@@ -37,16 +37,18 @@ export function BoardTitle() {
 
   return (
     <>
-      <div className="-mr-1 mt-[6px] text-sm">/</div>
-      <MarkdownEditor
-        className="mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors hover:bg-zinc-900"
-        value={name}
-        onChange={handleChange}
-        editOnDoubleClick={boardGet.data?.canEdit}
-        editHighlight
-      />
-      {boardUpdate.isPending && <Loading />}
-      <Projects />
+      <div className="flex flex-wrap gap-2">
+        <div className="-mr-1 mt-[6px] text-sm">/</div>
+        <MarkdownEditor
+          className="mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors hover:bg-zinc-900"
+          value={name}
+          onChange={handleChange}
+          editOnDoubleClick={boardGet.data?.canEdit}
+          editHighlight
+        />
+        {boardUpdate.isPending && <Loading />}
+        <Projects boardId={_id} />
+      </div>
     </>
   );
 }

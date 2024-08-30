@@ -7,9 +7,9 @@ const projectSchema = onlyServer(() =>
   schema(
     {
       name: types.string({ required: true }),
-      clientId: types.objectId(),
+      clientId: types.objectId({ required: true }),
       archived: types.boolean(),
-      permissions: types.array(permission, { required: true }),
+      permissions: types.array(permission),
     },
     {
       timestamps: true,
