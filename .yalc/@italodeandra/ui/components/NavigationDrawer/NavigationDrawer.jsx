@@ -3,11 +3,10 @@ import { useCallback } from "react";
 import navigationDrawerState from "./navigationDrawer.state";
 import { useSnapshot } from "valtio";
 import clsx from "../../utils/clsx";
-import defaultTheme from "tailwindcss/defaultTheme";
 export default function NavigationDrawer({ children, navigationChildren, position, title, noPadding, panelClassName, }) {
     const { isOpen } = useSnapshot(navigationDrawerState);
     const handleChangeOpen = useCallback((open) => {
-        if (window.innerWidth <= +defaultTheme.screens.lg.replace("px", "")) {
+        if (window.innerWidth <= 1024) {
             navigationDrawerState.setOpen(open);
         }
     }, []);

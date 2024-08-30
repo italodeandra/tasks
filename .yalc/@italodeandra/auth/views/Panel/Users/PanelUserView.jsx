@@ -16,7 +16,8 @@ import { useAuthPanelUserCreate } from "../../../api/panel/user/create";
 import { useDeepCompareEffect } from "react-use";
 import { showNotification } from "@italodeandra/ui/components/Notifications/notifications.state";
 import { SwitchInput } from "@italodeandra/ui/components/Switch";
-export default function PanelUserView({ customFields, }) {
+import clsx from "@italodeandra/ui/utils/clsx";
+export default function PanelUserView({ customFields, innerClassName, }) {
     const { Routes, intl } = useAuthContext();
     const t = useTranslation(intl);
     const router = useRouter();
@@ -104,7 +105,7 @@ export default function PanelUserView({ customFields, }) {
     return (<div className="md:px-2">
       <NextSeo title={title}/>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mx-auto w-full max-w-screen-lg">
+        <div className={clsx("mx-auto w-full max-w-screen-lg", innerClassName)}>
           <Breadcrumbs pages={pages} className="col-span-2 mb-4" loading={isFetching}/>
           <div className="flex flex-col gap-4 px-2 sm:grid sm:grid-cols-2 md:px-0">
             <Input label={t("Email")} type="email" required {...register("email", {

@@ -1,11 +1,10 @@
 import clsx from "../../utils/clsx";
 import { useScrollYMovement } from "../../hooks/useScroll";
 import { useEffect, useRef } from "react";
-import defaultTheme from "tailwindcss/defaultTheme";
 import useMediaQuery from "../../hooks/useMediaQuery";
 export default function Header({ className, hideOnScroll, ...props }) {
     const ref = useRef(null);
-    const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.md})`);
+    const isMobile = useMediaQuery(`(max-width: 768px)`);
     useScrollYMovement(74, (scrollYMovement) => {
         if (ref.current) {
             ref.current.style.transform = `translateY(-${scrollYMovement}px)`;

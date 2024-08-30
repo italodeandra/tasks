@@ -3,7 +3,6 @@ import { useRouter } from "next/router";
 import { cloneElement } from "react";
 import Button from "../Button";
 import navigationDrawerState from "./navigationDrawer.state";
-import defaultTheme from "tailwindcss/defaultTheme";
 import useMediaQuery from "../../hooks/useMediaQuery";
 export default function NavigationItem({ icon, children, href, exact, alternativeActiveHrefs, className, disabled, active, }) {
     const router = useRouter();
@@ -15,7 +14,7 @@ export default function NavigationItem({ icon, children, href, exact, alternativ
                 : router.pathname.includes(href) ||
                     alternativeActiveHrefs?.some((href) => router.pathname.includes(href))
             : active;
-    const isMobile = useMediaQuery(`(max-width: ${defaultTheme.screens.lg})`);
+    const isMobile = useMediaQuery(`(max-width: 1024px)`);
     return (<Button variant={active ? "light" : "text"} color={active ? "primary" : "default"} className={clsx("w-full justify-start border-transparent", className)} leading={icon &&
             cloneElement(icon, {
                 className: clsx(icon.props?.className, "!w-5 mr-3"),

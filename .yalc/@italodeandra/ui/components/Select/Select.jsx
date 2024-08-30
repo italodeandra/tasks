@@ -8,7 +8,7 @@ import { modalContentClassName } from "../../styles/Modal.classNames";
 const selectScrollButtonClassName = clsx("ui-select-scroll-button", "flex h-6 cursor-default items-center justify-center", "bg-white", "dark:bg-zinc-900", "[&>svg]:w-4 [&>svg]:h-4");
 function SelectContent({ className, children, ...props }) {
     return (<RSelect.Portal>
-      <RSelect.Content {...props} className={clsx(modalContentClassName, "ui-select-content", className)}>
+      <RSelect.Content {...props} className={clsx(modalContentClassName, "ui-select-content -ml-[6px]", className)}>
         <RSelect.ScrollUpButton className={selectScrollButtonClassName}>
           <ChevronUpIcon />
         </RSelect.ScrollUpButton>

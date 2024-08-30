@@ -99,6 +99,8 @@ export type ButtonProps<T extends HTMLElement = HTMLButtonElement> = Omit<Unstyl
     loading?: boolean;
     disabled?: boolean;
     rounded?: boolean;
+    trailingClassName?: string;
+    leadingClassName?: string;
 };
 declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledButtonProps<HTMLElement>, "size"> & {
     variant?: keyof (typeof styles)["variant"];
@@ -110,5 +112,7 @@ declare const _default: import("react").ForwardRefExoticComponent<Omit<UnstyledB
     loading?: boolean;
     disabled?: boolean;
     rounded?: boolean;
+    trailingClassName?: string;
+    leadingClassName?: string;
 } & import("react").RefAttributes<HTMLElement>>;
 export default _default;

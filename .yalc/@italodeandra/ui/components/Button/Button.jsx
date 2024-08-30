@@ -91,7 +91,7 @@ const styles = {
         },
     },
 };
-const Button = ({ variant = "outlined", color = "default", size = "md", className, icon, type = "button", leading, trailing, children, loading, disabled, rounded, ...props }, ref) => {
+const Button = ({ variant = "outlined", color = "default", size = "md", className, trailingClassName, leadingClassName, icon, type = "button", leading, trailing, children, loading, disabled, rounded, ...props }, ref) => {
     if (loading) {
         if (icon) {
             children = <Loading className="my-auto"/>;
@@ -105,7 +105,7 @@ const Button = ({ variant = "outlined", color = "default", size = "md", classNam
         }, className)} type={type} disabled={disabled}>
       {leading &&
             cloneElement(leading, {
-                className: clsx(styles.icon[size].icon, styles.icon[size].leading, leading?.props?.className),
+                className: clsx(styles.icon[size].icon, styles.icon[size].leading, leading?.props?.className, leadingClassName),
             })}
       {!icon
             ? children
@@ -119,7 +119,7 @@ const Button = ({ variant = "outlined", color = "default", size = "md", classNam
                 })}
       {trailing &&
             cloneElement(trailing, {
-                className: clsx(styles.icon[size].icon, styles.icon[size].trailing, trailing?.props?.className),
+                className: clsx(styles.icon[size].icon, styles.icon[size].trailing, trailing?.props?.className, trailingClassName),
             })}
     </UnstyledButton>);
 };
