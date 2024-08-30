@@ -72,6 +72,7 @@ export function UserSection() {
               {user.name || user.email}
             </DropdownMenu.Label>
             <DropdownMenu.Item href={Routes.Home}>Boards</DropdownMenu.Item>
+            <DropdownMenu.Item>Teams</DropdownMenu.Item>
             {previousToken && (
               <DropdownMenu.Item onClick={() => stopImpersonate()}>
                 Stop impersonating
@@ -86,7 +87,6 @@ export function UserSection() {
           </>
         ) : (
           <>
-            {/*<DarkModeMenuItem />*/}
             <DropdownMenu.Item href={Routes.SignIn}>Sign in</DropdownMenu.Item>
           </>
         )}
