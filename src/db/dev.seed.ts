@@ -8,6 +8,7 @@ import { PermissionLevel } from "../collections/permission";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTeam, { MemberRole } from "../collections/team";
 import getTask from "../collections/task";
+import getUser from "@italodeandra/auth/collections/user/User";
 
 export async function devSeed() {
   if (process.env.APP_ENV === "development") {
@@ -18,6 +19,7 @@ export async function devSeed() {
     const SubProject = getSubProject();
     const Team = getTeam();
     const Task = getTask();
+    const User = getUser();
 
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 
@@ -126,6 +128,10 @@ export async function devSeed() {
       },
     );
 
+    const userB = (await User.findOne({
+      email: "italodeandra+b@gmail.com",
+    }))!;
+
     await Task.upsert(
       {
         title: "Develop tasks",
@@ -137,6 +143,7 @@ export async function devSeed() {
           subProjectId: subProject._id,
           columnId: columDoing._id,
           statusId: statusDoing._id,
+          assignees: [userId, userB._id],
         },
       },
     );

@@ -29,7 +29,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   hydrateNavigationDrawerState(pageProps.cookies);
   hydrateAuthState(pageProps.cookies);
 
-  const queryClient = getQueryClient();
+  const queryClient = getQueryClient({
+    queries: {
+      staleTime: 2000,
+    },
+  });
 
   const getLayout = Component.getLayout || ((page) => page);
 

@@ -18,7 +18,7 @@ import { dropdownItemIndicatorClassName } from "@italodeandra/ui/styles/Dropdown
 import { PlusIcon } from "@heroicons/react/16/solid";
 import { IList } from "./IList";
 
-export function Card({
+export function Card<AP extends Record<string, unknown>>({
   title,
   dragging,
   className,
@@ -30,6 +30,7 @@ export function Card({
   cardName,
   cardAdditionalContent: CardAdditionalContent,
   cardAdditionalActions: CardAdditionalActions,
+  cardAdditionalProps,
   uploadClipboardImage,
   onDuplicateTo,
   lists,
@@ -44,8 +45,13 @@ export function Card({
   cardName: string;
   _id: string;
   listId: string;
-  cardAdditionalContent?: ComponentType<{ cardId: string; listId: string }>;
-  cardAdditionalActions?: ComponentType<{ cardId: string; listId: string }>;
+  cardAdditionalContent?: ComponentType<
+    { cardId: string; listId: string } & AP
+  >;
+  cardAdditionalActions?: ComponentType<
+    { cardId: string; listId: string } & AP
+  >;
+  cardAdditionalProps?: AP;
   uploadClipboardImage?: (image: string) => Promise<string>;
   onDuplicateTo?: (listId?: string) => void;
   listName: string;
@@ -137,7 +143,11 @@ export function Card({
               uploadClipboardImage={uploadClipboardImage}
             />
             {!editing && CardAdditionalContent && (
-              <CardAdditionalContent cardId={_id} listId={listId} />
+              <CardAdditionalContent
+                cardId={_id}
+                listId={listId}
+                {...(cardAdditionalProps as AP)}
+              />
             )}
             {!editing && (
               <Button
@@ -145,7 +155,7 @@ export function Card({
                 variant="text"
                 size="xs"
                 className={clsx(
-                  "absolute right-2 top-2 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus:pointer-events-auto group-focus:opacity-100",
+                  "absolute right-2 top-2 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus:pointer-events-auto group-focus:opacity-100 dark:bg-zinc-700 dark:hover:bg-zinc-600",
                   "group-data-[is-dragging=true]/kanban:hidden",
                 )}
                 tabIndex={-1}
@@ -161,7 +171,11 @@ export function Card({
       </ContextMenu.Trigger>
       <ContextMenu.Content>
         {CardAdditionalActions && (
-          <CardAdditionalActions cardId={_id} listId={listId} />
+          <CardAdditionalActions
+            cardId={_id}
+            listId={listId}
+            {...(cardAdditionalProps as AP)}
+          />
         )}
         {!!lists.length && (
           <ContextMenu.Sub>

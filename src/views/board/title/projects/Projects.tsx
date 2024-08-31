@@ -12,6 +12,7 @@ import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { projectListWithSubProjectsApi } from "../../../../pages/api/project/list-with-sub-projects";
 import { useSnapshot } from "valtio";
 import { boardState } from "../../board.state";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function Projects({ boardId }: { boardId: string }) {
   const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
@@ -19,6 +20,10 @@ export function Projects({ boardId }: { boardId: string }) {
   const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
     boardId,
   });
+
+  if (projectListWithSubProjects.isLoading) {
+    return <Skeleton className="h-[32px] w-[87px] dark:bg-white/10" />;
+  }
 
   return (
     <div

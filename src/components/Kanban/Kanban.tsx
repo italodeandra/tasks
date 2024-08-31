@@ -43,7 +43,7 @@ function getMousePosTarget(
     | undefined;
 }
 
-export function Kanban({
+export function Kanban<AP extends Record<string, unknown>>({
   orientation = "horizontal",
   onClickCard,
   data: dataProp,
@@ -51,6 +51,7 @@ export function Kanban({
   listName = "list",
   onChange,
   cardAdditionalContent,
+  cardAdditionalProps,
   cardAdditionalActions,
   className,
   uploadClipboardImage,
@@ -64,13 +65,18 @@ export function Kanban({
   cardName?: string;
   listName?: string;
   onChange?: (data: IList[]) => void;
-  cardAdditionalContent?: ComponentType<{ cardId: string; listId: string }>;
-  cardAdditionalActions?: ComponentType<{ cardId: string; listId: string }>;
+  cardAdditionalContent?: ComponentType<
+    { cardId: string; listId: string } & AP
+  >;
+  cardAdditionalActions?: ComponentType<
+    { cardId: string; listId: string } & AP
+  >;
   className?: string;
   uploadClipboardImage?: (image: string) => Promise<string>;
   canAddList?: boolean;
   canMoveList?: boolean;
   canEditList?: boolean;
+  cardAdditionalProps?: AP;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
@@ -700,6 +706,7 @@ export function Kanban({
                 cardName={cardName}
                 cardAdditionalContent={cardAdditionalContent}
                 cardAdditionalActions={cardAdditionalActions}
+                cardAdditionalProps={cardAdditionalProps}
                 uploadClipboardImage={uploadClipboardImage}
                 lists={data}
                 onDuplicateTo={handleDuplicateTo(card, list)}

@@ -9,6 +9,7 @@ import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
 import querify from "@italodeandra/next/utils/querify";
+import getUser from "@italodeandra/auth/collections/user/User";
 
 export const taskListApi = createApi(
   "/api/task/list",
@@ -26,6 +27,7 @@ export const taskListApi = createApi(
     const TaskColumn = getTaskColumn();
     const Team = getTeam();
     const Board = getBoard();
+    const User = getUser();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -89,49 +91,76 @@ export const taskListApi = createApi(
       ?.map(isomorphicObjectId);
 
     return asyncMap(columns, async (c) => {
-      const tasks = await Task.find(
-        {
-          archived: { $ne: true },
-          columnId: c._id,
-          $or:
-            isNoneSelected ||
-            selectedProjects?.length ||
-            selectedSubProjects?.length
-              ? [
-                  ...(selectedProjects?.length || selectedSubProjects?.length
-                    ? [
-                        {
-                          ...(selectedProjects?.length
-                            ? {
-                                projectId: {
-                                  $in: selectedProjects,
-                                },
-                              }
-                            : {}),
-                          ...(selectedSubProjects?.length
-                            ? {
-                                subProjectId: {
-                                  $in: selectedSubProjects,
-                                },
-                              }
-                            : {}),
-                        },
-                      ]
-                    : []),
-                  ...(isNoneSelected
-                    ? [
-                        {
-                          projectId: { $exists: false },
-                        },
-                      ]
-                    : []),
-                ]
-              : undefined,
-        },
-        {
-          projection: {
-            title: 1,
+      const tasks = await asyncMap(
+        await Task.find(
+          {
+            archived: { $ne: true },
+            columnId: c._id,
+            $or:
+              isNoneSelected ||
+              selectedProjects?.length ||
+              selectedSubProjects?.length
+                ? [
+                    ...(selectedProjects?.length || selectedSubProjects?.length
+                      ? [
+                          {
+                            ...(selectedProjects?.length
+                              ? {
+                                  projectId: {
+                                    $in: selectedProjects,
+                                  },
+                                }
+                              : {}),
+                            ...(selectedSubProjects?.length
+                              ? {
+                                  subProjectId: {
+                                    $in: selectedSubProjects,
+                                  },
+                                }
+                              : {}),
+                          },
+                        ]
+                      : []),
+                    ...(isNoneSelected
+                      ? [
+                          {
+                            projectId: { $exists: false },
+                          },
+                        ]
+                      : []),
+                  ]
+                : undefined,
           },
+          {
+            projection: {
+              title: 1,
+              assignees: 1,
+            },
+          },
+        ),
+        async ({ assignees, ...task }) => {
+          return {
+            ...task,
+            assignees: await asyncMap(
+              await User.find(
+                {
+                  _id: {
+                    $in: assignees,
+                  },
+                },
+                {
+                  projection: {
+                    name: 1,
+                    email: 1,
+                  },
+                },
+              ),
+              async (user2) => ({
+                ...user2,
+                isMe: user2._id.equals(user._id),
+              }),
+            ),
+          };
         },
       );
 

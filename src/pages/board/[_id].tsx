@@ -148,13 +148,6 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
-  await taskListApi.prefetchQuery(
-    queryClient,
-    { boardId: _id, selectedProjects: [], selectedSubProjects: [] },
-    req,
-    res,
-  );
-
   return {
     props: {
       cookies: getCookies({ req, res }),

@@ -6,6 +6,8 @@ import getTaskColumn from "../../../collections/taskColumn";
 import { maxBy } from "lodash-es";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTask from "../../../collections/task";
+import { taskListApi } from "./list";
+import { boardState } from "../../../views/board/board.state";
 
 export const taskBatchUpdateApi = createApi(
   "/api/task/batch-update",
@@ -230,6 +232,17 @@ export const taskBatchUpdateApi = createApi(
     if (taskOperations.length) {
       await Task.bulkWrite(taskOperations);
     }
+  },
+  {
+    mutationOptions: {
+      async onSuccess(_d, variables, _c, queryClient) {
+        void taskListApi.invalidateQueries(queryClient, {
+          boardId: variables.boardId,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
+        });
+      },
+    },
   },
 );
 

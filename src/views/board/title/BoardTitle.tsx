@@ -4,7 +4,6 @@ import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { boardUpdateApi } from "../../../pages/api/board/update";
 import Loading from "@italodeandra/ui/components/Loading";
-import { Projects } from "./projects/Projects";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import Input from "@italodeandra/ui/components/Input";
@@ -15,6 +14,7 @@ import { boardGetPermissionsApi } from "../../../pages/api/board/get-permissions
 import { PermissionLevel } from "../../../collections/permission";
 import getInitials from "@italodeandra/ui/utils/getInitials";
 import { UserIcon, UsersIcon } from "@heroicons/react/16/solid";
+import { Projects } from "./projects/Projects";
 
 function EditPermissionsDialogContent({ boardId }: { boardId: string }) {
   const boardGetPermissions = boardGetPermissionsApi.useQuery({ _id: boardId });
