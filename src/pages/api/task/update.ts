@@ -22,7 +22,12 @@ export const taskUpdateApi = createApi(
       { _id: string } & Partial<
         Pick<
           ITask,
-          "statusId" | "columnId" | "description" | "projectId" | "subProjectId"
+          | "statusId"
+          | "columnId"
+          | "description"
+          | "projectId"
+          | "subProjectId"
+          | "assignees"
         >
       >
     >,
@@ -96,6 +101,7 @@ export const taskUpdateApi = createApi(
         args.subProjectId && args.subProjectId !== "__NONE__"
           ? isomorphicObjectId(args.subProjectId)
           : undefined,
+      assignees: args.assignees?.map(isomorphicObjectId),
     };
     removeEmptyProperties($set);
 

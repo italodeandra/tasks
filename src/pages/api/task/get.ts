@@ -7,6 +7,9 @@ import getTaskColumn from "../../../collections/taskColumn";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
+import asyncMap from "@italodeandra/next/utils/asyncMap";
+import { omit } from "lodash-es";
+import getUser from "@italodeandra/auth/collections/user/User";
 
 export const taskGetApi = createApi(
   "/api/task/get",
@@ -16,6 +19,7 @@ export const taskGetApi = createApi(
     const TaskColumn = getTaskColumn();
     const Team = getTeam();
     const Board = getBoard();
+    const User = getUser();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -31,6 +35,7 @@ export const taskGetApi = createApi(
         statusId: 1,
         projectId: 1,
         subProjectId: 1,
+        assignees: 1,
       },
     });
     if (!task) {
@@ -70,7 +75,28 @@ export const taskGetApi = createApi(
       throw unauthorized;
     }
 
-    return task;
+    return {
+      ...omit(task, "assignees"),
+      assignees: await asyncMap(
+        await User.find(
+          {
+            _id: {
+              $in: task.assignees,
+            },
+          },
+          {
+            projection: {
+              name: 1,
+              email: 1,
+            },
+          },
+        ),
+        async (user2) => ({
+          ...user2,
+          isMe: user2._id.equals(user._id),
+        }),
+      ),
+    };
   },
   {
     queryKeyMap: (args) => [args?._id],
@@ -78,3 +104,5 @@ export const taskGetApi = createApi(
 );
 
 export default taskGetApi.handler;
+
+export type TaskGetApi = typeof taskGetApi.Types;

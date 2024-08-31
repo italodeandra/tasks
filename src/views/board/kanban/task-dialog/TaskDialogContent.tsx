@@ -9,7 +9,6 @@ import {
 } from "@heroicons/react/20/solid";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
-import { PlusIcon } from "@heroicons/react/16/solid";
 import { imageUploadApi } from "../../../../pages/api/image-upload";
 import { taskGetApi } from "../../../../pages/api/task/get";
 import { StatusSelect } from "./StatusSelect";
@@ -19,6 +18,7 @@ import Loading from "@italodeandra/ui/components/Loading";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
+import { Assignees } from "./assignees/Assignees";
 
 export function TaskDialogContent({
   boardId,
@@ -152,29 +152,14 @@ export function TaskDialogContent({
             <div className="flex w-28 items-center bg-white/[0.05] px-2.5 py-2">
               Assigned to
             </div>
-            <div className="flex flex-1 flex-wrap gap-2 bg-white/[0.03] px-2.5 py-1.5">
-              <div className="flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
-                  IA
-                </div>
-                <span>Ítalo Andrade</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-600 text-center text-xs">
-                  CA
-                </div>
-                <span>Cairo Andrade</span>
-              </div>
-              <Button
-                icon
-                variant="filled"
-                color="gray"
-                rounded
-                size="xs"
-                className="h-6 w-6 bg-zinc-700 p-0"
-              >
-                <PlusIcon />
-              </Button>
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-1.5">
+              {taskGet.isLoading && <Skeleton className="h-5 w-16" />}
+              {taskGet.data?.assignees && (
+                <Assignees
+                  taskId={taskId}
+                  assignees={taskGet.data?.assignees}
+                />
+              )}
             </div>
           </div>
         </div>

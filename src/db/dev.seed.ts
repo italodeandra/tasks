@@ -21,6 +21,10 @@ export async function devSeed() {
     const Task = getTask();
     const User = getUser();
 
+    const userB = (await User.findOne({
+      email: "italodeandra+b@gmail.com",
+    }))!;
+
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 
     const board = await Board.upsert(
@@ -30,7 +34,10 @@ export async function devSeed() {
       {
         $set: {
           name: "Test board",
-          permissions: [{ userId: userId, level: PermissionLevel.ADMIN }],
+          permissions: [
+            { userId: userId, level: PermissionLevel.ADMIN },
+            { userId: userB._id, level: PermissionLevel.WRITE },
+          ],
         },
       },
     );
@@ -127,10 +134,6 @@ export async function devSeed() {
         },
       },
     );
-
-    const userB = (await User.findOne({
-      email: "italodeandra+b@gmail.com",
-    }))!;
 
     await Task.upsert(
       {

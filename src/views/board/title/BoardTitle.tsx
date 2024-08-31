@@ -41,6 +41,7 @@ function EditPermissionsDialogContent({ boardId }: { boardId: string }) {
         <Button variant="filled" color="primary">
           Invite
         </Button>
+        {/*TODO develop inviting*/}
       </div>
       <div className="text-sm">Who has access</div>
       <div className="flex flex-col gap-1">
@@ -62,15 +63,12 @@ function EditPermissionsDialogContent({ boardId }: { boardId: string }) {
           </Select.Root>
         </div>
         {teams?.map((team) => (
-          <div className="flex items-center gap-2" key={team.team?._id}>
+          <div className="flex items-center gap-2" key={team.team!._id}>
+            {/*TODO fix team circle color*/}
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
-              {team.team?.name ? (
-                getInitials(team.team.name)
-              ) : (
-                <UsersIcon className="h-4 w-4" />
-              )}
+              {getInitials(team.team!.name)}
             </div>
-            <div className="grow">{team.team?.name}</div>
+            <div className="grow">{team.team!.name}</div>
             <Select.Root value={team.level}>
               <Select.Trigger
                 variant="text"
@@ -89,9 +87,10 @@ function EditPermissionsDialogContent({ boardId }: { boardId: string }) {
         ))}
         {users?.map((user) => (
           <div className="flex items-center gap-2" key={user.user?._id}>
+            {/*TODO fix user circle color*/}
             <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
               {user.user?.name ? (
-                getInitials(user.user.name)
+                getInitials(user.user.name) // TODO also get initials for email
               ) : (
                 <UserIcon className="h-4 w-4" />
               )}
