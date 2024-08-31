@@ -73,7 +73,6 @@ export const taskListApi = createApi(
     );
 
     const queryArgs = querify(args);
-    console.log("queryArgs.selectedProjects", queryArgs.selectedProjects);
     const isNoneSelected = queryArgs.selectedProjects
       ?.toString()
       ?.split(",")
