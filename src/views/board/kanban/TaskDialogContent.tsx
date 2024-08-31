@@ -1,5 +1,5 @@
 import { useSnapshot } from "valtio";
-import { state } from "../state";
+import { kanbanState } from "./kanban.state";
 import { useCallback, useMemo } from "react";
 import { find } from "lodash-es";
 import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
@@ -17,7 +17,7 @@ export function TaskDialogContent({
 }: {
   selected: { cardId: string; listId: string };
 }) {
-  const { data } = useSnapshot(state);
+  const { data } = useSnapshot(kanbanState);
 
   const task = useMemo(() => {
     const list = find(data, { _id: selected.listId });
@@ -27,7 +27,7 @@ export function TaskDialogContent({
 
   const handleDescriptionChange = useCallback(
     (description: string) => {
-      const list = find(state.data, { _id: selected.listId });
+      const list = find(kanbanState.data, { _id: selected.listId });
       if (!list) return;
       const task = find(list.tasks, { _id: selected.cardId });
       if (!task) return;

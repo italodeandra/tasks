@@ -7,6 +7,7 @@ import { userId } from "@italodeandra/auth/db/seed";
 import { PermissionLevel } from "../collections/permission";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTeam, { MemberRole } from "../collections/team";
+import getTask from "../collections/task";
 
 export async function devSeed() {
   if (process.env.APP_ENV === "development") {
@@ -16,10 +17,11 @@ export async function devSeed() {
     const Project = getProject();
     const SubProject = getSubProject();
     const Team = getTeam();
+    const Task = getTask();
 
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 
-    const board = (await Board.findOneAndUpdate(
+    const board = await Board.upsert(
       {
         _id: boardId,
       },
@@ -29,10 +31,9 @@ export async function devSeed() {
           permissions: [{ userId: userId, level: PermissionLevel.ADMIN }],
         },
       },
-      { upsert: true },
-    ))!;
+    );
 
-    await TaskColumn.findOneAndUpdate(
+    await TaskColumn.upsert(
       {
         title: "Todo",
         boardId: board._id,
@@ -42,9 +43,8 @@ export async function devSeed() {
           order: 0,
         },
       },
-      { upsert: true },
     );
-    await TaskColumn.findOneAndUpdate(
+    const columDoing = await TaskColumn.upsert(
       {
         title: "Doing",
         boardId: board._id,
@@ -54,9 +54,8 @@ export async function devSeed() {
           order: 1,
         },
       },
-      { upsert: true },
     );
-    await TaskColumn.findOneAndUpdate(
+    await TaskColumn.upsert(
       {
         title: "Done",
         boardId: board._id,
@@ -66,10 +65,9 @@ export async function devSeed() {
           order: 2,
         },
       },
-      { upsert: true },
     );
 
-    await TaskStatus.findOneAndUpdate(
+    await TaskStatus.upsert(
       {
         title: "Todo",
         boardId: board._id,
@@ -77,9 +75,8 @@ export async function devSeed() {
       {
         $set: {},
       },
-      { upsert: true },
     );
-    await TaskStatus.findOneAndUpdate(
+    const statusDoing = await TaskStatus.upsert(
       {
         title: "Doing",
         boardId: board._id,
@@ -87,9 +84,8 @@ export async function devSeed() {
       {
         $set: {},
       },
-      { upsert: true },
     );
-    await TaskStatus.findOneAndUpdate(
+    await TaskStatus.upsert(
       {
         title: "Done",
         boardId: board._id,
@@ -97,10 +93,9 @@ export async function devSeed() {
       {
         $set: {},
       },
-      { upsert: true },
     );
 
-    const project = (await Project.findOneAndUpdate(
+    const project = await Project.upsert(
       {
         name: "Test project",
         boardId: board._id,
@@ -108,10 +103,9 @@ export async function devSeed() {
       {
         $set: {},
       },
-      { upsert: true },
-    ))!;
+    );
 
-    await SubProject.findOneAndUpdate(
+    const subProject = await SubProject.upsert(
       {
         name: "Test sub-project",
         projectId: project._id,
@@ -119,10 +113,9 @@ export async function devSeed() {
       {
         $set: {},
       },
-      { upsert: true },
     );
 
-    await Team.findOneAndUpdate(
+    await Team.upsert(
       {
         name: "Test team",
       },
@@ -131,8 +124,20 @@ export async function devSeed() {
           members: [{ userId, role: MemberRole.ADMIN }],
         },
       },
+    );
+
+    await Task.upsert(
       {
-        upsert: true,
+        title: "Develop tasks",
+      },
+      {
+        $set: {
+          order: 0,
+          projectId: project._id,
+          subProjectId: subProject._id,
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
       },
     );
   }

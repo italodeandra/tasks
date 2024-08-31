@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import { boardGetApi } from "../../pages/api/board/get";
-import { MarkdownEditor } from "../../components/Kanban/MarkdownEditor";
+import { boardGetApi } from "../../../pages/api/board/get";
+import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { boardUpdateApi } from "../../pages/api/board/update";
+import { boardUpdateApi } from "../../../pages/api/board/update";
 import Loading from "@italodeandra/ui/components/Loading";
-import { Projects } from "../trello/projects/Projects";
+import { Projects } from "./projects/Projects";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import Select from "@italodeandra/ui/components/Select";
-import { boardGetPermissionsApi } from "../../pages/api/board/get-permissions";
-import { PermissionLevel } from "../../collections/permission";
+import { boardGetPermissionsApi } from "../../../pages/api/board/get-permissions";
+import { PermissionLevel } from "../../../collections/permission";
 import getInitials from "@italodeandra/ui/utils/getInitials";
 import { UserIcon, UsersIcon } from "@heroicons/react/16/solid";
 

@@ -9,7 +9,6 @@ import bsonToJson from "@italodeandra/next/utils/bsonToJson";
 import { connectDb } from "../../db";
 import { QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
-import { Board } from "../../views/board/Board";
 import Routes from "../../Routes";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../collections/board";
@@ -17,10 +16,11 @@ import { PermissionLevel } from "../../collections/permission";
 import { boardGetApi } from "../api/board/get";
 import { useRouter } from "next/router";
 import { getLayout } from "../../views/layout/layout";
-import { BoardTitle } from "../../views/board/BoardTitle";
+import { BoardTitle } from "../../views/board/title/BoardTitle";
 import { taskListApi } from "../api/task/list";
 import getTaskColumn from "../../collections/taskColumn";
 import getTaskStatus from "../../collections/taskStatus";
+import { BoardKanban } from "../../views/board/kanban/BoardKanban";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -161,7 +161,7 @@ export default function Page() {
 
   const _id = router.query._id as string;
 
-  return <Board _id={_id} />;
+  return <BoardKanban boardId={_id} />;
 }
 
 Page.getLayout = getLayout;

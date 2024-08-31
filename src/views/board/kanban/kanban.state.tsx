@@ -1,6 +1,6 @@
 import { proxy } from "valtio";
 
-export const state = proxy({
+export const kanbanState = proxy({
   data: undefined as Data | undefined,
 });
 

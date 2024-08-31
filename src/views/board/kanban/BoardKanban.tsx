@@ -2,7 +2,7 @@ import { TaskAdditionalContent } from "./TaskAdditionalContent";
 import { TaskAdditionalActions } from "./TaskAdditionalActions";
 import { Kanban } from "../../../components/Kanban/Kanban";
 import { useSnapshot } from "valtio";
-import { state } from "../state";
+import { kanbanState } from "./kanban.state";
 import { useCallback, useEffect } from "react";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { TaskDialogTitle } from "./TaskDialogTitle";
@@ -18,8 +18,8 @@ import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { WritableDeep } from "type-fest";
 import { boardGetApi } from "../../../pages/api/board/get";
 
-export function TrelloKanban({ boardId }: { boardId: string }) {
-  const { data } = useSnapshot(state);
+export function BoardKanban({ boardId }: { boardId: string }) {
+  const { data } = useSnapshot(kanbanState);
 
   const handleTaskClick = useCallback(
     (selected: { cardId: string; listId: string }) => {
@@ -35,7 +35,7 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
   );
 
   const handleDataChange = useCallback((newData: IList[]) => {
-    state.data = newData.map((list) => ({
+    kanbanState.data = newData.map((list) => ({
       _id: list._id,
       title: list.title,
       tasks: list.cards?.map((card) => ({
@@ -62,11 +62,11 @@ export function TrelloKanban({ boardId }: { boardId: string }) {
   const taskList = taskListApi.useQuery({ boardId });
   useEffect(() => {
     if (taskList.data && !isEqual(taskList.data, data)) {
-      state.data = taskList.data;
+      kanbanState.data = taskList.data;
     }
 
     return () => {
-      state.data = undefined;
+      kanbanState.data = undefined;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);

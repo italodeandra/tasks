@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { projectCreateApi } from "../../../../pages/api/project/create";
+import { projectCreateApi } from "../../../../../pages/api/project/create";
 import { useEffect } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
-import { projectUpdateApi } from "../../../../pages/api/project/update";
+import { projectUpdateApi } from "../../../../../pages/api/project/update";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 
 export function ProjectForm({

@@ -10,7 +10,7 @@ import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { ProjectsDialogContent } from "./dialog-content/ProjectsDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import { projectListWithSubProjectsApi } from "../../../pages/api/project/list-with-sub-projects";
+import { projectListWithSubProjectsApi } from "../../../../pages/api/project/list-with-sub-projects";
 
 export function Projects({ boardId }: { boardId: string }) {
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
@@ -245,7 +245,7 @@ export function Projects({ boardId }: { boardId: string }) {
                           }}
                           leading={<PlusIcon className="mr-2" />}
                         >
-                          New sub project
+                          Sub project
                         </Button>
                       </div>
                     </Accordion.Content>
@@ -272,7 +272,7 @@ export function Projects({ boardId }: { boardId: string }) {
                 }}
                 leading={<PlusIcon />}
               >
-                New project
+                Project
               </Button>
             </div>
           </Accordion.Content>
