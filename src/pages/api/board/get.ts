@@ -18,7 +18,7 @@ export const boardGetApi = createApi(
       throw unauthorized;
     }
     const userTeams = await Team.find(
-      { members: { $in: [user._id] } },
+      { "members.userId": { $in: [user._id] } },
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);

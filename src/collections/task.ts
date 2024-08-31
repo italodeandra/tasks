@@ -10,7 +10,7 @@ const taskSchema = onlyServer(() =>
       statusId: types.objectId(),
       columnId: types.objectId({ required: true }),
       projectId: types.objectId(),
-      clientId: types.objectId(),
+      subProjectId: types.objectId(),
       order: types.number({ required: true }),
       archived: types.boolean(),
       assignees: types.array(types.objectId()),

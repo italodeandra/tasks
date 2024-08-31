@@ -4,45 +4,45 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import createApi from "@italodeandra/next/api/createApi";
-import getProject, { IProject } from "../../../collections/project";
+import getSubProject, { ISubProject } from "../../../collections/subProject";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { clientListWithProjectsApi } from "../client/list-with-projects";
+import { projectListWithSubProjectsApi } from "../project/list-with-sub-projects";
 import getTask from "../../../collections/task";
 import { PermissionLevel } from "../../../collections/permission";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
-import getClient from "../../../collections/client";
+import getProject from "../../../collections/project";
 
-export const projectDeleteApi = createApi(
-  "/api/project/delete",
+export const subProjectDeleteApi = createApi(
+  "/api/sub-project/delete",
   async function (
-    args: Jsonify<Pick<IProject, "_id" | "clientId">>,
+    args: Jsonify<Pick<ISubProject, "_id" | "projectId">>,
     req: NextApiRequest,
     res: NextApiResponse,
   ) {
     await connectDb();
-    const Project = getProject();
+    const SubProject = getSubProject();
     const Task = getTask();
     const Board = getBoard();
     const Team = getTeam();
-    const Client = getClient();
+    const Project = getProject();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
     const userTeams = await Team.find(
-      { members: { $in: [user._id] } },
+      { "members.userId": { $in: [user._id] } },
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
 
-    const clientId = isomorphicObjectId(args.clientId);
+    const projectId = isomorphicObjectId(args.projectId);
 
     const boardId = (
-      await Client.findOne(
+      await Project.findOne(
         {
-          _id: clientId,
+          _id: projectId,
           $or: [
             {
               permissions: {
@@ -71,7 +71,7 @@ export const projectDeleteApi = createApi(
       )
     )?.boardId;
 
-    const haveAccessToAdminClient =
+    const haveAccessToAdminProject =
       boardId &&
       (await Board.countDocuments({
         _id: boardId,
@@ -91,7 +91,7 @@ export const projectDeleteApi = createApi(
           },
         ],
       }));
-    if (!haveAccessToAdminClient) {
+    if (!haveAccessToAdminProject) {
       throw unauthorized;
     }
 
@@ -124,19 +124,19 @@ export const projectDeleteApi = createApi(
       ],
     };
 
-    if (!(await Task.countDocuments({ projectId: _id }))) {
-      await Project.deleteOne(filter);
+    if (!(await Task.countDocuments({ subProjectId: _id }))) {
+      await SubProject.deleteOne(filter);
     } else {
-      await Project.updateOne(filter, {
+      await SubProject.updateOne(filter, {
         $set: {
           archived: true,
         },
       });
     }
 
-    await Client.updateOne(
+    await Project.updateOne(
       {
-        _id: clientId,
+        _id: projectId,
       },
       {
         $set: {},
@@ -150,10 +150,10 @@ export const projectDeleteApi = createApi(
   {
     mutationOptions: {
       onSuccess(data, _v, _c, queryClient) {
-        void clientListWithProjectsApi.invalidateQueries(queryClient, data);
+        void projectListWithSubProjectsApi.invalidateQueries(queryClient, data);
       },
     },
   },
 );
 
-export default projectDeleteApi.handler;
+export default subProjectDeleteApi.handler;

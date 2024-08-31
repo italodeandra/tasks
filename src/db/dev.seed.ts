@@ -1,19 +1,21 @@
 import getBoard from "../collections/board";
 import getTaskColumn from "../collections/taskColumn";
 import getTaskStatus from "../collections/taskStatus";
-import getClient from "../collections/client";
 import getProject from "../collections/project";
+import getSubProject from "../collections/subProject";
 import { userId } from "@italodeandra/auth/db/seed";
 import { PermissionLevel } from "../collections/permission";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import getTeam, { MemberRole } from "../collections/team";
 
 export async function devSeed() {
   if (process.env.APP_ENV === "development") {
     const Board = getBoard();
     const TaskColumn = getTaskColumn();
     const TaskStatus = getTaskStatus();
-    const Client = getClient();
     const Project = getProject();
+    const SubProject = getSubProject();
+    const Team = getTeam();
 
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 
@@ -98,9 +100,9 @@ export async function devSeed() {
       { upsert: true },
     );
 
-    const client = (await Client.findOneAndUpdate(
+    const project = (await Project.findOneAndUpdate(
       {
-        name: "Test client",
+        name: "Test project",
         boardId: board._id,
       },
       {
@@ -109,15 +111,29 @@ export async function devSeed() {
       { upsert: true },
     ))!;
 
-    await Project.findOneAndUpdate(
+    await SubProject.findOneAndUpdate(
       {
-        name: "Test project",
-        clientId: client._id,
+        name: "Test sub-project",
+        projectId: project._id,
       },
       {
         $set: {},
       },
       { upsert: true },
+    );
+
+    await Team.findOneAndUpdate(
+      {
+        name: "Test team",
+      },
+      {
+        $set: {
+          members: [{ userId, role: MemberRole.ADMIN }],
+        },
+      },
+      {
+        upsert: true,
+      },
     );
   }
 }

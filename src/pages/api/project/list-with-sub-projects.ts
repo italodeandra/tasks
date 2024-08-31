@@ -2,18 +2,18 @@ import createApi from "@italodeandra/next/api/createApi";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { connectDb } from "../../../db";
-import getProject, { IProject } from "../../../collections/project";
+import getSubProject, { ISubProject } from "../../../collections/subProject";
 import getTeam from "../../../collections/team";
-import getClient, { IClient } from "../../../collections/client";
+import getProject, { IProject } from "../../../collections/project";
 import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
-export const clientListWithProjectsApi = createApi(
-  "/api/client/list-with-projects",
+export const projectListWithSubProjectsApi = createApi(
+  "/api/project/list-with-sub-projects",
   async (args: { boardId: string }, req, res) => {
     await connectDb();
-    const Client = getClient();
     const Project = getProject();
+    const SubProject = getSubProject();
     const Team = getTeam();
     const Board = getBoard();
     const user = await getUserFromCookies(req, res);
@@ -22,7 +22,7 @@ export const clientListWithProjectsApi = createApi(
     }
 
     const userTeams = await Team.find(
-      { members: { $in: [user._id] } },
+      { "members.userId": { $in: [user._id] } },
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
@@ -47,9 +47,9 @@ export const clientListWithProjectsApi = createApi(
       throw unauthorized;
     }
 
-    return Client.aggregate<
-      Pick<IClient, "_id" | "name"> & {
-        projects: Pick<IProject, "_id" | "name">[];
+    return Project.aggregate<
+      Pick<IProject, "_id" | "name"> & {
+        subProjects: Pick<ISubProject, "_id" | "name">[];
       }
     >([
       {
@@ -76,10 +76,10 @@ export const clientListWithProjectsApi = createApi(
       },
       {
         $lookup: {
-          from: Project.collection.collectionName,
+          from: SubProject.collection.collectionName,
           localField: "_id",
-          foreignField: "clientId",
-          as: "projects",
+          foreignField: "projectId",
+          as: "subProjects",
           pipeline: [
             {
               $match: {
@@ -124,7 +124,7 @@ export const clientListWithProjectsApi = createApi(
       {
         $project: {
           name: 1,
-          projects: 1,
+          subProjects: 1,
         },
       },
     ]);
@@ -134,4 +134,4 @@ export const clientListWithProjectsApi = createApi(
   },
 );
 
-export default clientListWithProjectsApi.handler;
+export default projectListWithSubProjectsApi.handler;

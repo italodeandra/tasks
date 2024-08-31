@@ -4,18 +4,17 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import createApi from "@italodeandra/next/api/createApi";
-import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getProject, { IProject } from "../../../collections/project";
-import { clientListWithProjectsApi } from "../client/list-with-projects";
+import { projectListWithSubProjectsApi } from "./list-with-sub-projects";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { PermissionLevel } from "../../../collections/permission";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
-import getClient from "../../../collections/client";
 
 export const projectUpdateApi = createApi(
   "/api/project/update",
   async function (
-    args: Jsonify<Pick<IProject, "_id" | "name" | "clientId">>,
+    args: Jsonify<Pick<IProject, "_id" | "name" | "boardId">>,
     req: NextApiRequest,
     res: NextApiResponse,
   ) {
@@ -23,79 +22,44 @@ export const projectUpdateApi = createApi(
     const Project = getProject();
     const Board = getBoard();
     const Team = getTeam();
-    const Client = getClient();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
     }
 
     const userTeams = await Team.find(
-      { members: { $in: [user._id] } },
+      { "members.userId": { $in: [user._id] } },
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
+    const boardId = isomorphicObjectId(args.boardId);
 
-    const clientId = isomorphicObjectId(args.clientId);
-
-    const boardId = (
-      await Client.findOne(
+    const haveAccessToAdminBoard = await Board.countDocuments({
+      _id: boardId,
+      "permissions.level": {
+        $in: [PermissionLevel.ADMIN],
+      },
+      $or: [
         {
-          _id: clientId,
-          $or: [
-            {
-              permissions: {
-                $exists: false,
-              },
-            },
-            {
-              "permissions.level": {
-                $in: [PermissionLevel.ADMIN],
-              },
-              "permissions.userId": {
-                $in: [user._id],
-              },
-            },
-            {
-              "permissions.level": {
-                $in: [PermissionLevel.ADMIN],
-              },
-              "permissions.teamId": {
-                $in: userTeamsIds,
-              },
-            },
-          ],
-        },
-        { projection: { boardId: 1 } },
-      )
-    )?.boardId;
-
-    const haveAccessToAdminClient =
-      boardId &&
-      (await Board.countDocuments({
-        _id: boardId,
-        "permissions.level": {
-          $in: [PermissionLevel.ADMIN],
-        },
-        $or: [
-          {
-            "permissions.userId": {
-              $in: [user._id],
-            },
+          "permissions.userId": {
+            $in: [user._id],
           },
-          {
-            "permissions.teamId": {
-              $in: userTeamsIds,
-            },
+        },
+        {
+          "permissions.teamId": {
+            $in: userTeamsIds,
           },
-        ],
-      }));
-    if (!haveAccessToAdminClient) {
+        },
+      ],
+    });
+    if (!haveAccessToAdminBoard) {
       throw unauthorized;
     }
 
     await Project.updateOne(
       {
         _id: isomorphicObjectId(args._id),
+        boardId,
         $or: [
           {
             permissions: {
@@ -126,24 +90,14 @@ export const projectUpdateApi = createApi(
         },
       },
     );
-
-    await Client.updateOne(
-      {
-        _id: clientId,
-      },
-      {
-        $set: {},
-      },
-    );
-
-    return {
-      boardId,
-    };
   },
   {
     mutationOptions: {
-      onSuccess(data, _v, _c, queryClient) {
-        void clientListWithProjectsApi.invalidateQueries(queryClient, data);
+      onSuccess(_d, variables, _c, queryClient) {
+        void projectListWithSubProjectsApi.invalidateQueries(
+          queryClient,
+          variables,
+        );
       },
     },
   },

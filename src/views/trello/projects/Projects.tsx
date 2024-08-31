@@ -10,20 +10,20 @@ import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { ProjectsDialogContent } from "./dialog-content/ProjectsDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import { clientListWithProjectsApi } from "../../../pages/api/client/list-with-projects";
+import { projectListWithSubProjectsApi } from "../../../pages/api/project/list-with-sub-projects";
 
 export function Projects({ boardId }: { boardId: string }) {
-  const [selectedClients, setSelectedClients] = useState<string[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [selectedSubProjects, setSelectedSubProjects] = useState<string[]>([]);
 
-  const clientListWithProjects = clientListWithProjectsApi.useQuery({
+  const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
     boardId,
   });
 
   return (
     <div
       className={clsx("rounded-lg bg-white/[0.03] p-2 transition-colors", {
-        "bg-white/10": !!selectedProjects.length,
+        "bg-white/10": !!selectedSubProjects.length,
       })}
     >
       <Accordion.Root type="multiple">
@@ -36,14 +36,14 @@ export function Projects({ boardId }: { boardId: string }) {
               <span className="font-medium hover:text-white">Projects</span>
               <ChevronDownIcon className="h-4 w-4 group-data-[state=open]:rotate-180" />
             </Accordion.Trigger>
-            {(!!selectedProjects.length || !!selectedClients.length) && (
+            {(!!selectedSubProjects.length || !!selectedProjects.length) && (
               <Button
                 variant="text"
                 size="xs"
                 className="-my-1.5 ml-auto px-1 py-0.5"
                 onClick={() => {
-                  setSelectedClients([]);
                   setSelectedProjects([]);
+                  setSelectedSubProjects([]);
                 }}
               >
                 Clear
@@ -58,28 +58,30 @@ export function Projects({ boardId }: { boardId: string }) {
                     onClick={stopPropagation}
                     onChange={(e) => {
                       if (e.target.checked) {
+                        setSelectedSubProjects(
+                          uniq([...selectedSubProjects, "__NONE__"]),
+                        );
                         setSelectedProjects(
                           uniq([...selectedProjects, "__NONE__"]),
                         );
-                        setSelectedClients(
-                          uniq([...selectedClients, "__NONE__"]),
-                        );
                       } else {
+                        setSelectedSubProjects(
+                          xor(selectedSubProjects, ["__NONE__"]),
+                        );
                         setSelectedProjects(
                           xor(selectedProjects, ["__NONE__"]),
                         );
-                        setSelectedClients(xor(selectedClients, ["__NONE__"]));
                       }
                     }}
-                    checked={selectedProjects.includes("__NONE__")}
+                    checked={selectedSubProjects.includes("__NONE__")}
                   />
                   <span className="hover:text-white">None</span>
                 </label>
               </div>
-              {clientListWithProjects.data?.map((client) => (
-                <Accordion.Root type="multiple" key={client._id}>
+              {projectListWithSubProjects.data?.map((project) => (
+                <Accordion.Root type="multiple" key={project._id}>
                   <Accordion.Item
-                    value={client._id}
+                    value={project._id}
                     className="group/project flex flex-col gap-1 rounded-lg bg-black/20 p-2"
                   >
                     <Accordion.Trigger className="flex items-center gap-1.5 text-sm">
@@ -87,39 +89,39 @@ export function Projects({ boardId }: { boardId: string }) {
                         onClick={stopPropagation}
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setSelectedClients(
-                              uniq([...selectedClients, client._id]),
-                            );
                             setSelectedProjects(
+                              uniq([...selectedProjects, project._id]),
+                            );
+                            setSelectedSubProjects(
                               uniq([
-                                ...selectedProjects,
-                                ...client.projects.map((p) => p._id),
+                                ...selectedSubProjects,
+                                ...project.subProjects.map((p) => p._id),
                               ]),
                             );
                           } else {
-                            setSelectedClients(
-                              remove(selectedClients, client._id),
-                            );
                             setSelectedProjects(
+                              remove(selectedProjects, project._id),
+                            );
+                            setSelectedSubProjects(
                               pullAll(
-                                selectedProjects,
-                                client.projects.map((p) => p._id),
+                                selectedSubProjects,
+                                project.subProjects.map((p) => p._id),
                               ),
                             );
                           }
                         }}
-                        checked={selectedClients.includes(client._id)}
+                        checked={selectedProjects.includes(project._id)}
                         indeterminate={
-                          !selectedClients.includes(client._id) &&
-                          client.projects.some((p) =>
-                            selectedProjects.includes(p._id),
+                          !selectedProjects.includes(project._id) &&
+                          project.subProjects.some((p) =>
+                            selectedSubProjects.includes(p._id),
                           )
                         }
                       />
                       <ContextMenu.Root>
                         <ContextMenu.Trigger asChild>
                           <span className="hover:text-white">
-                            {client.name}
+                            {project.name}
                           </span>
                         </ContextMenu.Trigger>
                         <ContextMenu.Content>
@@ -129,13 +131,13 @@ export function Projects({ boardId }: { boardId: string }) {
                               const dialogId = isomorphicObjectId().toString();
                               showDialog({
                                 _id: dialogId,
-                                title: `Edit ${client.name}`,
+                                title: `Edit ${project.name}`,
                                 content: (
                                   <ProjectsDialogContent
                                     boardId={boardId}
                                     dialogId={dialogId}
-                                    route="edit-client"
-                                    query={{ ...client }}
+                                    route="edit-project"
+                                    query={project}
                                   />
                                 ),
                               });
@@ -149,45 +151,53 @@ export function Projects({ boardId }: { boardId: string }) {
                     </Accordion.Trigger>
                     <Accordion.Content className="overflow-hidden data-[state=closed]:animate-collapse data-[state=open]:animate-expand">
                       <div className="flex flex-col gap-1 rounded-lg bg-white/[0.01] p-2">
-                        {client.projects.map((project) => (
+                        {project.subProjects.map((subProject) => (
                           <label
-                            key={project._id}
+                            key={subProject._id}
                             className="flex items-center gap-1.5 text-sm"
                           >
                             <Checkbox
-                              checked={selectedProjects.includes(project._id)}
+                              checked={selectedSubProjects.includes(
+                                subProject._id,
+                              )}
                               onChange={(e) => {
-                                let newSelectedProjects = selectedProjects;
+                                let newSelectedSubProjects =
+                                  selectedSubProjects;
                                 if (e.target.checked) {
-                                  newSelectedProjects = [
-                                    ...selectedProjects,
-                                    project._id,
+                                  newSelectedSubProjects = [
+                                    ...selectedSubProjects,
+                                    subProject._id,
                                   ];
-                                  setSelectedProjects(newSelectedProjects);
-                                } else {
-                                  newSelectedProjects = xor(selectedProjects, [
-                                    project._id,
-                                  ]);
-                                  setSelectedProjects(newSelectedProjects);
-                                }
-                                if (
-                                  client.projects.every((p) =>
-                                    newSelectedProjects.includes(p._id),
-                                  )
-                                ) {
-                                  setSelectedClients(
-                                    uniq([...selectedClients, client._id]),
+                                  setSelectedSubProjects(
+                                    newSelectedSubProjects,
                                   );
                                 } else {
-                                  setSelectedClients(
-                                    remove(selectedClients, client._id),
+                                  newSelectedSubProjects = xor(
+                                    selectedSubProjects,
+                                    [subProject._id],
+                                  );
+                                  setSelectedSubProjects(
+                                    newSelectedSubProjects,
+                                  );
+                                }
+                                if (
+                                  project.subProjects.every((p) =>
+                                    newSelectedSubProjects.includes(p._id),
+                                  )
+                                ) {
+                                  setSelectedProjects(
+                                    uniq([...selectedProjects, project._id]),
+                                  );
+                                } else {
+                                  setSelectedProjects(
+                                    remove(selectedProjects, project._id),
                                   );
                                 }
                               }}
                             />
                             <ContextMenu.Root>
                               <ContextMenu.Trigger asChild>
-                                <span>{project.name}</span>
+                                <span>{subProject.name}</span>
                               </ContextMenu.Trigger>
                               <ContextMenu.Content>
                                 <ContextMenu.Item
@@ -196,13 +206,13 @@ export function Projects({ boardId }: { boardId: string }) {
                                       isomorphicObjectId().toString();
                                     showDialog({
                                       _id: dialogId,
-                                      title: `Edit ${project.name}`,
+                                      title: `Edit ${subProject.name}`,
                                       content: (
                                         <ProjectsDialogContent
                                           boardId={boardId}
                                           dialogId={dialogId}
-                                          route="edit-project"
-                                          query={{ ...project, client }}
+                                          route="edit-sub-project"
+                                          query={{ ...subProject, project }}
                                         />
                                       ),
                                     });
@@ -222,20 +232,20 @@ export function Projects({ boardId }: { boardId: string }) {
                             const dialogId = isomorphicObjectId().toString();
                             showDialog({
                               _id: dialogId,
-                              title: `New project at ${client.name}`,
+                              title: `New sub project at ${project.name}`,
                               content: (
                                 <ProjectsDialogContent
                                   boardId={boardId}
                                   dialogId={dialogId}
-                                  route="new-project"
-                                  query={{ client }}
+                                  route="new-sub-project"
+                                  query={{ project }}
                                 />
                               ),
                             });
                           }}
                           leading={<PlusIcon className="mr-2" />}
                         >
-                          New project
+                          New sub project
                         </Button>
                       </div>
                     </Accordion.Content>
@@ -250,11 +260,11 @@ export function Projects({ boardId }: { boardId: string }) {
                   const dialogId = isomorphicObjectId().toString();
                   showDialog({
                     _id: dialogId,
-                    title: "New client",
+                    title: "New project",
                     content: (
                       <ProjectsDialogContent
                         boardId={boardId}
-                        route="new-client"
+                        route="new-project"
                         dialogId={dialogId}
                       />
                     ),
@@ -262,7 +272,7 @@ export function Projects({ boardId }: { boardId: string }) {
                 }}
                 leading={<PlusIcon />}
               >
-                New client
+                New project
               </Button>
             </div>
           </Accordion.Content>
