@@ -7,7 +7,7 @@ import Loading from "@italodeandra/ui/components/Loading";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { Projects } from "./projects/Projects";
-import { EditPermissionsDialogContent } from "./EditPermissionsDialogContent";
+import { EditPermissionsDialogContent } from "./edit-permissions/EditPermissionsDialogContent";
 
 export function BoardTitle() {
   const router = useRouter();

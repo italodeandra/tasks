@@ -42,3 +42,5 @@ export const teamListApi = createApi(
 );
 
 export default teamListApi.handler;
+
+export type TeamListApi = typeof teamListApi.Types;

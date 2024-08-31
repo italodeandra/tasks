@@ -1,20 +1,19 @@
 import {
   BoardGetPermissionsApi,
   boardGetPermissionsApi,
-} from "../../../pages/api/board/get-permissions";
+} from "../../../../pages/api/board/get-permissions";
 import { useCallback, useEffect, useMemo } from "react";
-import Input from "@italodeandra/ui/components/Input";
-import Button from "@italodeandra/ui/components/Button";
 import { GlobeAltIcon } from "@heroicons/react/24/outline";
 import Select from "@italodeandra/ui/components/Select";
-import { TeamAvatarAndName } from "../../../components/TeamAvatarAndName";
-import { PermissionLevel } from "../../../collections/permission";
-import { UserAvatarAndName } from "../../../components/UserAvatarAndName";
+import { TeamAvatarAndName } from "../../../../components/TeamAvatarAndName";
+import { PermissionLevel } from "../../../../collections/permission";
+import { UserAvatarAndName } from "../../../../components/UserAvatarAndName";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
-import { boardLeaveApi } from "../../../pages/api/board/leave";
-import { boardUpdatePermissionApi } from "../../../pages/api/board/update-permission";
+import { boardLeaveApi } from "../../../../pages/api/board/leave";
+import { boardUpdatePermissionApi } from "../../../../pages/api/board/update-permission";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
-import { boardGetApi } from "../../../pages/api/board/get";
+import { boardGetApi } from "../../../../pages/api/board/get";
+import { Invite } from "./Invite";
 
 export function EditPermissionsDialogContent({
   dialogId,
@@ -75,18 +74,7 @@ export function EditPermissionsDialogContent({
 
   return (
     <div className="flex flex-col gap-2 pt-2">
-      {canEdit && (
-        <div className="mb-2 flex gap-2">
-          <Input
-            placeholder="Invite others by email or team name"
-            className="flex-1"
-          />
-          <Button variant="filled" color="primary">
-            Invite
-          </Button>
-          {/*TODO inviting*/}
-        </div>
-      )}
+      {canEdit && <Invite boardId={boardId} className="mb-2" />}
       <div className="text-sm">Who has access</div>
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
