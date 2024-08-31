@@ -29,6 +29,8 @@ export const taskGetApi = createApi(
         columnId: 1,
         description: 1,
         statusId: 1,
+        projectId: 1,
+        subProjectId: 1,
       },
     });
     if (!task) {

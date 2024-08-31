@@ -17,6 +17,8 @@ import { ColumnSelect } from "./ColumnSelect";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
 import Loading from "@italodeandra/ui/components/Loading";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { ProjectSelect } from "./ProjectSelect";
+import { SubProjectSelect } from "./SubProjectSelect";
 
 export function TaskDialogContent({
   boardId,
@@ -28,6 +30,8 @@ export function TaskDialogContent({
   const [description, setDescription] = useState("");
   const [statusId, setStatusId] = useState("");
   const [columnId, setColumnId] = useState("");
+  const [projectId, setProjectId] = useState("");
+  const [subProjectId, setSubProjectId] = useState("");
 
   const taskGet = taskGetApi.useQuery({
     _id: taskId,
@@ -37,6 +41,8 @@ export function TaskDialogContent({
       setDescription(taskGet.data.description || "");
       setStatusId(taskGet.data.statusId || "");
       setColumnId(taskGet.data.columnId || "");
+      setProjectId(taskGet.data.projectId || "");
+      setSubProjectId(taskGet.data.subProjectId || "");
     }
   }, [taskGet.data]);
 
@@ -91,7 +97,7 @@ export function TaskDialogContent({
         >
           <div className="flex">
             <div className="w-28 bg-white/[0.05] px-2.5 py-2">Status</div>
-            <div className="flex flex-1 items-center rounded-tr bg-white/[0.03] px-2.5 py-2">
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
               <StatusSelect
                 taskId={taskId}
                 boardId={boardId}
@@ -103,7 +109,7 @@ export function TaskDialogContent({
           </div>
           <div className="flex">
             <div className="w-28 bg-white/[0.05] px-2.5 py-2">Column</div>
-            <div className="flex-1 rounded-tr bg-white/[0.03] px-2.5 py-2">
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
               <ColumnSelect
                 taskId={taskId}
                 boardId={boardId}
@@ -115,8 +121,33 @@ export function TaskDialogContent({
           </div>
           <div className="flex">
             <div className="w-28 bg-white/[0.05] px-2.5 py-2">Project</div>
-            <div className="flex-1 bg-white/[0.03] px-2.5 py-2">Tasks</div>
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+              <ProjectSelect
+                taskId={taskId}
+                boardId={boardId}
+                value={projectId}
+                onChange={setProjectId}
+                loading={taskGet.isLoading}
+              />
+            </div>
           </div>
+          {projectId && (
+            <div className="flex">
+              <div className="w-28 bg-white/[0.05] px-2.5 py-2">
+                Sub project
+              </div>
+              <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+                <SubProjectSelect
+                  projectId={projectId}
+                  taskId={taskId}
+                  boardId={boardId}
+                  value={subProjectId}
+                  onChange={setSubProjectId}
+                  loading={taskGet.isLoading}
+                />
+              </div>
+            </div>
+          )}
           <div className="flex">
             <div className="flex w-28 items-center bg-white/[0.05] px-2.5 py-2">
               Assigned to

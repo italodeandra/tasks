@@ -11,13 +11,18 @@ import getBoard from "../../../collections/board";
 import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 import { taskGetApi } from "./get";
 import { taskListApi } from "./list";
+import { PaprUpdateFilter } from "papr/esm/mongodbTypes";
+import { WritableDeep } from "type-fest";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
   async (
     args: Jsonify<
       { _id: string } & Partial<
-        Pick<ITask, "statusId" | "columnId" | "description">
+        Pick<
+          ITask,
+          "statusId" | "columnId" | "description" | "projectId" | "subProjectId"
+        >
       >
     >,
     req,
@@ -78,13 +83,29 @@ export const taskUpdateApi = createApi(
       throw unauthorized;
     }
 
-    const $set = {
+    const $set: WritableDeep<PaprUpdateFilter<ITask>["$set"]> = {
       description: args.description,
       statusId: args.statusId ? isomorphicObjectId(args.statusId) : undefined,
       columnId: args.columnId ? isomorphicObjectId(args.columnId) : undefined,
+      projectId:
+        args.projectId && args.projectId !== "__NONE__"
+          ? isomorphicObjectId(args.projectId)
+          : undefined,
+      subProjectId:
+        args.subProjectId && args.subProjectId !== "__NONE__"
+          ? isomorphicObjectId(args.subProjectId)
+          : undefined,
     };
-
     removeEmptyProperties($set);
+
+    const $unset: WritableDeep<PaprUpdateFilter<ITask>["$unset"]> = {};
+    if (args.projectId === "__NONE__") {
+      $unset.projectId = "";
+      $unset.subProjectId = "";
+    }
+    if (args.subProjectId === "__NONE__") {
+      $unset.subProjectId = "";
+    }
 
     await Task.updateOne(
       {
@@ -92,6 +113,7 @@ export const taskUpdateApi = createApi(
       },
       {
         $set,
+        $unset,
       },
     );
 
