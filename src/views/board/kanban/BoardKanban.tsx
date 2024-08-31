@@ -9,15 +9,18 @@ import { TaskDialogTitle } from "./task-dialog/TaskDialogTitle";
 import { TaskDialogContent } from "./task-dialog/TaskDialogContent";
 import { IList } from "../../../components/Kanban/IList";
 import { imageUploadApi } from "../../../pages/api/image-upload";
-import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import { taskListApi } from "../../../pages/api/task/list";
 import { find, isEqual, omit, pick } from "lodash-es";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { boardGetApi } from "../../../pages/api/board/get";
 import { parseAsString, useQueryState } from "nuqs";
+import Routes from "../../../Routes";
+import { useRouter } from "next/router";
+import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
+  const router = useRouter();
   const [openTaskId, setOpenTaskId] = useQueryState(
     "task",
     parseAsString.withOptions({
@@ -76,6 +79,12 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   );
 
   const boardGet = boardGetApi.useQuery({ _id: boardId });
+  useEffect(() => {
+    if (boardGet.isError || boardGet.failureReason?.message === "Not Found") {
+      void router.push(Routes.Home);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [boardGet.isError, boardGet.failureReason]);
   const taskBatchUpdate = taskBatchUpdateApi.useMutation();
 
   const taskList = taskListApi.useQuery({

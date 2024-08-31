@@ -1,4 +1,4 @@
-import { UserSection } from "./UserSection";
+import { UserSection } from "./user/UserSection";
 import { ReactNode } from "react";
 
 export function Header({ children }: { children?: ReactNode }) {

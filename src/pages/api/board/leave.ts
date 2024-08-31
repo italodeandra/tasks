@@ -4,21 +4,20 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { NextApiRequest, NextApiResponse } from "next";
 import Jsonify from "@italodeandra/next/utils/Jsonify";
 import createApi from "@italodeandra/next/api/createApi";
-import getTeam, { ITeam } from "../../../collections/team";
-import { teamListApi } from "./list";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { teamGetApi } from "./get";
-import { boardGetApi } from "../board/get";
+import { boardGetApi } from "./get";
+import getBoard, { IBoard } from "../../../collections/board";
+import { boardGetPermissionsApi } from "./get-permissions";
 
-export const teamLeaveApi = createApi(
-  "/api/team/leave",
+export const boardLeaveApi = createApi(
+  "/api/board/leave",
   async function (
-    args: Jsonify<Pick<ITeam, "_id">>,
+    args: Jsonify<Pick<IBoard, "_id">>,
     req: NextApiRequest,
     res: NextApiResponse,
   ) {
     await connectDb();
-    const Team = getTeam();
+    const Board = getBoard();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -26,26 +25,25 @@ export const teamLeaveApi = createApi(
 
     const _id = isomorphicObjectId(args._id);
 
-    await Team.updateOne(
+    await Board.updateOne(
       {
         _id,
       },
       {
         $pull: {
-          members: { userId: user._id },
+          permissions: { userId: user._id },
         },
       },
     );
   },
   {
     mutationOptions: {
-      onSuccess(_d, variables, _c, queryClient) {
-        void teamListApi.invalidateQueries(queryClient);
-        void boardGetApi.invalidateQueries(queryClient);
-        void teamGetApi.invalidateQueries(queryClient, variables);
+      async onSuccess(_d, variables, _c, queryClient) {
+        void boardGetApi.invalidateQueries(queryClient, variables);
+        await boardGetPermissionsApi.invalidateQueries(queryClient, variables);
       },
     },
   },
 );
 
-export default teamLeaveApi.handler;
+export default boardLeaveApi.handler;

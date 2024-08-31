@@ -16,7 +16,7 @@ export function UserAvatar({
   return (
     <div
       className={clsx(
-        "flex h-6 w-6 items-center justify-center rounded-full text-center text-xs",
+        "flex h-6 w-6 items-center justify-center rounded-full text-center text-xs uppercase",
         {
           "bg-blue-600": isMe,
         },

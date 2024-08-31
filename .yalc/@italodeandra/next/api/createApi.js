@@ -46,7 +46,10 @@ export default function createApi(queryKey, handler, apiOptions) {
             });
         },
         invalidateQueries: (queryClient, args) => queryClient.invalidateQueries({
-            queryKey: [queryKey, ...(apiOptions?.queryKeyMap?.(args) || [])],
+            queryKey: [
+                queryKey,
+                ...(apiOptions?.queryKeyMap?.(args) || []).filter(Boolean),
+            ],
         }),
         prefetchQuery: (queryClient, args, req, res) => queryClient.prefetchQuery({
             queryKey: [queryKey, ...(apiOptions?.queryKeyMap?.(args) || [])],

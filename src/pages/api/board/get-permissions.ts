@@ -5,7 +5,6 @@ import { connectDb } from "../../../db";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { PermissionLevel } from "../../../collections/permission";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getUser from "@italodeandra/auth/collections/user/User";
 
@@ -26,11 +25,8 @@ export const boardGetPermissionsApi = createApi(
     );
     const userTeamsIds = userTeams.map((t) => t._id);
     const _id = isomorphicObjectId(args._id);
-    const hasAdminAccessToBoard = await Board.countDocuments({
+    const hasAccessToBoard = await Board.countDocuments({
       _id,
-      "permissions.level": {
-        $in: [PermissionLevel.ADMIN],
-      },
       $or: [
         {
           "permissions.userId": {
@@ -44,7 +40,7 @@ export const boardGetPermissionsApi = createApi(
         },
       ],
     });
-    if (!hasAdminAccessToBoard) {
+    if (!hasAccessToBoard) {
       throw notFound;
     }
     return asyncMap(
@@ -58,9 +54,13 @@ export const boardGetPermissionsApi = createApi(
       async ({ userId, teamId, ...permission }) => ({
         ...permission,
         user: userId
-          ? await User.findById(userId, { projection: { name: 1 } })
+          ? {
+              ...(await User.findById(userId, {
+                projection: { name: 1, email: 1 },
+              }))!,
+              isMe: userId?.equals(user._id),
+            }
           : undefined,
-        isMe: userId?.equals(user._id),
         team: teamId
           ? await Team.findById(teamId, { projection: { name: 1 } })
           : undefined,
@@ -73,3 +73,5 @@ export const boardGetPermissionsApi = createApi(
 );
 
 export default boardGetPermissionsApi.handler;
+
+export type BoardGetPermissionsApi = typeof boardGetPermissionsApi.Types;

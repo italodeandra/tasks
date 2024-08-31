@@ -27,6 +27,17 @@ export async function devSeed() {
 
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 
+    const team = await Team.upsert(
+      {
+        name: "Test team",
+      },
+      {
+        $set: {
+          members: [{ userId, role: MemberRole.ADMIN }],
+        },
+      },
+    );
+
     const board = await Board.upsert(
       {
         _id: boardId,
@@ -37,6 +48,7 @@ export async function devSeed() {
           permissions: [
             { userId: userId, level: PermissionLevel.ADMIN },
             { userId: userB._id, level: PermissionLevel.WRITE },
+            { teamId: team._id, level: PermissionLevel.READ },
           ],
         },
       },
@@ -121,17 +133,6 @@ export async function devSeed() {
       },
       {
         $set: {},
-      },
-    );
-
-    await Team.upsert(
-      {
-        name: "Test team",
-      },
-      {
-        $set: {
-          members: [{ userId, role: MemberRole.ADMIN }],
-        },
       },
     );
 

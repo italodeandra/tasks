@@ -7,6 +7,7 @@ import getTeam, { MemberRole } from "../../../collections/team";
 import { teamListApi } from "./list";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { teamGetApi } from "./get";
+import { boardGetApi } from "../board/get";
 
 export const teamUpdateMemberRoleApi = createApi(
   "/api/team/update-member-role",
@@ -64,6 +65,7 @@ export const teamUpdateMemberRoleApi = createApi(
     mutationOptions: {
       async onSuccess(_d, variables, _c, queryClient) {
         void teamListApi.invalidateQueries(queryClient);
+        void boardGetApi.invalidateQueries(queryClient);
         await teamGetApi.invalidateQueries(queryClient, {
           _id: variables.teamId,
         });
