@@ -8,10 +8,19 @@ import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
+import querify from "@italodeandra/next/utils/querify";
 
 export const taskListApi = createApi(
   "/api/task/list",
-  async (args: { boardId: string }, req, res) => {
+  async (
+    args: {
+      boardId: string;
+      selectedProjects?: string[];
+      selectedSubProjects?: string[];
+    },
+    req,
+    res,
+  ) => {
     await connectDb();
     const Task = getTask();
     const TaskColumn = getTaskColumn();
@@ -63,11 +72,62 @@ export const taskListApi = createApi(
       },
     );
 
+    const queryArgs = querify(args);
+    console.log("queryArgs.selectedProjects", queryArgs.selectedProjects);
+    const isNoneSelected = queryArgs.selectedProjects
+      ?.toString()
+      ?.split(",")
+      ?.some((p) => p === "__NONE__");
+    const selectedProjects = queryArgs.selectedProjects
+      ?.toString()
+      ?.split(",")
+      ?.filter((p) => p && p !== "__NONE__")
+      ?.map(isomorphicObjectId);
+    const selectedSubProjects = queryArgs.selectedSubProjects
+      ?.toString()
+      ?.split(",")
+      ?.filter((p) => p && p !== "__NONE__")
+      ?.map(isomorphicObjectId);
+
     return asyncMap(columns, async (c) => {
       const tasks = await Task.find(
         {
           archived: { $ne: true },
           columnId: c._id,
+          $or:
+            isNoneSelected ||
+            selectedProjects?.length ||
+            selectedSubProjects?.length
+              ? [
+                  ...(selectedProjects?.length || selectedSubProjects?.length
+                    ? [
+                        {
+                          ...(selectedProjects?.length
+                            ? {
+                                projectId: {
+                                  $in: selectedProjects,
+                                },
+                              }
+                            : {}),
+                          ...(selectedSubProjects?.length
+                            ? {
+                                subProjectId: {
+                                  $in: selectedSubProjects,
+                                },
+                              }
+                            : {}),
+                        },
+                      ]
+                    : []),
+                  ...(isNoneSelected
+                    ? [
+                        {
+                          projectId: { $exists: false },
+                        },
+                      ]
+                    : []),
+                ]
+              : undefined,
         },
         {
           projection: {
@@ -83,7 +143,11 @@ export const taskListApi = createApi(
     });
   },
   {
-    queryKeyMap: (args) => [args?.boardId],
+    queryKeyMap: (args) => [
+      args?.boardId,
+      args?.selectedProjects,
+      args?.selectedSubProjects,
+    ],
   },
 );
 

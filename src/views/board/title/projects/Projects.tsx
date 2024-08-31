@@ -1,20 +1,20 @@
-import { useState } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import * as Accordion from "@radix-ui/react-accordion";
 import { ChevronDownIcon, PlusIcon } from "@heroicons/react/16/solid";
 import Button from "@italodeandra/ui/components/Button";
 import Checkbox from "@italodeandra/ui/components/Checkbox";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
-import { pullAll, remove, uniq, xor } from "lodash-es";
+import { pull, pullAll, remove, uniq, xor } from "lodash-es";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { ProjectsDialogContent } from "./dialog-content/ProjectsDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { projectListWithSubProjectsApi } from "../../../../pages/api/project/list-with-sub-projects";
+import { useSnapshot } from "valtio";
+import { boardState } from "../../board.state";
 
 export function Projects({ boardId }: { boardId: string }) {
-  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
-  const [selectedSubProjects, setSelectedSubProjects] = useState<string[]>([]);
+  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
 
   const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
     boardId,
@@ -23,7 +23,8 @@ export function Projects({ boardId }: { boardId: string }) {
   return (
     <div
       className={clsx("rounded-lg bg-white/[0.03] p-2 transition-colors", {
-        "bg-white/10": !!selectedSubProjects.length,
+        "bg-white/10":
+          !!selectedSubProjects.length || !!selectedProjects.length,
       })}
     >
       <Accordion.Root type="multiple">
@@ -42,8 +43,8 @@ export function Projects({ boardId }: { boardId: string }) {
                 size="xs"
                 className="-my-1.5 ml-auto px-1 py-0.5"
                 onClick={() => {
-                  setSelectedProjects([]);
-                  setSelectedSubProjects([]);
+                  boardState.selectedProjects = [];
+                  boardState.selectedSubProjects = [];
                 }}
               >
                 Clear
@@ -58,22 +59,22 @@ export function Projects({ boardId }: { boardId: string }) {
                     onClick={stopPropagation}
                     onChange={(e) => {
                       if (e.target.checked) {
-                        setSelectedSubProjects(
-                          uniq([...selectedSubProjects, "__NONE__"]),
-                        );
-                        setSelectedProjects(
-                          uniq([...selectedProjects, "__NONE__"]),
-                        );
+                        boardState.selectedSubProjects = uniq([
+                          ...selectedSubProjects,
+                        ]);
+                        boardState.selectedProjects = uniq([
+                          ...selectedProjects,
+                          "__NONE__",
+                        ]);
                       } else {
-                        setSelectedSubProjects(
-                          xor(selectedSubProjects, ["__NONE__"]),
-                        );
-                        setSelectedProjects(
-                          xor(selectedProjects, ["__NONE__"]),
-                        );
+                        boardState.selectedSubProjects =
+                          xor(selectedSubProjects);
+                        boardState.selectedProjects = xor(selectedProjects, [
+                          "__NONE__",
+                        ]);
                       }
                     }}
-                    checked={selectedSubProjects.includes("__NONE__")}
+                    checked={selectedProjects.includes("__NONE__")}
                   />
                   <span className="hover:text-white">None</span>
                 </label>
@@ -89,24 +90,22 @@ export function Projects({ boardId }: { boardId: string }) {
                         onClick={stopPropagation}
                         onChange={(e) => {
                           if (e.target.checked) {
-                            setSelectedProjects(
-                              uniq([...selectedProjects, project._id]),
-                            );
-                            setSelectedSubProjects(
-                              uniq([
-                                ...selectedSubProjects,
-                                ...project.subProjects.map((p) => p._id),
-                              ]),
-                            );
+                            boardState.selectedProjects = uniq([
+                              ...boardState.selectedProjects,
+                              project._id,
+                            ]);
+                            boardState.selectedSubProjects = uniq([
+                              ...boardState.selectedSubProjects,
+                              ...project.subProjects.map((p) => p._id),
+                            ]);
                           } else {
-                            setSelectedProjects(
-                              remove(selectedProjects, project._id),
+                            boardState.selectedProjects = pull(
+                              [...boardState.selectedProjects],
+                              project._id,
                             );
-                            setSelectedSubProjects(
-                              pullAll(
-                                selectedSubProjects,
-                                project.subProjects.map((p) => p._id),
-                              ),
+                            boardState.selectedSubProjects = pullAll(
+                              [...boardState.selectedSubProjects],
+                              project.subProjects.map((p) => p._id),
                             );
                           }
                         }}
@@ -162,35 +161,35 @@ export function Projects({ boardId }: { boardId: string }) {
                               )}
                               onChange={(e) => {
                                 let newSelectedSubProjects =
-                                  selectedSubProjects;
+                                  selectedSubProjects as string[];
                                 if (e.target.checked) {
                                   newSelectedSubProjects = [
                                     ...selectedSubProjects,
                                     subProject._id,
                                   ];
-                                  setSelectedSubProjects(
-                                    newSelectedSubProjects,
-                                  );
+                                  boardState.selectedSubProjects =
+                                    newSelectedSubProjects;
                                 } else {
                                   newSelectedSubProjects = xor(
                                     selectedSubProjects,
                                     [subProject._id],
                                   );
-                                  setSelectedSubProjects(
-                                    newSelectedSubProjects,
-                                  );
+                                  boardState.selectedSubProjects =
+                                    newSelectedSubProjects;
                                 }
                                 if (
                                   project.subProjects.every((p) =>
                                     newSelectedSubProjects.includes(p._id),
                                   )
                                 ) {
-                                  setSelectedProjects(
-                                    uniq([...selectedProjects, project._id]),
-                                  );
+                                  boardState.selectedProjects = uniq([
+                                    ...selectedProjects,
+                                    project._id,
+                                  ]);
                                 } else {
-                                  setSelectedProjects(
-                                    remove(selectedProjects, project._id),
+                                  boardState.selectedProjects = remove(
+                                    selectedProjects,
+                                    project._id,
                                   );
                                 }
                               }}

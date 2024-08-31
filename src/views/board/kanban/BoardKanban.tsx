@@ -2,7 +2,7 @@ import { TaskAdditionalContent } from "./TaskAdditionalContent";
 import { TaskAdditionalActions } from "./TaskAdditionalActions";
 import { Kanban } from "../../../components/Kanban/Kanban";
 import { useSnapshot } from "valtio";
-import { kanbanState } from "./kanban.state";
+import { boardState } from "../board.state";
 import { useCallback, useEffect } from "react";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
 import { TaskDialogTitle } from "./task-dialog/TaskDialogTitle";
@@ -28,7 +28,8 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     }),
   );
 
-  const { data } = useSnapshot(kanbanState);
+  const { data, selectedProjects, selectedSubProjects } =
+    useSnapshot(boardState);
 
   useEffect(() => {
     if (openTaskId) {
@@ -55,7 +56,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   );
 
   const handleDataChange = useCallback((newData: IList[]) => {
-    kanbanState.data = newData.map((list) => ({
+    boardState.data = newData.map((list) => ({
       _id: list._id,
       title: list.title,
       tasks: list.cards?.map((card) => ({
@@ -79,15 +80,18 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   const boardGet = boardGetApi.useQuery({ _id: boardId });
   const taskBatchUpdate = taskBatchUpdateApi.useMutation();
 
-  const taskList = taskListApi.useQuery({ boardId });
+  const taskList = taskListApi.useQuery({
+    boardId,
+    selectedProjects: selectedProjects as string[],
+    selectedSubProjects: selectedSubProjects as string[],
+  });
   useEffect(() => {
     if (taskList.data && !isEqual(taskList.data, data)) {
-      kanbanState.data = taskList.data;
+      boardState.data = taskList.data;
+      return () => {
+        boardState.data = undefined;
+      };
     }
-
-    return () => {
-      kanbanState.data = undefined;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
 
@@ -171,13 +175,16 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       });
 
       (async () => {
-        const previousData = taskListApi.getQueryData(queryClient, { boardId });
+        const args = {
+          boardId,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
+        };
+        const previousData = taskListApi.getQueryData(queryClient, args);
         taskListApi.setQueryData(
           queryClient,
           debouncedData as WritableDeep<typeof debouncedData>,
-          {
-            boardId,
-          },
+          args,
         );
         try {
           await taskBatchUpdate.mutateAsync({
@@ -232,9 +239,9 @@ export function BoardKanban({ boardId }: { boardId: string }) {
           });
         } catch (e) {
           console.error(e);
-          taskListApi.setQueryData(queryClient, previousData, { boardId });
+          taskListApi.setQueryData(queryClient, previousData, args);
         } finally {
-          void taskListApi.invalidateQueries(queryClient, { boardId });
+          void taskListApi.invalidateQueries(queryClient, args);
         }
       })();
     }

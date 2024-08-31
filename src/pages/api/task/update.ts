@@ -13,6 +13,7 @@ import { taskGetApi } from "./get";
 import { taskListApi } from "./list";
 import { PaprUpdateFilter } from "papr/esm/mongodbTypes";
 import { WritableDeep } from "type-fest";
+import { boardState } from "../../../views/board/board.state";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
@@ -126,6 +127,8 @@ export const taskUpdateApi = createApi(
       async onSuccess(data, variables, _c, queryClient) {
         void taskListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
         });
         await taskGetApi.invalidateQueries(queryClient, variables);
       },

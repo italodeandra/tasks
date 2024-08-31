@@ -132,6 +132,8 @@ export const getServerSideProps: GetServerSideProps = async ({
     queryClient,
     {
       boardId: _id,
+      selectedProjects: [],
+      selectedSubProjects: [],
     },
     req,
     res,
@@ -146,7 +148,12 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
-  await taskListApi.prefetchQuery(queryClient, { boardId: _id }, req, res);
+  await taskListApi.prefetchQuery(
+    queryClient,
+    { boardId: _id, selectedProjects: [], selectedSubProjects: [] },
+    req,
+    res,
+  );
 
   return {
     props: {

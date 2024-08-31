@@ -33,6 +33,8 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   const getLayout = Component.getLayout || ((page) => page);
 
+  console.log(pageProps.dehydratedState);
+
   return (
     <>
       <DefaultSeo
