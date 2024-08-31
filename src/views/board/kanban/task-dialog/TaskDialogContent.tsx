@@ -1,40 +1,44 @@
-import { useSnapshot } from "valtio";
-import { kanbanState } from "./kanban.state";
-import { useCallback, useMemo } from "react";
-import { find } from "lodash-es";
-import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
+import { useCallback, useEffect, useState } from "react";
+import { MarkdownEditor } from "../../../../components/Kanban/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Button from "@italodeandra/ui/components/Button";
-import { ClockIcon, InformationCircleIcon } from "@heroicons/react/20/solid";
+import {
+  ClockIcon,
+  InformationCircleIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/20/solid";
 import Textarea from "@italodeandra/ui/components/Textarea";
-import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
 import { PlusIcon } from "@heroicons/react/16/solid";
-import { imageUploadApi } from "../../../pages/api/image-upload";
+import { imageUploadApi } from "../../../../pages/api/image-upload";
+import { taskGetApi } from "../../../../pages/api/task/get";
+import { StatusSelect } from "./StatusSelect";
+import { ColumnSelect } from "./ColumnSelect";
+import { taskUpdateApi } from "../../../../pages/api/task/update";
+import Loading from "@italodeandra/ui/components/Loading";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function TaskDialogContent({
-  selected,
+  boardId,
+  taskId,
 }: {
-  selected: { cardId: string; listId: string };
+  boardId: string;
+  taskId: string;
 }) {
-  const { data } = useSnapshot(kanbanState);
+  const [description, setDescription] = useState("");
+  const [statusId, setStatusId] = useState("");
+  const [columnId, setColumnId] = useState("");
 
-  const task = useMemo(() => {
-    const list = find(data, { _id: selected.listId });
-    if (!list) return;
-    return find(list.tasks, { _id: selected.cardId });
-  }, [data, selected.cardId, selected.listId]);
-
-  const handleDescriptionChange = useCallback(
-    (description: string) => {
-      const list = find(kanbanState.data, { _id: selected.listId });
-      if (!list) return;
-      const task = find(list.tasks, { _id: selected.cardId });
-      if (!task) return;
-      task.description = description;
-    },
-    [selected.cardId, selected.listId],
-  );
+  const taskGet = taskGetApi.useQuery({
+    _id: taskId,
+  });
+  useEffect(() => {
+    if (taskGet.data) {
+      setDescription(taskGet.data.description || "");
+      setStatusId(taskGet.data.statusId || "");
+      setColumnId(taskGet.data.columnId || "");
+    }
+  }, [taskGet.data]);
 
   const imageUpload = imageUploadApi.useMutation();
   const uploadClipboardImage = useCallback(
@@ -47,17 +51,36 @@ export function TaskDialogContent({
     [imageUpload],
   );
 
+  const taskUpdate = taskUpdateApi.useMutation();
+  const handleChangeDescription = useCallback(
+    (value: string) => {
+      setDescription(value);
+      taskUpdate.mutate({
+        _id: taskId,
+        description: value,
+      });
+    },
+    [taskId, taskUpdate],
+  );
+
   return (
     <div className="grid grid-cols-2 gap-2">
-      <MarkdownEditor
-        placeholder="Add a description"
-        value={task?.description || ""}
-        onChange={handleDescriptionChange}
-        className="-mx-1 rounded-md px-1"
-        editOnDoubleClick
-        editHighlight
-        uploadClipboardImage={uploadClipboardImage}
-      />
+      <div className="relative">
+        {taskUpdate.isPending && <Loading className="absolute right-2 top-2" />}
+        {taskGet.isLoading ? (
+          <Skeleton className="mt-0.5 h-5 w-full max-w-60" />
+        ) : (
+          <MarkdownEditor
+            placeholder="Add a description"
+            value={description}
+            onChange={handleChangeDescription}
+            className="-mx-1 mb-auto rounded-md px-1"
+            editOnDoubleClick
+            editHighlight
+            uploadClipboardImage={uploadClipboardImage}
+          />
+        )}
+      </div>
       <div className="flex flex-col gap-4">
         <div
           className={clsx(
@@ -68,8 +91,26 @@ export function TaskDialogContent({
         >
           <div className="flex">
             <div className="w-28 bg-white/[0.05] px-2.5 py-2">Status</div>
+            <div className="flex flex-1 items-center rounded-tr bg-white/[0.03] px-2.5 py-2">
+              <StatusSelect
+                taskId={taskId}
+                boardId={boardId}
+                value={statusId}
+                onChange={setStatusId}
+                loading={taskGet.isLoading}
+              />
+            </div>
+          </div>
+          <div className="flex">
+            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Column</div>
             <div className="flex-1 rounded-tr bg-white/[0.03] px-2.5 py-2">
-              Todo
+              <ColumnSelect
+                taskId={taskId}
+                boardId={boardId}
+                value={columnId}
+                onChange={setColumnId}
+                loading={taskGet.isLoading}
+              />
             </div>
           </div>
           <div className="flex">

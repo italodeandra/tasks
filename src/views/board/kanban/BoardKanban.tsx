@@ -4,9 +4,9 @@ import { Kanban } from "../../../components/Kanban/Kanban";
 import { useSnapshot } from "valtio";
 import { kanbanState } from "./kanban.state";
 import { useCallback, useEffect } from "react";
-import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { TaskDialogTitle } from "./TaskDialogTitle";
-import { TaskDialogContent } from "./TaskDialogContent";
+import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
+import { TaskDialogTitle } from "./task-dialog/TaskDialogTitle";
+import { TaskDialogContent } from "./task-dialog/TaskDialogContent";
 import { IList } from "../../../components/Kanban/IList";
 import { imageUploadApi } from "../../../pages/api/image-upload";
 import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
@@ -17,21 +17,41 @@ import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
 import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { WritableDeep } from "type-fest";
 import { boardGetApi } from "../../../pages/api/board/get";
+import { parseAsString, useQueryState } from "nuqs";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
+  const [openTaskId, setOpenTaskId] = useQueryState(
+    "task",
+    parseAsString.withOptions({
+      history: "push",
+      clearOnDefault: true,
+    }),
+  );
+
   const { data } = useSnapshot(kanbanState);
+
+  useEffect(() => {
+    if (openTaskId) {
+      showDialog({
+        _id: "task",
+        titleClassName: "mb-0",
+        contentOverflowClassName: "max-w-screen-xl gap-4",
+        title: <TaskDialogTitle taskId={openTaskId} />,
+        content: <TaskDialogContent taskId={openTaskId} boardId={boardId} />,
+        closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
+        onClose: () => void setOpenTaskId(null),
+      });
+    } else {
+      closeDialog("task");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openTaskId]);
 
   const handleTaskClick = useCallback(
     (selected: { cardId: string; listId: string }) => {
-      showDialog({
-        titleClassName: "mb-0",
-        contentOverflowClassName: "max-w-screen-xl gap-4",
-        title: <TaskDialogTitle selected={selected} />,
-        content: <TaskDialogContent selected={selected} />,
-        closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
-      });
+      void setOpenTaskId(selected.cardId);
     },
-    [],
+    [setOpenTaskId],
   );
 
   const handleDataChange = useCallback((newData: IList[]) => {
