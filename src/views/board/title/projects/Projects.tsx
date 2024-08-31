@@ -22,7 +22,7 @@ export function Projects({ boardId }: { boardId: string }) {
   });
 
   if (projectListWithSubProjects.isLoading) {
-    return <Skeleton className="h-[32px] w-[87px] dark:bg-white/10" />;
+    return <Skeleton className="h-[32px] w-[87px] dark:bg-white/5" />;
   }
 
   return (
