@@ -4,6 +4,7 @@ import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { PlayIcon } from "@heroicons/react/16/solid";
 
 export function TaskAdditionalContent({ cardId }: { cardId: string }) {
+  // TODO cardId
   return (
     <div className="flex justify-end gap-2 px-3 pb-3">
       <Tooltip content="Start tracking time on this task">
