@@ -8,7 +8,7 @@ import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.ser
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getUser from "@italodeandra/auth/collections/user/User";
-import asyncMap from "@italodeandra/next/utils/asyncMap";
+import { filter, pick } from "lodash-es";
 
 export const taskListEligibleAssigneesApi = createApi(
   "/api/task/list-eligible-assignees",
@@ -105,10 +105,17 @@ export const taskListEligibleAssigneesApi = createApi(
       team.members.map((m) => m.userId),
     );
 
-    const eligibleUsersIds = [...usersIdsWithAccessToBoard, ...teamsMembersIds];
+    const eligibleUsersIds = filter(
+      [...usersIdsWithAccessToBoard, ...teamsMembersIds],
+      (u) => !u.equals(user._id),
+    );
 
-    return asyncMap(
-      await User.find(
+    return [
+      {
+        ...pick(user, ["_id", "name", "email"]),
+        isMe: true,
+      },
+      ...(await User.find(
         {
           _id: { $in: eligibleUsersIds },
         },
@@ -118,9 +125,8 @@ export const taskListEligibleAssigneesApi = createApi(
             email: 1,
           },
         },
-      ),
-      async (user2) => ({ ...user2, isMe: user2._id.equals(user._id) }),
-    );
+      )),
+    ];
   },
   {
     queryKeyMap: (args) => [args?.taskId],
@@ -128,3 +134,6 @@ export const taskListEligibleAssigneesApi = createApi(
 );
 
 export default taskListEligibleAssigneesApi.handler;
+
+export type TaskListEligibleAssigneesApi =
+  typeof taskListEligibleAssigneesApi.Types;

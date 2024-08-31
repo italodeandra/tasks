@@ -1,4 +1,7 @@
-import { taskListEligibleAssigneesApi } from "../../../../../pages/api/task/list-eligible-assignees";
+import {
+  TaskListEligibleAssigneesApi,
+  taskListEligibleAssigneesApi,
+} from "../../../../../pages/api/task/list-eligible-assignees";
 import Popover from "@italodeandra/ui/components/Popover";
 import Button from "@italodeandra/ui/components/Button";
 import { CheckIcon, PlusIcon } from "@heroicons/react/16/solid";
@@ -24,7 +27,7 @@ export function AddAssigneeButton({
   const taskUpdate = taskUpdateApi.useMutation();
 
   const handleAssigneeClick = useCallback(
-    (assignee: TaskGetApi["Response"]["assignees"][0]) => () => {
+    (assignee: TaskListEligibleAssigneesApi["Response"][0]) => () => {
       const currentAssignees = assignees.map((a) => a._id);
       taskUpdate.mutate({
         _id: taskId,

@@ -1,15 +1,65 @@
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
+import { useCallback, useMemo } from "react";
+import { xor } from "lodash-es";
+import { taskListApi } from "../../../pages/api/task/list";
+import { useSnapshot } from "valtio";
+import { boardState } from "../board.state";
+import { taskUpdateApi } from "../../../pages/api/task/update";
+import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
 export function TaskAdditionalActions({
-  cardId, // TODO
-  listId, // TODO
+  cardId,
+  listId,
+  boardId,
 }: {
   cardId: string;
   listId: string;
+  boardId: string;
 }) {
+  const authGetUser = useAuthGetUser();
+
+  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
+  const taskList = taskListApi.useQuery({
+    boardId,
+    selectedProjects: selectedProjects as string[],
+    selectedSubProjects: selectedSubProjects as string[],
+  });
+
+  const task = useMemo(
+    () =>
+      taskList.data
+        ?.find((task) => task._id === listId)
+        ?.tasks?.find((task) => task._id === cardId),
+    [cardId, listId, taskList.data],
+  );
+
+  const taskUpdate = taskUpdateApi.useMutation();
+
+  const handleAssignToMeClick = useCallback(() => {
+    if (task && authGetUser.data) {
+      const currentAssignees = task.assignees.map((a) => a._id);
+      taskUpdate.mutate({
+        _id: task._id,
+        assignees: xor(currentAssignees, [authGetUser.data._id]),
+      });
+    }
+  }, [authGetUser.data, task, taskUpdate]);
+
+  const isNotAssignedToMe = useMemo(
+    () =>
+      task?.assignees.every(
+        (assignee) => assignee._id !== authGetUser.data?._id,
+      ),
+    [authGetUser.data, task],
+  );
+
   return (
     <>
-      <ContextMenu.Item>Assign to me</ContextMenu.Item>
+      {isNotAssignedToMe && task && authGetUser.data && (
+        <ContextMenu.Item onClick={handleAssignToMeClick}>
+          Assign to me
+        </ContextMenu.Item>
+      )}
     </>
   );
 }

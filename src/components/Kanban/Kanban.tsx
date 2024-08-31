@@ -58,6 +58,7 @@ export function Kanban<AP extends Record<string, unknown>>({
   canAddList,
   canMoveList,
   canEditList,
+  canDuplicateCard,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -77,6 +78,7 @@ export function Kanban<AP extends Record<string, unknown>>({
   canMoveList?: boolean;
   canEditList?: boolean;
   cardAdditionalProps?: AP;
+  canDuplicateCard?: boolean;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
@@ -711,6 +713,7 @@ export function Kanban<AP extends Record<string, unknown>>({
                 lists={data}
                 onDuplicateTo={handleDuplicateTo(card, list)}
                 listName={listName}
+                canDuplicateCard={canDuplicateCard}
               />
             ))}
             <Button

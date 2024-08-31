@@ -35,6 +35,7 @@ export function Card<AP extends Record<string, unknown>>({
   onDuplicateTo,
   lists,
   listName,
+  canDuplicateCard,
   ...props
 }: {
   title: string;
@@ -56,6 +57,7 @@ export function Card<AP extends Record<string, unknown>>({
   onDuplicateTo?: (listId?: string) => void;
   listName: string;
   lists: IList[];
+  canDuplicateCard?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
@@ -177,7 +179,7 @@ export function Card<AP extends Record<string, unknown>>({
             {...(cardAdditionalProps as AP)}
           />
         )}
-        {!!lists.length && (
+        {canDuplicateCard && !!lists.length && (
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger>Duplicate to</ContextMenu.SubTrigger>
             <ContextMenu.SubContent>
