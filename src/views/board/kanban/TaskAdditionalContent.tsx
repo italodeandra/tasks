@@ -10,27 +10,32 @@ import getInitials from "@italodeandra/ui/utils/getInitials";
 import { getColorForString } from "../../../components/ColorPicker/colors";
 
 export function TaskAdditionalContent({
-  listId,
   cardId,
   boardId,
 }: {
   listId: string;
   cardId: string;
   boardId: string;
+  dragging: boolean;
 }) {
   const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
-  const taskList = taskListApi.useQuery({
-    boardId,
-    selectedProjects: selectedProjects as string[],
-    selectedSubProjects: selectedSubProjects as string[],
-  });
+  const taskList = taskListApi.useQuery(
+    {
+      boardId,
+      selectedProjects: selectedProjects as string[],
+      selectedSubProjects: selectedSubProjects as string[],
+    },
+    {
+      enabled: false,
+    },
+  );
 
   const task = useMemo(
     () =>
       taskList.data
-        ?.find((task) => task._id === listId)
+        ?.find((list) => list.tasks?.some((task) => task._id === cardId))
         ?.tasks?.find((task) => task._id === cardId),
-    [cardId, listId, taskList.data],
+    [cardId, taskList.data],
   );
 
   if (!task?.assignees.length) {

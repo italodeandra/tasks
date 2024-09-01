@@ -8,6 +8,9 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTask from "../../../collections/task";
 import { taskListApi } from "./list";
 import { boardState } from "../../../views/board/board.state";
+import getTaskActivity, {
+  ActivityType,
+} from "../../../collections/taskActivity";
 
 export const taskBatchUpdateApi = createApi(
   "/api/task/batch-update",
@@ -36,6 +39,7 @@ export const taskBatchUpdateApi = createApi(
     await connectDb();
     const Task = getTask();
     const TaskColumn = getTaskColumn();
+    const TaskActivity = getTaskActivity();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -125,6 +129,7 @@ export const taskBatchUpdateApi = createApi(
 
     // tasks
     const taskOperations: Parameters<typeof Task.bulkWrite>[0] = [];
+    const activityOperations: Parameters<typeof TaskActivity.bulkWrite>[0] = [];
     if (args.tasksChanges) {
       for (const taskChangeColumn of args.tasksChanges) {
         const columnId = isomorphicObjectId(taskChangeColumn._id);
@@ -164,14 +169,24 @@ export const taskBatchUpdateApi = createApi(
           });
           let nextOrder = (maxBy(columns, "order")?.order || 0) + 1;
           for (const taskChange of taskChangeColumn.tasks) {
+            const taskId = isomorphicObjectId(taskChange._id);
             if (taskChange.type === "inserted") {
               taskOperations.push({
                 insertOne: {
                   document: {
                     columnId,
-                    _id: isomorphicObjectId(taskChange._id),
+                    _id: taskId,
                     title: taskChange.title || "",
                     order: nextOrder,
+                  },
+                },
+              });
+              activityOperations.push({
+                insertOne: {
+                  document: {
+                    taskId: taskId,
+                    type: ActivityType.CREATE,
+                    userId: user._id,
                   },
                 },
               });
@@ -181,13 +196,25 @@ export const taskBatchUpdateApi = createApi(
                 updateOne: {
                   filter: {
                     columnId,
-                    _id: isomorphicObjectId(taskChange._id),
+                    _id: taskId,
                     title: { $ne: taskChange.title },
                   },
                   update: {
                     $set: {
                       title: taskChange.title,
                     },
+                  },
+                },
+              });
+              activityOperations.push({
+                insertOne: {
+                  document: {
+                    type: ActivityType.CHANGE_TITLE,
+                    taskId,
+                    data: {
+                      title: taskChange.title,
+                    },
+                    userId: user._id,
                   },
                 },
               });
@@ -201,7 +228,7 @@ export const taskBatchUpdateApi = createApi(
                 updateOne: {
                   filter: {
                     columnId: isomorphicObjectId(movedOutColumn?._id),
-                    _id: isomorphicObjectId(taskChange._id),
+                    _id: taskId,
                   },
                   update: {
                     $set: {
@@ -210,17 +237,39 @@ export const taskBatchUpdateApi = createApi(
                   },
                 },
               });
+              activityOperations.push({
+                insertOne: {
+                  document: {
+                    type: ActivityType.MOVE,
+                    taskId,
+                    data: {
+                      type: "column",
+                      title: columnId,
+                    },
+                    userId: user._id,
+                  },
+                },
+              });
             } else if (taskChange.type === "deleted") {
               taskOperations.push({
                 updateOne: {
                   filter: {
                     columnId,
-                    _id: isomorphicObjectId(taskChange._id),
+                    _id: taskId,
                   },
                   update: {
                     $set: {
                       archived: true,
                     },
+                  },
+                },
+              });
+              activityOperations.push({
+                insertOne: {
+                  document: {
+                    type: ActivityType.DELETE,
+                    taskId,
+                    userId: user._id,
                   },
                 },
               });
@@ -231,6 +280,23 @@ export const taskBatchUpdateApi = createApi(
     }
     if (taskOperations.length) {
       await Task.bulkWrite(taskOperations);
+    }
+    if (activityOperations.length) {
+      void (async () => {
+        for (const operation of activityOperations) {
+          // @ts-expect-error trust me
+          if (operation.insertOne.document.type === ActivityType.MOVE) {
+            // @ts-expect-error trust me
+            operation.insertOne.document.data.title =
+              (await TaskColumn.findById(
+                // @ts-expect-error trust me
+                operation.insertOne.document.data.title,
+                { projection: { title: 1 } },
+              ))!.title;
+          }
+        }
+        await TaskActivity.bulkWrite(activityOperations);
+      })();
     }
   },
   {

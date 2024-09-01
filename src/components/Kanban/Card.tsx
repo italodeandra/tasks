@@ -48,7 +48,7 @@ export function Card<AP extends Record<string, unknown>>({
   _id: string;
   listId: string;
   cardAdditionalContent?: ComponentType<
-    { cardId: string; listId: string } & AP
+    { cardId: string; listId: string; dragging: boolean } & AP
   >;
   cardAdditionalActions?: ComponentType<
     { cardId: string; listId: string } & AP
@@ -152,6 +152,7 @@ export function Card<AP extends Record<string, unknown>>({
               <CardAdditionalContent
                 cardId={_id}
                 listId={listId}
+                dragging={!!dragging}
                 {...(cardAdditionalProps as AP)}
               />
             )}

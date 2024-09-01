@@ -92,13 +92,6 @@ export function Kanban<AP extends Record<string, unknown>>({
   const cardClickTimeout = useRef(0);
 
   useEffect(() => {
-    if (onChange && !isEqual(data, dataProp)) {
-      onChange(data);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  useEffect(() => {
     if (!isEqual(data, dataProp)) {
       setData(dataProp);
     }
@@ -129,6 +122,18 @@ export function Kanban<AP extends Record<string, unknown>>({
     unstick?: boolean;
   } | null>(null);
   const draggingListRef = useLatest(draggingList);
+
+  useEffect(() => {
+    if (
+      onChange &&
+      !isEqual(data, dataProp) &&
+      !draggingCard &&
+      !draggingList
+    ) {
+      onChange(data);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, draggingCard, draggingList]);
 
   const getMousePosTargetCardIdAndListId = useCallback(
     (event: MouseEvent | TouchEvent) => {

@@ -2,13 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { MarkdownEditor } from "../../../../components/Kanban/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Button from "@italodeandra/ui/components/Button";
-import {
-  ClockIcon,
-  InformationCircleIcon,
-  PaperAirplaneIcon,
-} from "@heroicons/react/20/solid";
-import Textarea from "@italodeandra/ui/components/Textarea";
-import fakeArray from "@italodeandra/ui/utils/fakeArray";
+import { ClockIcon } from "@heroicons/react/20/solid";
 import { imageUploadApi } from "../../../../pages/api/image-upload";
 import { taskGetApi } from "../../../../pages/api/task/get";
 import { StatusSelect } from "./StatusSelect";
@@ -19,7 +13,7 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
-import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
+import { Activity } from "./Activity";
 
 export function TaskDialogContent({
   boardId,
@@ -71,8 +65,6 @@ export function TaskDialogContent({
     },
     [taskId, taskUpdate],
   );
-
-  const authGetUser = useAuthGetUser();
 
   return (
     <div className="grid grid-cols-2 gap-2">
@@ -193,84 +185,7 @@ export function TaskDialogContent({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-3">
-          <div className="text-sm font-medium">History</div>
-          <div className="flex flex-col gap-4">
-            {authGetUser.data && (
-              <Textarea
-                placeholder="Add new comment"
-                trailing={
-                  <Button
-                    icon
-                    className="pointer-events-auto"
-                    size="sm"
-                    variant="text"
-                  >
-                    <PaperAirplaneIcon />
-                  </Button>
-                }
-                inputClassName="dark:border-transparent"
-                trailingClassName="pr-0.5 items-end pb-0.5"
-              />
-            )}
-            <div className="flex gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
-                IA
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <div className="flex h-6 items-center">
-                  <div className="flex items-end gap-2">
-                    <div className="text-zinc-300">
-                      <span className="font-medium text-white">
-                        Ítalo Andrade
-                      </span>{" "}
-                      moved task to{" "}
-                      <span className="font-medium text-white">Doing</span>
-                    </div>
-                    <div className="mb-px text-xs text-zinc-500">
-                      10 seconds ago
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {fakeArray(10).map((n) => (
-              <div className="flex gap-2" key={n}>
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
-                  IA
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <div className="flex h-6 items-center">
-                    <div className="flex items-end gap-2">
-                      <div className="font-medium leading-none">
-                        Ítalo Andrade
-                      </div>
-                      <div className="text-xs leading-none text-zinc-500">
-                        10 seconds ago
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-zinc-300">This is a comment</div>
-                </div>
-              </div>
-            ))}
-            <div className="flex gap-2">
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-zinc-800 text-xs text-zinc-500">
-                <InformationCircleIcon className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col gap-0.5">
-                <div className="flex h-6 items-center">
-                  <div className="flex items-end gap-2">
-                    <div className="text-zinc-300">Task created</div>
-                    <div className="mb-px text-xs text-zinc-500">
-                      10 seconds ago
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <Activity taskId={taskId} />
       </div>
     </div>
   );

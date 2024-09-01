@@ -14,6 +14,14 @@ import { taskListApi } from "./list";
 import { PaprUpdateFilter } from "papr/esm/mongodbTypes";
 import { WritableDeep } from "type-fest";
 import { boardState } from "../../../views/board/board.state";
+import getTaskActivity, {
+  ActivityType,
+} from "../../../collections/taskActivity";
+import getTaskStatus from "../../../collections/taskStatus";
+import { taskActivityListApi } from "../task-activity/list";
+import getProject from "../../../collections/project";
+import getSubProject from "../../../collections/subProject";
+import getUser from "@italodeandra/auth/collections/user/User";
 
 export const taskUpdateApi = createApi(
   "/api/task/update",
@@ -28,6 +36,7 @@ export const taskUpdateApi = createApi(
           | "projectId"
           | "subProjectId"
           | "assignees"
+          | "title"
         >
       >
     >,
@@ -39,6 +48,11 @@ export const taskUpdateApi = createApi(
     const TaskColumn = getTaskColumn();
     const Team = getTeam();
     const Board = getBoard();
+    const TaskActivity = getTaskActivity();
+    const TaskStatus = getTaskStatus();
+    const Project = getProject();
+    const SubProject = getSubProject();
+    const User = getUser();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -49,7 +63,7 @@ export const taskUpdateApi = createApi(
     const task = await Task.findById(_id, {
       projection: {
         columnId: 1,
-        statusId: 1,
+        assignees: 1,
       },
     });
     if (!task) {
@@ -59,6 +73,7 @@ export const taskUpdateApi = createApi(
     const column = await TaskColumn.findById(task.columnId, {
       projection: {
         boardId: 1,
+        title: 1,
       },
     });
     if (!column) {
@@ -89,9 +104,14 @@ export const taskUpdateApi = createApi(
       throw unauthorized;
     }
 
+    const statusId = args.statusId
+      ? isomorphicObjectId(args.statusId)
+      : undefined;
+
     const $set: WritableDeep<PaprUpdateFilter<ITask>["$set"]> = {
       description: args.description,
-      statusId: args.statusId ? isomorphicObjectId(args.statusId) : undefined,
+      title: args.title,
+      statusId,
       columnId: args.columnId ? isomorphicObjectId(args.columnId) : undefined,
       projectId:
         args.projectId && args.projectId !== "__NONE__"
@@ -124,6 +144,121 @@ export const taskUpdateApi = createApi(
       },
     );
 
+    void (async () => {
+      if (args.columnId) {
+        await TaskActivity.insertOne({
+          type: ActivityType.MOVE,
+          taskId: _id,
+          data: {
+            type: "column",
+            title: column.title,
+          },
+          userId: user._id,
+        });
+      }
+      if (statusId) {
+        await TaskActivity.insertOne({
+          type: ActivityType.MOVE,
+          taskId: _id,
+          data: {
+            type: "status",
+            title: (await TaskStatus.findById(statusId, {
+              projection: {
+                title: 1,
+              },
+            }))!.title,
+          },
+          userId: user._id,
+        });
+      }
+      if (args.projectId) {
+        await TaskActivity.insertOne({
+          type: ActivityType.MOVE,
+          taskId: _id,
+          data: {
+            type: "project",
+            title:
+              args.projectId !== "__NONE__"
+                ? (await Project.findById(isomorphicObjectId(args.projectId), {
+                    projection: {
+                      name: 1,
+                    },
+                  }))!.name
+                : "None",
+          },
+          userId: user._id,
+        });
+      }
+      if (args.subProjectId) {
+        await TaskActivity.insertOne({
+          type: ActivityType.MOVE,
+          taskId: _id,
+          data: {
+            type: "sub-project",
+            title:
+              args.subProjectId !== "__NONE__"
+                ? (await SubProject.findById(
+                    isomorphicObjectId(args.subProjectId),
+                    {
+                      projection: {
+                        name: 1,
+                      },
+                    },
+                  ))!.name
+                : "None",
+          },
+          userId: user._id,
+        });
+      }
+      if (args.assignees) {
+        const before =
+          task.assignees?.map((assignee) => assignee.toString()) || [];
+        const after = args.assignees;
+        const type = before.length > after.length ? "remove" : "add";
+        const users =
+          type === "remove"
+            ? before.filter((u) => !after.includes(u))
+            : after.filter((u) => !before.includes(u));
+
+        await TaskActivity.insertOne({
+          type: ActivityType.ASSIGN,
+          taskId: _id,
+          data: {
+            type,
+            users: (
+              await User.find({
+                _id: {
+                  $in: users.map(isomorphicObjectId),
+                },
+              })
+            ).map((u) => u.name || u.email),
+          },
+          userId: user._id,
+        });
+      }
+      if (args.description) {
+        await TaskActivity.insertOne({
+          type: ActivityType.UPDATE,
+          taskId: _id,
+          data: {
+            field: "description",
+            description: args.description,
+          },
+          userId: user._id,
+        });
+      }
+      if (args.title) {
+        await TaskActivity.insertOne({
+          type: ActivityType.CHANGE_TITLE,
+          taskId: _id,
+          data: {
+            title: args.title,
+          },
+          userId: user._id,
+        });
+      }
+    })();
+
     return {
       boardId: column.boardId,
     };
@@ -135,6 +270,9 @@ export const taskUpdateApi = createApi(
           boardId: data.boardId,
           selectedProjects: boardState.selectedProjects,
           selectedSubProjects: boardState.selectedSubProjects,
+        });
+        void taskActivityListApi.invalidateQueries(queryClient, {
+          taskId: variables._id,
         });
         await taskGetApi.invalidateQueries(queryClient, variables);
       },

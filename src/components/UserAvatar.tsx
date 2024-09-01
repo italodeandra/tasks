@@ -7,11 +7,13 @@ export function UserAvatar({
   name,
   email,
   isMe,
+  className,
 }: {
   _id: string;
   name?: string;
   email: string;
   isMe?: boolean;
+  className?: string;
 }) {
   return (
     <div
@@ -20,6 +22,7 @@ export function UserAvatar({
         {
           "bg-blue-600": isMe,
         },
+        className,
       )}
       style={{
         backgroundColor: !isMe ? getColorForString(_id) : undefined,

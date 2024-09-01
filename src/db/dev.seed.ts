@@ -9,6 +9,7 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTeam, { MemberRole } from "../collections/team";
 import getTask from "../collections/task";
 import getUser from "@italodeandra/auth/collections/user/User";
+import getTaskActivity, { ActivityType } from "../collections/taskActivity";
 
 export async function devSeed() {
   if (process.env.APP_ENV === "development") {
@@ -20,6 +21,7 @@ export async function devSeed() {
     const Team = getTeam();
     const Task = getTask();
     const User = getUser();
+    const TaskActivity = getTaskActivity();
 
     const userB = (await User.findOne({
       email: "italodeandra+b@gmail.com",
@@ -140,7 +142,7 @@ export async function devSeed() {
       },
     );
 
-    await Task.upsert(
+    const task = await Task.upsert(
       {
         _id: isomorphicObjectId("66d3e6c8798581f14ad19f51"),
       },
@@ -153,6 +155,18 @@ export async function devSeed() {
           columnId: columDoing._id,
           statusId: statusDoing._id,
           assignees: [userId, userB._id],
+        },
+      },
+    );
+
+    await TaskActivity.upsert(
+      {
+        type: ActivityType.CREATE,
+      },
+      {
+        $set: {
+          taskId: task._id,
+          userId,
         },
       },
     );

@@ -25,13 +25,15 @@ export function TaskDialogTitle({
   const taskUpdate = taskUpdateApi.useMutation();
   const handleChangeTitle = useCallback(
     (value: string) => {
-      setTitle(value);
-      taskUpdate.mutate({
-        _id: taskId,
-        description: value,
-      });
+      if (title !== value) {
+        setTitle(value);
+        taskUpdate.mutate({
+          _id: taskId,
+          title: value,
+        });
+      }
     },
-    [taskId, taskUpdate],
+    [taskId, taskUpdate, title],
   );
 
   if (taskGet.isLoading) {
