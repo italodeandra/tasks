@@ -10,12 +10,14 @@ export function StatusSelect({
   value,
   onChange,
   loading,
+  canEdit,
 }: {
   taskId: string;
   boardId: string;
   value: string;
   onChange: (value: string) => void;
   loading?: boolean;
+  canEdit?: boolean;
 }) {
   const taskStatusList = taskStatusListApi.useQuery({ boardId });
 
@@ -43,6 +45,7 @@ export function StatusSelect({
         variant="text"
         className="-m-1.5 px-1.5 py-1 font-normal data-[placeholder]:text-zinc-500"
         loading={taskUpdate.isPending}
+        readOnly={!canEdit}
       />
       <Select.Content>
         {taskStatusList.data?.map((status) => (

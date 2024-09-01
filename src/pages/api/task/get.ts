@@ -21,9 +21,6 @@ export const taskGetApi = createApi(
     const Board = getBoard();
     const User = getUser();
     const user = await getUserFromCookies(req, res);
-    if (!user) {
-      throw unauthorized;
-    }
 
     const _id = isomorphicObjectId(args._id);
 
@@ -51,23 +48,32 @@ export const taskGetApi = createApi(
       throw notFound;
     }
 
-    const userTeams = await Team.find(
-      { "members.userId": { $in: [user._id] } },
-      { projection: { _id: 1 } },
-    );
-    const userTeamsIds = userTeams.map((t) => t._id);
+    const userTeams = user
+      ? await Team.find(
+          { "members.userId": { $in: [user._id] } },
+          { projection: { _id: 1 } },
+        )
+      : undefined;
+    const userTeamsIds = userTeams?.map((t) => t._id);
     const haveAccessToBoard = await Board.countDocuments({
       _id: column.boardId,
       $or: [
+        ...(user
+          ? [
+              {
+                "permissions.userId": {
+                  $in: [user._id],
+                },
+              },
+              {
+                "permissions.teamId": {
+                  $in: userTeamsIds,
+                },
+              },
+            ]
+          : []),
         {
-          "permissions.userId": {
-            $in: [user._id],
-          },
-        },
-        {
-          "permissions.teamId": {
-            $in: userTeamsIds,
-          },
+          "permissions.public": true,
         },
       ],
     });
@@ -93,7 +99,7 @@ export const taskGetApi = createApi(
         ),
         async (user2) => ({
           ...user2,
-          isMe: user2._id.equals(user._id),
+          isMe: !!user && user2._id.equals(user._id),
         }),
       ),
     };

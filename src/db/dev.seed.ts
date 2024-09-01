@@ -49,6 +49,10 @@ export async function devSeed() {
             { userId: userId, level: PermissionLevel.ADMIN },
             { userId: userB._id, level: PermissionLevel.WRITE },
             { teamId: team._id, level: PermissionLevel.READ },
+            {
+              public: true,
+              level: PermissionLevel.READ,
+            },
           ],
         },
       },
@@ -138,10 +142,11 @@ export async function devSeed() {
 
     await Task.upsert(
       {
-        title: "Develop tasks",
+        _id: isomorphicObjectId("66d3e6c8798581f14ad19f51"),
       },
       {
         $set: {
+          title: "Develop tasks",
           order: 0,
           projectId: project._id,
           subProjectId: subProject._id,

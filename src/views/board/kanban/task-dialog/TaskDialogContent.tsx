@@ -19,13 +19,16 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
+import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
 export function TaskDialogContent({
   boardId,
   taskId,
+  canEdit,
 }: {
   boardId: string;
   taskId: string;
+  canEdit?: boolean;
 }) {
   const [description, setDescription] = useState("");
   const [statusId, setStatusId] = useState("");
@@ -69,6 +72,8 @@ export function TaskDialogContent({
     [taskId, taskUpdate],
   );
 
+  const authGetUser = useAuthGetUser();
+
   return (
     <div className="grid grid-cols-2 gap-2">
       <div className="relative">
@@ -77,11 +82,11 @@ export function TaskDialogContent({
           <Skeleton className="mt-0.5 h-5 w-full max-w-60" />
         ) : (
           <MarkdownEditor
-            placeholder="Add a description"
+            placeholder={canEdit ? "Add a description" : "No description"}
             value={description}
-            onChange={handleChangeDescription}
+            onChange={canEdit ? handleChangeDescription : undefined}
             className="-mx-1 mb-auto rounded-md px-1"
-            editOnDoubleClick
+            editOnDoubleClick={canEdit}
             editHighlight
             uploadClipboardImage={uploadClipboardImage}
           />
@@ -104,6 +109,7 @@ export function TaskDialogContent({
                 value={statusId}
                 onChange={setStatusId}
                 loading={taskGet.isLoading}
+                canEdit={canEdit}
               />
             </div>
           </div>
@@ -116,6 +122,7 @@ export function TaskDialogContent({
                 value={columnId}
                 onChange={setColumnId}
                 loading={taskGet.isLoading}
+                canEdit={canEdit}
               />
             </div>
           </div>
@@ -128,6 +135,7 @@ export function TaskDialogContent({
                 value={projectId}
                 onChange={setProjectId}
                 loading={taskGet.isLoading}
+                canEdit={canEdit}
               />
             </div>
           </div>
@@ -144,6 +152,7 @@ export function TaskDialogContent({
                   value={subProjectId}
                   onChange={setSubProjectId}
                   loading={taskGet.isLoading}
+                  canEdit={canEdit}
                 />
               </div>
             </div>
@@ -158,6 +167,7 @@ export function TaskDialogContent({
                 <Assignees
                   taskId={taskId}
                   assignees={taskGet.data?.assignees}
+                  canEdit={canEdit}
                 />
               )}
             </div>
@@ -183,24 +193,26 @@ export function TaskDialogContent({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           <div className="text-sm font-medium">History</div>
           <div className="flex flex-col gap-4">
-            <Textarea
-              placeholder="Add new comment"
-              trailing={
-                <Button
-                  icon
-                  className="pointer-events-auto"
-                  size="sm"
-                  variant="text"
-                >
-                  <PaperAirplaneIcon />
-                </Button>
-              }
-              inputClassName="dark:border-transparent"
-              trailingClassName="pr-0.5 items-end pb-0.5"
-            />
+            {authGetUser.data && (
+              <Textarea
+                placeholder="Add new comment"
+                trailing={
+                  <Button
+                    icon
+                    className="pointer-events-auto"
+                    size="sm"
+                    variant="text"
+                  >
+                    <PaperAirplaneIcon />
+                  </Button>
+                }
+                inputClassName="dark:border-transparent"
+                trailingClassName="pr-0.5 items-end pb-0.5"
+              />
+            )}
             <div className="flex gap-2">
               <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs">
                 IA

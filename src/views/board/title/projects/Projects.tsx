@@ -14,7 +14,13 @@ import { useSnapshot } from "valtio";
 import { boardState } from "../../board.state";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 
-export function Projects({ boardId }: { boardId: string }) {
+export function Projects({
+  boardId,
+  canEdit,
+}: {
+  boardId: string;
+  canEdit?: boolean;
+}) {
   const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
 
   const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
@@ -128,28 +134,31 @@ export function Projects({ boardId }: { boardId: string }) {
                             {project.name}
                           </span>
                         </ContextMenu.Trigger>
-                        <ContextMenu.Content>
-                          <ContextMenu.Item
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const dialogId = isomorphicObjectId().toString();
-                              showDialog({
-                                _id: dialogId,
-                                title: `Edit ${project.name}`,
-                                content: (
-                                  <ProjectsDialogContent
-                                    boardId={boardId}
-                                    dialogId={dialogId}
-                                    route="edit-project"
-                                    query={project}
-                                  />
-                                ),
-                              });
-                            }}
-                          >
-                            Edit
-                          </ContextMenu.Item>
-                        </ContextMenu.Content>
+                        {canEdit && (
+                          <ContextMenu.Content>
+                            <ContextMenu.Item
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const dialogId =
+                                  isomorphicObjectId().toString();
+                                showDialog({
+                                  _id: dialogId,
+                                  title: `Edit ${project.name}`,
+                                  content: (
+                                    <ProjectsDialogContent
+                                      boardId={boardId}
+                                      dialogId={dialogId}
+                                      route="edit-project"
+                                      query={project}
+                                    />
+                                  ),
+                                });
+                              }}
+                            >
+                              Edit
+                            </ContextMenu.Item>
+                          </ContextMenu.Content>
+                        )}
                       </ContextMenu.Root>
                       <ChevronDownIcon className="-ml-0.5 h-4 w-4 group-data-[state=open]/project:rotate-180" />
                     </Accordion.Trigger>
@@ -203,81 +212,87 @@ export function Projects({ boardId }: { boardId: string }) {
                               <ContextMenu.Trigger asChild>
                                 <span>{subProject.name}</span>
                               </ContextMenu.Trigger>
-                              <ContextMenu.Content>
-                                <ContextMenu.Item
-                                  onClick={() => {
-                                    const dialogId =
-                                      isomorphicObjectId().toString();
-                                    showDialog({
-                                      _id: dialogId,
-                                      title: `Edit ${subProject.name}`,
-                                      content: (
-                                        <ProjectsDialogContent
-                                          boardId={boardId}
-                                          dialogId={dialogId}
-                                          route="edit-sub-project"
-                                          query={{ ...subProject, project }}
-                                        />
-                                      ),
-                                    });
-                                  }}
-                                >
-                                  Edit
-                                </ContextMenu.Item>
-                              </ContextMenu.Content>
+                              {canEdit && (
+                                <ContextMenu.Content>
+                                  <ContextMenu.Item
+                                    onClick={() => {
+                                      const dialogId =
+                                        isomorphicObjectId().toString();
+                                      showDialog({
+                                        _id: dialogId,
+                                        title: `Edit ${subProject.name}`,
+                                        content: (
+                                          <ProjectsDialogContent
+                                            boardId={boardId}
+                                            dialogId={dialogId}
+                                            route="edit-sub-project"
+                                            query={{ ...subProject, project }}
+                                          />
+                                        ),
+                                      });
+                                    }}
+                                  >
+                                    Edit
+                                  </ContextMenu.Item>
+                                </ContextMenu.Content>
+                              )}
                             </ContextMenu.Root>
                           </label>
                         ))}
-                        <Button
-                          variant="text"
-                          size="xs"
-                          className="-mx-1 -mb-1 justify-start rounded-lg py-[2px] pl-[7px] pr-2 text-left text-zinc-400"
-                          onClick={() => {
-                            const dialogId = isomorphicObjectId().toString();
-                            showDialog({
-                              _id: dialogId,
-                              title: `New sub project at ${project.name}`,
-                              content: (
-                                <ProjectsDialogContent
-                                  boardId={boardId}
-                                  dialogId={dialogId}
-                                  route="new-sub-project"
-                                  query={{ project }}
-                                />
-                              ),
-                            });
-                          }}
-                          leading={<PlusIcon className="mr-2" />}
-                        >
-                          Sub project
-                        </Button>
+                        {canEdit && (
+                          <Button
+                            variant="text"
+                            size="xs"
+                            className="-mx-1 -mb-1 justify-start rounded-lg py-[2px] pl-[7px] pr-2 text-left text-zinc-400"
+                            onClick={() => {
+                              const dialogId = isomorphicObjectId().toString();
+                              showDialog({
+                                _id: dialogId,
+                                title: `New sub project at ${project.name}`,
+                                content: (
+                                  <ProjectsDialogContent
+                                    boardId={boardId}
+                                    dialogId={dialogId}
+                                    route="new-sub-project"
+                                    query={{ project }}
+                                  />
+                                ),
+                              });
+                            }}
+                            leading={<PlusIcon className="mr-2" />}
+                          >
+                            Sub project
+                          </Button>
+                        )}
                       </div>
                     </Accordion.Content>
                   </Accordion.Item>
                 </Accordion.Root>
               ))}
-              <Button
-                variant="text"
-                size="sm"
-                className="rounded-lg py-[7px] text-zinc-400"
-                onClick={() => {
-                  const dialogId = isomorphicObjectId().toString();
-                  showDialog({
-                    _id: dialogId,
-                    title: "New project",
-                    content: (
-                      <ProjectsDialogContent
-                        boardId={boardId}
-                        route="new-project"
-                        dialogId={dialogId}
-                      />
-                    ),
-                  });
-                }}
-                leading={<PlusIcon />}
-              >
-                Project
-              </Button>
+              {canEdit && (
+                <Button
+                  variant="text"
+                  size="sm"
+                  className="rounded-lg py-[7px] text-zinc-400"
+                  onClick={() => {
+                    const dialogId = isomorphicObjectId().toString();
+                    showDialog({
+                      _id: dialogId,
+                      title: "New project",
+                      content: (
+                        <ProjectsDialogContent
+                          boardId={boardId}
+                          route="new-project"
+                          dialogId={dialogId}
+                        />
+                      ),
+                    });
+                  }}
+                  leading={<PlusIcon />}
+                >
+                  Project
+                </Button>
+              )}
             </div>
           </Accordion.Content>
         </Accordion.Item>

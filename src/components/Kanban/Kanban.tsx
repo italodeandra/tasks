@@ -59,6 +59,9 @@ export function Kanban<AP extends Record<string, unknown>>({
   canMoveList,
   canEditList,
   canDuplicateCard,
+  canAddCard,
+  canEditCard,
+  canMoveCard,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -79,6 +82,9 @@ export function Kanban<AP extends Record<string, unknown>>({
   canEditList?: boolean;
   cardAdditionalProps?: AP;
   canDuplicateCard?: boolean;
+  canAddCard?: boolean;
+  canEditCard?: boolean;
+  canMoveCard?: boolean;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
@@ -475,16 +481,18 @@ export function Kanban<AP extends Record<string, unknown>>({
         }
     };
 
-    document.addEventListener("mouseup", handleKanbanMouseUp);
-    document.addEventListener("touchend", handleKanbanMouseUp);
-    document.addEventListener("mouseleave", handleKanbanMouseUp);
-    document.addEventListener("touchcancel", handleKanbanMouseUp);
-    document.addEventListener("mousemove", handleKanbanMouseMove);
-    document.addEventListener("touchmove", handleKanbanMouseMove);
-    document.addEventListener("mousedown", handleCardMouseDown);
-    document.addEventListener("touchstart", handleCardMouseDown, {
-      passive: false,
-    });
+    if (canMoveCard || canMoveList) {
+      document.addEventListener("mouseup", handleKanbanMouseUp);
+      document.addEventListener("touchend", handleKanbanMouseUp);
+      document.addEventListener("mouseleave", handleKanbanMouseUp);
+      document.addEventListener("touchcancel", handleKanbanMouseUp);
+      document.addEventListener("mousemove", handleKanbanMouseMove);
+      document.addEventListener("touchmove", handleKanbanMouseMove);
+      document.addEventListener("mousedown", handleCardMouseDown);
+      document.addEventListener("touchstart", handleCardMouseDown, {
+        passive: false,
+      });
+    }
 
     return () => {
       document.removeEventListener("mouseup", handleKanbanMouseUp);
@@ -713,17 +721,20 @@ export function Kanban<AP extends Record<string, unknown>>({
                 lists={data}
                 onDuplicateTo={handleDuplicateTo(card, list)}
                 listName={listName}
-                canDuplicateCard={canDuplicateCard}
+                canDuplicate={canDuplicateCard}
+                canEdit={canEditCard}
               />
             ))}
-            <Button
-              variant="text"
-              className="dark:hover:bg-tranparent hover:bg-tranparent pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500 group-data-[is-dragging=false]/kanban:hover:bg-zinc-500/5 group-data-[is-dragging=false]/kanban:dark:hover:bg-white/5"
-              leading={<PlusIcon className="-ml-0.5 mr-1" />}
-              onClick={handleAddNewCardClick(list)}
-            >
-              Add new {cardName}
-            </Button>
+            {canAddCard && (
+              <Button
+                variant="text"
+                className="dark:hover:bg-tranparent hover:bg-tranparent pointer-events-auto justify-start rounded-lg p-2 text-left text-zinc-500 group-data-[is-dragging=false]/kanban:hover:bg-zinc-500/5 group-data-[is-dragging=false]/kanban:dark:hover:bg-white/5"
+                leading={<PlusIcon className="-ml-0.5 mr-1" />}
+                onClick={handleAddNewCardClick(list)}
+              >
+                Add new {cardName}
+              </Button>
+            )}
           </List>
         </div>
       ))}

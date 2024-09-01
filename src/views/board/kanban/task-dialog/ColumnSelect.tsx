@@ -10,12 +10,14 @@ export function ColumnSelect({
   value,
   onChange,
   loading,
+  canEdit,
 }: {
   taskId: string;
   boardId: string;
   value: string;
   onChange: (value: string) => void;
   loading?: boolean;
+  canEdit?: boolean;
 }) {
   const taskColumnList = taskColumnListApi.useQuery({ boardId });
 
@@ -43,6 +45,7 @@ export function ColumnSelect({
         variant="text"
         className="-m-1.5 px-1.5 py-1 font-normal data-[placeholder]:text-zinc-500"
         loading={taskUpdate.isPending}
+        readOnly={!canEdit}
       />
       <Select.Content>
         {taskColumnList.data?.map((column) => (

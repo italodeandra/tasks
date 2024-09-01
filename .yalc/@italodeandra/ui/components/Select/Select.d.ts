@@ -6,7 +6,7 @@ declare function SelectSeparator({ className, ...props }: ComponentProps<typeof 
 declare function SelectItemComponent({ children, className, indicatorClassName, ...props }: ComponentProps<typeof RSelect.Item> & {
     indicatorClassName?: string;
 }, forwardedRef: ForwardedRef<HTMLDivElement>): React.JSX.Element;
-declare function SelectTrigger({ className, placeholder, children, ...props }: ComponentProps<typeof RSelect.Trigger> & ComponentProps<typeof Button> & {
+declare function SelectTrigger({ className, placeholder, children, readOnly, ...props }: ComponentProps<typeof RSelect.Trigger> & ComponentProps<typeof Button> & {
     placeholder?: string;
 }, ref: ForwardedRef<HTMLButtonElement>): React.JSX.Element;
 declare function SelectLabel({ className, ...props }: ComponentProps<typeof RSelect.Label>): React.JSX.Element;

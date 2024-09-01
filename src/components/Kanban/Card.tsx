@@ -35,7 +35,8 @@ export function Card<AP extends Record<string, unknown>>({
   onDuplicateTo,
   lists,
   listName,
-  canDuplicateCard,
+  canDuplicate,
+  canEdit,
   ...props
 }: {
   title: string;
@@ -57,7 +58,8 @@ export function Card<AP extends Record<string, unknown>>({
   onDuplicateTo?: (listId?: string) => void;
   listName: string;
   lists: IList[];
-  canDuplicateCard?: boolean;
+  canDuplicate?: boolean;
+  canEdit?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
@@ -120,14 +122,16 @@ export function Card<AP extends Record<string, unknown>>({
             "ring-zinc-700 focus:ring-2 focus:ring-primary-800",
             {
               "group-data-[is-dragging=false]/kanban:hover:bg-zinc-700":
-                !editing && onChangeTitle,
+                !editing && onChangeTitle && canEdit,
               "cursor-grab opacity-30 grayscale": dragging,
               "ring-2 ring-primary-500": editing,
               "cursor-pointer": onClick && !editing,
             },
             className,
           )}
-          onDoubleClick={onChangeTitle ? handleDoubleClick : undefined}
+          onDoubleClick={
+            onChangeTitle && canEdit ? handleDoubleClick : undefined
+          }
           onKeyDown={handleKeyDown}
           tabIndex={0}
           data-card-id={_id}
@@ -151,7 +155,7 @@ export function Card<AP extends Record<string, unknown>>({
                 {...(cardAdditionalProps as AP)}
               />
             )}
-            {!editing && (
+            {!editing && canEdit && (
               <Button
                 icon
                 variant="text"
@@ -171,42 +175,44 @@ export function Card<AP extends Record<string, unknown>>({
           </div>
         </div>
       </ContextMenu.Trigger>
-      <ContextMenu.Content>
-        {CardAdditionalActions && (
-          <CardAdditionalActions
-            cardId={_id}
-            listId={listId}
-            {...(cardAdditionalProps as AP)}
-          />
-        )}
-        {canDuplicateCard && !!lists.length && (
-          <ContextMenu.Sub>
-            <ContextMenu.SubTrigger>Duplicate to</ContextMenu.SubTrigger>
-            <ContextMenu.SubContent>
-              {lists.map((list) => (
-                <ContextMenu.Item
-                  key={list._id}
-                  onClick={handleDuplicateTo(list)}
-                >
-                  {list.title}
+      {canEdit && (
+        <ContextMenu.Content>
+          {CardAdditionalActions && (
+            <CardAdditionalActions
+              cardId={_id}
+              listId={listId}
+              {...(cardAdditionalProps as AP)}
+            />
+          )}
+          {canDuplicate && !!lists.length && (
+            <ContextMenu.Sub>
+              <ContextMenu.SubTrigger>Duplicate to</ContextMenu.SubTrigger>
+              <ContextMenu.SubContent>
+                {lists.map((list) => (
+                  <ContextMenu.Item
+                    key={list._id}
+                    onClick={handleDuplicateTo(list)}
+                  >
+                    {list.title}
+                  </ContextMenu.Item>
+                ))}
+                <ContextMenu.Item onClick={handleDuplicateTo()}>
+                  <div className={dropdownItemIndicatorClassName}>
+                    <PlusIcon />
+                  </div>
+                  New {listName}
                 </ContextMenu.Item>
-              ))}
-              <ContextMenu.Item onClick={handleDuplicateTo()}>
-                <div className={dropdownItemIndicatorClassName}>
-                  <PlusIcon />
-                </div>
-                New {listName}
-              </ContextMenu.Item>
-            </ContextMenu.SubContent>
-          </ContextMenu.Sub>
-        )}
-        <ContextMenu.Item onClick={handleEdit}>
-          Edit {cardName}
-        </ContextMenu.Item>
-        <ContextMenu.Item onClick={onDelete}>
-          Delete {cardName}
-        </ContextMenu.Item>
-      </ContextMenu.Content>
+              </ContextMenu.SubContent>
+            </ContextMenu.Sub>
+          )}
+          <ContextMenu.Item onClick={handleEdit}>
+            Edit {cardName}
+          </ContextMenu.Item>
+          <ContextMenu.Item onClick={onDelete}>
+            Delete {cardName}
+          </ContextMenu.Item>
+        </ContextMenu.Content>
+      )}
     </ContextMenu.Root>
   );
 }

@@ -11,6 +11,7 @@ export function SubProjectSelect({
   value,
   onChange,
   loading,
+  canEdit,
 }: {
   projectId: string;
   taskId: string;
@@ -18,6 +19,7 @@ export function SubProjectSelect({
   value: string;
   onChange: (value: string) => void;
   loading?: boolean;
+  canEdit?: boolean;
 }) {
   const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
     boardId,
@@ -28,7 +30,7 @@ export function SubProjectSelect({
       projectListWithSubProjects.data?.find(
         (project) => project._id === projectId,
       )?.subProjects,
-    [],
+    [projectId, projectListWithSubProjects.data],
   );
 
   const taskUpdate = taskUpdateApi.useMutation();
@@ -55,6 +57,7 @@ export function SubProjectSelect({
         variant="text"
         className="-m-1.5 px-1.5 py-1 font-normal data-[placeholder]:text-zinc-500"
         loading={taskUpdate.isPending}
+        readOnly={!canEdit}
       />
       <Select.Content>
         <Select.Item value="__NONE__">None</Select.Item>

@@ -67,8 +67,19 @@ export function EditPermissionsDialogContent({
           userId: permission.user?._id,
           teamId: permission.team?._id,
           level,
+          public: permission.public,
         });
       },
+    [boardId, boardUpdatePermission],
+  );
+  const handlePublicPermissionChange = useCallback(
+    (level: "public" | "private") => {
+      boardUpdatePermission.mutate({
+        boardId,
+        public: level === "public",
+        level: PermissionLevel.READ,
+      });
+    },
     [boardId, boardUpdatePermission],
   );
 
@@ -77,20 +88,24 @@ export function EditPermissionsDialogContent({
       {canEdit && <Invite boardId={boardId} className="mb-2" />}
       <div className="text-sm">Who has access</div>
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <div className="flex h-6 w-6 items-center justify-center text-center text-xs">
             <GlobeAltIcon />
           </div>
           <div className="grow">Anyone with the link</div>
-          {/*TODO public board*/}
           <Select.Root
             value={isPublic ? "public" : "private"}
             disabled={!canEdit}
+            onValueChange={handlePublicPermissionChange}
           >
             <Select.Trigger
               variant="text"
               size="sm"
               trailingClassName="-mr-1"
+              loading={
+                boardUpdatePermission.isPending &&
+                boardUpdatePermission.variables.public !== undefined
+              }
             />
             <Select.Content>
               <Select.Item value="public">can view</Select.Item>
@@ -111,6 +126,11 @@ export function EditPermissionsDialogContent({
                   variant="text"
                   size="sm"
                   trailingClassName="-mr-1"
+                  loading={
+                    boardUpdatePermission.isPending &&
+                    boardUpdatePermission.variables.userId ===
+                      permission.user._id
+                  }
                 />
                 <Select.Content>
                   <Select.Item value={PermissionLevel.READ}>
@@ -157,6 +177,10 @@ export function EditPermissionsDialogContent({
                 variant="text"
                 size="sm"
                 trailingClassName="-mr-1"
+                loading={
+                  boardUpdatePermission.isPending &&
+                  boardUpdatePermission.variables.teamId === permission.team._id
+                }
               />
               <Select.Content>
                 <Select.Item value={PermissionLevel.READ}>can view</Select.Item>

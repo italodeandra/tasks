@@ -31,11 +31,11 @@ function SelectItemComponent({ children, className, indicatorClassName, ...props
     </RSelect.Item>);
 }
 const SelectItem = forwardRef(SelectItemComponent);
-function SelectTrigger({ className, placeholder, children, ...props }, ref) {
+function SelectTrigger({ className, placeholder, children, readOnly, ...props }, ref) {
     return (<RSelect.Trigger asChild {...props} className={className} ref={children ? ref : undefined}>
-      {children || (<Button trailing={<RSelect.Icon>
-              <ChevronDownIcon />
-            </RSelect.Icon>} ref={ref}>
+      {children || (<Button trailing={!readOnly ? (<RSelect.Icon>
+                <ChevronDownIcon />
+              </RSelect.Icon>) : undefined} ref={ref} disabled={readOnly} className="opacity-100">
           <RSelect.Value placeholder={placeholder}/>
         </Button>)}
     </RSelect.Trigger>);

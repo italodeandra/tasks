@@ -102,7 +102,16 @@ export function getColorForString(str: string) {
   const colorsHexs = Object.keys(colors)
     .filter(
       (color) =>
-        !["sky", "slate", "gray", "zinc", "neutral", "stone"].includes(color),
+        ![
+          "sky",
+          "blue",
+          "cyan",
+          "slate",
+          "gray",
+          "zinc",
+          "neutral",
+          "stone",
+        ].includes(color),
     )
     .map((color) => colors[color as keyof typeof colors].hex);
 

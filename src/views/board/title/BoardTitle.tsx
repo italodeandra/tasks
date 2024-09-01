@@ -8,6 +8,7 @@ import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { Projects } from "./projects/Projects";
 import { EditPermissionsDialogContent } from "./edit-permissions/EditPermissionsDialogContent";
+import clsx from "@italodeandra/ui/utils/clsx";
 
 export function BoardTitle() {
   const router = useRouter();
@@ -58,9 +59,14 @@ export function BoardTitle() {
         <ContextMenu.Root>
           <ContextMenu.Trigger>
             <MarkdownEditor
-              className="mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors hover:bg-zinc-900"
+              className={clsx(
+                "mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors",
+                {
+                  "hover:bg-zinc-900": boardGet.data?.canEdit,
+                },
+              )}
               value={name}
-              onChange={handleChange}
+              onChange={boardGet.data?.canEdit ? handleChange : undefined}
               editOnDoubleClick={boardGet.data?.canEdit}
               editHighlight
             />
@@ -72,7 +78,7 @@ export function BoardTitle() {
           </ContextMenu.Content>
         </ContextMenu.Root>
         {boardUpdate.isPending && <Loading />}
-        <Projects boardId={_id} />
+        <Projects boardId={_id} canEdit={boardGet.data?.canEdit} />
       </div>
     </>
   );

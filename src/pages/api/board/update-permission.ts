@@ -17,6 +17,7 @@ export const boardUpdatePermissionApi = createApi(
       boardId: string;
       userId?: string;
       teamId?: string;
+      public?: boolean;
       level: PermissionLevel | "remove";
     },
     req: NextApiRequest,
@@ -64,37 +65,56 @@ export const boardUpdatePermissionApi = createApi(
       projection: { permissions: 1 },
     }))!;
 
+    let boardPermissions = board.permissions;
+    if (userId || teamId) {
+      boardPermissions = board.permissions
+        .filter(
+          (permission) =>
+            !userId ||
+            !permission.userId?.equals(userId) ||
+            args.level !== "remove",
+        )
+        .filter(
+          (permission) =>
+            !teamId ||
+            !permission.teamId?.equals(teamId) ||
+            args.level !== "remove",
+        )
+        .map((permission) => {
+          if (
+            (userId && permission.userId?.equals(userId)) ||
+            (teamId && permission.teamId?.equals(teamId))
+          ) {
+            return {
+              ...permission,
+              level: args.level as PermissionLevel,
+            };
+          }
+          return permission;
+        });
+    }
+    if (args.public !== undefined) {
+      if (boardPermissions.some((p) => p.public)) {
+        if (!args.public) {
+          boardPermissions = boardPermissions.filter(
+            (p) => p.public === undefined,
+          );
+        }
+      } else if (args.level !== "remove") {
+        boardPermissions.push({
+          public: args.public,
+          level: args.level,
+        });
+      }
+    }
+
     await Board.updateOne(
       {
         _id: boardId,
       },
       {
         $set: {
-          permissions: board.permissions
-            .filter(
-              (permission) =>
-                !userId ||
-                !permission.userId?.equals(userId) ||
-                args.level !== "remove",
-            )
-            .filter(
-              (permission) =>
-                !teamId ||
-                !permission.teamId?.equals(teamId) ||
-                args.level !== "remove",
-            )
-            .map((permission) => {
-              if (
-                (userId && permission.userId?.equals(userId)) ||
-                (teamId && permission.teamId?.equals(teamId))
-              ) {
-                return {
-                  ...permission,
-                  level: args.level as PermissionLevel,
-                };
-              }
-              return permission;
-            }),
+          permissions: boardPermissions,
         },
       },
     );

@@ -34,20 +34,20 @@ export const getServerSideProps: GetServerSideProps = async ({
 
   await connectDb();
   const user = await getUserFromCookies(req, res);
-  if (!user) {
-    return {
-      redirect: {
-        destination: Routes.SignIn,
-        permanent: false,
-      },
-    };
-  }
 
   setData_authGetUser(queryClient, user as unknown as AuthUserGetApiResponse);
 
   const _id = params?._id as string;
 
   if (_id === "new") {
+    if (!user) {
+      return {
+        redirect: {
+          destination: Routes.SignIn,
+          permanent: false,
+        },
+      };
+    }
     const newBoardId = isomorphicObjectId();
     const newBoardDoc = {
       _id: newBoardId,
@@ -139,7 +139,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     res,
   );
 
-  if (!boardGetApi.getQueryData(queryClient, { _id })) {
+  const board = boardGetApi.getQueryData(queryClient, { _id });
+
+  if (!board) {
     return {
       redirect: {
         destination: Routes.Home,

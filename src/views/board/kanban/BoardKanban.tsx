@@ -18,6 +18,7 @@ import { parseAsString, useQueryState } from "nuqs";
 import Routes from "../../../Routes";
 import { useRouter } from "next/router";
 import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
+import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -33,18 +34,30 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     useSnapshot(boardState);
 
   useEffect(() => {
+    const dialogId = isomorphicObjectId().toString();
     if (openTaskId) {
       showDialog({
-        _id: "task",
+        _id: dialogId,
         titleClassName: "mb-0",
         contentOverflowClassName: "max-w-screen-xl gap-4",
-        title: <TaskDialogTitle taskId={openTaskId} />,
-        content: <TaskDialogContent taskId={openTaskId} boardId={boardId} />,
+        title: (
+          <TaskDialogTitle
+            taskId={openTaskId}
+            canEdit={boardGet.data?.canEdit}
+          />
+        ),
+        content: (
+          <TaskDialogContent
+            taskId={openTaskId}
+            boardId={boardId}
+            canEdit={boardGet.data?.canEdit}
+          />
+        ),
         closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
         onClose: () => void setOpenTaskId(null),
       });
     } else {
-      closeDialog("task");
+      closeDialog(dialogId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openTaskId]);
@@ -251,6 +264,9 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       canAddList={boardGet.data?.canEdit}
       canEditList={boardGet.data?.canEdit}
       canMoveList={boardGet.data?.canEdit}
+      canAddCard={boardGet.data?.canEdit}
+      canEditCard={boardGet.data?.canEdit}
+      canMoveCard={boardGet.data?.canEdit}
     />
   );
 }

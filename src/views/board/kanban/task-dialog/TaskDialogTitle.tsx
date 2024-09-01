@@ -4,7 +4,13 @@ import { taskGetApi } from "../../../../pages/api/task/get";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 
-export function TaskDialogTitle({ taskId }: { taskId: string }) {
+export function TaskDialogTitle({
+  taskId,
+  canEdit,
+}: {
+  taskId: string;
+  canEdit?: boolean;
+}) {
   const [title, setTitle] = useState("");
 
   const taskGet = taskGetApi.useQuery({
@@ -35,9 +41,9 @@ export function TaskDialogTitle({ taskId }: { taskId: string }) {
   return (
     <MarkdownEditor
       value={title}
-      onChange={handleChangeTitle}
+      onChange={canEdit ? handleChangeTitle : undefined}
       className="-mx-1 -mt-0.5 rounded-md px-1"
-      editOnDoubleClick
+      editOnDoubleClick={canEdit}
       editHighlight
     />
   );

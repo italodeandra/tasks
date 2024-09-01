@@ -15,28 +15,35 @@ export const taskStatusListApi = createApi(
     const Team = getTeam();
     const Board = getBoard();
     const user = await getUserFromCookies(req, res);
-    if (!user) {
-      throw unauthorized;
-    }
-    const userTeams = await Team.find(
-      { "members.userId": { $in: [user._id] } },
-      { projection: { _id: 1 } },
-    );
-    const userTeamsIds = userTeams.map((t) => t._id);
+
+    const userTeams = user
+      ? await Team.find(
+          { "members.userId": { $in: [user._id] } },
+          { projection: { _id: 1 } },
+        )
+      : undefined;
+    const userTeamsIds = userTeams?.map((t) => t._id);
     const boardId = isomorphicObjectId(args.boardId);
 
     const haveAccessToBoard = await Board.countDocuments({
       _id: boardId,
       $or: [
+        ...(user
+          ? [
+              {
+                "permissions.userId": {
+                  $in: [user._id],
+                },
+              },
+              {
+                "permissions.teamId": {
+                  $in: userTeamsIds,
+                },
+              },
+            ]
+          : []),
         {
-          "permissions.userId": {
-            $in: [user._id],
-          },
-        },
-        {
-          "permissions.teamId": {
-            $in: userTeamsIds,
-          },
+          "permissions.public": true,
         },
       ],
     });
