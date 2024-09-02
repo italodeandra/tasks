@@ -6,20 +6,23 @@ import Checkbox from "@italodeandra/ui/components/Checkbox";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { pull, pullAll, remove, uniq, xor } from "lodash-es";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { ProjectsDialogContent } from "./dialog-content/ProjectsDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { projectListWithSubProjectsApi } from "../../../../pages/api/project/list-with-sub-projects";
 import { useSnapshot } from "valtio";
 import { boardState } from "../../board.state";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { SubProjectDialogContent } from "./dialogs/sub-project/SubProjectDialogContent";
+import { ProjectDialogContent } from "./dialogs/project/ProjectDialogContent";
+import { ProjectPermissionsDialogContent } from "./dialogs/project/project-permissions/ProjectPermissionsDialogContent";
+import { SubProjectPermissionsDialogContent } from "./dialogs/sub-project/sub-project-permissions/SubProjectPermissionsDialogContent";
 
 export function Projects({
   boardId,
-  canEdit,
+  canEditBoard,
 }: {
   boardId: string;
-  canEdit?: boolean;
+  canEditBoard?: boolean;
 }) {
   const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
 
@@ -134,29 +137,52 @@ export function Projects({
                             {project.name}
                           </span>
                         </ContextMenu.Trigger>
-                        {canEdit && (
+                        {(project.canEdit || canEditBoard) && (
                           <ContextMenu.Content>
-                            <ContextMenu.Item
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                const dialogId =
-                                  isomorphicObjectId().toString();
-                                showDialog({
-                                  _id: dialogId,
-                                  title: `Edit ${project.name}`,
-                                  content: (
-                                    <ProjectsDialogContent
-                                      boardId={boardId}
-                                      dialogId={dialogId}
-                                      route="edit-project"
-                                      query={project}
-                                    />
-                                  ),
-                                });
-                              }}
-                            >
-                              Edit
-                            </ContextMenu.Item>
+                            {project.canEdit && (
+                              <ContextMenu.Item
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const dialogId =
+                                    isomorphicObjectId().toString();
+                                  showDialog({
+                                    _id: dialogId,
+                                    title: `Rename ${project.name}`,
+                                    content: (
+                                      <ProjectDialogContent
+                                        dialogId={dialogId}
+                                        query={project}
+                                        boardId={boardId}
+                                      />
+                                    ),
+                                  });
+                                }}
+                              >
+                                Edit
+                              </ContextMenu.Item>
+                            )}
+                            {canEditBoard && (
+                              <ContextMenu.Item
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const dialogId =
+                                    isomorphicObjectId().toString();
+                                  showDialog({
+                                    _id: dialogId,
+                                    title: `Project ${project.name} permissions`,
+                                    content: (
+                                      <ProjectPermissionsDialogContent
+                                        dialogId={dialogId}
+                                        boardId={boardId}
+                                        projectId={project._id}
+                                      />
+                                    ),
+                                  });
+                                }}
+                              >
+                                {project.canEdit ? "Edit" : "View"} permissions
+                              </ContextMenu.Item>
+                            )}
                           </ContextMenu.Content>
                         )}
                       </ContextMenu.Root>
@@ -212,34 +238,57 @@ export function Projects({
                               <ContextMenu.Trigger asChild>
                                 <span>{subProject.name}</span>
                               </ContextMenu.Trigger>
-                              {canEdit && (
+                              {(subProject.canEdit || project.canEdit) && (
                                 <ContextMenu.Content>
-                                  <ContextMenu.Item
-                                    onClick={() => {
-                                      const dialogId =
-                                        isomorphicObjectId().toString();
-                                      showDialog({
-                                        _id: dialogId,
-                                        title: `Edit ${subProject.name}`,
-                                        content: (
-                                          <ProjectsDialogContent
-                                            boardId={boardId}
-                                            dialogId={dialogId}
-                                            route="edit-sub-project"
-                                            query={{ ...subProject, project }}
-                                          />
-                                        ),
-                                      });
-                                    }}
-                                  >
-                                    Edit
-                                  </ContextMenu.Item>
+                                  {subProject.canEdit && (
+                                    <ContextMenu.Item
+                                      onClick={() => {
+                                        const dialogId =
+                                          isomorphicObjectId().toString();
+                                        showDialog({
+                                          _id: dialogId,
+                                          title: `Rename ${subProject.name}`,
+                                          content: (
+                                            <SubProjectDialogContent
+                                              dialogId={dialogId}
+                                              query={{ ...subProject, project }}
+                                            />
+                                          ),
+                                        });
+                                      }}
+                                    >
+                                      Edit
+                                    </ContextMenu.Item>
+                                  )}
+                                  {project.canEdit && (
+                                    <ContextMenu.Item
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        const dialogId =
+                                          isomorphicObjectId().toString();
+                                        showDialog({
+                                          _id: dialogId,
+                                          title: `Sub-project ${subProject.name} permissions`,
+                                          content: (
+                                            <SubProjectPermissionsDialogContent
+                                              dialogId={dialogId}
+                                              boardId={boardId}
+                                              subProjectId={subProject._id}
+                                            />
+                                          ),
+                                        });
+                                      }}
+                                    >
+                                      {project.canEdit ? "Edit" : "View"}{" "}
+                                      permissions
+                                    </ContextMenu.Item>
+                                  )}
                                 </ContextMenu.Content>
                               )}
                             </ContextMenu.Root>
                           </label>
                         ))}
-                        {canEdit && (
+                        {canEditBoard && (
                           <Button
                             variant="text"
                             size="xs"
@@ -250,10 +299,8 @@ export function Projects({
                                 _id: dialogId,
                                 title: `New sub project at ${project.name}`,
                                 content: (
-                                  <ProjectsDialogContent
-                                    boardId={boardId}
+                                  <SubProjectDialogContent
                                     dialogId={dialogId}
-                                    route="new-sub-project"
                                     query={{ project }}
                                   />
                                 ),
@@ -269,7 +316,7 @@ export function Projects({
                   </Accordion.Item>
                 </Accordion.Root>
               ))}
-              {canEdit && (
+              {canEditBoard && (
                 <Button
                   variant="text"
                   size="sm"
@@ -280,10 +327,9 @@ export function Projects({
                       _id: dialogId,
                       title: "New project",
                       content: (
-                        <ProjectsDialogContent
-                          boardId={boardId}
-                          route="new-project"
+                        <ProjectDialogContent
                           dialogId={dialogId}
+                          boardId={boardId}
                         />
                       ),
                     });

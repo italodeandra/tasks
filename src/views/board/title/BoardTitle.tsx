@@ -18,6 +18,7 @@ export function BoardTitle() {
   const boardGet = boardGetApi.useQuery({ _id });
   const boardUpdate = boardUpdateApi.useMutation();
 
+  const [editing, setEditing] = useState(false);
   const [name, setName] = useState(boardGet.data?.name || "");
 
   useEffect(() => {
@@ -69,16 +70,27 @@ export function BoardTitle() {
               onChange={boardGet.data?.canEdit ? handleChange : undefined}
               editOnDoubleClick={boardGet.data?.canEdit}
               editHighlight
+              editing={editing}
+              onChangeEditing={setEditing}
             />
           </ContextMenu.Trigger>
-          <ContextMenu.Content>
-            <ContextMenu.Item onClick={handleEditPermissionsClick}>
-              {boardGet.data?.canEdit ? "Edit" : "View"} permissions
-            </ContextMenu.Item>
-          </ContextMenu.Content>
+          {(boardGet.data?.canEdit || boardGet.data?.canViewPermissions) && (
+            <ContextMenu.Content>
+              {boardGet.data?.canEdit && (
+                <ContextMenu.Item onClick={() => setEditing(true)}>
+                  Rename
+                </ContextMenu.Item>
+              )}
+              {boardGet.data?.canViewPermissions && (
+                <ContextMenu.Item onClick={handleEditPermissionsClick}>
+                  {boardGet.data?.canEdit ? "Edit" : "View"} permissions
+                </ContextMenu.Item>
+              )}
+            </ContextMenu.Content>
+          )}
         </ContextMenu.Root>
-        {boardUpdate.isPending && <Loading />}
-        <Projects boardId={_id} canEdit={boardGet.data?.canEdit} />
+        {boardUpdate.isPending && <Loading className="mt-2" />}
+        <Projects boardId={_id} canEditBoard={boardGet.data?.canEdit} />
       </div>
     </>
   );

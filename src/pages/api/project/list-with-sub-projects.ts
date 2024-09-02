@@ -7,6 +7,8 @@ import getTeam from "../../../collections/team";
 import getProject, { IProject } from "../../../collections/project";
 import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import asyncMap from "@italodeandra/next/utils/asyncMap";
+import { PermissionLevel } from "../../../collections/permission";
 
 export const projectListWithSubProjectsApi = createApi(
   "/api/project/list-with-sub-projects",
@@ -53,13 +55,16 @@ export const projectListWithSubProjectsApi = createApi(
       throw unauthorized;
     }
 
-    return Project.aggregate<
-      Pick<IProject, "_id" | "name"> & {
-        subProjects: Pick<ISubProject, "_id" | "name">[];
+    const projects = await Project.aggregate<
+      Pick<IProject, "_id" | "name" | "permissions"> & {
+        subProjects: Pick<ISubProject, "_id" | "name" | "permissions">[];
       }
     >([
       {
         $match: {
+          archived: {
+            $ne: true,
+          },
           boardId,
           $or: [
             {
@@ -131,6 +136,7 @@ export const projectListWithSubProjectsApi = createApi(
             {
               $project: {
                 name: 1,
+                permissions: 1,
               },
             },
           ],
@@ -144,10 +150,27 @@ export const projectListWithSubProjectsApi = createApi(
       {
         $project: {
           name: 1,
+          permissions: 1,
           subProjects: 1,
         },
       },
     ]);
+
+    return asyncMap(
+      projects,
+      async ({ permissions, subProjects, ...project }) => ({
+        ...project,
+        canEdit:
+          (user && !permissions) ||
+          permissions?.some((p) => p.level === PermissionLevel.ADMIN),
+        subProjects: subProjects.map(({ permissions, ...subProject }) => ({
+          ...subProject,
+          canEdit:
+            !permissions ||
+            permissions.some((p) => p.level === PermissionLevel.ADMIN),
+        })),
+      }),
+    );
   },
   {
     queryKeyMap: (args) => [args?.boardId],

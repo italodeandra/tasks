@@ -1,12 +1,14 @@
 import { useForm } from "react-hook-form";
-import { projectCreateApi } from "../../../../../pages/api/project/create";
+import { projectCreateApi } from "../../../../../../pages/api/project/create";
 import { useEffect } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
-import { projectUpdateApi } from "../../../../../pages/api/project/update";
+import { projectUpdateApi } from "../../../../../../pages/api/project/update";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
+import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
+import { projectDeleteApi } from "../../../../../../pages/api/project/delete";
 
-export function ProjectForm({
+export function ProjectDialogContent({
   boardId,
   query,
   dialogId,
@@ -16,7 +18,6 @@ export function ProjectForm({
   query?: {
     _id?: string;
     name?: string;
-    project?: { _id: string; name: string };
   };
 }) {
   const { register, handleSubmit, watch, reset } = useForm<{ name: string }>();
@@ -64,6 +65,14 @@ export function ProjectForm({
     }
   };
 
+  const projectDelete = projectDeleteApi.useMutation();
+  useEffect(() => {
+    if (projectDelete.isSuccess) {
+      closeDialog(dialogId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectDelete.isSuccess]);
+
   return (
     <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
       <Input
@@ -72,6 +81,19 @@ export function ProjectForm({
         required
       />
       <div className="flex w-full gap-2">
+        {query?._id && (
+          <ConfirmationButton
+            onConfirm={() => {
+              projectDelete.mutate({
+                _id: query._id!,
+              });
+            }}
+            confirmation="Are you sure you want to delete this project?"
+            label="Delete"
+            position="bottom-left"
+            loading={projectDelete.isPending}
+          />
+        )}
         <Button
           variant="filled"
           color="primary"

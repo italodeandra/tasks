@@ -2,13 +2,13 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
-import { subProjectCreateApi } from "../../../../../pages/api/sub-project/create";
+import { subProjectCreateApi } from "../../../../../../pages/api/sub-project/create";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
-import { subProjectDeleteApi } from "../../../../../pages/api/sub-project/delete";
-import { subProjectUpdateApi } from "../../../../../pages/api/sub-project/update";
+import { subProjectDeleteApi } from "../../../../../../pages/api/sub-project/delete";
+import { subProjectUpdateApi } from "../../../../../../pages/api/sub-project/update";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 
-export function SubProjectForm({
+export function SubProjectDialogContent({
   query,
   dialogId,
 }: {

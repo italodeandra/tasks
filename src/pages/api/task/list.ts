@@ -1,7 +1,7 @@
 import createApi from "@italodeandra/next/api/createApi";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import getTask from "../../../collections/task";
+import getTask, { ITask } from "../../../collections/task";
 import { connectDb } from "../../../db";
 import getTaskColumn from "../../../collections/taskColumn";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
@@ -10,6 +10,8 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
 import querify from "@italodeandra/next/utils/querify";
 import getUser from "@italodeandra/auth/collections/user/User";
+import getProject from "../../../collections/project";
+import getSubProject from "../../../collections/subProject";
 
 export const taskListApi = createApi(
   "/api/task/list",
@@ -28,6 +30,8 @@ export const taskListApi = createApi(
     const Team = getTeam();
     const Board = getBoard();
     const User = getUser();
+    const Project = getProject();
+    const SubProject = getSubProject();
     const user = await getUserFromCookies(req, res);
 
     const userTeams = user
@@ -99,52 +103,142 @@ export const taskListApi = createApi(
 
     return asyncMap(columns, async (c) => {
       const tasks = await asyncMap(
-        await Task.find(
+        await Task.aggregate<Pick<ITask, "_id" | "title" | "assignees">>([
           {
-            archived: { $ne: true },
-            columnId: c._id,
-            $or:
-              isNoneSelected ||
-              selectedProjects?.length ||
-              selectedSubProjects?.length
-                ? [
-                    ...(selectedProjects?.length || selectedSubProjects?.length
-                      ? [
-                          {
-                            ...(selectedProjects?.length
-                              ? {
-                                  projectId: {
-                                    $in: selectedProjects,
-                                  },
-                                }
-                              : {}),
-                            ...(selectedSubProjects?.length
-                              ? {
-                                  subProjectId: {
-                                    $in: selectedSubProjects,
-                                  },
-                                }
-                              : {}),
-                          },
-                        ]
-                      : []),
-                    ...(isNoneSelected
-                      ? [
-                          {
-                            projectId: { $exists: false },
-                          },
-                        ]
-                      : []),
-                  ]
-                : undefined,
+            $lookup: {
+              from: Project.collection.collectionName,
+              localField: "projectId",
+              foreignField: "_id",
+              as: "project",
+            },
           },
           {
-            projection: {
+            $unwind: {
+              path: "$project",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $lookup: {
+              from: SubProject.collection.collectionName,
+              localField: "subProjectId",
+              foreignField: "_id",
+              as: "subProject",
+            },
+          },
+          {
+            $unwind: {
+              path: "$subProject",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          {
+            $match: {
+              archived: { $ne: true },
+              "project.archived": { $ne: true },
+              "subProject.archived": { $ne: true },
+              columnId: c._id,
+              $and: [
+                ...(isNoneSelected ||
+                selectedProjects?.length ||
+                selectedSubProjects?.length
+                  ? [
+                      {
+                        $or: [
+                          ...(selectedProjects?.length ||
+                          selectedSubProjects?.length
+                            ? [
+                                {
+                                  ...(selectedProjects?.length
+                                    ? {
+                                        projectId: {
+                                          $in: selectedProjects,
+                                        },
+                                      }
+                                    : {}),
+                                  ...(selectedSubProjects?.length
+                                    ? {
+                                        subProjectId: {
+                                          $in: selectedSubProjects,
+                                        },
+                                      }
+                                    : {}),
+                                },
+                              ]
+                            : []),
+                          ...(isNoneSelected
+                            ? [
+                                {
+                                  projectId: { $exists: false },
+                                },
+                              ]
+                            : []),
+                        ],
+                      },
+                    ]
+                  : []),
+                {
+                  $or: [
+                    {
+                      "project.permissions": {
+                        $exists: false,
+                      },
+                    },
+                    ...(user
+                      ? [
+                          {
+                            "project.permissions.userId": {
+                              $in: [user._id],
+                            },
+                          },
+                          {
+                            "project.permissions.teamId": {
+                              $in: userTeamsIds,
+                            },
+                          },
+                        ]
+                      : []),
+                    {
+                      "project.permissions.public": true,
+                    },
+                  ],
+                },
+                {
+                  $or: [
+                    {
+                      "subProject.permissions": {
+                        $exists: false,
+                      },
+                    },
+                    ...(user
+                      ? [
+                          {
+                            "subProject.permissions.userId": {
+                              $in: [user._id],
+                            },
+                          },
+                          {
+                            "subProject.permissions.teamId": {
+                              $in: userTeamsIds,
+                            },
+                          },
+                        ]
+                      : []),
+                    {
+                      "subProject.permissions.public": true,
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+          {
+            $project: {
               title: 1,
               assignees: 1,
             },
           },
-        ),
+        ]),
         async ({ assignees, ...task }) => {
           return {
             ...task,

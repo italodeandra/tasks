@@ -69,6 +69,13 @@ export const boardGetApi = createApi(
       _id: board._id.toString(),
       name: board.name,
       canEdit: board.permissions.some((p) => p.level === PermissionLevel.ADMIN),
+      canViewPermissions: user
+        ? board.permissions.some(
+            (p) =>
+              user._id.equals(p.userId) ||
+              userTeamsIds?.some((teamId) => teamId.equals(p.teamId)),
+          )
+        : false,
     };
   },
   {

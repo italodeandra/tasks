@@ -1,18 +1,20 @@
 import createApi from "@italodeandra/next/api/createApi";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
-import { connectDb } from "../../../db";
-import getBoard from "../../../collections/board";
-import getTeam from "../../../collections/team";
+import { connectDb } from "../../../../db";
+import getBoard from "../../../../collections/board";
+import getTeam from "../../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getUser from "@italodeandra/auth/collections/user/User";
+import getProject from "../../../../collections/project";
 
-export const boardGetPermissionsApi = createApi(
-  "/api/board/get-permissions",
-  async (args: { _id: string }, req, res) => {
+export const projectPermissionsListApi = createApi(
+  "/api/project/permissions/list",
+  async (args: { projectId: string }, req, res) => {
     await connectDb();
     const Board = getBoard();
+    const Project = getProject();
     const Team = getTeam();
     const User = getUser();
     const user = await getUserFromCookies(req, res);
@@ -24,11 +26,17 @@ export const boardGetPermissionsApi = createApi(
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
-    const _id = isomorphicObjectId(args._id);
-    const board = await Board.findOne(
+    const projectId = isomorphicObjectId(args.projectId);
+
+    const project = await Project.findOne(
       {
-        _id,
+        _id: projectId,
         $or: [
+          {
+            permissions: {
+              $exists: false,
+            },
+          },
           {
             "permissions.userId": {
               $in: [user._id],
@@ -44,14 +52,35 @@ export const boardGetPermissionsApi = createApi(
       {
         projection: {
           permissions: 1,
+          boardId: 1,
         },
       },
     );
-    if (!board) {
+    if (!project) {
       throw notFound;
     }
+
+    const hasAccessToBoard = await Board.countDocuments({
+      _id: project.boardId,
+      $or: [
+        {
+          "permissions.userId": {
+            $in: [user._id],
+          },
+        },
+        {
+          "permissions.teamId": {
+            $in: userTeamsIds,
+          },
+        },
+      ],
+    });
+    if (!hasAccessToBoard) {
+      throw notFound;
+    }
+
     return asyncMap(
-      board.permissions,
+      project.permissions,
       async ({ userId, teamId, ...permission }) => ({
         ...permission,
         user: userId
@@ -69,10 +98,10 @@ export const boardGetPermissionsApi = createApi(
     );
   },
   {
-    queryKeyMap: (args) => [args?._id],
+    queryKeyMap: (args) => [args?.projectId],
   },
 );
 
-export default boardGetPermissionsApi.handler;
+export default projectPermissionsListApi.handler;
 
-export type BoardGetPermissionsApi = typeof boardGetPermissionsApi.Types;
+export type ProjectPermissionsListApi = typeof projectPermissionsListApi.Types;
