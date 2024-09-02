@@ -8,6 +8,13 @@ import { boardState } from "../board.state";
 import { Fragment, useMemo } from "react";
 import getInitials from "@italodeandra/ui/utils/getInitials";
 import { getColorForString } from "../../../components/ColorPicker/colors";
+import { timesheetGetMyOverviewApi } from "../../../pages/api/timesheet/get-my-overview";
+import { Time } from "../../../components/Time";
+import clsx from "@italodeandra/ui/utils/clsx";
+import { StopIcon } from "@heroicons/react/20/solid";
+import { timesheetStartApi } from "../../../pages/api/timesheet/start";
+import { timesheetStopApi } from "../../../pages/api/timesheet/stop";
+import Loading from "@italodeandra/ui/components/Loading";
 
 export function TaskAdditionalContent({
   cardId,
@@ -38,6 +45,10 @@ export function TaskAdditionalContent({
     [cardId, taskList.data],
   );
 
+  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery();
+  const timesheetStart = timesheetStartApi.useMutation();
+  const timesheetStop = timesheetStopApi.useMutation();
+
   if (!task?.assignees.length) {
     return null;
   }
@@ -49,21 +60,64 @@ export function TaskAdditionalContent({
         return (
           <Fragment key={assignee._id}>
             {assignee.isMe ? (
-              <Tooltip content="Start tracking time on this task">
+              <Tooltip
+                content={
+                  !timesheetGetMyOverview.data?.myCurrentClock
+                    ? "Start tracking time on this task"
+                    : "Stop tracking time"
+                }
+              >
                 <Button
                   variant="filled"
                   rounded
-                  className="group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
-                  onClick={stopPropagation}
+                  className={clsx(
+                    "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500",
+                    {
+                      "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
+                        timesheetGetMyOverview.data?.myCurrentClock,
+                    },
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (timesheetGetMyOverview.data?.myCurrentClock) {
+                      timesheetStop.mutate();
+                    } else {
+                      timesheetStart.mutate({ taskId: cardId });
+                    }
+                  }}
                   onTouchStart={stopPropagation}
                   onMouseDown={stopPropagation}
                 >
-                  <span className="absolute inset-0 flex items-center justify-center opacity-100 transition-opacity group-hover/myself:opacity-0">
-                    {initials}
-                  </span>
-                  <span className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover/myself:opacity-100">
-                    <PlayIcon className="-mr-0.5 h-4 w-4" />
-                  </span>
+                  {timesheetStart.isPending ||
+                  timesheetStop.isPending ||
+                  timesheetGetMyOverview.isLoading ? (
+                    <Loading />
+                  ) : (
+                    <>
+                      {timesheetGetMyOverview.data?.myCurrentClock ? (
+                        <>
+                          <Time
+                            from={timesheetGetMyOverview.data.myCurrentClock}
+                            autoUpdate
+                            short
+                            className="group-hover/myself:hidden"
+                          />
+                          <span className="hidden group-hover/myself:block">
+                            <StopIcon className="-mx-1 h-4 w-4" />
+                          </span>
+                        </>
+                      ) : (
+                        <>
+                          <span className="group-hover/myself:hidden">
+                            {initials}
+                          </span>
+                          <span className="hidden group-hover/myself:block">
+                            <PlayIcon className="h-4 w-4" />
+                          </span>
+                        </>
+                      )}
+                    </>
+                  )}
                 </Button>
               </Tooltip>
             ) : (

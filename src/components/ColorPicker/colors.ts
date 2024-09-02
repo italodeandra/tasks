@@ -39,10 +39,6 @@ export const colors = {
     hex: "#65a30d", // 600
     bg: "bg-lime-600",
   },
-  green: {
-    hex: "#16a34a", // 600
-    bg: "bg-green-600",
-  },
   emerald: {
     hex: "#059669", // 600
     bg: "bg-emerald-600",

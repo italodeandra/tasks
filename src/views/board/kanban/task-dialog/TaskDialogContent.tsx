@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { MarkdownEditor } from "../../../../components/Kanban/MarkdownEditor";
 import clsx from "@italodeandra/ui/utils/clsx";
-import Button from "@italodeandra/ui/components/Button";
-import { ClockIcon } from "@heroicons/react/20/solid";
 import { imageUploadApi } from "../../../../pages/api/image-upload";
 import { taskGetApi } from "../../../../pages/api/task/get";
 import { StatusSelect } from "./StatusSelect";
@@ -14,6 +12,7 @@ import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
 import { Activity } from "./Activity";
+import { Timesheet } from "./Timesheet";
 
 export function TaskDialogContent({
   boardId,
@@ -165,26 +164,7 @@ export function TaskDialogContent({
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <div className="text-sm font-medium">Timesheet</div>
-          <div className="flex flex-wrap gap-2">
-            <Button icon rounded size="sm">
-              <ClockIcon />
-            </Button>
-            <div className="flex h-[34px] items-center rounded-full bg-white/[0.05]">
-              <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-blue-600">
-                IA
-              </div>
-              <div className="pl-2 pr-3">2h</div>
-            </div>
-            <div className="flex h-[34px] items-center rounded-full bg-white/[0.05]">
-              <div className="flex h-[34px] w-[34px] items-center justify-center rounded-full bg-green-600">
-                CA
-              </div>
-              <div className="pl-2 pr-3">3h</div>
-            </div>
-          </div>
-        </div>
+        <Timesheet taskId={taskId} />
         <Activity taskId={taskId} />
       </div>
     </div>
