@@ -70,7 +70,7 @@ export function Kanban<AP extends Record<string, unknown>>({
   listName?: string;
   onChange?: (data: IList[]) => void;
   cardAdditionalContent?: ComponentType<
-    { cardId: string; listId: string } & AP
+    { cardId: string; listId: string; dragging: boolean } & AP
   >;
   cardAdditionalActions?: ComponentType<
     { cardId: string; listId: string } & AP
