@@ -13,6 +13,7 @@ import emailRegExp from "@italodeandra/ui/utils/emailRegExp";
 import getInitials from "@italodeandra/ui/utils/getInitials";
 import Select from "@italodeandra/ui/components/Select";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
+import { UserAvatarAndName } from "../../../../../components/UserAvatarAndName";
 
 export function TeamMembers({
   _id,
@@ -122,18 +123,7 @@ export function TeamMembers({
         {teamGet.isLoading && <Skeleton className="h-[24px]" />}
         {teamGet.data?.members.map((member) => (
           <div className="flex items-center gap-2" key={member._id}>
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-600 text-center text-xs uppercase">
-              {getInitials(member.name || member.email)}
-            </div>
-            <div className="grow">
-              {member.name || member.email}
-              {member.isMe ? (
-                <>
-                  {" "}
-                  <span className="opacity-50">(you)</span>
-                </>
-              ) : null}
-            </div>
+            <UserAvatarAndName {...member} className="flex-1" />
             {teamGet.data.canEdit ? (
               <Select.Root
                 value={member.role}

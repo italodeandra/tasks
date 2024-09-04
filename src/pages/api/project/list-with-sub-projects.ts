@@ -6,6 +6,7 @@ import getTeam from "../../../collections/team";
 import getProject, { IProject } from "../../../collections/project";
 import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import { PermissionLevel } from "../../../collections/permission";
 
 export const projectListWithSubProjectsApi = createApi(
   "/api/project/list-with-sub-projects",
@@ -130,7 +131,10 @@ export const projectListWithSubProjectsApi = createApi(
                                   input: "$permissions",
                                   as: "perm",
                                   cond: {
-                                    $in: ["$$perm.level", ["ADMIN"]],
+                                    $eq: [
+                                      "$$perm.level",
+                                      PermissionLevel.ADMIN,
+                                    ],
                                   },
                                 },
                               },
@@ -155,7 +159,10 @@ export const projectListWithSubProjectsApi = createApi(
                                   input: "$board.permissions",
                                   as: "perm",
                                   cond: {
-                                    $in: ["$$perm.level", ["ADMIN"]],
+                                    $eq: [
+                                      "$$perm.level",
+                                      PermissionLevel.ADMIN,
+                                    ],
                                   },
                                 },
                               },
@@ -233,17 +240,65 @@ export const projectListWithSubProjectsApi = createApi(
                                     input: {
                                       $filter: {
                                         input: "$permissions",
-                                        as: "perm",
+                                        as: "permUsers",
                                         cond: {
-                                          $in: [
-                                            "$$perm.level",
-                                            ["ADMIN", "WRITE"],
+                                          $and: [
+                                            {
+                                              $ne: [
+                                                { $type: "$$permUsers.userId" },
+                                                "missing",
+                                              ],
+                                            },
+                                            {
+                                              $eq: [
+                                                "$$permUsers.level",
+                                                PermissionLevel.ADMIN,
+                                              ],
+                                            },
                                           ],
                                         },
                                       },
                                     },
-                                    as: "perm",
-                                    in: "$$perm.userId",
+                                    as: "permUsers",
+                                    in: "$$permUsers.userId",
+                                  },
+                                },
+                                [],
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          $setIsSubset: [
+                            userTeamsIds,
+                            {
+                              $ifNull: [
+                                {
+                                  $map: {
+                                    input: {
+                                      $filter: {
+                                        input: "$permissions",
+                                        as: "permTeams",
+                                        cond: {
+                                          $and: [
+                                            {
+                                              $ne: [
+                                                { $type: "$$permTeams.teamId" },
+                                                "missing",
+                                              ],
+                                            },
+                                            {
+                                              $eq: [
+                                                "$$permTeams.level",
+                                                PermissionLevel.ADMIN,
+                                              ],
+                                            },
+                                          ],
+                                        },
+                                      },
+                                    },
+                                    as: "permTeams",
+                                    in: "$$permTeams.teamId",
                                   },
                                 },
                                 [],

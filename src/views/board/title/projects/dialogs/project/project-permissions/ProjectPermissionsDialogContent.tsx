@@ -225,6 +225,9 @@ export function ProjectPermissionsDialogContent({
                     <Select.Item value={PermissionLevel.WRITE}>
                       can collaborate
                     </Select.Item>
+                    <Select.Item value={PermissionLevel.ADMIN}>
+                      admin
+                    </Select.Item>
                     <Select.Item value="remove">remove</Select.Item>
                   </Select.Content>
                 </Select.Root>
