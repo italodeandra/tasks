@@ -7,7 +7,7 @@ import Loading from "@italodeandra/ui/components/Loading";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { Projects } from "./projects/Projects";
-import { EditPermissionsDialogContent } from "./edit-permissions/EditPermissionsDialogContent";
+import { BoardPermissionsDialogContent } from "./edit-permissions/BoardPermissionsDialogContent";
 import clsx from "@italodeandra/ui/utils/clsx";
 
 export function BoardTitle() {
@@ -45,7 +45,7 @@ export function BoardTitle() {
       _id: "board-permissions",
       title: "Board permissions",
       content: (
-        <EditPermissionsDialogContent
+        <BoardPermissionsDialogContent
           dialogId="board-permissions"
           boardId={_id}
         />

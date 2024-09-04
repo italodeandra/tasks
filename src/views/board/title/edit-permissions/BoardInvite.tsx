@@ -9,7 +9,7 @@ import Button from "@italodeandra/ui/components/Button";
 import emailRegExp from "@italodeandra/ui/utils/emailRegExp";
 import { TeamAvatarAndName } from "../../../../components/TeamAvatarAndName";
 
-export function Invite({
+export function BoardInvite({
   boardId,
   className,
 }: {

@@ -13,10 +13,10 @@ import { boardLeaveApi } from "../../../../pages/api/board/leave";
 import { boardUpdatePermissionApi } from "../../../../pages/api/board/update-permission";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 import { boardGetApi } from "../../../../pages/api/board/get";
-import { Invite } from "./Invite";
+import { BoardInvite } from "./BoardInvite";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 
-export function EditPermissionsDialogContent({
+export function BoardPermissionsDialogContent({
   dialogId,
   boardId,
 }: {
@@ -86,7 +86,7 @@ export function EditPermissionsDialogContent({
 
   return (
     <div className="flex flex-col gap-2 pt-2">
-      {canEdit && <Invite boardId={boardId} className="mb-2" />}
+      {canEdit && <BoardInvite boardId={boardId} className="mb-2" />}
       <div className="text-sm">Who has access</div>
       <div className="flex flex-col gap-1">
         {boardGetPermissions.isLoading && (
@@ -206,6 +206,9 @@ export function EditPermissionsDialogContent({
                     </Select.Item>
                     <Select.Item value={PermissionLevel.WRITE}>
                       can collaborate
+                    </Select.Item>
+                    <Select.Item value={PermissionLevel.ADMIN}>
+                      admin
                     </Select.Item>
                     <Select.Item value="remove">remove</Select.Item>
                   </Select.Content>
