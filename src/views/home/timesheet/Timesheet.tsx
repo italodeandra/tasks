@@ -1,10 +1,18 @@
 import { useMemo, useState } from "react";
 import { projectListApi } from "../../../pages/api/project/list";
 import { useTimesheetDelete } from "../../../pages/api/timesheet/delete";
-import DataTable, { DataTableProps } from "@italodeandra/ui/components/Table/DataTable";
+import DataTable, {
+  DataTableProps,
+} from "@italodeandra/ui/components/Table/DataTable";
 import Stack from "@italodeandra/ui/components/Stack/Stack";
 import Button from "@italodeandra/ui/components/Button/Button";
-import { ChevronLeftIcon, ChevronRightIcon, ClipboardIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ClipboardIcon,
+  PlusIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
 import { TimesheetItem } from "./TimesheetItem";
 import Text from "@italodeandra/ui/components/Text";
 import { closeDialog, showDialog } from "@italodeandra/ui/components/Dialog";
@@ -19,7 +27,7 @@ import { homeState } from "../home.state";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import {
   TimesheetListFromProjectApi,
-  timesheetListFromProjectApi
+  timesheetListFromProjectApi,
 } from "../../../pages/api/timesheet/list-from-project";
 
 export function Timesheet() {
@@ -33,10 +41,10 @@ export function Timesheet() {
   const { data: timesheet, isLoading } = timesheetListFromProjectApi.useQuery(
     project
       ? {
-        projectId: project._id,
-        startDate
-      }
-      : undefined
+          projectId: project._id,
+          startDate,
+        }
+      : undefined,
   );
 
   const { mutate: deleteTimesheet, isPending: isDeleting } =
@@ -50,23 +58,31 @@ export function Timesheet() {
     () => [
       {
         title: "Time",
-        render: (item) => <TimesheetItem timesheet={item} />
+        render: (item) => <TimesheetItem timesheet={item} />,
       },
       {
         title: "Type",
-        render: (item) => translateTimesheetType(item.type)
+        render: (item) => translateTimesheetType(item.type),
       },
       {
         title: "Descrição",
         render: (item) => item.task?.content || item.description,
-        cellClassName: "max-w-[300px] truncate"
+        cellClassName: "max-w-[300px] truncate",
       },
       {
-        title: "Data",
-        render: (item) => dayjs(item.createdAt).format("lll")
-      }
+        title: "Iniciado em",
+        render: (item) => item.startedAt && dayjs(item.startedAt).format("lll"),
+      },
+      {
+        title: "Finalizado em",
+        render: (item) => item.stoppedAt && dayjs(item.stoppedAt).format("lll"),
+      },
+      {
+        title: "Criado",
+        render: (item) => dayjs(item.createdAt).format("lll"),
+      },
     ],
-    []
+    [],
   );
 
   const { totalClocked, totalPaid, pendingPayment } = useMemo(() => {
@@ -87,13 +103,13 @@ export function Timesheet() {
             projectId={project._id}
             onSubmit={() => closeDialog(_id)}
           />
-        )
+        ),
       });
     }
   };
 
   return (
-    <Stack className="p-2 relative">
+    <Stack className="relative p-2">
       <div className="flex flex-col items-center gap-4 sm:flex-row">
         <span>Timesheet {project?.name}</span>
         <Group className="mx-auto items-center">
@@ -156,15 +172,15 @@ export function Timesheet() {
                 [
                   item.time ? prettyMilliseconds(item.time) : "",
                   item.task?.content || "",
-                  dayjs(item.createdAt).format("lll")
-                ]
-              ])
+                  dayjs(item.createdAt).format("lll"),
+                ],
+              ]),
           },
           {
             title: "Delete",
             icon: <TrashIcon />,
-            onClick: (item) => deleteTimesheet(item)
-          }
+            onClick: (item) => deleteTimesheet(item),
+          },
         ]}
       />
     </Stack>

@@ -17,7 +17,7 @@ export const timesheetListFromProjectApi = createApi(
   async function (
     args: { projectId: string; startDate: Date },
     req: NextApiRequest,
-    res: NextApiResponse
+    res: NextApiResponse,
   ) {
     await connectDb();
     const Timesheet = getTimesheet();
@@ -66,7 +66,13 @@ export const timesheetListFromProjectApi = createApi(
         await Timesheet.aggregate<
           Pick<
             ITimesheet,
-            "_id" | "time" | "startedAt" | "type" | "createdAt" | "description"
+            | "_id"
+            | "time"
+            | "startedAt"
+            | "type"
+            | "createdAt"
+            | "description"
+            | "stoppedAt"
           > & {
             task?: Pick<ITask, "_id" | "title">;
           }
@@ -106,6 +112,7 @@ export const timesheetListFromProjectApi = createApi(
             $project: {
               time: 1,
               startedAt: 1,
+              stoppedAt: 1,
               createdAt: 1,
               type: 1,
               task: 1,
@@ -129,7 +136,7 @@ export const timesheetListFromProjectApi = createApi(
   },
   {
     queryKeyMap: (args) => [args?.projectId, args?.startDate].filter(Boolean),
-  }
+  },
 );
 
 export default timesheetListFromProjectApi.handler;
