@@ -20,6 +20,6 @@ const timesheetSchema = onlyServer(() =>
 export type ITimesheet = (typeof timesheetSchema)[0];
 
 const getTimesheet = () =>
-  onlyServer(() => db.model("timesheets", timesheetSchema));
+  onlyServer(() => db.model("timesheets2", timesheetSchema));
 
 export default getTimesheet;

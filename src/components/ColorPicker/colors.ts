@@ -297,8 +297,17 @@ function hashStringToNumber(str: string) {
 }
 
 export function getColorForString(str: string) {
-  const colorsNames = Object.keys(colors).filter(
-    (color) => !["slate", "gray", "zinc", "neutral", "stone"].includes(color),
+  const colorsNames = Object.keys(colors).filter((color) =>
+    [
+      "red",
+      "blue",
+      "purple",
+      "yellow",
+      "pink",
+      "cyan",
+      "orange",
+      "teal",
+    ].includes(color),
   );
 
   const hash = hashStringToNumber(str);

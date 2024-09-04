@@ -24,6 +24,6 @@ const taskSchema = onlyServer(() =>
 
 export type ITask = (typeof taskSchema)[0];
 
-const getTask = () => onlyServer(() => db.model("tasks", taskSchema));
+const getTask = () => onlyServer(() => db.model("tasks2", taskSchema));
 
 export default getTask;
