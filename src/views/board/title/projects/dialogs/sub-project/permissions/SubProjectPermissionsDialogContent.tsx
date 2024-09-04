@@ -16,6 +16,7 @@ import { subProjectPermissionsListApi } from "../../../../../../../pages/api/sub
 import { subProjectPermissionsUpdateApi } from "../../../../../../../pages/api/sub-project/permissions/update";
 import { subProjectPermissionsClearApi } from "../../../../../../../pages/api/sub-project/permissions/clear";
 import { subProjectPermissionsCreateApi } from "../../../../../../../pages/api/sub-project/permissions/create";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function SubProjectPermissionsDialogContent({
   dialogId,
@@ -118,9 +119,19 @@ export function SubProjectPermissionsDialogContent({
 
   return (
     <div className="flex flex-col gap-2 pt-2">
-      {isInheritingFromProject ? (
+      {subProjectPermissionsList.isLoading && (
         <>
-          <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-2 text-zinc-300">
+          <Skeleton className="mb-2 h-10" />
+          <div className="text-sm">Who has access</div>
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </>
+      )}
+      {!subProjectPermissionsList.isLoading && isInheritingFromProject && (
+        <>
+          <div className="flex items-start gap-1 rounded-lg bg-zinc-950 p-2 text-zinc-300">
             <InformationCircleIcon className="h-6 w-6" />
             This sub project is inheriting permissions from the main project.
           </div>
@@ -133,7 +144,8 @@ export function SubProjectPermissionsDialogContent({
             </Button>
           )}
         </>
-      ) : (
+      )}
+      {!subProjectPermissionsList.isLoading && !isInheritingFromProject && (
         <>
           {canEdit && (
             <SubProjectInvite subProjectId={subProjectId} className="mb-2" />

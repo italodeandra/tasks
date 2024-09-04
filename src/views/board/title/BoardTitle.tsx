@@ -7,8 +7,9 @@ import Loading from "@italodeandra/ui/components/Loading";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { Projects } from "./projects/Projects";
-import { BoardPermissionsDialogContent } from "./edit-permissions/BoardPermissionsDialogContent";
+import { BoardPermissionsDialogContent } from "./permissions/BoardPermissionsDialogContent";
 import clsx from "@italodeandra/ui/utils/clsx";
+import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 
 export function BoardTitle() {
   const router = useRouter();
@@ -50,6 +51,7 @@ export function BoardTitle() {
           boardId={_id}
         />
       ),
+      contentProps: reactQueryDialogContentProps,
     });
   }, [_id]);
 

@@ -10,7 +10,6 @@ import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import Input from "@italodeandra/ui/components/Input";
 import emailRegExp from "@italodeandra/ui/utils/emailRegExp";
-import getInitials from "@italodeandra/ui/utils/getInitials";
 import Select from "@italodeandra/ui/components/Select";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
 import { UserAvatarAndName } from "../../../../../components/UserAvatarAndName";

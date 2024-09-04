@@ -24,6 +24,7 @@ import {
   colors,
   getColorForString,
 } from "../../../../components/ColorPicker/colors";
+import { reactQueryDialogContentProps } from "../../../../utils/reactQueryDialogContentProps";
 
 export function UserSection() {
   const queryClient = useQueryClient();
@@ -45,6 +46,7 @@ export function UserSection() {
     showDialog({
       title: "Teams",
       content: <TeamsDialogContent />,
+      contentProps: reactQueryDialogContentProps,
     });
   }, []);
 

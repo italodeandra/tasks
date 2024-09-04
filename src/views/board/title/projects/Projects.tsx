@@ -14,8 +14,9 @@ import { boardState } from "../../board.state";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { SubProjectDialogContent } from "./dialogs/sub-project/SubProjectDialogContent";
 import { ProjectDialogContent } from "./dialogs/project/ProjectDialogContent";
-import { ProjectPermissionsDialogContent } from "./dialogs/project/project-permissions/ProjectPermissionsDialogContent";
-import { SubProjectPermissionsDialogContent } from "./dialogs/sub-project/sub-project-permissions/SubProjectPermissionsDialogContent";
+import { ProjectPermissionsDialogContent } from "./dialogs/project/permissions/ProjectPermissionsDialogContent";
+import { SubProjectPermissionsDialogContent } from "./dialogs/sub-project/permissions/SubProjectPermissionsDialogContent";
+import { reactQueryDialogContentProps } from "../../../../utils/reactQueryDialogContentProps";
 
 export function Projects({
   boardId,
@@ -154,6 +155,7 @@ export function Projects({
                                       boardId={boardId}
                                     />
                                   ),
+                                  contentProps: reactQueryDialogContentProps,
                                 });
                               }}
                             >
@@ -174,6 +176,7 @@ export function Projects({
                                       projectId={project._id}
                                     />
                                   ),
+                                  contentProps: reactQueryDialogContentProps,
                                 });
                               }}
                             >
@@ -251,6 +254,8 @@ export function Projects({
                                             query={{ ...subProject, project }}
                                           />
                                         ),
+                                        contentProps:
+                                          reactQueryDialogContentProps,
                                       });
                                     }}
                                   >
@@ -271,6 +276,8 @@ export function Projects({
                                             subProjectId={subProject._id}
                                           />
                                         ),
+                                        contentProps:
+                                          reactQueryDialogContentProps,
                                       });
                                     }}
                                   >
@@ -297,6 +304,7 @@ export function Projects({
                                     query={{ project }}
                                   />
                                 ),
+                                contentProps: reactQueryDialogContentProps,
                               });
                             }}
                             leading={<PlusIcon className="mr-2" />}
@@ -325,6 +333,7 @@ export function Projects({
                           boardId={boardId}
                         />
                       ),
+                      contentProps: reactQueryDialogContentProps,
                     });
                   }}
                   leading={<PlusIcon />}

@@ -18,6 +18,7 @@ import Button from "@italodeandra/ui/components/Button";
 import { projectPermissionsClearApi } from "../../../../../../../pages/api/project/permissions/clear";
 import { projectPermissionsUpdateApi } from "../../../../../../../pages/api/project/permissions/update";
 import { projectPermissionsCreateApi } from "../../../../../../../pages/api/project/permissions/create";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function ProjectPermissionsDialogContent({
   dialogId,
@@ -114,7 +115,17 @@ export function ProjectPermissionsDialogContent({
 
   return (
     <div className="flex flex-col gap-2 pt-2">
-      {isInheritingFromBoard ? (
+      {projectPermissionsList.isLoading && (
+        <>
+          <Skeleton className="mb-2 h-10" />
+          <div className="text-sm">Who has access</div>
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-4 w-32" />
+          </div>
+        </>
+      )}
+      {!projectPermissionsList.isLoading && isInheritingFromBoard && (
         <>
           <div className="flex items-center gap-1 rounded-lg bg-zinc-950 p-2 text-zinc-300">
             <InformationCircleIcon className="h-6 w-6" />
@@ -129,7 +140,8 @@ export function ProjectPermissionsDialogContent({
             </Button>
           )}
         </>
-      ) : (
+      )}
+      {!projectPermissionsList.isLoading && !isInheritingFromBoard && (
         <>
           {canEdit && <ProjectInvite projectId={projectId} className="mb-2" />}
           <div className="text-sm">Who has access</div>
