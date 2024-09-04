@@ -1,15 +1,15 @@
 import createApi from "@italodeandra/next/api/createApi";
-import { notFound, unauthorized } from "@italodeandra/next/api/errors";
+import { notFound } from "@italodeandra/next/api/errors";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
-import getTask from "../../../collections/task";
+import getTask, { ITask } from "../../../collections/task";
 import { connectDb } from "../../../db";
 import getTaskColumn from "../../../collections/taskColumn";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
-import asyncMap from "@italodeandra/next/utils/asyncMap";
-import { omit } from "lodash-es";
-import getUser from "@italodeandra/auth/collections/user/User";
+import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
+import getProject from "../../../collections/project";
+import getSubProject from "../../../collections/subProject";
 
 export const taskGetApi = createApi(
   "/api/task/get",
@@ -20,33 +20,11 @@ export const taskGetApi = createApi(
     const Team = getTeam();
     const Board = getBoard();
     const User = getUser();
+    const Project = getProject();
+    const SubProject = getSubProject();
     const user = await getUserFromCookies(req, res);
 
     const _id = isomorphicObjectId(args._id);
-
-    const task = await Task.findById(_id, {
-      projection: {
-        title: 1,
-        columnId: 1,
-        description: 1,
-        statusId: 1,
-        projectId: 1,
-        subProjectId: 1,
-        assignees: 1,
-      },
-    });
-    if (!task) {
-      throw notFound;
-    }
-
-    const column = await TaskColumn.findById(task.columnId, {
-      projection: {
-        boardId: 1,
-      },
-    });
-    if (!column) {
-      throw notFound;
-    }
 
     const userTeams = user
       ? await Team.find(
@@ -55,54 +33,391 @@ export const taskGetApi = createApi(
         )
       : undefined;
     const userTeamsIds = userTeams?.map((t) => t._id);
-    const haveAccessToBoard = await Board.countDocuments({
-      _id: column.boardId,
-      $or: [
-        ...(user
-          ? [
-              {
-                "permissions.userId": {
-                  $in: [user._id],
-                },
-              },
-              {
-                "permissions.teamId": {
-                  $in: userTeamsIds,
-                },
-              },
-            ]
-          : []),
+
+    const task = (
+      await Task.aggregate<
+        Pick<
+          ITask,
+          | "_id"
+          | "title"
+          | "columnId"
+          | "description"
+          | "statusId"
+          | "projectId"
+          | "subProjectId"
+        > & {
+          canEdit: boolean;
+          assignees: (Pick<IUser, "_id" | "name" | "email"> & {
+            isMe: boolean;
+          })[];
+        }
+      >([
         {
-          "permissions.public": true,
+          $match: {
+            _id,
+            archived: { $ne: true },
+          },
         },
-      ],
-    });
-    if (!haveAccessToBoard) {
-      throw unauthorized;
+        {
+          $lookup: {
+            from: Project.collection.collectionName,
+            localField: "projectId",
+            foreignField: "_id",
+            as: "project",
+            pipeline: [
+              {
+                $project: {
+                  archived: 1,
+                  permissions: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: {
+            path: "$project",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: SubProject.collection.collectionName,
+            localField: "subProjectId",
+            foreignField: "_id",
+            as: "subProject",
+            pipeline: [
+              {
+                $project: {
+                  archived: 1,
+                  permissions: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: {
+            path: "$subProject",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: TaskColumn.collection.collectionName,
+            localField: "columnId",
+            foreignField: "_id",
+            as: "column",
+            pipeline: [
+              {
+                $project: {
+                  boardId: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: "$column",
+        },
+        {
+          $lookup: {
+            from: Board.collection.collectionName,
+            localField: "column.boardId",
+            foreignField: "_id",
+            as: "board",
+            pipeline: [
+              {
+                $project: {
+                  permissions: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: "$board",
+        },
+        {
+          $match: {
+            "project.archived": { $ne: true },
+            "subProject.archived": { $ne: true },
+            $and: [
+              {
+                $or: [
+                  ...(user
+                    ? [
+                        {
+                          "board.permissions.userId": {
+                            $in: [user._id],
+                          },
+                        },
+                        {
+                          "board.permissions.teamId": {
+                            $in: userTeamsIds,
+                          },
+                        },
+                      ]
+                    : []),
+                  {
+                    "board.permissions.public": true,
+                  },
+                ],
+              },
+              {
+                $or: [
+                  {
+                    "project.permissions": {
+                      $exists: false,
+                    },
+                  },
+                  ...(user
+                    ? [
+                        {
+                          "project.permissions.userId": {
+                            $in: [user._id],
+                          },
+                        },
+                        {
+                          "project.permissions.teamId": {
+                            $in: userTeamsIds,
+                          },
+                        },
+                      ]
+                    : []),
+                  {
+                    "project.permissions.public": true,
+                  },
+                ],
+              },
+              {
+                $or: [
+                  {
+                    "subProject.permissions": {
+                      $exists: false,
+                    },
+                  },
+                  ...(user
+                    ? [
+                        {
+                          "subProject.permissions.userId": {
+                            $in: [user._id],
+                          },
+                        },
+                        {
+                          "subProject.permissions.teamId": {
+                            $in: userTeamsIds,
+                          },
+                        },
+                      ]
+                    : []),
+                  {
+                    "subProject.permissions.public": true,
+                  },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          $lookup: {
+            from: User.collection.collectionName,
+            localField: "assignees",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  name: 1,
+                  email: 1,
+                  isMe: {
+                    $cond: {
+                      if: { $eq: ["$_id", user?._id] },
+                      then: true,
+                      else: false,
+                    },
+                  },
+                },
+              },
+            ],
+            as: "assignees",
+          },
+        },
+        {
+          $project: {
+            canEdit: user?._id
+              ? {
+                  $or: [
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $map: {
+                            input: {
+                              $filter: {
+                                input: "$board.permissions",
+                                as: "perm",
+                                cond: {
+                                  $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                },
+                              },
+                            },
+                            as: "perm",
+                            in: "$$perm.userId",
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $ifNull: [
+                            {
+                              $map: {
+                                input: {
+                                  $filter: {
+                                    input: "$project.permissions",
+                                    as: "perm",
+                                    cond: {
+                                      $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                    },
+                                  },
+                                },
+                                as: "perm",
+                                in: "$$perm.userId",
+                              },
+                            },
+                            [],
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $ifNull: [
+                            {
+                              $map: {
+                                input: {
+                                  $filter: {
+                                    input: "$subProject.permissions",
+                                    as: "perm",
+                                    cond: {
+                                      $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                    },
+                                  },
+                                },
+                                as: "perm",
+                                in: "$$perm.userId",
+                              },
+                            },
+                            [],
+                          ],
+                        },
+                      ],
+                    },
+                  ],
+                }
+              : { $literal: false },
+            title: 1,
+            columnId: 1,
+            description: 1,
+            statusId: 1,
+            projectId: 1,
+            subProjectId: 1,
+            assignees: 1,
+          },
+        },
+      ])
+    )[0];
+
+    if (!task) {
+      throw notFound;
     }
 
-    return {
-      ...omit(task, "assignees"),
-      assignees: await asyncMap(
-        await User.find(
-          {
-            _id: {
-              $in: task.assignees,
-            },
-          },
-          {
-            projection: {
-              name: 1,
-              email: 1,
-            },
-          },
-        ),
-        async (user2) => ({
-          ...user2,
-          isMe: !!user && user2._id.equals(user._id),
-        }),
-      ),
-    };
+    return task;
+
+    // const task = await Task.findById(_id, {
+    //   projection: {
+    //     title: 1,
+    //     columnId: 1,
+    //     description: 1,
+    //     statusId: 1,
+    //     projectId: 1,
+    //     subProjectId: 1,
+    //     assignees: 1,
+    //   },
+    // });
+    // if (!task) {
+    //   throw notFound;
+    // }
+    //
+    // const column = await TaskColumn.findById(task.columnId, {
+    //   projection: {
+    //     boardId: 1,
+    //   },
+    // });
+    // if (!column) {
+    //   throw notFound;
+    // }
+    //
+    // const userTeams = user
+    //   ? await Team.find(
+    //       { "members.userId": { $in: [user._id] } },
+    //       { projection: { _id: 1 } },
+    //     )
+    //   : undefined;
+    // const userTeamsIds = userTeams?.map((t) => t._id);
+    // const haveAccessToBoard = await Board.countDocuments({
+    //   _id: column.boardId,
+    //   $or: [
+    //     ...(user
+    //       ? [
+    //           {
+    //             "permissions.userId": {
+    //               $in: [user._id],
+    //             },
+    //           },
+    //           {
+    //             "permissions.teamId": {
+    //               $in: userTeamsIds,
+    //             },
+    //           },
+    //         ]
+    //       : []),
+    //     {
+    //       "permissions.public": true,
+    //     },
+    //   ],
+    // });
+    // if (!haveAccessToBoard) {
+    //   throw unauthorized;
+    // }
+    //
+    // return {
+    //   ...omit(task, "assignees"),
+    //   canEdit: !!user && task.assignees.some((a) => a.equals(user._id)),
+    //   assignees: await asyncMap(
+    //     await User.find(
+    //       {
+    //         _id: {
+    //           $in: task.assignees,
+    //         },
+    //       },
+    //       {
+    //         projection: {
+    //           name: 1,
+    //           email: 1,
+    //         },
+    //       },
+    //     ),
+    //     async (user2) => ({
+    //       ...user2,
+    //       isMe: !!user && user2._id.equals(user._id),
+    //     }),
+    //   ),
+    // };
   },
   {
     queryKeyMap: (args) => [args?._id],

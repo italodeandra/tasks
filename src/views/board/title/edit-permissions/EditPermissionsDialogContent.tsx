@@ -14,6 +14,7 @@ import { boardUpdatePermissionApi } from "../../../../pages/api/board/update-per
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 import { boardGetApi } from "../../../../pages/api/board/get";
 import { Invite } from "./Invite";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function EditPermissionsDialogContent({
   dialogId,
@@ -32,7 +33,7 @@ export function EditPermissionsDialogContent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [boardGet.isError, boardGet.failureReason]);
 
-  const canEdit = !!boardGet.data?.canEdit;
+  const canEdit = !!boardGet.data?.hasAdminPermission;
 
   const { teams, users, isPublic } = useMemo(() => {
     const users = boardGetPermissions.data
@@ -88,39 +89,23 @@ export function EditPermissionsDialogContent({
       {canEdit && <Invite boardId={boardId} className="mb-2" />}
       <div className="text-sm">Who has access</div>
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1.5">
-          <div className="flex h-6 w-6 items-center justify-center text-center text-xs">
-            <GlobeAltIcon />
+        {boardGetPermissions.isLoading && (
+          <div className="flex items-center gap-1.5">
+            <Skeleton className="h-6 w-6 rounded-full" />
+            <Skeleton className="h-4 w-32" />
           </div>
-          <div className="grow">Anyone with the link</div>
-          <Select.Root
-            value={isPublic ? "public" : "private"}
-            disabled={!canEdit}
-            onValueChange={handlePublicPermissionChange}
-          >
-            <Select.Trigger
-              variant="text"
-              size="sm"
-              trailingClassName="-mr-1"
-              loading={
-                boardUpdatePermission.isPending &&
-                boardUpdatePermission.variables.public !== undefined
-              }
-            />
-            <Select.Content>
-              <Select.Item value="public">can view</Select.Item>
-              <Select.Item value="private">no access</Select.Item>
-            </Select.Content>
-          </Select.Root>
-        </div>
-        {users?.map((permission) => (
-          <div className="flex items-center gap-2" key={permission.user._id}>
-            <UserAvatarAndName {...permission.user} className="grow" />
-            {canEdit || !permission.user.isMe ? (
+        )}
+        {!boardGetPermissions.isLoading && (
+          <>
+            <div className="flex items-center gap-1.5">
+              <div className="flex h-6 w-6 items-center justify-center text-center text-xs">
+                <GlobeAltIcon />
+              </div>
+              <div className="grow">Anyone with the link</div>
               <Select.Root
-                value={permission.level}
-                onValueChange={handlePermissionChange(permission)}
+                value={isPublic ? "public" : "private"}
                 disabled={!canEdit}
+                onValueChange={handlePublicPermissionChange}
               >
                 <Select.Trigger
                   variant="text"
@@ -128,70 +113,107 @@ export function EditPermissionsDialogContent({
                   trailingClassName="-mr-1"
                   loading={
                     boardUpdatePermission.isPending &&
-                    boardUpdatePermission.variables.userId ===
-                      permission.user._id
+                    boardUpdatePermission.variables.public !== undefined
                   }
                 />
                 <Select.Content>
-                  <Select.Item value={PermissionLevel.READ}>
-                    can view
-                  </Select.Item>
-                  <Select.Item value={PermissionLevel.WRITE}>
-                    can edit
-                  </Select.Item>
-                  <Select.Item value={PermissionLevel.ADMIN}>admin</Select.Item>
-                  {!permission.user.isMe && (
-                    <Select.Item value="remove">remove</Select.Item>
-                  )}
+                  <Select.Item value="public">can view</Select.Item>
+                  <Select.Item value="private">no access</Select.Item>
                 </Select.Content>
               </Select.Root>
-            ) : (
-              <ConfirmationButton
-                onConfirm={() => {
-                  boardLeave.mutate({
-                    _id: boardId,
-                  });
-                }}
-                confirmation="Are you sure you want to leave this board?"
-                label="Leave"
-                position="bottom-right"
-                loading={boardLeave.isPending}
-                buttonProps={{
-                  variant: "text",
-                  size: "sm",
-                  className: "lowercase",
-                }}
-              />
-            )}
-          </div>
-        ))}
-        {teams?.map((permission) => (
-          <div className="flex items-center gap-2" key={permission.team._id}>
-            <TeamAvatarAndName {...permission.team} className="grow" />
-            <Select.Root
-              value={permission.level}
-              onValueChange={handlePermissionChange(permission)}
-              disabled={!canEdit}
-            >
-              <Select.Trigger
-                variant="text"
-                size="sm"
-                trailingClassName="-mr-1"
-                loading={
-                  boardUpdatePermission.isPending &&
-                  boardUpdatePermission.variables.teamId === permission.team._id
-                }
-              />
-              <Select.Content>
-                <Select.Item value={PermissionLevel.READ}>can view</Select.Item>
-                <Select.Item value={PermissionLevel.WRITE}>
-                  can edit
-                </Select.Item>
-                <Select.Item value="remove">remove</Select.Item>
-              </Select.Content>
-            </Select.Root>
-          </div>
-        ))}
+            </div>
+            {users?.map((permission) => (
+              <div
+                className="flex items-center gap-2"
+                key={permission.user._id}
+              >
+                <UserAvatarAndName {...permission.user} className="grow" />
+                {canEdit || !permission.user.isMe ? (
+                  <Select.Root
+                    value={permission.level}
+                    onValueChange={handlePermissionChange(permission)}
+                    disabled={!canEdit}
+                  >
+                    <Select.Trigger
+                      variant="text"
+                      size="sm"
+                      trailingClassName="-mr-1"
+                      loading={
+                        boardUpdatePermission.isPending &&
+                        boardUpdatePermission.variables.userId ===
+                          permission.user._id
+                      }
+                    />
+                    <Select.Content>
+                      <Select.Item value={PermissionLevel.READ}>
+                        can view
+                      </Select.Item>
+                      <Select.Item value={PermissionLevel.WRITE}>
+                        can collaborate
+                      </Select.Item>
+                      <Select.Item value={PermissionLevel.ADMIN}>
+                        admin
+                      </Select.Item>
+                      {!permission.user.isMe && (
+                        <Select.Item value="remove">remove</Select.Item>
+                      )}
+                    </Select.Content>
+                  </Select.Root>
+                ) : (
+                  <ConfirmationButton
+                    onConfirm={() => {
+                      boardLeave.mutate({
+                        _id: boardId,
+                      });
+                    }}
+                    confirmation="Are you sure you want to leave this board?"
+                    label="Leave"
+                    position="bottom-right"
+                    loading={boardLeave.isPending}
+                    buttonProps={{
+                      variant: "text",
+                      size: "sm",
+                      className: "lowercase",
+                    }}
+                  />
+                )}
+              </div>
+            ))}
+            {teams?.map((permission) => (
+              <div
+                className="flex items-center gap-2"
+                key={permission.team._id}
+              >
+                <TeamAvatarAndName {...permission.team} className="grow" />
+                <Select.Root
+                  value={permission.level}
+                  onValueChange={handlePermissionChange(permission)}
+                  disabled={!canEdit}
+                >
+                  <Select.Trigger
+                    variant="text"
+                    size="sm"
+                    trailingClassName="-mr-1"
+                    loading={
+                      boardUpdatePermission.isPending &&
+                      boardUpdatePermission.variables.teamId ===
+                        permission.team._id
+                    }
+                  />
+                  <Select.Content>
+                    <Select.Item value={PermissionLevel.READ}>
+                      can view
+                    </Select.Item>
+                    <Select.Item value={PermissionLevel.WRITE}>
+                      can edit
+                    </Select.Item>
+                    <Select.Item value="remove">remove</Select.Item>
+                  </Select.Content>
+                </Select.Root>
+              </div>
+            ))}
+          </>
+        )}
       </div>
     </div>
   );

@@ -19,6 +19,7 @@ import Routes from "../../../Routes";
 import { useRouter } from "next/router";
 import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
+import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -43,19 +44,23 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         title: (
           <TaskDialogTitle
             taskId={openTaskId}
-            canEdit={boardGet.data?.canEdit}
+            hasBoardAdminPermission={boardGet.data?.hasAdminPermission}
           />
         ),
         content: (
           <TaskDialogContent
             taskId={openTaskId}
             boardId={boardId}
-            canEdit={boardGet.data?.canEdit}
+            hasBoardAdminPermission={boardGet.data?.hasAdminPermission}
           />
         ),
         closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
         onClose: () => void setOpenTaskId(null),
+        contentProps: reactQueryDialogContentProps,
       });
+      return () => {
+        closeDialog(dialogId);
+      };
     } else {
       closeDialog(dialogId);
     }
@@ -258,15 +263,18 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       cardName="task"
       listName="column"
       cardAdditionalContent={TaskAdditionalContent}
-      cardAdditionalProps={useMemo(() => ({ boardId }), [boardId])}
+      cardAdditionalProps={useMemo(
+        () => ({ boardId, canEdit: boardGet.data?.hasAdminPermission }),
+        [boardGet.data?.hasAdminPermission, boardId],
+      )}
       cardAdditionalActions={TaskAdditionalActions}
       uploadClipboardImage={uploadClipboardImage}
-      canAddList={boardGet.data?.canEdit}
-      canEditList={boardGet.data?.canEdit}
-      canMoveList={boardGet.data?.canEdit}
-      canAddCard={boardGet.data?.canEdit}
-      canEditCard={boardGet.data?.canEdit}
-      canMoveCard={boardGet.data?.canEdit}
+      canAddList={boardGet.data?.hasAdminPermission}
+      canEditList={boardGet.data?.hasAdminPermission}
+      canMoveList={boardGet.data?.hasAdminPermission}
+      canAddCard={boardGet.data?.hasAdminPermission}
+      canEditCard={boardGet.data?.hasAdminPermission}
+      canMoveCard={boardGet.data?.hasAdminPermission}
     />
   );
 }

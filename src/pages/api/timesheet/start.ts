@@ -8,7 +8,7 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTask from "../../../collections/task";
 import getTaskColumn from "../../../collections/taskColumn";
 import { PermissionLevel } from "../../../collections/permission";
-import getTimesheet from "../../../collections/timesheets";
+import getTimesheet from "../../../collections/timesheet";
 import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 

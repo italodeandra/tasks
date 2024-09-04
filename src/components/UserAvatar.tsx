@@ -6,27 +6,24 @@ export function UserAvatar({
   _id,
   name,
   email,
-  isMe,
   className,
 }: {
   _id: string;
   name?: string;
   email: string;
-  isMe?: boolean;
   className?: string;
 }) {
   return (
     <div
       className={clsx(
-        "flex h-6 w-6 items-center justify-center rounded-full text-center text-xs uppercase",
-        {
-          "bg-blue-600": isMe,
-        },
+        "flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] text-center text-xs uppercase",
         className,
       )}
-      style={{
-        backgroundColor: !isMe ? getColorForString(_id) : undefined,
-      }}
+      style={
+        {
+          "--bg": getColorForString(_id)["500"],
+        } as Record<string, string>
+      }
     >
       {getInitials(name || email)}
     </div>

@@ -19,11 +19,13 @@ import Loading from "@italodeandra/ui/components/Loading";
 export function TaskAdditionalContent({
   cardId,
   boardId,
+  canEdit,
 }: {
   listId: string;
   cardId: string;
   boardId: string;
   dragging: boolean;
+  canEdit?: boolean;
 }) {
   const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
   const taskList = taskListApi.useQuery(
@@ -45,7 +47,9 @@ export function TaskAdditionalContent({
     [cardId, taskList.data],
   );
 
-  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery();
+  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(undefined, {
+    enabled: canEdit,
+  });
   const timesheetStart = timesheetStartApi.useMutation();
   const timesheetStop = timesheetStopApi.useMutation();
 
@@ -57,6 +61,7 @@ export function TaskAdditionalContent({
     <div className="flex justify-end gap-2 px-3 pb-3">
       {task.assignees.map((assignee) => {
         const initials = getInitials(assignee.name || assignee.email);
+        const userColor = getColorForString(assignee._id);
         return (
           <Fragment key={assignee._id}>
             {assignee.isMe ? (
@@ -71,12 +76,19 @@ export function TaskAdditionalContent({
                   variant="filled"
                   rounded
                   className={clsx(
-                    "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500",
+                    "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
                     {
                       "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
                         timesheetGetMyOverview.data?.myCurrentClock,
                     },
                   )}
+                  style={
+                    {
+                      "--bg": userColor["500"],
+                      "--hover": userColor["400"],
+                      "--active-border": userColor["300"],
+                    } as Record<string, string>
+                  }
                   onClick={(e) => {
                     e.stopPropagation();
                     if (timesheetGetMyOverview.data?.myCurrentClock) {
@@ -123,10 +135,17 @@ export function TaskAdditionalContent({
             ) : (
               <Tooltip content={assignee.name || assignee.email}>
                 <div
-                  className="pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full p-0 text-xs text-white"
-                  style={{
-                    backgroundColor: getColorForString(assignee._id),
-                  }}
+                  className={clsx(
+                    "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] p-0 text-xs text-white",
+                    {
+                      "border-2 border-green-700": assignee.currentlyClocking,
+                    },
+                  )}
+                  style={
+                    {
+                      "--bg": getColorForString(assignee._id)["500"],
+                    } as Record<string, string>
+                  }
                 >
                   {initials}
                 </div>

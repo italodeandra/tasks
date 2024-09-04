@@ -68,7 +68,9 @@ export const boardGetApi = createApi(
     return {
       _id: board._id.toString(),
       name: board.name,
-      canEdit: board.permissions.some((p) => p.level === PermissionLevel.ADMIN),
+      hasAdminPermission: board.permissions.some(
+        (p) => p.level === PermissionLevel.ADMIN,
+      ),
       canViewPermissions: user
         ? board.permissions.some(
             (p) =>

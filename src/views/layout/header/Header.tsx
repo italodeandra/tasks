@@ -10,9 +10,14 @@ import Tooltip from "@italodeandra/ui/components/Tooltip";
 import { timesheetGetMyOverviewApi } from "../../../pages/api/timesheet/get-my-overview";
 import { timesheetStartApi } from "../../../pages/api/timesheet/start";
 import { timesheetStopApi } from "../../../pages/api/timesheet/stop";
+import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
 function CurrentClock() {
-  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery();
+  const { data: user } = useAuthGetUser();
+
+  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(undefined, {
+    enabled: !!user,
+  });
   const timesheetStart = timesheetStartApi.useMutation();
   const timesheetStop = timesheetStopApi.useMutation();
 

@@ -16,7 +16,7 @@ export function UserAvatarAndName({
 }) {
   return (
     <div className={clsx("flex items-center gap-1.5", className)}>
-      <UserAvatar _id={_id} email={email} name={name} isMe={isMe} />
+      <UserAvatar _id={_id} email={email} name={name} />
       <span>
         {name || email}
         {isMe ? (

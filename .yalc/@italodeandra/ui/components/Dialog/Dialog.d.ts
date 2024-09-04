@@ -1,3 +1,4 @@
+import { DialogContentProps } from "@radix-ui/react-dialog";
 import { ReactNode } from "react";
 export interface DialogProps {
     title: ReactNode;
@@ -9,8 +10,9 @@ export interface DialogProps {
     titleClassName?: string;
     descriptionClassName?: string;
     hideTitle?: boolean;
+    contentProps?: Omit<DialogContentProps, "children">;
 }
-export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, titleClassName, descriptionClassName, hideTitle, }: {
+export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, titleClassName, descriptionClassName, hideTitle, contentProps, }: {
     children: ReactNode;
     open: boolean;
     onOpenChange: (open: boolean) => void;

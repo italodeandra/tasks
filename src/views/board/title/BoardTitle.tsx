@@ -63,34 +63,41 @@ export function BoardTitle() {
               className={clsx(
                 "mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors",
                 {
-                  "hover:bg-zinc-900": boardGet.data?.canEdit,
+                  "hover:bg-zinc-900": boardGet.data?.hasAdminPermission,
                 },
               )}
               value={name}
-              onChange={boardGet.data?.canEdit ? handleChange : undefined}
-              editOnDoubleClick={boardGet.data?.canEdit}
+              onChange={
+                boardGet.data?.hasAdminPermission ? handleChange : undefined
+              }
+              editOnDoubleClick={boardGet.data?.hasAdminPermission}
               editHighlight
               editing={editing}
               onChangeEditing={setEditing}
             />
           </ContextMenu.Trigger>
-          {(boardGet.data?.canEdit || boardGet.data?.canViewPermissions) && (
+          {(boardGet.data?.hasAdminPermission ||
+            boardGet.data?.canViewPermissions) && (
             <ContextMenu.Content>
-              {boardGet.data?.canEdit && (
+              {boardGet.data?.hasAdminPermission && (
                 <ContextMenu.Item onClick={() => setEditing(true)}>
                   Rename
                 </ContextMenu.Item>
               )}
               {boardGet.data?.canViewPermissions && (
                 <ContextMenu.Item onClick={handleEditPermissionsClick}>
-                  {boardGet.data?.canEdit ? "Edit" : "View"} permissions
+                  {boardGet.data?.hasAdminPermission ? "Edit" : "View"}{" "}
+                  permissions
                 </ContextMenu.Item>
               )}
             </ContextMenu.Content>
           )}
         </ContextMenu.Root>
         {boardUpdate.isPending && <Loading className="mt-2" />}
-        <Projects boardId={_id} canEditBoard={boardGet.data?.canEdit} />
+        <Projects
+          boardId={_id}
+          canEditBoard={boardGet.data?.hasAdminPermission}
+        />
       </div>
     </>
   );

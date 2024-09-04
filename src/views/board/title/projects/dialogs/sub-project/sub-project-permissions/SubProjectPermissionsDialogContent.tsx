@@ -191,7 +191,7 @@ export function SubProjectPermissionsDialogContent({
                       can view
                     </Select.Item>
                     <Select.Item value={PermissionLevel.WRITE}>
-                      can edit tasks
+                      can collaborate
                     </Select.Item>
                     <Select.Item value={PermissionLevel.ADMIN}>
                       admin
@@ -229,7 +229,7 @@ export function SubProjectPermissionsDialogContent({
                       can view
                     </Select.Item>
                     <Select.Item value={PermissionLevel.WRITE}>
-                      can edit
+                      can collaborate
                     </Select.Item>
                     <Select.Item value="remove">remove</Select.Item>
                   </Select.Content>

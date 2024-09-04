@@ -2,7 +2,7 @@ import createApi from "@italodeandra/next/api/createApi";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { unauthorized } from "@italodeandra/next/api/errors";
 import { connectDb } from "../../../db";
-import getTimesheet from "../../../collections/timesheets";
+import getTimesheet from "../../../collections/timesheet";
 import dayjs from "dayjs";
 import { sumBy } from "lodash-es";
 

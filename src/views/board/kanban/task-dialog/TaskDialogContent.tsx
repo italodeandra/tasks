@@ -17,11 +17,11 @@ import { Timesheet } from "./Timesheet";
 export function TaskDialogContent({
   boardId,
   taskId,
-  canEdit,
+  hasBoardAdminPermission,
 }: {
   boardId: string;
   taskId: string;
-  canEdit?: boolean;
+  hasBoardAdminPermission?: boolean;
 }) {
   const [description, setDescription] = useState("");
   const [statusId, setStatusId] = useState("");
@@ -32,15 +32,16 @@ export function TaskDialogContent({
   const taskGet = taskGetApi.useQuery({
     _id: taskId,
   });
+  const task = taskGet.data;
   useEffect(() => {
-    if (taskGet.data) {
-      setDescription(taskGet.data.description || "");
-      setStatusId(taskGet.data.statusId || "");
-      setColumnId(taskGet.data.columnId || "");
-      setProjectId(taskGet.data.projectId || "");
-      setSubProjectId(taskGet.data.subProjectId || "");
+    if (task) {
+      setDescription(task.description || "");
+      setStatusId(task.statusId || "");
+      setColumnId(task.columnId || "");
+      setProjectId(task.projectId || "");
+      setSubProjectId(task.subProjectId || "");
     }
-  }, [taskGet.data]);
+  }, [task]);
 
   const imageUpload = imageUploadApi.useMutation();
   const uploadClipboardImage = useCallback(
@@ -73,11 +74,11 @@ export function TaskDialogContent({
           <Skeleton className="mt-0.5 h-5 w-full max-w-60" />
         ) : (
           <MarkdownEditor
-            placeholder={canEdit ? "Add a description" : "No description"}
+            placeholder={task?.canEdit ? "Add a description" : "No description"}
             value={description}
-            onChange={canEdit ? handleChangeDescription : undefined}
+            onChange={task?.canEdit ? handleChangeDescription : undefined}
             className="-mx-1 mb-auto rounded-md px-1"
-            editOnDoubleClick={canEdit}
+            editOnDoubleClick={task?.canEdit}
             editHighlight
             uploadClipboardImage={uploadClipboardImage}
           />
@@ -100,7 +101,7 @@ export function TaskDialogContent({
                 value={statusId}
                 onChange={setStatusId}
                 loading={taskGet.isLoading}
-                canEdit={canEdit}
+                canEdit={task?.canEdit}
               />
             </div>
           </div>
@@ -113,7 +114,7 @@ export function TaskDialogContent({
                 value={columnId}
                 onChange={setColumnId}
                 loading={taskGet.isLoading}
-                canEdit={canEdit}
+                canEdit={task?.canEdit}
               />
             </div>
           </div>
@@ -126,7 +127,7 @@ export function TaskDialogContent({
                 value={projectId}
                 onChange={setProjectId}
                 loading={taskGet.isLoading}
-                canEdit={canEdit}
+                canEdit={task?.canEdit}
               />
             </div>
           </div>
@@ -143,7 +144,7 @@ export function TaskDialogContent({
                   value={subProjectId}
                   onChange={setSubProjectId}
                   loading={taskGet.isLoading}
-                  canEdit={canEdit}
+                  canEdit={task?.canEdit}
                 />
               </div>
             </div>
@@ -154,17 +155,17 @@ export function TaskDialogContent({
             </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-1.5">
               {taskGet.isLoading && <Skeleton className="h-5 w-16" />}
-              {taskGet.data?.assignees && (
+              {task?.assignees && (
                 <Assignees
                   taskId={taskId}
-                  assignees={taskGet.data?.assignees}
-                  canEdit={canEdit}
+                  assignees={task?.assignees}
+                  canEdit={task?.canEdit}
                 />
               )}
             </div>
           </div>
         </div>
-        <Timesheet taskId={taskId} />
+        {task?.canEdit && <Timesheet taskId={taskId} />}
         <Activity taskId={taskId} />
       </div>
     </div>

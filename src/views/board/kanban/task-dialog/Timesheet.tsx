@@ -8,6 +8,7 @@ import { timesheetStopApi } from "../../../../pages/api/timesheet/stop";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { UserAvatar } from "../../../../components/UserAvatar";
 import { Time } from "../../../../components/Time";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function Timesheet({ taskId }: { taskId: string }) {
   const timesheetGetTaskOverview = timesheetGetTaskOverviewApi.useQuery({
@@ -21,44 +22,49 @@ export function Timesheet({ taskId }: { taskId: string }) {
     <div className="flex flex-col gap-2">
       <div className="text-sm font-medium">Timesheet</div>
       <div className="flex flex-wrap gap-2">
-        <Tooltip
-          content={
-            !timesheetGetTaskOverview.data?.currentUserClock
-              ? "Start tracking time on this task"
-              : "Stop tracking time"
-          }
-        >
-          <Button
-            rounded
-            size="sm"
-            className={clsx("group h-[34px] gap-2", {
-              "bg-green-700": timesheetGetTaskOverview.data?.currentUserClock,
-            })}
-            {...(timesheetGetTaskOverview.data?.currentUserClock
-              ? {
-                  variant: "filled",
-                  color: "success",
-                  onClick: () => timesheetStop.mutate(),
-                }
-              : {
-                  onClick: () => timesheetStart.mutate({ taskId }),
-                })}
-            loading={timesheetStart.isPending || timesheetStop.isPending}
+        {timesheetGetTaskOverview.isLoading && (
+          <Skeleton className="h-[34px] w-[34px] rounded-full" />
+        )}
+        {!timesheetGetTaskOverview.isLoading && (
+          <Tooltip
+            content={
+              !timesheetGetTaskOverview.data?.currentUserClock
+                ? "Start tracking time on this task"
+                : "Stop tracking time"
+            }
           >
-            {timesheetGetTaskOverview.data?.currentUserClock ? (
-              <>
-                <ClockIcon className="h-4 w-4 group-hover:hidden" />
-                <StopIcon className="hidden h-4 w-4 group-hover:block" />
-                <Time
-                  from={timesheetGetTaskOverview.data.currentUserClock}
-                  autoUpdate
-                />
-              </>
-            ) : (
-              <PlayIcon className="h-4 w-4" />
-            )}
-          </Button>
-        </Tooltip>
+            <Button
+              rounded
+              size="sm"
+              className={clsx("group h-[34px] gap-2", {
+                "bg-green-700": timesheetGetTaskOverview.data?.currentUserClock,
+              })}
+              {...(timesheetGetTaskOverview.data?.currentUserClock
+                ? {
+                    variant: "filled",
+                    color: "success",
+                    onClick: () => timesheetStop.mutate(),
+                  }
+                : {
+                    onClick: () => timesheetStart.mutate({ taskId }),
+                  })}
+              loading={timesheetStart.isPending || timesheetStop.isPending}
+            >
+              {timesheetGetTaskOverview.data?.currentUserClock ? (
+                <>
+                  <ClockIcon className="h-4 w-4 group-hover:hidden" />
+                  <StopIcon className="hidden h-4 w-4 group-hover:block" />
+                  <Time
+                    from={timesheetGetTaskOverview.data.currentUserClock}
+                    autoUpdate
+                  />
+                </>
+              ) : (
+                <PlayIcon className="h-4 w-4" />
+              )}
+            </Button>
+          </Tooltip>
+        )}
         {timesheetGetTaskOverview.data?.users.map((userTimesheet) => (
           <div
             key={userTimesheet.user._id}
@@ -74,11 +80,11 @@ export function Timesheet({ taskId }: { taskId: string }) {
               {...userTimesheet.user}
             />
             <div className="pl-2 pr-3">
-              {userTimesheet.currentClock ? (
-                <Time from={userTimesheet.currentClock} autoUpdate />
-              ) : (
-                <Time value={userTimesheet.timeClocked} />
-              )}
+              <Time
+                from={userTimesheet.currentClock}
+                plus={userTimesheet.timeClocked}
+                autoUpdate
+              />
             </div>
           </div>
         ))}

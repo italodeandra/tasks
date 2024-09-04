@@ -2,7 +2,7 @@ import createApi from "@italodeandra/next/api/createApi";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import { connectDb } from "../../../db";
-import getTimesheet from "../../../collections/timesheets";
+import getTimesheet from "../../../collections/timesheet";
 import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 

@@ -8,7 +8,7 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTask from "../../../collections/task";
 import getTaskColumn from "../../../collections/taskColumn";
 import { PermissionLevel } from "../../../collections/permission";
-import getTimesheet from "../../../collections/timesheets";
+import getTimesheet from "../../../collections/timesheet";
 import { groupBy, sumBy, toPairs } from "lodash-es";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getUser from "@italodeandra/auth/collections/user/User";
@@ -89,10 +89,10 @@ export const timesheetGetTaskOverviewApi = createApi(
       },
     );
 
-    const users = await asyncMap(
+    let users = await asyncMap(
       toPairs(groupBy(timesheets, "userId")),
       async ([userId, timesheets]) => {
-        const user = (await User.findById(userId, {
+        const user2 = (await User.findById(userId, {
           projection: {
             name: 1,
             email: 1,
@@ -101,10 +101,11 @@ export const timesheetGetTaskOverviewApi = createApi(
         const currentClockTimesheet = timesheets.find(
           (t) => t.time === undefined,
         );
+        const isMe = user2._id.equals(user._id);
         return {
           user: {
-            ...user,
-            isMe: user._id.equals(user._id),
+            ...user2,
+            isMe,
           },
           currentClock: currentClockTimesheet?.startedAt,
           timeClocked: sumBy(
@@ -116,6 +117,8 @@ export const timesheetGetTaskOverviewApi = createApi(
     );
 
     const currentUserClock = users.find((u) => u.user.isMe)?.currentClock;
+
+    users = users.sort((a, b) => (a.user.isMe ? -1 : b.user.isMe ? 1 : 0));
 
     return {
       users,

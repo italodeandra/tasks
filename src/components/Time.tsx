@@ -3,6 +3,7 @@ import formatTime from "@italodeandra/ui/utils/formatTime";
 
 export function Time({
   value,
+  plus = 0,
   from,
   autoUpdate,
   interval = 1000,
@@ -10,6 +11,7 @@ export function Time({
   className,
 }: {
   value?: number;
+  plus?: number;
   from?: Date | string;
   interval?: number;
   autoUpdate?: boolean;
@@ -21,7 +23,7 @@ export function Time({
   useInterval(update, autoUpdate ? interval : null);
 
   let time = formatTime(
-    (from ? Date.now() - new Date(from).getTime() : value) || 0,
+    ((from ? Date.now() - new Date(from).getTime() : value) || 0) + plus,
   );
 
   if (short) {

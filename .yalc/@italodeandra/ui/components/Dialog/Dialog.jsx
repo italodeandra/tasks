@@ -5,12 +5,12 @@ import Button from "../Button";
 import clsx from "../../utils/clsx";
 import { modalContentClassName } from "../../styles/Modal.classNames";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, titleClassName, descriptionClassName, hideTitle, }) {
+export default function Dialog({ children, title, description, open, onOpenChange, contentClassName, contentOverflowClassName, closeButtonClassName, overlayClassName, titleClassName, descriptionClassName, hideTitle, contentProps, }) {
     const TitleWrapper = !hideTitle ? Fragment : VisuallyHidden;
     return (<RDialog.Root open={open} onOpenChange={onOpenChange}>
       <RDialog.Portal>
         <RDialog.Overlay className={clsx("ui-dialog-overlay", "fixed inset-0 z-20 flex items-center justify-center bg-black/50", "will-change-[opacity,transform] data-[state=closed]:animate-fadeOut data-[state=open]:animate-slideUpAndFade", overlayClassName)}>
-          <RDialog.Content className={clsx(modalContentClassName, "ui-dialog-content", "relative p-0 focus:outline-none", contentClassName)} {...(!description ? { "aria-describedby": undefined } : {})}>
+          <RDialog.Content className={clsx(modalContentClassName, "ui-dialog-content", "relative p-0 focus:outline-none", contentClassName, contentProps?.className)} {...(!description ? { "aria-describedby": undefined } : {})} {...contentProps}>
             <div className={clsx("flex max-h-[85vh] w-[90vw] max-w-[450px] flex-col gap-3 overflow-auto p-4", contentOverflowClassName)}>
               <TitleWrapper>
                 <RDialog.Title className={clsx("ui-dialog-title", "-mb-1 text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50", titleClassName)}>

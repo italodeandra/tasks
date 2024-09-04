@@ -6,10 +6,10 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function TaskDialogTitle({
   taskId,
-  canEdit,
+  hasBoardAdminPermission,
 }: {
   taskId: string;
-  canEdit?: boolean;
+  hasBoardAdminPermission?: boolean;
 }) {
   const [title, setTitle] = useState("");
 
@@ -43,9 +43,9 @@ export function TaskDialogTitle({
   return (
     <MarkdownEditor
       value={title}
-      onChange={canEdit ? handleChangeTitle : undefined}
+      onChange={hasBoardAdminPermission ? handleChangeTitle : undefined}
       className="-mx-1 -mt-0.5 rounded-md px-1"
-      editOnDoubleClick={canEdit}
+      editOnDoubleClick={hasBoardAdminPermission}
       editHighlight
     />
   );

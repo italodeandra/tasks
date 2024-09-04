@@ -20,6 +20,10 @@ import Loading from "@italodeandra/ui/components/Loading";
 import getInitials from "@italodeandra/ui/utils/getInitials";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import { TeamsDialogContent } from "./teams/TeamsDialogContent";
+import {
+  colors,
+  getColorForString,
+} from "../../../../components/ColorPicker/colors";
 
 export function UserSection() {
   const queryClient = useQueryClient();
@@ -56,14 +60,23 @@ export function UserSection() {
 
   const isLoading = isStoppingImpersonate || (!!token && isLoadingUser);
 
+  const userColor = user ? getColorForString(user._id) : colors.blue;
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
         <Button
           variant="filled"
           rounded
-          className="group/myself pointer-events-auto relative h-7 w-7 p-0 text-xs uppercase dark:bg-blue-600 dark:text-white dark:hover:bg-blue-500"
+          className="group/myself pointer-events-auto relative h-7 w-7 p-0 text-xs uppercase dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]"
           onClick={stopPropagation}
+          style={
+            {
+              "--bg": userColor["500"],
+              "--hover": userColor["400"],
+              "--active-border": userColor["300"],
+            } as Record<string, string>
+          }
         >
           {isLoading ? (
             <Loading className="h-4 w-4" />

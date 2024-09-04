@@ -11,6 +11,7 @@ export default function createApi(queryKey, handler, apiOptions) {
         useQuery: (args, options) => useQuery({
             queryKey: [queryKey, ...(apiOptions?.queryKeyMap?.(args) || [])],
             queryFn: queryFnWrapper(queryKey, args),
+            ...apiOptions?.queryOptions,
             ...options,
         }),
         useMutation: (options) => {
