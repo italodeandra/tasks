@@ -1,5 +1,4 @@
 import createApi from "@italodeandra/next/api/createApi";
-import { unauthorized } from "@italodeandra/next/api/errors";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { connectDb } from "../../../db";
 import getSubProject, { ISubProject } from "../../../collections/subProject";
@@ -7,8 +6,6 @@ import getTeam from "../../../collections/team";
 import getProject, { IProject } from "../../../collections/project";
 import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import asyncMap from "@italodeandra/next/utils/asyncMap";
-import { PermissionLevel } from "../../../collections/permission";
 
 export const projectListWithSubProjectsApi = createApi(
   "/api/project/list-with-sub-projects",
@@ -29,35 +26,12 @@ export const projectListWithSubProjectsApi = createApi(
     const userTeamsIds = userTeams?.map((t) => t._id);
     const boardId = isomorphicObjectId(args.boardId);
 
-    const haveAccessToReadBoard = await Board.countDocuments({
-      _id: boardId,
-      $or: [
-        ...(user
-          ? [
-              {
-                "permissions.userId": {
-                  $in: [user._id],
-                },
-              },
-              {
-                "permissions.teamId": {
-                  $in: userTeamsIds,
-                },
-              },
-            ]
-          : []),
-        {
-          "permissions.public": true,
-        },
-      ],
-    });
-    if (!haveAccessToReadBoard) {
-      throw unauthorized;
-    }
-
-    const projects = await Project.aggregate<
-      Pick<IProject, "_id" | "name" | "permissions"> & {
-        subProjects: Pick<ISubProject, "_id" | "name" | "permissions">[];
+    return Project.aggregate<
+      Pick<IProject, "_id" | "name"> & {
+        subProjects: (Pick<ISubProject, "_id" | "name"> & {
+          canEdit: boolean;
+        })[];
+        canEdit: boolean;
       }
     >([
       {
@@ -66,30 +40,137 @@ export const projectListWithSubProjectsApi = createApi(
             $ne: true,
           },
           boardId,
-          $or: [
+        },
+      },
+      {
+        $lookup: {
+          from: Board.collection.collectionName,
+          localField: "boardId",
+          foreignField: "_id",
+          as: "board",
+          pipeline: [
             {
-              permissions: {
-                $exists: false,
+              $project: {
+                permissions: 1,
               },
             },
-            ...(user
-              ? [
-                  {
-                    "permissions.userId": {
-                      $in: [user._id],
-                    },
-                  },
-                  {
-                    "permissions.teamId": {
-                      $in: userTeamsIds,
-                    },
-                  },
-                ]
-              : []),
+          ],
+        },
+      },
+      {
+        $unwind: "$board",
+      },
+      {
+        $match: {
+          $and: [
             {
-              "permissions.public": true,
+              $or: [
+                ...(user
+                  ? [
+                      {
+                        "board.permissions.userId": {
+                          $in: [user._id],
+                        },
+                      },
+                      {
+                        "board.permissions.teamId": {
+                          $in: userTeamsIds,
+                        },
+                      },
+                    ]
+                  : []),
+                {
+                  "board.permissions.public": true,
+                },
+              ],
+            },
+            {
+              $or: [
+                {
+                  permissions: {
+                    $exists: false,
+                  },
+                },
+                ...(user
+                  ? [
+                      {
+                        "permissions.userId": {
+                          $in: [user._id],
+                        },
+                      },
+                      {
+                        "permissions.teamId": {
+                          $in: userTeamsIds,
+                        },
+                      },
+                    ]
+                  : []),
+                {
+                  "permissions.public": true,
+                },
+              ],
             },
           ],
+        },
+      },
+      {
+        $addFields: {
+          canEdit: user?._id
+            ? {
+                $or: [
+                  {
+                    $in: [
+                      user._id,
+                      {
+                        $ifNull: [
+                          {
+                            $map: {
+                              input: {
+                                $filter: {
+                                  input: "$permissions",
+                                  as: "perm",
+                                  cond: {
+                                    $in: ["$$perm.level", ["ADMIN"]],
+                                  },
+                                },
+                              },
+                              as: "perm",
+                              in: "$$perm.userId",
+                            },
+                          },
+                          [],
+                        ],
+                      },
+                    ],
+                  },
+                  {
+                    $in: [
+                      user._id,
+                      {
+                        $ifNull: [
+                          {
+                            $map: {
+                              input: {
+                                $filter: {
+                                  input: "$board.permissions",
+                                  as: "perm",
+                                  cond: {
+                                    $in: ["$$perm.level", ["ADMIN"]],
+                                  },
+                                },
+                              },
+                              as: "perm",
+                              in: "$$perm.userId",
+                            },
+                          },
+                          [],
+                        ],
+                      },
+                    ],
+                  },
+                ],
+              }
+            : { $literal: false },
         },
       },
       {
@@ -98,6 +179,9 @@ export const projectListWithSubProjectsApi = createApi(
           localField: "_id",
           foreignField: "projectId",
           as: "subProjects",
+          let: {
+            canEditProject: "$canEdit",
+          },
           pipeline: [
             {
               $match: {
@@ -136,7 +220,44 @@ export const projectListWithSubProjectsApi = createApi(
             {
               $project: {
                 name: 1,
-                permissions: 1,
+                canEdit: user?._id
+                  ? {
+                      $or: [
+                        {
+                          $in: [
+                            user._id,
+                            {
+                              $ifNull: [
+                                {
+                                  $map: {
+                                    input: {
+                                      $filter: {
+                                        input: "$permissions",
+                                        as: "perm",
+                                        cond: {
+                                          $in: [
+                                            "$$perm.level",
+                                            ["ADMIN", "WRITE"],
+                                          ],
+                                        },
+                                      },
+                                    },
+                                    as: "perm",
+                                    in: "$$perm.userId",
+                                  },
+                                },
+                                [],
+                              ],
+                            },
+                          ],
+                        },
+                        {
+                          $eq: ["$$canEditProject", true],
+                        },
+                      ],
+                    }
+                  : { $literal: false },
+                rootEdit: "$$ROOT.canEdit",
               },
             },
           ],
@@ -150,27 +271,11 @@ export const projectListWithSubProjectsApi = createApi(
       {
         $project: {
           name: 1,
-          permissions: 1,
           subProjects: 1,
+          canEdit: 1,
         },
       },
     ]);
-
-    return asyncMap(
-      projects,
-      async ({ permissions, subProjects, ...project }) => ({
-        ...project,
-        canEdit:
-          (user && !permissions) ||
-          permissions?.some((p) => p.level === PermissionLevel.ADMIN),
-        subProjects: subProjects.map(({ permissions, ...subProject }) => ({
-          ...subProject,
-          canEdit:
-            !permissions ||
-            permissions.some((p) => p.level === PermissionLevel.ADMIN),
-        })),
-      }),
-    );
   },
   {
     queryKeyMap: (args) => [args?.boardId],
