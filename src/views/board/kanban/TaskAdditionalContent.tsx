@@ -84,9 +84,9 @@ export function TaskAdditionalContent({
                   )}
                   style={
                     {
-                      "--bg": userColor["500"],
-                      "--hover": userColor["400"],
-                      "--active-border": userColor["300"],
+                      "--bg": userColor["600"],
+                      "--hover": userColor["500"],
+                      "--active-border": userColor["400"],
                     } as Record<string, string>
                   }
                   onClick={(e) => {
@@ -143,7 +143,7 @@ export function TaskAdditionalContent({
                   )}
                   style={
                     {
-                      "--bg": getColorForString(assignee._id)["500"],
+                      "--bg": getColorForString(assignee._id)["600"],
                     } as Record<string, string>
                   }
                 >

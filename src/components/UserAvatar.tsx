@@ -21,7 +21,7 @@ export function UserAvatar({
       )}
       style={
         {
-          "--bg": getColorForString(_id)["500"],
+          "--bg": getColorForString(_id)["600"],
         } as Record<string, string>
       }
     >

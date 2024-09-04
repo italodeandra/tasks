@@ -7,7 +7,7 @@ export function TeamAvatar({ _id, name }: { _id: string; name: string }) {
       className="flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] text-center text-xs uppercase"
       style={
         {
-          "--bg": getColorForString(_id)["500"],
+          "--bg": getColorForString(_id)["600"],
         } as Record<string, string>
       }
     >
