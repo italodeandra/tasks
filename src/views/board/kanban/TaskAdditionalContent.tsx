@@ -58,102 +58,114 @@ export function TaskAdditionalContent({
   }
 
   return (
-    <div className="flex justify-end gap-2 px-3 pb-3">
-      {task.assignees.map((assignee) => {
-        const initials = getInitials(assignee.name || assignee.email);
-        const userColor = getColorForString(assignee._id);
-        return (
-          <Fragment key={assignee._id}>
-            {assignee.isMe ? (
-              <Tooltip
-                content={
-                  !timesheetGetMyOverview.data?.myCurrentClock
-                    ? "Start tracking time on this task"
-                    : "Stop tracking time"
-                }
-              >
-                <Button
-                  variant="filled"
-                  rounded
-                  className={clsx(
-                    "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
-                    {
-                      "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
-                        timesheetGetMyOverview.data?.myCurrentClock,
-                    },
-                  )}
-                  style={
-                    {
-                      "--bg": userColor["600"],
-                      "--hover": userColor["500"],
-                      "--active-border": userColor["400"],
-                    } as Record<string, string>
-                  }
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (timesheetGetMyOverview.data?.myCurrentClock) {
-                      timesheetStop.mutate();
-                    } else {
-                      timesheetStart.mutate({ taskId: cardId });
+    <div className="flex flex-col gap-2 px-3 pb-3">
+      {(task.project || task.subProject) && (
+        <div className="flex flex-wrap justify-end gap-1 rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">
+          {[task.project?.name, task.subProject?.name].join(" · ")}
+        </div>
+      )}
+      {!!task.assignees.length && (
+        <div className="flex flex-wrap justify-end gap-2">
+          {task.assignees.map((assignee) => {
+            const initials = getInitials(assignee.name || assignee.email);
+            const userColor = getColorForString(assignee._id);
+            return (
+              <Fragment key={assignee._id}>
+                {assignee.isMe ? (
+                  <Tooltip
+                    content={
+                      !timesheetGetMyOverview.data?.myCurrentClock
+                        ? "Start tracking time on this task"
+                        : "Stop tracking time"
                     }
-                  }}
-                  onTouchStart={stopPropagation}
-                  onMouseDown={stopPropagation}
-                >
-                  {timesheetStart.isPending ||
-                  timesheetStop.isPending ||
-                  timesheetGetMyOverview.isLoading ? (
-                    <Loading />
-                  ) : (
-                    <>
-                      {timesheetGetMyOverview.data?.myCurrentClock ? (
-                        <>
-                          <Time
-                            from={timesheetGetMyOverview.data.myCurrentClock}
-                            autoUpdate
-                            short
-                            className="group-hover/myself:hidden"
-                          />
-                          <span className="hidden group-hover/myself:block">
-                            <StopIcon className="-mx-1 h-4 w-4" />
-                          </span>
-                        </>
+                  >
+                    <Button
+                      variant="filled"
+                      rounded
+                      className={clsx(
+                        "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
+                        {
+                          "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
+                            timesheetGetMyOverview.data?.myCurrentClock,
+                        },
+                      )}
+                      style={
+                        {
+                          "--bg": userColor["600"],
+                          "--hover": userColor["500"],
+                          "--active-border": userColor["400"],
+                        } as Record<string, string>
+                      }
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (timesheetGetMyOverview.data?.myCurrentClock) {
+                          timesheetStop.mutate();
+                        } else {
+                          timesheetStart.mutate({ taskId: cardId });
+                        }
+                      }}
+                      onTouchStart={stopPropagation}
+                      onMouseDown={stopPropagation}
+                    >
+                      {timesheetStart.isPending ||
+                      timesheetStop.isPending ||
+                      timesheetGetMyOverview.isLoading ? (
+                        <Loading />
                       ) : (
                         <>
-                          <span className="group-hover/myself:hidden">
-                            {initials}
-                          </span>
-                          <span className="hidden group-hover/myself:block">
-                            <PlayIcon className="h-4 w-4" />
-                          </span>
+                          {timesheetGetMyOverview.data?.myCurrentClock ? (
+                            <>
+                              <Time
+                                from={
+                                  timesheetGetMyOverview.data.myCurrentClock
+                                }
+                                autoUpdate
+                                short
+                                className="group-hover/myself:hidden"
+                              />
+                              <span className="hidden group-hover/myself:block">
+                                <StopIcon className="-mx-1 h-4 w-4" />
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <span className="group-hover/myself:hidden">
+                                {initials}
+                              </span>
+                              <span className="hidden group-hover/myself:block">
+                                <PlayIcon className="h-4 w-4" />
+                              </span>
+                            </>
+                          )}
                         </>
                       )}
-                    </>
-                  )}
-                </Button>
-              </Tooltip>
-            ) : (
-              <Tooltip content={assignee.name || assignee.email}>
-                <div
-                  className={clsx(
-                    "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] p-0 text-xs text-white",
-                    {
-                      "border-2 border-green-700": assignee.currentlyClocking,
-                    },
-                  )}
-                  style={
-                    {
-                      "--bg": getColorForString(assignee._id)["600"],
-                    } as Record<string, string>
-                  }
-                >
-                  {initials}
-                </div>
-              </Tooltip>
-            )}
-          </Fragment>
-        );
-      })}
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Tooltip content={assignee.name || assignee.email}>
+                    <div
+                      className={clsx(
+                        "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] p-0 text-xs text-white",
+                        {
+                          "border-2 border-green-700":
+                            assignee.currentlyClocking,
+                        },
+                      )}
+                      style={
+                        {
+                          "--bg": getColorForString(assignee._id)["600"],
+                        } as Record<string, string>
+                      }
+                    >
+                      {initials}
+                    </div>
+                  </Tooltip>
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

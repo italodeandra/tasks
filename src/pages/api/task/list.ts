@@ -9,8 +9,8 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
 import querify from "@italodeandra/next/utils/querify";
 import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
-import getProject from "../../../collections/project";
-import getSubProject from "../../../collections/subProject";
+import getProject, { IProject } from "../../../collections/project";
+import getSubProject, { ISubProject } from "../../../collections/subProject";
 import getTimesheet from "../../../collections/timesheet";
 import { PermissionLevel } from "../../../collections/permission";
 
@@ -85,6 +85,8 @@ export const taskListApi = createApi(
             isMe: boolean;
             currentlyClocking: boolean;
           })[];
+          project?: Pick<IProject, "_id" | "name">;
+          subProject?: Pick<ISubProject, "_id" | "name">;
         }
       >([
         {
@@ -104,6 +106,7 @@ export const taskListApi = createApi(
                 $project: {
                   archived: 1,
                   permissions: 1,
+                  name: 1,
                 },
               },
             ],
@@ -126,6 +129,7 @@ export const taskListApi = createApi(
                 $project: {
                   archived: 1,
                   permissions: 1,
+                  name: 1,
                 },
               },
             ],
@@ -606,6 +610,10 @@ export const taskListApi = createApi(
                   ],
                 }
               : { $literal: false },
+            "project._id": 1,
+            "project.name": 1,
+            "subProject._id": 1,
+            "subProject.name": 1,
           },
         },
       ]);
