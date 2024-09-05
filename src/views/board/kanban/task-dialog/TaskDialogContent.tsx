@@ -13,6 +13,7 @@ import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
 import { Activity } from "./Activity";
 import { Timesheet } from "./Timesheet";
+import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 
 export function TaskDialogContent({
   boardId,
@@ -26,6 +27,9 @@ export function TaskDialogContent({
   const [columnId, setColumnId] = useState("");
   const [projectId, setProjectId] = useState("");
   const [subProjectId, setSubProjectId] = useState("");
+  const [secondaryProjectsIds, setSecondaryProjectsIds] = useState<string[]>(
+    [],
+  );
 
   const taskGet = taskGetApi.useQuery({
     _id: taskId,
@@ -38,6 +42,7 @@ export function TaskDialogContent({
       setColumnId(task.columnId || "");
       setProjectId(task.projectId || "");
       setSubProjectId(task.subProjectId || "");
+      setSecondaryProjectsIds(task.secondaryProjectsIds || []);
     }
   }, [task]);
 
@@ -63,6 +68,8 @@ export function TaskDialogContent({
     },
     [taskId, taskUpdate],
   );
+
+  const labelWidthClassName = "w-40";
 
   return (
     <div className="grid grid-cols-2 gap-2">
@@ -91,7 +98,14 @@ export function TaskDialogContent({
           )}
         >
           <div className="flex">
-            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Status</div>
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
+              Status
+            </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
               <StatusSelect
                 taskId={taskId}
@@ -104,7 +118,14 @@ export function TaskDialogContent({
             </div>
           </div>
           <div className="flex">
-            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Column</div>
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
+              Column
+            </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
               <ColumnSelect
                 taskId={taskId}
@@ -117,7 +138,14 @@ export function TaskDialogContent({
             </div>
           </div>
           <div className="flex">
-            <div className="w-28 bg-white/[0.05] px-2.5 py-2">Project</div>
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
+              Project
+            </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
               <ProjectSelect
                 taskId={taskId}
@@ -130,25 +158,58 @@ export function TaskDialogContent({
             </div>
           </div>
           {projectId && (
-            <div className="flex">
-              <div className="w-28 bg-white/[0.05] px-2.5 py-2">
-                Sub project
+            <>
+              <div className="flex">
+                <div
+                  className={clsx(
+                    "bg-white/[0.05] px-2.5 py-2",
+                    labelWidthClassName,
+                  )}
+                >
+                  Sub project
+                </div>
+                <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+                  <SubProjectSelect
+                    projectId={projectId}
+                    taskId={taskId}
+                    boardId={boardId}
+                    value={subProjectId}
+                    onChange={setSubProjectId}
+                    loading={taskGet.isLoading}
+                    canEdit={task?.canEdit}
+                  />
+                </div>
               </div>
-              <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
-                <SubProjectSelect
-                  projectId={projectId}
-                  taskId={taskId}
-                  boardId={boardId}
-                  value={subProjectId}
-                  onChange={setSubProjectId}
-                  loading={taskGet.isLoading}
-                  canEdit={task?.canEdit}
-                />
+              <div className="flex">
+                <div
+                  className={clsx(
+                    "bg-white/[0.05] px-2.5 py-2",
+                    labelWidthClassName,
+                  )}
+                >
+                  Secondary projects
+                </div>
+                <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+                  <SecondaryProjectsSelect
+                    projectId={projectId}
+                    taskId={taskId}
+                    boardId={boardId}
+                    value={secondaryProjectsIds}
+                    onChange={setSecondaryProjectsIds}
+                    loading={taskGet.isLoading}
+                    canEdit={task?.canEdit}
+                  />
+                </div>
               </div>
-            </div>
+            </>
           )}
           <div className="flex">
-            <div className="flex w-28 items-center bg-white/[0.05] px-2.5 py-2">
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
               Assigned to
             </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-1.5">

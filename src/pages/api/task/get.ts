@@ -46,6 +46,7 @@ export const taskGetApi = createApi(
           | "statusId"
           | "projectId"
           | "subProjectId"
+          | "secondaryProjectsIds"
         > & {
           canEdit: boolean;
           canComment: boolean;
@@ -551,6 +552,7 @@ export const taskGetApi = createApi(
             projectId: 1,
             subProjectId: 1,
             assignees: 1,
+            secondaryProjectsIds: 1,
           },
         },
       ])

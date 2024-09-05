@@ -37,6 +37,7 @@ export const taskUpdateApi = createApi(
           | "subProjectId"
           | "assignees"
           | "title"
+          | "secondaryProjectsIds"
         >
       >
     >,
@@ -122,6 +123,7 @@ export const taskUpdateApi = createApi(
           ? isomorphicObjectId(args.subProjectId)
           : undefined,
       assignees: args.assignees?.map(isomorphicObjectId),
+      secondaryProjectsIds: args.secondaryProjectsIds?.map(isomorphicObjectId),
     };
     removeEmptyProperties($set);
 
@@ -129,6 +131,7 @@ export const taskUpdateApi = createApi(
     if (args.projectId === "__NONE__") {
       $unset.projectId = "";
       $unset.subProjectId = "";
+      $unset.secondaryProjectsIds = "";
     }
     if (args.subProjectId === "__NONE__") {
       $unset.subProjectId = "";

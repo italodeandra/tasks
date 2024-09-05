@@ -122,9 +122,27 @@ export async function devSeed() {
       },
     );
 
-    const project = await Project.upsert(
+    const project1 = await Project.upsert(
       {
         name: "Test project",
+        boardId: board._id,
+      },
+      {
+        $set: {},
+      },
+    );
+    await Project.upsert(
+      {
+        name: "Test project 2",
+        boardId: board._id,
+      },
+      {
+        $set: {},
+      },
+    );
+    await Project.upsert(
+      {
+        name: "Test project 3",
         boardId: board._id,
       },
       {
@@ -135,7 +153,7 @@ export async function devSeed() {
     const subProject = await SubProject.upsert(
       {
         name: "Test sub-project",
-        projectId: project._id,
+        projectId: project1._id,
       },
       {
         $set: {},
@@ -150,7 +168,7 @@ export async function devSeed() {
         $set: {
           title: "Develop tasks",
           order: 0,
-          projectId: project._id,
+          projectId: project1._id,
           subProjectId: subProject._id,
           columnId: columDoing._id,
           statusId: statusDoing._id,
