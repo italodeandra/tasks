@@ -72,7 +72,7 @@ export function TaskDialogContent({
   const labelWidthClassName = "w-40";
 
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="grid gap-2 sm:grid-cols-2">
       <div className="relative">
         {taskUpdate.isPending && <Loading className="absolute right-2 top-2" />}
         {taskGet.isLoading ? (

@@ -42,6 +42,7 @@ export function TaskDialogTitle({ taskId }: { taskId: string }) {
       className="-mx-1 -mt-0.5 rounded-md px-1"
       editOnDoubleClick={task?.canEdit}
       editHighlight
+      placeholder="No title"
     />
   );
 }
