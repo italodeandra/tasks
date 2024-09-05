@@ -2,7 +2,6 @@ import { ComponentType, HTMLAttributes, ReactNode } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { MarkdownEditor } from "./MarkdownEditor";
-import Sticky from "react-stickynode";
 
 export function List<AP extends Record<string, unknown>>({
   title,
@@ -33,7 +32,7 @@ export function List<AP extends Record<string, unknown>>({
     <div
       {...props}
       className={clsx(
-        "rounded-xl bg-zinc-900",
+        "flex min-w-40 flex-col gap-2 rounded-xl bg-zinc-900 p-2",
         {
           "pointer-events-none opacity-30 grayscale": dragging,
         },
@@ -43,17 +42,13 @@ export function List<AP extends Record<string, unknown>>({
     >
       <ContextMenu.Root>
         <ContextMenu.Trigger asChild>
-          <Sticky enabled={true} top="#header" innerZ={1}>
-            <div className="relative z-30 rounded-xl bg-zinc-900 p-2 transition-all scrolled:rounded-t-none">
-              <MarkdownEditor
-                value={title}
-                onChange={canEdit ? onChangeTitle : undefined}
-                className="rounded-md px-1 text-sm font-medium outline-0"
-                editOnDoubleClick
-                editHighlight
-              />
-            </div>
-          </Sticky>
+          <MarkdownEditor
+            value={title}
+            onChange={canEdit ? onChangeTitle : undefined}
+            className="rounded-md px-1 text-sm font-medium outline-0"
+            editOnDoubleClick
+            editHighlight
+          />
         </ContextMenu.Trigger>
         {canEdit && (
           <ContextMenu.Content>
@@ -66,7 +61,7 @@ export function List<AP extends Record<string, unknown>>({
           </ContextMenu.Content>
         )}
       </ContextMenu.Root>
-      <div className="flex flex-col gap-2 p-2">{children}</div>
+      {children}
     </div>
   );
 }
