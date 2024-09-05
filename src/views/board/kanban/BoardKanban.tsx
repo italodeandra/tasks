@@ -41,19 +41,8 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         _id: dialogId,
         titleClassName: "mb-0",
         contentOverflowClassName: "max-w-screen-xl gap-4",
-        title: (
-          <TaskDialogTitle
-            taskId={openTaskId}
-            hasBoardAdminPermission={boardGet.data?.hasAdminPermission}
-          />
-        ),
-        content: (
-          <TaskDialogContent
-            taskId={openTaskId}
-            boardId={boardId}
-            hasBoardAdminPermission={boardGet.data?.hasAdminPermission}
-          />
-        ),
+        title: <TaskDialogTitle taskId={openTaskId} />,
+        content: <TaskDialogContent taskId={openTaskId} boardId={boardId} />,
         closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
         onClose: () => void setOpenTaskId(null),
         contentProps: reactQueryDialogContentProps,
@@ -147,9 +136,9 @@ export function BoardKanban({ boardId }: { boardId: string }) {
           )
         );
         const omittedTasks =
-          list?.tasks?.map((t) => omit(t, "assignees")) || [];
+          list?.tasks?.map((t) => pick(t, "_id", "title")) || [];
         const omittedTasks2 =
-          debouncedList.tasks?.map((t) => omit(t, "assignees")) || [];
+          debouncedList.tasks?.map((t) => pick(t, "_id", "title")) || [];
         return {
           listId: debouncedList._id,
           isTasksOrderChanged,
@@ -254,6 +243,24 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
   }));
 
+  const checkCanEditTask = useCallback(
+    (listId: string, cardId: string) => {
+      const list2 = find(taskList.data, { _id: listId });
+      const task = find(list2?.tasks, { _id: cardId });
+      return task?.canEdit;
+    },
+    [taskList.data],
+  );
+
+  const checkCanDeleteTask = useCallback(
+    (listId: string, cardId: string) => {
+      const list2 = find(taskList.data, { _id: listId });
+      const task = find(list2?.tasks, { _id: cardId });
+      return task?.canDelete;
+    },
+    [taskList.data],
+  );
+
   return (
     <Kanban
       className="overflow-auto px-2 pb-2"
@@ -272,9 +279,11 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       canAddList={boardGet.data?.hasAdminPermission}
       canEditList={boardGet.data?.hasAdminPermission}
       canMoveList={boardGet.data?.hasAdminPermission}
-      canAddCard={boardGet.data?.hasAdminPermission}
-      canEditCard={boardGet.data?.hasAdminPermission}
       canMoveCard={boardGet.data?.hasAdminPermission}
+      canAddCard={boardGet.data?.hasAdminPermission}
+      canEditCard={checkCanEditTask}
+      canDuplicateCard={boardGet.data?.hasAdminPermission}
+      canDeleteCard={checkCanDeleteTask}
     />
   );
 }

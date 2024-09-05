@@ -11,6 +11,7 @@ import { PermissionLevel } from "../../../collections/permission";
 import getTimesheet from "../../../collections/timesheet";
 import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
+import { taskListApi } from "../task/list";
 
 export const timesheetStartApi = createApi(
   "/api/timesheet/start",
@@ -79,15 +80,20 @@ export const timesheetStartApi = createApi(
       startedAt: new Date(),
       userId: user._id,
     });
+
+    return {
+      boardId: column.boardId,
+    };
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
+      async onSuccess(data, variables, _c, queryClient) {
         await timesheetGetTaskOverviewApi.invalidateQueries(
           queryClient,
           variables,
         );
         await timesheetGetMyOverviewApi.invalidateQueries(queryClient);
+        await taskListApi.invalidateQueries(queryClient, data);
       },
     },
   },

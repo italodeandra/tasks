@@ -4,23 +4,18 @@ import { taskGetApi } from "../../../../pages/api/task/get";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 
-export function TaskDialogTitle({
-  taskId,
-  hasBoardAdminPermission,
-}: {
-  taskId: string;
-  hasBoardAdminPermission?: boolean;
-}) {
+export function TaskDialogTitle({ taskId }: { taskId: string }) {
   const [title, setTitle] = useState("");
 
   const taskGet = taskGetApi.useQuery({
     _id: taskId,
   });
+  const task = taskGet.data;
   useEffect(() => {
-    if (taskGet.data) {
-      setTitle(taskGet.data.title || "");
+    if (task) {
+      setTitle(task.title || "");
     }
-  }, [taskGet.data]);
+  }, [task]);
 
   const taskUpdate = taskUpdateApi.useMutation();
   const handleChangeTitle = useCallback(
@@ -43,9 +38,9 @@ export function TaskDialogTitle({
   return (
     <MarkdownEditor
       value={title}
-      onChange={hasBoardAdminPermission ? handleChangeTitle : undefined}
+      onChange={task?.canEdit ? handleChangeTitle : undefined}
       className="-mx-1 -mt-0.5 rounded-md px-1"
-      editOnDoubleClick={hasBoardAdminPermission}
+      editOnDoubleClick={task?.canEdit}
       editHighlight
     />
   );

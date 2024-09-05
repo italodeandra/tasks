@@ -17,11 +17,9 @@ import { Timesheet } from "./Timesheet";
 export function TaskDialogContent({
   boardId,
   taskId,
-  hasBoardAdminPermission,
 }: {
   boardId: string;
   taskId: string;
-  hasBoardAdminPermission?: boolean;
 }) {
   const [description, setDescription] = useState("");
   const [statusId, setStatusId] = useState("");
@@ -166,7 +164,7 @@ export function TaskDialogContent({
           </div>
         </div>
         {task?.canEdit && <Timesheet taskId={taskId} />}
-        <Activity taskId={taskId} />
+        <Activity taskId={taskId} canComment={task?.canComment} />
       </div>
     </div>
   );

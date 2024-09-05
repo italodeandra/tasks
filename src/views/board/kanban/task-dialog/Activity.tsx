@@ -1,4 +1,3 @@
-import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 import { taskActivityListApi } from "../../../../pages/api/task-activity/list";
 import { useEffect, useState } from "react";
 import { taskActivityCommentApi } from "../../../../pages/api/task-activity/comment";
@@ -13,9 +12,13 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import dayjs from "dayjs";
 
-export function Activity({ taskId }: { taskId: string }) {
-  const authGetUser = useAuthGetUser();
-
+export function Activity({
+  taskId,
+  canComment,
+}: {
+  taskId: string;
+  canComment?: boolean;
+}) {
   const taskActivityList = taskActivityListApi.useQuery({ taskId });
 
   const [comment, setComment] = useState("");
@@ -30,7 +33,7 @@ export function Activity({ taskId }: { taskId: string }) {
     <div className="flex flex-col gap-3">
       <div className="text-sm font-medium">Activity</div>
       <div className="flex flex-col gap-4">
-        {authGetUser.data && (
+        {canComment && (
           <Textarea
             placeholder="Add new comment"
             trailing={

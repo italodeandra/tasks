@@ -62,6 +62,7 @@ export function Kanban<AP extends Record<string, unknown>>({
   canAddCard,
   canEditCard,
   canMoveCard,
+  canDeleteCard,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -83,13 +84,38 @@ export function Kanban<AP extends Record<string, unknown>>({
   cardAdditionalProps?: AP;
   canDuplicateCard?: boolean;
   canAddCard?: boolean;
-  canEditCard?: boolean;
+  canEditCard?:
+    | boolean
+    | ((listId: string, cardId: string) => boolean | undefined);
   canMoveCard?: boolean;
+  canDeleteCard?:
+    | boolean
+    | ((listId: string, cardId: string) => boolean | undefined);
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
   const kanbanRef = useRef<HTMLDivElement>(null);
   const cardClickTimeout = useRef(0);
+
+  const checkCanEditCard = useCallback(
+    (listId: string, cardId: string) => {
+      if (typeof canEditCard === "function") {
+        return canEditCard(listId, cardId);
+      }
+      return canEditCard;
+    },
+    [canEditCard],
+  );
+
+  const checkCanDeleteCard = useCallback(
+    (listId: string, cardId: string) => {
+      if (typeof canDeleteCard === "function") {
+        return canDeleteCard(listId, cardId);
+      }
+      return canDeleteCard;
+    },
+    [canDeleteCard],
+  );
 
   useEffect(() => {
     if (!isEqual(data, dataProp)) {
@@ -727,7 +753,8 @@ export function Kanban<AP extends Record<string, unknown>>({
                 onDuplicateTo={handleDuplicateTo(card, list)}
                 listName={listName}
                 canDuplicate={canDuplicateCard}
-                canEdit={canEditCard}
+                canEdit={checkCanEditCard(list._id, card._id)}
+                canDelete={checkCanDeleteCard(list._id, card._id)}
               />
             ))}
             {canAddCard && (

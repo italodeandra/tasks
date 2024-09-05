@@ -10,6 +10,7 @@ import getBoard from "../../../collections/board";
 import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
 import getProject from "../../../collections/project";
 import getSubProject from "../../../collections/subProject";
+import { PermissionLevel } from "../../../collections/permission";
 
 export const taskGetApi = createApi(
   "/api/task/get",
@@ -47,6 +48,7 @@ export const taskGetApi = createApi(
           | "subProjectId"
         > & {
           canEdit: boolean;
+          canComment: boolean;
           assignees: (Pick<IUser, "_id" | "name" | "email"> & {
             isMe: boolean;
           })[];
@@ -255,14 +257,20 @@ export const taskGetApi = createApi(
                             input: {
                               $filter: {
                                 input: "$board.permissions",
-                                as: "perm",
+                                as: "boardPermUsers",
                                 cond: {
-                                  $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                  $in: [
+                                    "$$boardPermUsers.level",
+                                    [
+                                      PermissionLevel.ADMIN,
+                                      PermissionLevel.WRITE,
+                                    ],
+                                  ],
                                 },
                               },
                             },
-                            as: "perm",
-                            in: "$$perm.userId",
+                            as: "boardPermUsers",
+                            in: "$$boardPermUsers.userId",
                           },
                         },
                       ],
@@ -277,14 +285,20 @@ export const taskGetApi = createApi(
                                 input: {
                                   $filter: {
                                     input: "$project.permissions",
-                                    as: "perm",
+                                    as: "projectPermUsers",
                                     cond: {
-                                      $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                      $in: [
+                                        "$$projectPermUsers.level",
+                                        [
+                                          PermissionLevel.ADMIN,
+                                          PermissionLevel.WRITE,
+                                        ],
+                                      ],
                                     },
                                   },
                                 },
-                                as: "perm",
-                                in: "$$perm.userId",
+                                as: "projectPermUsers",
+                                in: "$$projectPermUsers.userId",
                               },
                             },
                             [],
@@ -302,14 +316,20 @@ export const taskGetApi = createApi(
                                 input: {
                                   $filter: {
                                     input: "$subProject.permissions",
-                                    as: "perm",
+                                    as: "subProjectsPermUsers",
                                     cond: {
-                                      $in: ["$$perm.level", ["ADMIN", "WRITE"]],
+                                      $in: [
+                                        "$$subProjectsPermUsers.level",
+                                        [
+                                          PermissionLevel.ADMIN,
+                                          PermissionLevel.WRITE,
+                                        ],
+                                      ],
                                     },
                                   },
                                 },
-                                as: "perm",
-                                in: "$$perm.userId",
+                                as: "subProjectsPermUsers",
+                                in: "$$subProjectsPermUsers.userId",
                               },
                             },
                             [],
@@ -317,6 +337,210 @@ export const taskGetApi = createApi(
                         },
                       ],
                     },
+                    ...(userTeamsIds?.length
+                      ? [
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: {
+                                        $filter: {
+                                          input: "$board.permissions",
+                                          as: "boardPermTeams",
+                                          cond: {
+                                            $in: [
+                                              "$$boardPermTeams.level",
+                                              [
+                                                PermissionLevel.ADMIN,
+                                                PermissionLevel.WRITE,
+                                              ],
+                                            ],
+                                          },
+                                        },
+                                      },
+                                      as: "boardPermTeams",
+                                      in: "$$boardPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: {
+                                        $filter: {
+                                          input: "$project.permissions",
+                                          as: "projectPermTeams",
+                                          cond: {
+                                            $in: [
+                                              "$$projectPermTeams.level",
+                                              [
+                                                PermissionLevel.ADMIN,
+                                                PermissionLevel.WRITE,
+                                              ],
+                                            ],
+                                          },
+                                        },
+                                      },
+                                      as: "projectPermTeams",
+                                      in: "$$projectPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: {
+                                        $filter: {
+                                          input: "$subProject.permissions",
+                                          as: "projectPermTeams",
+                                          cond: {
+                                            $in: [
+                                              "$$projectPermTeams.level",
+                                              [
+                                                PermissionLevel.ADMIN,
+                                                PermissionLevel.WRITE,
+                                              ],
+                                            ],
+                                          },
+                                        },
+                                      },
+                                      as: "projectPermTeams",
+                                      in: "$$projectPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                        ]
+                      : []),
+                  ],
+                }
+              : { $literal: false },
+            canComment: user?._id
+              ? {
+                  $or: [
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $map: {
+                            input: "$board.permissions",
+                            as: "boardPermUsers",
+                            in: "$$boardPermUsers.userId",
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $ifNull: [
+                            {
+                              $map: {
+                                input: "$project.permissions",
+                                as: "projectPermUsers",
+                                in: "$$projectPermUsers.userId",
+                              },
+                            },
+                            [],
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      $in: [
+                        user._id,
+                        {
+                          $ifNull: [
+                            {
+                              $map: {
+                                input: "$subProject.permissions",
+                                as: "subProjectsPermUsers",
+                                in: "$$subProjectsPermUsers.userId",
+                              },
+                            },
+                            [],
+                          ],
+                        },
+                      ],
+                    },
+                    ...(userTeamsIds?.length
+                      ? [
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: "$board.permissions",
+                                      as: "boardPermTeams",
+                                      in: "$$boardPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: "$project.permissions",
+                                      as: "projectPermTeams",
+                                      in: "$$projectPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                          {
+                            $setIsSubset: [
+                              userTeamsIds,
+                              {
+                                $ifNull: [
+                                  {
+                                    $map: {
+                                      input: "$subProject.permissions",
+                                      as: "projectPermTeams",
+                                      in: "$$projectPermTeams.teamId",
+                                    },
+                                  },
+                                  [],
+                                ],
+                              },
+                            ],
+                          },
+                        ]
+                      : []),
                   ],
                 }
               : { $literal: false },
@@ -337,87 +561,6 @@ export const taskGetApi = createApi(
     }
 
     return task;
-
-    // const task = await Task.findById(_id, {
-    //   projection: {
-    //     title: 1,
-    //     columnId: 1,
-    //     description: 1,
-    //     statusId: 1,
-    //     projectId: 1,
-    //     subProjectId: 1,
-    //     assignees: 1,
-    //   },
-    // });
-    // if (!task) {
-    //   throw notFound;
-    // }
-    //
-    // const column = await TaskColumn.findById(task.columnId, {
-    //   projection: {
-    //     boardId: 1,
-    //   },
-    // });
-    // if (!column) {
-    //   throw notFound;
-    // }
-    //
-    // const userTeams = user
-    //   ? await Team.find(
-    //       { "members.userId": { $in: [user._id] } },
-    //       { projection: { _id: 1 } },
-    //     )
-    //   : undefined;
-    // const userTeamsIds = userTeams?.map((t) => t._id);
-    // const haveAccessToBoard = await Board.countDocuments({
-    //   _id: column.boardId,
-    //   $or: [
-    //     ...(user
-    //       ? [
-    //           {
-    //             "permissions.userId": {
-    //               $in: [user._id],
-    //             },
-    //           },
-    //           {
-    //             "permissions.teamId": {
-    //               $in: userTeamsIds,
-    //             },
-    //           },
-    //         ]
-    //       : []),
-    //     {
-    //       "permissions.public": true,
-    //     },
-    //   ],
-    // });
-    // if (!haveAccessToBoard) {
-    //   throw unauthorized;
-    // }
-    //
-    // return {
-    //   ...omit(task, "assignees"),
-    //   canEdit: !!user && task.assignees.some((a) => a.equals(user._id)),
-    //   assignees: await asyncMap(
-    //     await User.find(
-    //       {
-    //         _id: {
-    //           $in: task.assignees,
-    //         },
-    //       },
-    //       {
-    //         projection: {
-    //           name: 1,
-    //           email: 1,
-    //         },
-    //       },
-    //     ),
-    //     async (user2) => ({
-    //       ...user2,
-    //       isMe: !!user && user2._id.equals(user._id),
-    //     }),
-    //   ),
-    // };
   },
   {
     queryKeyMap: (args) => [args?._id],

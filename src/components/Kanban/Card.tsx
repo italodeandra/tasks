@@ -37,6 +37,7 @@ export function Card<AP extends Record<string, unknown>>({
   listName,
   canDuplicate,
   canEdit,
+  canDelete,
   ...props
 }: {
   title: string;
@@ -60,6 +61,7 @@ export function Card<AP extends Record<string, unknown>>({
   lists: IList[];
   canDuplicate?: boolean;
   canEdit?: boolean;
+  canDelete?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(false);
@@ -209,9 +211,11 @@ export function Card<AP extends Record<string, unknown>>({
           <ContextMenu.Item onClick={handleEdit}>
             Edit {cardName}
           </ContextMenu.Item>
-          <ContextMenu.Item onClick={onDelete}>
-            Delete {cardName}
-          </ContextMenu.Item>
+          {canDelete && (
+            <ContextMenu.Item onClick={onDelete}>
+              Delete {cardName}
+            </ContextMenu.Item>
+          )}
         </ContextMenu.Content>
       )}
     </ContextMenu.Root>
