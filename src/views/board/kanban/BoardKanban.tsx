@@ -206,42 +206,54 @@ export function BoardKanban({ boardId }: { boardId: string }) {
             })
           : undefined,
         tasksChanges: tasksChangesMoved.length
-          ? tasksChangesMoved.map((s) => {
-              return {
-                _id: s.listId,
-                tasksOrderChange: s.isTasksOrderChanged
-                  ? debouncedData
-                      .find((l) => l._id === s.listId)
-                      ?.tasks?.map((t) => t._id)
-                  : undefined,
-                tasks: s.tasksChanges.length
-                  ? s.tasksChanges.map((t) => {
-                      const task = (
-                        ["inserted", "updated", "moved-in"].includes(t.type)
-                          ? t.after
-                          : t.before
-                      )!;
-                      return {
-                        _id: task._id,
-                        type: t.type,
-                        title: ["inserted", "updated"].includes(t.type)
-                          ? task.title
-                          : undefined,
-                      };
-                    })
-                  : undefined,
-              };
-            })
+          ? tasksChangesMoved
+              .map((s) => {
+                return {
+                  _id: s.listId,
+                  tasksOrderChange: s.isTasksOrderChanged
+                    ? debouncedData
+                        .find((l) => l._id === s.listId)
+                        ?.tasks?.map((t) => t._id)
+                    : undefined,
+                  tasks: s.tasksChanges.length
+                    ? s.tasksChanges.map((t) => {
+                        const task = (
+                          ["inserted", "updated", "moved-in"].includes(t.type)
+                            ? t.after
+                            : t.before
+                        )!;
+                        return {
+                          _id: task._id,
+                          type: t.type,
+                          title: ["inserted", "updated"].includes(t.type)
+                            ? task.title
+                            : undefined,
+                          projectId:
+                            t.type === "inserted" &&
+                            selectedProjects[0] &&
+                            selectedProjects[0] !== "__NONE__"
+                              ? selectedProjects[0]
+                              : undefined,
+                        };
+                      })
+                    : undefined,
+                };
+              })
+              .filter((list) => list.tasks?.length)
           : undefined,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedData]);
 
-  const mappedData = (data || taskList.data || []).map((list) => ({
-    ...pick(list, ["_id", "title"]),
-    cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
-  }));
+  const mappedData = useMemo(
+    () =>
+      (data || taskList.data || []).map((list) => ({
+        ...pick(list, ["_id", "title"]),
+        cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
+      })),
+    [data, taskList.data],
+  );
 
   const checkCanEditTask = useCallback(
     (listId: string, cardId: string) => {
@@ -280,7 +292,9 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       canEditList={boardGet.data?.hasAdminPermission}
       canMoveList={boardGet.data?.hasAdminPermission}
       canMoveCard={boardGet.data?.hasAdminPermission}
-      canAddCard={boardGet.data?.hasAdminPermission}
+      canAddCard={
+        boardGet.data?.hasAdminPermission && selectedProjects.length <= 1
+      }
       canEditCard={checkCanEditTask}
       canDuplicateCard={boardGet.data?.hasAdminPermission}
       canDeleteCard={checkCanDeleteTask}

@@ -11,6 +11,8 @@ import { boardState } from "../../../views/board/board.state";
 import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
+import getProject from "../../../collections/project";
+import dayjs from "dayjs";
 
 export const taskBatchUpdateApi = createApi(
   "/api/task/batch-update",
@@ -30,6 +32,7 @@ export const taskBatchUpdateApi = createApi(
           _id: string;
           type: "inserted" | "updated" | "deleted" | "moved-out" | "moved-in";
           title?: string;
+          projectId?: string;
         }[];
       }[];
     },
@@ -40,6 +43,7 @@ export const taskBatchUpdateApi = createApi(
     const Task = getTask();
     const TaskColumn = getTaskColumn();
     const TaskActivity = getTaskActivity();
+    const Project = getProject();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -171,6 +175,9 @@ export const taskBatchUpdateApi = createApi(
           for (const taskChange of taskChangeColumn.tasks) {
             const taskId = isomorphicObjectId(taskChange._id);
             if (taskChange.type === "inserted") {
+              const projectId = taskChange.projectId
+                ? isomorphicObjectId(taskChange.projectId)
+                : undefined;
               taskOperations.push({
                 insertOne: {
                   document: {
@@ -178,18 +185,36 @@ export const taskBatchUpdateApi = createApi(
                     _id: taskId,
                     title: taskChange.title || "",
                     order: nextOrder,
+                    projectId,
                   },
                 },
               });
               activityOperations.push({
                 insertOne: {
                   document: {
-                    taskId: taskId,
+                    taskId,
                     type: ActivityType.CREATE,
                     userId: user._id,
+                    createdAt: new Date(),
                   },
                 },
               });
+              if (projectId) {
+                activityOperations.push({
+                  insertOne: {
+                    document: {
+                      taskId,
+                      type: ActivityType.MOVE,
+                      data: {
+                        type: "project",
+                        projectId,
+                      },
+                      userId: user._id,
+                      createdAt: dayjs().add(1, "second").toDate(),
+                    },
+                  },
+                });
+              }
               nextOrder++;
             } else if (taskChange.type === "updated") {
               taskOperations.push({
@@ -244,7 +269,7 @@ export const taskBatchUpdateApi = createApi(
                     taskId,
                     data: {
                       type: "column",
-                      title: columnId,
+                      columnId,
                     },
                     userId: user._id,
                   },
@@ -287,12 +312,24 @@ export const taskBatchUpdateApi = createApi(
           // @ts-expect-error trust me
           if (operation.insertOne.document.type === ActivityType.MOVE) {
             // @ts-expect-error trust me
-            operation.insertOne.document.data.title =
-              (await TaskColumn.findById(
+            if (operation.insertOne.document.data.columnId) {
+              // @ts-expect-error trust me
+              operation.insertOne.document.data.title =
+                (await TaskColumn.findById(
+                  // @ts-expect-error trust me
+                  operation.insertOne.document.data.columnId,
+                  { projection: { title: 1 } },
+                ))!.title;
+            }
+            // @ts-expect-error trust me
+            if (operation.insertOne.document.data.projectId) {
+              // @ts-expect-error trust me
+              operation.insertOne.document.data.title = (await Project.findById(
                 // @ts-expect-error trust me
-                operation.insertOne.document.data.title,
-                { projection: { title: 1 } },
-              ))!.title;
+                operation.insertOne.document.data.projectId,
+                { projection: { name: 1 } },
+              ))!.name;
+            }
           }
         }
         await TaskActivity.bulkWrite(activityOperations);

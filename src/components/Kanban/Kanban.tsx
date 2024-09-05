@@ -549,17 +549,12 @@ export function Kanban<AP extends Record<string, unknown>>({
             {
               _id,
               title: "",
+              isNew: true,
             },
           ];
         }
       });
       setData(lists);
-      setTimeout(() => {
-        const target = kanbanRef.current?.querySelector(
-          `[data-card-id="${_id}"]`,
-        );
-        target?.dispatchEvent(new MouseEvent("dblclick", { bubbles: true }));
-      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
@@ -755,6 +750,7 @@ export function Kanban<AP extends Record<string, unknown>>({
                 canDuplicate={canDuplicateCard}
                 canEdit={checkCanEditCard(list._id, card._id)}
                 canDelete={checkCanDeleteCard(list._id, card._id)}
+                isNew={card.isNew}
               />
             ))}
             {canAddCard && (

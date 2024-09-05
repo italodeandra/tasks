@@ -38,6 +38,7 @@ export function Card<AP extends Record<string, unknown>>({
   canDuplicate,
   canEdit,
   canDelete,
+  isNew,
   ...props
 }: {
   title: string;
@@ -62,9 +63,10 @@ export function Card<AP extends Record<string, unknown>>({
   canDuplicate?: boolean;
   canEdit?: boolean;
   canDelete?: boolean;
+  isNew?: boolean;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
-  const [editing, setEditing] = useState(false);
+  const [editing, setEditing] = useState(isNew || false);
   const clickTimeout = useRef(0);
 
   const handleEdit = useCallback(() => {

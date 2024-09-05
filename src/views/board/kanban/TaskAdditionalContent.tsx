@@ -48,20 +48,22 @@ export function TaskAdditionalContent({
   );
 
   const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(undefined, {
-    enabled: canEdit,
+    enabled: canEdit && !!task?.assignees.length,
   });
   const timesheetStart = timesheetStartApi.useMutation();
   const timesheetStop = timesheetStopApi.useMutation();
 
-  if (!task?.assignees.length) {
+  if (!task || (!task.assignees.length && !task.project && !task.subProject)) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-2 px-3 pb-3">
       {(task.project || task.subProject) && (
-        <div className="flex flex-wrap justify-end gap-1 rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">
-          {[task.project?.name, task.subProject?.name].join(" · ")}
+        <div className="ml-auto rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">
+          {[task.project?.name, task.subProject?.name]
+            .filter(Boolean)
+            .join(" · ")}
         </div>
       )}
       {!!task.assignees.length && (
