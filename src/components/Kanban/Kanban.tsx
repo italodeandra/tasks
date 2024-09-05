@@ -43,7 +43,10 @@ function getMousePosTarget(
     | undefined;
 }
 
-export function Kanban<AP extends Record<string, unknown>>({
+export function Kanban<
+  CAP extends Record<string, unknown>,
+  LAP extends Record<string, unknown>,
+>({
   orientation = "horizontal",
   onClickCard,
   data: dataProp,
@@ -53,6 +56,8 @@ export function Kanban<AP extends Record<string, unknown>>({
   cardAdditionalContent,
   cardAdditionalProps,
   cardAdditionalActions,
+  listAdditionalActions,
+  listAdditionalProps,
   className,
   uploadClipboardImage,
   canAddList,
@@ -71,17 +76,19 @@ export function Kanban<AP extends Record<string, unknown>>({
   listName?: string;
   onChange?: (data: IList[]) => void;
   cardAdditionalContent?: ComponentType<
-    { cardId: string; listId: string; dragging: boolean } & AP
+    { cardId: string; listId: string; dragging: boolean } & CAP
   >;
   cardAdditionalActions?: ComponentType<
-    { cardId: string; listId: string } & AP
+    { cardId: string; listId: string } & CAP
   >;
+  listAdditionalActions?: ComponentType<{ listId: string } & LAP>;
   className?: string;
   uploadClipboardImage?: (image: string) => Promise<string>;
   canAddList?: boolean;
   canMoveList?: boolean;
   canEditList?: boolean;
-  cardAdditionalProps?: AP;
+  cardAdditionalProps?: CAP;
+  listAdditionalProps?: LAP;
   canDuplicateCard?: boolean;
   canAddCard?: boolean;
   canEditCard?:
@@ -724,6 +731,8 @@ export function Kanban<AP extends Record<string, unknown>>({
             onChangeTitle={handleListTitleChange(list)}
             canEdit={canEditList}
             listName={listName}
+            additionalActions={listAdditionalActions}
+            additionalProps={listAdditionalProps}
           >
             {list.cards?.map((card) => (
               <Card
@@ -740,9 +749,9 @@ export function Kanban<AP extends Record<string, unknown>>({
                 onChangeTitle={handleCardTitleChange(card, list)}
                 onClick={handleCardClick(card, list)}
                 cardName={cardName}
-                cardAdditionalContent={cardAdditionalContent}
-                cardAdditionalActions={cardAdditionalActions}
-                cardAdditionalProps={cardAdditionalProps}
+                additionalContent={cardAdditionalContent}
+                additionalActions={cardAdditionalActions}
+                additionalProps={cardAdditionalProps}
                 uploadClipboardImage={uploadClipboardImage}
                 lists={data}
                 onDuplicateTo={handleDuplicateTo(card, list)}

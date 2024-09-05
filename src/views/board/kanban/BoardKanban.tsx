@@ -20,6 +20,7 @@ import { useRouter } from "next/router";
 import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
+import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -286,7 +287,12 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         () => ({ boardId, canEdit: boardGet.data?.hasAdminPermission }),
         [boardGet.data?.hasAdminPermission, boardId],
       )}
+      listAdditionalProps={useMemo(
+        () => ({ boardId, canEdit: boardGet.data?.hasAdminPermission }),
+        [boardGet.data?.hasAdminPermission, boardId],
+      )}
       cardAdditionalActions={TaskAdditionalActions}
+      listAdditionalActions={ColumnAdditionalActions}
       uploadClipboardImage={uploadClipboardImage}
       canAddList={boardGet.data?.hasAdminPermission}
       canEditList={boardGet.data?.hasAdminPermission}

@@ -9,6 +9,7 @@ const taskColumnSchema = onlyServer(() =>
       title: types.string({ required: true }),
       order: types.number({ required: true }),
       archived: types.boolean(),
+      linkedStatusId: types.objectId(),
     },
     {
       timestamps: true,

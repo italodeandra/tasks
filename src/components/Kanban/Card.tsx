@@ -28,9 +28,9 @@ export function Card<AP extends Record<string, unknown>>({
   _id,
   listId,
   cardName,
-  cardAdditionalContent: CardAdditionalContent,
-  cardAdditionalActions: CardAdditionalActions,
-  cardAdditionalProps,
+  additionalContent: AdditionalContent,
+  additionalActions: AdditionalActions,
+  additionalProps,
   uploadClipboardImage,
   onDuplicateTo,
   lists,
@@ -49,13 +49,11 @@ export function Card<AP extends Record<string, unknown>>({
   cardName: string;
   _id: string;
   listId: string;
-  cardAdditionalContent?: ComponentType<
+  additionalContent?: ComponentType<
     { cardId: string; listId: string; dragging: boolean } & AP
   >;
-  cardAdditionalActions?: ComponentType<
-    { cardId: string; listId: string } & AP
-  >;
-  cardAdditionalProps?: AP;
+  additionalActions?: ComponentType<{ cardId: string; listId: string } & AP>;
+  additionalProps?: AP;
   uploadClipboardImage?: (image: string) => Promise<string>;
   onDuplicateTo?: (listId?: string) => void;
   listName: string;
@@ -152,12 +150,12 @@ export function Card<AP extends Record<string, unknown>>({
               className="p-3"
               uploadClipboardImage={uploadClipboardImage}
             />
-            {!editing && CardAdditionalContent && (
-              <CardAdditionalContent
+            {!editing && AdditionalContent && (
+              <AdditionalContent
                 cardId={_id}
                 listId={listId}
                 dragging={!!dragging}
-                {...(cardAdditionalProps as AP)}
+                {...(additionalProps as AP)}
               />
             )}
             {!editing && canEdit && (
@@ -182,11 +180,11 @@ export function Card<AP extends Record<string, unknown>>({
       </ContextMenu.Trigger>
       {canEdit && (
         <ContextMenu.Content>
-          {CardAdditionalActions && (
-            <CardAdditionalActions
+          {AdditionalActions && (
+            <AdditionalActions
               cardId={_id}
               listId={listId}
-              {...(cardAdditionalProps as AP)}
+              {...(additionalProps as AP)}
             />
           )}
           {canDuplicate && !!lists.length && (

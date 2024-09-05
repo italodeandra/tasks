@@ -13,6 +13,7 @@ import getProject, { IProject } from "../../../collections/project";
 import getSubProject, { ISubProject } from "../../../collections/subProject";
 import getTimesheet from "../../../collections/timesheet";
 import { PermissionLevel } from "../../../collections/permission";
+import getTaskStatus, { ITaskStatus } from "../../../collections/taskStatus";
 
 export const taskListApi = createApi(
   "/api/task/list",
@@ -34,6 +35,7 @@ export const taskListApi = createApi(
     const Project = getProject();
     const SubProject = getSubProject();
     const Timesheet = getTimesheet();
+    const TaskStatus = getTaskStatus();
     const user = await getUserFromCookies(req, res);
 
     const userTeams = user
@@ -87,6 +89,7 @@ export const taskListApi = createApi(
           })[];
           project?: Pick<IProject, "_id" | "name">;
           subProject?: Pick<ISubProject, "_id" | "name">;
+          status?: Pick<ITaskStatus, "_id" | "title">;
         }
       >([
         {
@@ -138,6 +141,27 @@ export const taskListApi = createApi(
         {
           $unwind: {
             path: "$subProject",
+            preserveNullAndEmptyArrays: true,
+          },
+        },
+        {
+          $lookup: {
+            from: TaskStatus.collection.collectionName,
+            localField: "statusId",
+            foreignField: "_id",
+            as: "status",
+            pipeline: [
+              {
+                $project: {
+                  title: 1,
+                },
+              },
+            ],
+          },
+        },
+        {
+          $unwind: {
+            path: "$status",
             preserveNullAndEmptyArrays: true,
           },
         },
@@ -614,6 +638,8 @@ export const taskListApi = createApi(
             "project.name": 1,
             "subProject._id": 1,
             "subProject.name": 1,
+            "status._id": 1,
+            "status.title": 1,
           },
         },
       ]);

@@ -75,6 +75,7 @@ export const taskUpdateApi = createApi(
       projection: {
         boardId: 1,
         title: 1,
+        linkedStatusId: 1,
       },
     });
     if (!column) {
@@ -105,15 +106,29 @@ export const taskUpdateApi = createApi(
       throw unauthorized;
     }
 
-    const statusId = args.statusId
+    const columnId = args.columnId
+      ? isomorphicObjectId(args.columnId)
+      : undefined;
+    let statusId = args.statusId
       ? isomorphicObjectId(args.statusId)
       : undefined;
+
+    let newColumn;
+    if (columnId) {
+      newColumn = await TaskColumn.findById(columnId, {
+        projection: {
+          linkedStatusId: 1,
+          title: 1,
+        },
+      });
+      statusId = newColumn?.linkedStatusId;
+    }
 
     const $set: WritableDeep<PaprUpdateFilter<ITask>["$set"]> = {
       description: args.description,
       title: args.title,
       statusId,
-      columnId: args.columnId ? isomorphicObjectId(args.columnId) : undefined,
+      columnId,
       projectId:
         args.projectId && args.projectId !== "__NONE__"
           ? isomorphicObjectId(args.projectId)
@@ -148,13 +163,13 @@ export const taskUpdateApi = createApi(
     );
 
     void (async () => {
-      if (args.columnId) {
+      if (newColumn) {
         await TaskActivity.insertOne({
           type: ActivityType.MOVE,
           taskId: _id,
           data: {
             type: "column",
-            title: column.title,
+            title: newColumn.title,
           },
           userId: user._id,
         });

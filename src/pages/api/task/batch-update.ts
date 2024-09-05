@@ -12,7 +12,7 @@ import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
 import getProject from "../../../collections/project";
-import dayjs from "dayjs";
+import getTaskStatus from "../../../collections/taskStatus";
 
 export const taskBatchUpdateApi = createApi(
   "/api/task/batch-update",
@@ -33,6 +33,7 @@ export const taskBatchUpdateApi = createApi(
           type: "inserted" | "updated" | "deleted" | "moved-out" | "moved-in";
           title?: string;
           projectId?: string;
+          statusId?: string;
         }[];
       }[];
     },
@@ -44,6 +45,7 @@ export const taskBatchUpdateApi = createApi(
     const TaskColumn = getTaskColumn();
     const TaskActivity = getTaskActivity();
     const Project = getProject();
+    const TaskStatus = getTaskStatus();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -178,6 +180,9 @@ export const taskBatchUpdateApi = createApi(
               const projectId = taskChange.projectId
                 ? isomorphicObjectId(taskChange.projectId)
                 : undefined;
+              const statusId = taskChange.statusId
+                ? isomorphicObjectId(taskChange.statusId)
+                : undefined;
               taskOperations.push({
                 insertOne: {
                   document: {
@@ -186,6 +191,7 @@ export const taskBatchUpdateApi = createApi(
                     title: taskChange.title || "",
                     order: nextOrder,
                     projectId,
+                    statusId,
                   },
                 },
               });
@@ -199,22 +205,22 @@ export const taskBatchUpdateApi = createApi(
                   },
                 },
               });
-              if (projectId) {
-                activityOperations.push({
-                  insertOne: {
-                    document: {
-                      taskId,
-                      type: ActivityType.MOVE,
-                      data: {
-                        type: "project",
-                        projectId,
-                      },
-                      userId: user._id,
-                      createdAt: dayjs().add(1, "second").toDate(),
-                    },
-                  },
-                });
-              }
+              // if (projectId) {
+              //   activityOperations.push({
+              //     insertOne: {
+              //       document: {
+              //         taskId,
+              //         type: ActivityType.MOVE,
+              //         data: {
+              //           type: "project",
+              //           projectId,
+              //         },
+              //         userId: user._id,
+              //         createdAt: dayjs().add(1, "second").toDate(),
+              //       },
+              //     },
+              //   });
+              // }
               nextOrder++;
             } else if (taskChange.type === "updated") {
               taskOperations.push({
@@ -304,13 +310,46 @@ export const taskBatchUpdateApi = createApi(
       }
     }
     if (taskOperations.length) {
+      for (const operation of taskOperations) {
+        // @ts-expect-error trust me
+        if (operation.insertOne?.document.columnId) {
+          const column = await TaskColumn.findById(
+            // @ts-expect-error trust me
+            isomorphicObjectId(operation.insertOne.document.columnId),
+            {
+              projection: {
+                linkedStatusId: 1,
+              },
+            },
+          );
+          if (column?.linkedStatusId) {
+            // @ts-expect-error trust me
+            operation.insertOne.document.statusId = column.linkedStatusId;
+            // activityOperations.push({
+            //   insertOne: {
+            //     document: {
+            //       // @ts-expect-error trust me
+            //       taskId: operation.insertOne.document._id,
+            //       type: ActivityType.MOVE,
+            //       data: {
+            //         type: "status",
+            //         statusId: column.linkedStatusId,
+            //       },
+            //       userId: user._id,
+            //       createdAt: dayjs().add(2, "second").toDate(),
+            //     },
+            //   },
+            // });
+          }
+        }
+      }
       await Task.bulkWrite(taskOperations);
     }
     if (activityOperations.length) {
       void (async () => {
         for (const operation of activityOperations) {
           // @ts-expect-error trust me
-          if (operation.insertOne.document.type === ActivityType.MOVE) {
+          if (operation.insertOne?.document.type === ActivityType.MOVE) {
             // @ts-expect-error trust me
             if (operation.insertOne.document.data.columnId) {
               // @ts-expect-error trust me
@@ -329,6 +368,16 @@ export const taskBatchUpdateApi = createApi(
                 operation.insertOne.document.data.projectId,
                 { projection: { name: 1 } },
               ))!.name;
+            }
+            // @ts-expect-error trust me
+            if (operation.insertOne.document.data.statusId) {
+              // @ts-expect-error trust me
+              operation.insertOne.document.data.title =
+                (await TaskStatus.findById(
+                  // @ts-expect-error trust me
+                  operation.insertOne.document.data.statusId,
+                  { projection: { title: 1 } },
+                ))!.title;
             }
           }
         }

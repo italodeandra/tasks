@@ -1,9 +1,9 @@
-import { HTMLAttributes, ReactNode } from "react";
+import { ComponentType, HTMLAttributes, ReactNode } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 import { MarkdownEditor } from "./MarkdownEditor";
 
-export function List({
+export function List<AP extends Record<string, unknown>>({
   title,
   children,
   dragging,
@@ -13,6 +13,8 @@ export function List({
   _id,
   canEdit,
   listName,
+  additionalActions: AdditionalActions,
+  additionalProps,
   ...props
 }: {
   title: string;
@@ -23,6 +25,8 @@ export function List({
   _id: string;
   canEdit?: boolean;
   listName?: string;
+  additionalActions?: ComponentType<{ listId: string } & AP>;
+  additionalProps?: AP;
 } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
@@ -48,6 +52,9 @@ export function List({
         </ContextMenu.Trigger>
         {canEdit && (
           <ContextMenu.Content>
+            {AdditionalActions && (
+              <AdditionalActions listId={_id} {...(additionalProps as AP)} />
+            )}
             <ContextMenu.Item onClick={onDelete}>
               Delete {listName}
             </ContextMenu.Item>

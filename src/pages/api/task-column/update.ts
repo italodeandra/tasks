@@ -1,15 +1,16 @@
 import createApi from "@italodeandra/next/api/createApi";
-import { unauthorized } from "@italodeandra/next/api/errors";
+import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { connectDb } from "../../../db";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getBoard from "../../../collections/board";
 import getTaskColumn from "../../../collections/taskColumn";
+import { taskColumnListApi } from "./list";
 
-export const taskColumnListApi = createApi(
-  "/api/task-column/list",
-  async (args: { boardId: string }, req, res) => {
+export const taskColumnUpdateApi = createApi(
+  "/api/task-column/update",
+  async (args: { _id: string; linkedStatusId: string }, req, res) => {
     await connectDb();
     const TaskColumn = getTaskColumn();
     const Team = getTeam();
@@ -23,10 +24,19 @@ export const taskColumnListApi = createApi(
         )
       : undefined;
     const userTeamsIds = userTeams?.map((t) => t._id);
-    const boardId = isomorphicObjectId(args.boardId);
+
+    const _id = isomorphicObjectId(args._id);
+    const column = await TaskColumn.findById(_id, {
+      projection: {
+        boardId: 1,
+      },
+    });
+    if (!column) {
+      throw notFound;
+    }
 
     const haveAccessToBoard = await Board.countDocuments({
-      _id: boardId,
+      _id: column.boardId,
       $or: [
         ...(user
           ? [
@@ -47,29 +57,32 @@ export const taskColumnListApi = createApi(
         },
       ],
     });
-
     if (!haveAccessToBoard) {
       throw unauthorized;
     }
 
-    return TaskColumn.find(
+    await TaskColumn.updateOne(
       {
-        boardId,
+        _id,
       },
       {
-        sort: {
-          order: 1,
-        },
-        projection: {
-          title: 1,
-          linkedStatusId: 1,
+        $set: {
+          linkedStatusId: isomorphicObjectId(args.linkedStatusId),
         },
       },
     );
+
+    return {
+      boardId: column.boardId,
+    };
   },
   {
-    queryKeyMap: (args) => [args?.boardId],
+    mutationOptions: {
+      async onSuccess(data, _v, _c, queryClient) {
+        await taskColumnListApi.invalidateQueries(queryClient, data);
+      },
+    },
   },
 );
 
-export default taskColumnListApi.handler;
+export default taskColumnUpdateApi.handler;

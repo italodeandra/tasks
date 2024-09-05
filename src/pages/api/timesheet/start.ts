@@ -12,6 +12,7 @@ import getTimesheet from "../../../collections/timesheet";
 import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 import { taskListApi } from "../task/list";
+import { boardState } from "../../../views/board/board.state";
 
 export const timesheetStartApi = createApi(
   "/api/timesheet/start",
@@ -93,7 +94,11 @@ export const timesheetStartApi = createApi(
           variables,
         );
         await timesheetGetMyOverviewApi.invalidateQueries(queryClient);
-        await taskListApi.invalidateQueries(queryClient, data);
+        await taskListApi.invalidateQueries(queryClient, {
+          boardId: data.boardId,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
+        });
       },
     },
   },

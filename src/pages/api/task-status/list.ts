@@ -69,3 +69,5 @@ export const taskStatusListApi = createApi(
 );
 
 export default taskStatusListApi.handler;
+
+export type TaskStatusListApi = typeof taskStatusListApi.Types;
