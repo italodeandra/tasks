@@ -591,7 +591,7 @@ export function Kanban<
       if (listUpdated?.cards?.length) {
         showNotification({
           icon: "error",
-          message: "You can't delete a status with tasks",
+          message: `You can't delete a ${listName} with ${cardName}`,
         });
         return;
       }

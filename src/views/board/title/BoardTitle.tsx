@@ -10,6 +10,7 @@ import { Projects } from "./projects/Projects";
 import { BoardPermissionsDialogContent } from "./permissions/BoardPermissionsDialogContent";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
+import { StatusesDialogContent } from "./statuses/StatusesDialogContent";
 
 export function BoardTitle() {
   const router = useRouter();
@@ -55,6 +56,14 @@ export function BoardTitle() {
     });
   }, [_id]);
 
+  const handleEditStatusesClick = useCallback(() => {
+    showDialog({
+      title: "Statuses",
+      content: <StatusesDialogContent boardId={_id} />,
+      contentProps: reactQueryDialogContentProps,
+    });
+  }, [_id]);
+
   return (
     <>
       <div className="flex flex-wrap gap-2">
@@ -82,9 +91,14 @@ export function BoardTitle() {
             boardGet.data?.canViewPermissions) && (
             <ContextMenu.Content>
               {boardGet.data?.hasAdminPermission && (
-                <ContextMenu.Item onClick={() => setEditing(true)}>
-                  Rename
-                </ContextMenu.Item>
+                <>
+                  <ContextMenu.Item onClick={() => setEditing(true)}>
+                    Rename
+                  </ContextMenu.Item>
+                  <ContextMenu.Item onClick={handleEditStatusesClick}>
+                    Edit statuses
+                  </ContextMenu.Item>
+                </>
               )}
               {boardGet.data?.canViewPermissions && (
                 <ContextMenu.Item onClick={handleEditPermissionsClick}>

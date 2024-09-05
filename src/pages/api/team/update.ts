@@ -61,9 +61,9 @@ export const teamUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      onSuccess(_d, variables, _c, queryClient) {
-        void teamListApi.invalidateQueries(queryClient);
+      async onSuccess(_d, variables, _c, queryClient) {
         void teamGetApi.invalidateQueries(queryClient, variables);
+        await teamListApi.invalidateQueries(queryClient);
       },
     },
   },

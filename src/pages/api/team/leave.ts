@@ -7,7 +7,6 @@ import createApi from "@italodeandra/next/api/createApi";
 import getTeam, { ITeam } from "../../../collections/team";
 import { teamListApi } from "./list";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { teamGetApi } from "./get";
 import { boardGetApi } from "../board/get";
 
 export const teamLeaveApi = createApi(
@@ -39,10 +38,9 @@ export const teamLeaveApi = createApi(
   },
   {
     mutationOptions: {
-      onSuccess(_d, variables, _c, queryClient) {
-        void teamListApi.invalidateQueries(queryClient);
+      async onSuccess(_d, _v, _c, queryClient) {
         void boardGetApi.invalidateQueries(queryClient);
-        void teamGetApi.invalidateQueries(queryClient, variables);
+        await teamListApi.invalidateQueries(queryClient);
       },
     },
   },
