@@ -31,9 +31,14 @@ export function TaskDialogContent({
     [],
   );
 
-  const taskGet = taskGetApi.useQuery({
-    _id: taskId,
-  });
+  const taskGet = taskGetApi.useQuery(
+    {
+      _id: taskId,
+    },
+    {
+      enabled: !!taskId,
+    },
+  );
   const task = taskGet.data;
   useEffect(() => {
     if (task) {

@@ -61,9 +61,9 @@ export const taskBatchUpdateApi = createApi(
           $in: args.columnOrderChange.map(isomorphicObjectId),
         },
       });
-      const sortedColumn = args.columnOrderChange.map((id) =>
-        columns.find((s) => s._id.equals(id)),
-      ) as typeof columns;
+      const sortedColumn = args.columnOrderChange
+        .map((id) => columns.find((s) => s._id.equals(id)))
+        .filter(Boolean) as typeof columns;
       const sortedOrders = sortedColumn.map((column) => column.order).sort();
       columnOperations.push(
         ...sortedColumn.map((column, i) => ({
@@ -146,9 +146,9 @@ export const taskBatchUpdateApi = createApi(
               $in: taskChangeColumn.tasksOrderChange.map(isomorphicObjectId),
             },
           });
-          const sortedTasks = taskChangeColumn.tasksOrderChange.map((id) =>
-            tasks.find((s) => s._id.equals(id)),
-          ) as typeof tasks;
+          const sortedTasks = taskChangeColumn.tasksOrderChange
+            .map((id) => tasks.find((s) => s._id.equals(id)))
+            .filter(Boolean) as typeof tasks;
           const sortedOrders = sortedTasks.map((task) => task.order).sort();
           taskOperations.push(
             ...sortedTasks.map((task, i) => ({

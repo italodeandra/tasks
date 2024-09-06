@@ -7,9 +7,14 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 export function TaskDialogTitle({ taskId }: { taskId: string }) {
   const [title, setTitle] = useState("");
 
-  const taskGet = taskGetApi.useQuery({
-    _id: taskId,
-  });
+  const taskGet = taskGetApi.useQuery(
+    {
+      _id: taskId,
+    },
+    {
+      enabled: !!taskId,
+    },
+  );
   const task = taskGet.data;
   useEffect(() => {
     if (task) {

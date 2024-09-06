@@ -62,9 +62,18 @@ export function CurrentClock() {
       </Button>
     </Tooltip>
   ) : (
-    <div className="rounded-lg bg-zinc-900 px-2 py-1.5 text-xs">
-      <span className="hidden sm:inline">Today: </span>
-      <Time value={timesheetGetMyOverview.data.todayTime} />
-    </div>
+    <Tooltip
+      content={
+        <>
+          Time clocked today:{" "}
+          <Time value={timesheetGetMyOverview.data.todayTime} />
+        </>
+      }
+    >
+      <div className="rounded-lg bg-zinc-900 px-2 py-1.5 text-xs">
+        <span className="hidden sm:inline">Today: </span>
+        <Time value={timesheetGetMyOverview.data.todayTime} />
+      </div>
+    </Tooltip>
   );
 }

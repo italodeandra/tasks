@@ -85,63 +85,60 @@ export function Activity({
                   activities[index - 1]?.user._id === activity.user._id,
               })}
             />
-            <div className="flex flex-1 flex-col gap-0">
-              <div className="flex h-6 items-center">
-                <div className="flex items-end gap-2">
-                  <div className="text-zinc-300">
-                    <span
-                      className={clsx("font-medium text-white", {
-                        hidden:
-                          activities[index - 1]?.user._id === activity.user._id,
-                      })}
-                    >
-                      {activity.user.name || activity.user.email}
-                    </span>{" "}
-                    {activity.type === ActivityType.CREATE && (
-                      <>created the task</>
-                    )}
-                    {activity.type === ActivityType.UPDATE && (
-                      <>updated the task {activity.data.field}</>
-                    )}
-                    {activity.type === ActivityType.CHANGE_TITLE && (
-                      <>
-                        changed title to{" "}
-                        <span className="font-medium text-white">
-                          {activity.data.title}
-                        </span>
-                      </>
-                    )}
-                    {activity.type === ActivityType.MOVE && activity.data && (
-                      <>
-                        moved task to {activity.data.type}{" "}
-                        <span className="font-medium text-white">
-                          {activity.data.title}
-                        </span>
-                      </>
-                    )}
-                    {activity.type === ActivityType.ASSIGN && activity.data && (
-                      <>
-                        {activity.data.type === "add"
-                          ? "assigned task to"
-                          : "unassigned task from"}{" "}
-                        <span className="font-medium text-white">
-                          {activity.data.users.join(", ")}
-                        </span>
-                      </>
-                    )}
-                    {activity.type === ActivityType.COMMENT &&
-                      activity.data && (
-                        <>
-                          <ChatBubbleLeftIcon className="-ml-0.5 -mt-1 inline h-4 w-4" />
-                        </>
-                      )}
-                  </div>
-                  <Tooltip content={dayjs(activity.createdAt).format("LLL")}>
-                    <div className="mb-px text-xs text-zinc-500">
-                      {dayjs(activity.createdAt).fromNow()}
-                    </div>
-                  </Tooltip>
+            <div className="flex flex-1 flex-col">
+              <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
+                <div className="text-zinc-300">
+                  <span
+                    className={clsx("font-medium text-white", {
+                      hidden:
+                        activities[index - 1]?.user._id === activity.user._id,
+                    })}
+                  >
+                    {activity.user.name || activity.user.email}
+                  </span>{" "}
+                  {activity.type === ActivityType.CREATE && (
+                    <>created the task</>
+                  )}
+                  {activity.type === ActivityType.UPDATE && (
+                    <>updated the task {activity.data.field}</>
+                  )}
+                  {activity.type === ActivityType.CHANGE_TITLE && (
+                    <>
+                      changed title to{" "}
+                      <span className="font-medium text-white">
+                        {activity.data.title}
+                      </span>
+                    </>
+                  )}
+                  {activity.type === ActivityType.MOVE && activity.data && (
+                    <>
+                      moved task to {activity.data.type}{" "}
+                      <span className="font-medium text-white">
+                        {activity.data.title}
+                      </span>
+                    </>
+                  )}
+                  {activity.type === ActivityType.ASSIGN && activity.data && (
+                    <>
+                      {activity.data.type === "add"
+                        ? "assigned task to"
+                        : "unassigned task from"}{" "}
+                      <span className="font-medium text-white">
+                        {activity.data.users.join(", ")}
+                      </span>
+                    </>
+                  )}
+                  {activity.type === ActivityType.COMMENT && activity.data && (
+                    <>
+                      <ChatBubbleLeftIcon className="-ml-0.5 -mt-1 inline h-4 w-4" />
+                    </>
+                  )}
                 </div>
+                <Tooltip content={dayjs(activity.createdAt).format("LLL")}>
+                  <div className="mb-px text-xs text-zinc-500">
+                    {dayjs(activity.createdAt).fromNow()}
+                  </div>
+                </Tooltip>
               </div>
               {activity.type === ActivityType.COMMENT && activity.data && (
                 <div className="w-full border-b border-b-white/5 pb-1.5 text-zinc-300">

@@ -51,7 +51,7 @@ export function SecondaryProjectsSelect({
       <DropdownMenu.Trigger asChild>
         <Button
           variant="text"
-          className={clsx("-m-1.5 px-1.5 py-1 font-normal", {
+          className={clsx("-m-1.5 px-1.5 py-1 text-left font-normal", {
             "text-zinc-500": !value.length,
           })}
           loading={taskUpdate.isPending}

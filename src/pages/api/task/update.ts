@@ -143,9 +143,11 @@ export const taskUpdateApi = createApi(
     removeEmptyProperties($set);
 
     const $unset: WritableDeep<PaprUpdateFilter<ITask>["$unset"]> = {};
+    if (args.projectId) {
+      $unset.subProjectId = "";
+    }
     if (args.projectId === "__NONE__") {
       $unset.projectId = "";
-      $unset.subProjectId = "";
       $unset.secondaryProjectsIds = "";
     }
     if (args.subProjectId === "__NONE__") {

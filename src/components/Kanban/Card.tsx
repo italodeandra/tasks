@@ -2,7 +2,7 @@ import {
   ComponentType,
   HTMLAttributes,
   KeyboardEvent,
-  MouseEvent,
+  MouseEvent as RMouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -15,8 +15,9 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
 import { MarkdownEditor } from "./MarkdownEditor";
 import { dropdownItemIndicatorClassName } from "@italodeandra/ui/styles/Dropdown.classNames";
-import { PlusIcon } from "@heroicons/react/16/solid";
+import { EllipsisVerticalIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { IList } from "./IList";
+import { omit } from "lodash-es";
 
 export function Card<AP extends Record<string, unknown>>({
   title,
@@ -66,6 +67,7 @@ export function Card<AP extends Record<string, unknown>>({
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(isNew || false);
   const clickTimeout = useRef(0);
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   const handleEdit = useCallback(() => {
     setEditing(true);
@@ -95,7 +97,7 @@ export function Card<AP extends Record<string, unknown>>({
   }, [onClick]);
 
   const handleMouseLeftDown = useCallback(
-    (event: MouseEvent) => {
+    (event: RMouseEvent) => {
       if (event.button === 0) {
         handleClick();
       }
@@ -114,10 +116,17 @@ export function Card<AP extends Record<string, unknown>>({
     [onDuplicateTo],
   );
 
+  const handleOptionsClick = useCallback((event: RMouseEvent) => {
+    triggerRef.current?.dispatchEvent(
+      new MouseEvent("contextmenu", omit(event, "view")),
+    );
+  }, []);
+
   return (
-    <ContextMenu.Root>
+    <ContextMenu.Root modal>
       <ContextMenu.Trigger asChild>
         <div
+          ref={triggerRef}
           {...props}
           className={clsx(
             "group max-w-96 rounded-lg bg-zinc-800 shadow-md outline-none transition-colors",
@@ -157,6 +166,23 @@ export function Card<AP extends Record<string, unknown>>({
                 dragging={!!dragging}
                 {...(additionalProps as AP)}
               />
+            )}
+            {!editing && (
+              <Button
+                icon
+                variant="text"
+                size="xs"
+                className={clsx(
+                  "absolute right-9 top-2 hidden opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100 group-focus:pointer-events-auto group-focus:opacity-100 touch:flex dark:bg-zinc-700 dark:hover:bg-zinc-600",
+                  "group-data-[is-dragging=true]/kanban:hidden",
+                )}
+                tabIndex={-1}
+                onClick={handleOptionsClick}
+                onTouchStart={stopPropagation}
+                onMouseDown={stopPropagation}
+              >
+                <EllipsisVerticalIcon className="pointer-events-none" />
+              </Button>
             )}
             {!editing && canEdit && (
               <Button

@@ -43,7 +43,7 @@ export function ColumnSelect({
       <Select.Trigger
         placeholder="None"
         variant="text"
-        className="-m-1.5 px-1.5 py-1 font-normal data-[placeholder]:text-zinc-500"
+        className="-m-1.5 px-1.5 py-1 text-left font-normal data-[placeholder]:text-zinc-500"
         loading={taskUpdate.isPending}
         readOnly={!canEdit}
       />

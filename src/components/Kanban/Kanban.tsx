@@ -255,7 +255,7 @@ export function Kanban<
                   });
                   const hoveredElementRect = target.getBoundingClientRect();
                   const movingElementRect =
-                    draggingCardRef.current!.dragElement?.getBoundingClientRect();
+                    draggingCardRef.current!.originalElement?.getBoundingClientRect();
                   if (
                     movingElementRect &&
                     ((nextIndex > previousIndex &&
@@ -328,7 +328,7 @@ export function Kanban<
             });
             const hoveredElementRect = target.getBoundingClientRect();
             const movingElementRect =
-              draggingListRef.current!.dragElement?.getBoundingClientRect();
+              draggingListRef.current!.originalElement?.getBoundingClientRect();
             if (
               movingElementRect &&
               ((nextIndex > previousIndex &&
@@ -459,11 +459,16 @@ export function Kanban<
         getMousePosTargetCardIdAndListId(event);
       if (target && isTouchDevice) {
         if (!draggingCardRef.current?.unstick) {
-          if (document.activeElement === target && onClickCard) {
+          if (
+            document.activeElement === target &&
+            onClickCard &&
+            !target.getAttribute("class")?.includes("pointer-events-auto")
+          ) {
             clearTimeout(cardClickTimeout.current);
             cardClickTimeout.current = window.setTimeout(() => {
               onClickCard({ cardId: cardId!, listId: listId! });
             }, 300);
+            event.preventDefault();
           }
           if (
             cardId &&
@@ -709,7 +714,7 @@ export function Kanban<
   return (
     <div
       className={clsx(
-        "group/kanban flex gap-2",
+        "group/kanban flex gap-2 touch:flex-col",
         {
           "flex-col": orientation === "vertical",
           "[&_*]:cursor-grab": !!draggingCard?.unstick,
