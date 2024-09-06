@@ -137,6 +137,7 @@ export function Kanban<
     card: ICard;
     list: IList;
     originalElement: HTMLDivElement;
+    originalElementRect: DOMRect;
     dragElement?: HTMLDivElement;
     startMousePos: {
       x: number;
@@ -257,7 +258,7 @@ export function Kanban<
                   });
                   const hoveredElementRect = target.getBoundingClientRect();
                   const movingElementRect =
-                    draggingCardRef.current!.originalElement?.getBoundingClientRect();
+                    draggingCardRef.current!.originalElementRect;
                   if (
                     movingElementRect &&
                     ((nextIndex > previousIndex &&
@@ -518,6 +519,7 @@ export function Kanban<
                       y: mousePos.clientY,
                     },
                     originalElement: target,
+                    originalElementRect: target.getBoundingClientRect(),
                   });
                 }
               }

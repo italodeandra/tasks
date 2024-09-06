@@ -21,6 +21,7 @@ import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -110,6 +111,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
 
+  const queryClient = useQueryClient();
   const debouncedData = useDebouncedValue(data, "1s");
   useEffect(() => {
     if (
@@ -187,62 +189,105 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         return list;
       });
 
-      taskBatchUpdate.mutate({
-        boardId,
-        columnOrderChange: isStatusOrderChanged
-          ? debouncedData.map((l) => l._id)
-          : undefined,
-        columnChanges: statusChanges.length
-          ? statusChanges.map((s) => {
-              const status = (
-                ["inserted", "updated"].includes(s.type) ? s.after : s.before
-              )!;
+      (async () => {
+        const args = {
+          boardId,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
+        };
+        const previousData = taskListApi.getQueryData(queryClient, args);
+        taskListApi.setQueryData(
+          queryClient,
+          debouncedData.map((list) => {
+            const newTasks = list.tasks?.map((task) => {
+              const previousTask = previousData
+                ?.find((list2) =>
+                  list2.tasks?.find((task2) => task2._id === task._id),
+                )
+                ?.tasks?.find((task2) => task2._id === task._id);
               return {
-                type: s.type,
-                _id: status._id,
-                title: ["inserted", "updated"].includes(s.type)
-                  ? status.title
-                  : undefined,
+                ...previousTask,
+                ...task,
+                canEdit: !!previousTask?.canEdit,
+                canDelete: !!previousTask?.canDelete,
+                assignees: previousTask?.assignees || [],
               };
-            })
-          : undefined,
-        tasksChanges: tasksChangesMoved.length
-          ? tasksChangesMoved
-              .map((s) => {
-                return {
-                  _id: s.listId,
-                  tasksOrderChange: s.isTasksOrderChanged
-                    ? debouncedData
-                        .find((l) => l._id === s.listId)
-                        ?.tasks?.map((t) => t._id)
-                    : undefined,
-                  tasks: s.tasksChanges.length
-                    ? s.tasksChanges.map((t) => {
-                        const task = (
-                          ["inserted", "updated", "moved-in"].includes(t.type)
-                            ? t.after
-                            : t.before
-                        )!;
-                        return {
-                          _id: task._id,
-                          type: t.type,
-                          title: ["inserted", "updated"].includes(t.type)
-                            ? task.title
-                            : undefined,
-                          projectId:
-                            t.type === "inserted" &&
-                            selectedProjects[0] &&
-                            selectedProjects[0] !== "__NONE__"
-                              ? selectedProjects[0]
-                              : undefined,
-                        };
-                      })
-                    : undefined,
-                };
-              })
-              .filter((list) => list.tasks?.length)
-          : undefined,
-      });
+            });
+            return {
+              ...list,
+              tasks: newTasks,
+            };
+          }),
+          args,
+        );
+        try {
+          await taskBatchUpdate.mutateAsync({
+            boardId,
+            columnOrderChange: isStatusOrderChanged
+              ? debouncedData.map((l) => l._id)
+              : undefined,
+            columnChanges: statusChanges.length
+              ? statusChanges.map((s) => {
+                  const status = (
+                    ["inserted", "updated"].includes(s.type)
+                      ? s.after
+                      : s.before
+                  )!;
+                  return {
+                    type: s.type,
+                    _id: status._id,
+                    title: ["inserted", "updated"].includes(s.type)
+                      ? status.title
+                      : undefined,
+                  };
+                })
+              : undefined,
+            tasksChanges: tasksChangesMoved.length
+              ? tasksChangesMoved
+                  .map((s) => {
+                    return {
+                      _id: s.listId,
+                      tasksOrderChange: s.isTasksOrderChanged
+                        ? debouncedData
+                            .find((l) => l._id === s.listId)
+                            ?.tasks?.map((t) => t._id)
+                        : undefined,
+                      tasks: s.tasksChanges.length
+                        ? s.tasksChanges.map((t) => {
+                            const task = (
+                              ["inserted", "updated", "moved-in"].includes(
+                                t.type,
+                              )
+                                ? t.after
+                                : t.before
+                            )!;
+                            return {
+                              _id: task._id,
+                              type: t.type,
+                              title: ["inserted", "updated"].includes(t.type)
+                                ? task.title
+                                : undefined,
+                              projectId:
+                                t.type === "inserted" &&
+                                selectedProjects[0] &&
+                                selectedProjects[0] !== "__NONE__"
+                                  ? selectedProjects[0]
+                                  : undefined,
+                            };
+                          })
+                        : undefined,
+                    };
+                  })
+                  .filter((list) => list.tasks?.length)
+              : undefined,
+          });
+        } catch (e) {
+          console.error(e);
+          taskListApi.setQueryData(queryClient, previousData, args);
+        } finally {
+          void taskListApi.invalidateQueries(queryClient, args);
+        }
+      })();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedData]);

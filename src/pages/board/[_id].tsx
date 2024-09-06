@@ -61,21 +61,18 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
     await Board.insertOne(newBoardDoc);
 
-    await TaskColumn.insertMany([
+    const statuses = await TaskStatus.insertMany([
       {
         boardId: newBoardId,
         title: "Todo",
-        order: 1,
       },
       {
         boardId: newBoardId,
         title: "Doing",
-        order: 2,
       },
       {
         boardId: newBoardId,
         title: "Done",
-        order: 3,
       },
     ]);
 
@@ -84,31 +81,19 @@ export const getServerSideProps: GetServerSideProps = async ({
         boardId: newBoardId,
         title: "Todo",
         order: 1,
+        linkedStatusId: statuses[0]._id,
       },
       {
         boardId: newBoardId,
         title: "Doing",
         order: 2,
+        linkedStatusId: statuses[1]._id,
       },
       {
         boardId: newBoardId,
         title: "Done",
         order: 3,
-      },
-    ]);
-
-    await TaskStatus.insertMany([
-      {
-        boardId: newBoardId,
-        title: "Todo",
-      },
-      {
-        boardId: newBoardId,
-        title: "Doing",
-      },
-      {
-        boardId: newBoardId,
-        title: "Done",
+        linkedStatusId: statuses[2]._id,
       },
     ]);
 
