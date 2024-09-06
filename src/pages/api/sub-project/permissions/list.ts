@@ -136,6 +136,3 @@ export const subProjectPermissionsListApi = createApi(
 );
 
 export default subProjectPermissionsListApi.handler;
-
-export type SubProjectPermissionsListApi =
-  typeof subProjectPermissionsListApi.Types;
