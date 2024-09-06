@@ -1,14 +1,15 @@
 import Button from "@italodeandra/ui/components/Button";
 import { PlayIcon, StopIcon } from "@heroicons/react/20/solid";
-import { timesheetGetTaskOverviewApi } from "../../../../pages/api/timesheet/get-task-overview";
-import { timesheetStartApi } from "../../../../pages/api/timesheet/start";
+import { timesheetGetTaskOverviewApi } from "../../../../../pages/api/timesheet/get-task-overview";
+import { timesheetStartApi } from "../../../../../pages/api/timesheet/start";
 import { ClockIcon } from "@heroicons/react/16/solid";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
-import { timesheetStopApi } from "../../../../pages/api/timesheet/stop";
+import { timesheetStopApi } from "../../../../../pages/api/timesheet/stop";
 import clsx from "@italodeandra/ui/utils/clsx";
-import { UserAvatar } from "../../../../components/UserAvatar";
-import { Time } from "../../../../components/Time";
+import { UserAvatar } from "../../../../../components/UserAvatar";
+import { Time } from "../../../../../components/Time";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { AddManualTimeButton } from "./AddManualTimeButton";
 
 export function Timesheet({ taskId }: { taskId: string }) {
   const timesheetGetTaskOverview = timesheetGetTaskOverviewApi.useQuery({
@@ -88,6 +89,7 @@ export function Timesheet({ taskId }: { taskId: string }) {
             </div>
           </div>
         ))}
+        <AddManualTimeButton taskId={taskId} />
       </div>
     </div>
   );

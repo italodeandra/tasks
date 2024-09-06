@@ -12,7 +12,7 @@ import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
 import { Activity } from "./Activity";
-import { Timesheet } from "./Timesheet";
+import { Timesheet } from "./timesheet/Timesheet";
 import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 
 export function TaskDialogContent({
