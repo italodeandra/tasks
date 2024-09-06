@@ -14,6 +14,7 @@ import { Assignees } from "./assignees/Assignees";
 import { Activity } from "./Activity";
 import { Timesheet } from "./timesheet/Timesheet";
 import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
+import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 
 export function TaskDialogContent({
   boardId,
@@ -91,6 +92,7 @@ export function TaskDialogContent({
             editOnDoubleClick={task?.canEdit}
             editHighlight
             uploadClipboardImage={uploadClipboardImage}
+            editOnClick={isTouchDevice}
           />
         )}
       </div>

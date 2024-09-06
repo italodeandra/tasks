@@ -3,6 +3,7 @@ import { MarkdownEditor } from "../../../../components/Kanban/MarkdownEditor";
 import { taskGetApi } from "../../../../pages/api/task/get";
 import { taskUpdateApi } from "../../../../pages/api/task/update";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 
 export function TaskDialogTitle({ taskId }: { taskId: string }) {
   const [title, setTitle] = useState("");
@@ -46,6 +47,7 @@ export function TaskDialogTitle({ taskId }: { taskId: string }) {
       onChange={task?.canEdit ? handleChangeTitle : undefined}
       className="-mx-1 -mt-0.5 rounded-md px-1"
       editOnDoubleClick={task?.canEdit}
+      editOnClick={isTouchDevice}
       editHighlight
       placeholder="No title"
     />
