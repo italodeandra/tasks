@@ -303,6 +303,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       }
       canEditCard={checkCanEditTask}
       canDuplicateCard={boardGet.data?.hasAdminPermission}
+      canMoveCardTo={boardGet.data?.hasAdminPermission}
       canDeleteCard={checkCanDeleteTask}
     />
   );

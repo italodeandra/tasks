@@ -68,6 +68,7 @@ export function Kanban<
   canEditCard,
   canMoveCard,
   canDeleteCard,
+  canMoveCardTo,
 }: {
   orientation?: "horizontal" | "vertical";
   onClickCard?: (selected: { cardId: string; listId: string }) => void;
@@ -98,6 +99,7 @@ export function Kanban<
   canDeleteCard?:
     | boolean
     | ((listId: string, cardId: string) => boolean | undefined);
+  canMoveCardTo?: boolean;
 }) {
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
@@ -711,6 +713,25 @@ export function Kanban<
     [dataRef],
   );
 
+  const handleMoveTo = useCallback(
+    (card: ICard, fromList: IList) => (toListId?: string) => {
+      const lists = produce(dataRef.current, (draft) => {
+        const fromListRef = find(draft, { _id: fromList._id });
+        const cardRef = find(fromListRef?.cards, { _id: card._id });
+        if (toListId && cardRef) {
+          const toListRef = find(draft, { _id: toListId });
+          if (toListRef && fromListRef?.cards) {
+            remove(fromListRef?.cards, { _id: card._id });
+            toListRef.cards = toListRef.cards || [];
+            toListRef.cards.push(cardRef);
+          }
+        }
+      });
+      setData(lists);
+    },
+    [dataRef],
+  );
+
   return (
     <div
       className={clsx(
@@ -765,6 +786,8 @@ export function Kanban<
                 canEdit={checkCanEditCard(list._id, card._id)}
                 canDelete={checkCanDeleteCard(list._id, card._id)}
                 isNew={card.isNew}
+                canMoveTo={canMoveCardTo}
+                onMoveTo={handleMoveTo(card, list)}
               />
             ))}
             {canAddCard && (

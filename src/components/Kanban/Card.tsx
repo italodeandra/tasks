@@ -40,6 +40,8 @@ export function Card<AP extends Record<string, unknown>>({
   canEdit,
   canDelete,
   isNew,
+  canMoveTo,
+  onMoveTo,
   ...props
 }: {
   title: string;
@@ -63,6 +65,8 @@ export function Card<AP extends Record<string, unknown>>({
   canEdit?: boolean;
   canDelete?: boolean;
   isNew?: boolean;
+  canMoveTo?: boolean;
+  onMoveTo?: (listId?: string) => void;
 } & Omit<HTMLAttributes<HTMLDivElement>, "onClick">) {
   const editableRef = useRef<HTMLDivElement>(null);
   const [editing, setEditing] = useState(isNew || false);
@@ -114,6 +118,13 @@ export function Card<AP extends Record<string, unknown>>({
       onDuplicateTo?.(toList?._id);
     },
     [onDuplicateTo],
+  );
+
+  const handleMoveTo = useCallback(
+    (toList?: (typeof lists)[0]) => () => {
+      onMoveTo?.(toList?._id);
+    },
+    [onMoveTo],
   );
 
   const handleOptionsClick = useCallback((event: RMouseEvent) => {
@@ -212,6 +223,24 @@ export function Card<AP extends Record<string, unknown>>({
               listId={listId}
               {...(additionalProps as AP)}
             />
+          )}
+          {canMoveTo && !!lists.length && (
+            <ContextMenu.Sub>
+              <ContextMenu.SubTrigger>Move to</ContextMenu.SubTrigger>
+              <ContextMenu.SubContent>
+                {lists.map((list) => (
+                  <ContextMenu.Item key={list._id} onClick={handleMoveTo(list)}>
+                    {list.title}
+                  </ContextMenu.Item>
+                ))}
+                <ContextMenu.Item onClick={handleMoveTo()}>
+                  <div className={dropdownItemIndicatorClassName}>
+                    <PlusIcon />
+                  </div>
+                  New {listName}
+                </ContextMenu.Item>
+              </ContextMenu.SubContent>
+            </ContextMenu.Sub>
           )}
           {canDuplicate && !!lists.length && (
             <ContextMenu.Sub>

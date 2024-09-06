@@ -205,22 +205,6 @@ export const taskBatchUpdateApi = createApi(
                   },
                 },
               });
-              // if (projectId) {
-              //   activityOperations.push({
-              //     insertOne: {
-              //       document: {
-              //         taskId,
-              //         type: ActivityType.MOVE,
-              //         data: {
-              //           type: "project",
-              //           projectId,
-              //         },
-              //         userId: user._id,
-              //         createdAt: dayjs().add(1, "second").toDate(),
-              //       },
-              //     },
-              //   });
-              // }
               nextOrder++;
             } else if (taskChange.type === "updated") {
               taskOperations.push({
@@ -325,21 +309,22 @@ export const taskBatchUpdateApi = createApi(
           if (column?.linkedStatusId) {
             // @ts-expect-error trust me
             operation.insertOne.document.statusId = column.linkedStatusId;
-            // activityOperations.push({
-            //   insertOne: {
-            //     document: {
-            //       // @ts-expect-error trust me
-            //       taskId: operation.insertOne.document._id,
-            //       type: ActivityType.MOVE,
-            //       data: {
-            //         type: "status",
-            //         statusId: column.linkedStatusId,
-            //       },
-            //       userId: user._id,
-            //       createdAt: dayjs().add(2, "second").toDate(),
-            //     },
-            //   },
-            // });
+          }
+        }
+        // @ts-expect-error trust me
+        if (operation.updateOne?.update?.$set?.columnId) {
+          const column = await TaskColumn.findById(
+            // @ts-expect-error trust me
+            isomorphicObjectId(operation.updateOne.update.$set.columnId),
+            {
+              projection: {
+                linkedStatusId: 1,
+              },
+            },
+          );
+          if (column?.linkedStatusId) {
+            // @ts-expect-error trust me
+            operation.updateOne.update.$set.statusId = column.linkedStatusId;
           }
         }
       }
