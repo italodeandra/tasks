@@ -88,13 +88,8 @@ export function generateMongoBulkWrites(
 
       case "taskRemoved":
         taskOps.push({
-          updateOne: {
+          deleteOne: {
             filter: { _id: instruction.taskId },
-            update: {
-              $set: {
-                archived: true,
-              },
-            },
           },
         });
         break;

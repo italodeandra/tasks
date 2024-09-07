@@ -181,7 +181,8 @@ export function generateInstructions(
       newColumn.tasks?.forEach((newTask) => {
         if (
           prevColumn.tasks &&
-          !prevColumn.tasks.some((task) => task._id === newTask._id)
+          !prevColumn.tasks.some((task) => task._id === newTask._id) &&
+          newTask.title
         ) {
           if (!movedTasks.has(newTask._id)) {
             // Only add taskAdded if the task hasn't been moved between columns

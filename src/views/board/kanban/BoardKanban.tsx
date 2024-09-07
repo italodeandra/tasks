@@ -20,7 +20,6 @@ import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
-import { useQueryClient } from "@tanstack/react-query";
 import { generateInstructions } from "./compareColumns";
 import { WritableDeep } from "type-fest";
 
@@ -114,7 +113,6 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [taskList.data]);
 
-  const queryClient = useQueryClient();
   const debouncedData = useDebouncedValue(data, "1s");
   useEffect(() => {
     if (
@@ -122,6 +120,10 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       taskList.data &&
       !isEqual(debouncedData, taskList.data)
     ) {
+      if (data?.some((list) => list.tasks?.some((task) => !task.title))) {
+        return;
+      }
+
       const instructions = generateInstructions(
         taskList.data.map((column) => ({
           ...pick(column, "_id", "title", "order"),
@@ -138,55 +140,16 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       );
 
       if (instructions.length) {
-        (async () => {
-          const args = {
-            boardId,
-            selectedProjects: boardState.selectedProjects,
-            selectedSubProjects: boardState.selectedSubProjects,
-          };
-          const previousData = taskListApi.getQueryData(queryClient, args);
-          taskListApi.setQueryData(
-            queryClient,
-            debouncedData.map((list) => {
-              const newTasks = list.tasks?.map((task) => {
-                const previousTask = previousData
-                  ?.find((list2) =>
-                    list2.tasks?.find((task2) => task2._id === task._id),
-                  )
-                  ?.tasks?.find((task2) => task2._id === task._id);
-                return {
-                  ...previousTask,
-                  ...task,
-                  canEdit: !!previousTask?.canEdit,
-                  canDelete: !!previousTask?.canDelete,
-                  assignees: previousTask?.assignees || [],
-                };
-              });
-              return {
-                ...list,
-                tasks: newTasks,
-              };
-            }),
-            args,
-          );
-          try {
-            await taskBatchUpdate.mutateAsync({
-              boardId,
-              instructions,
-              selectedProjects: selectedProjects as WritableDeep<
-                typeof selectedProjects
-              >,
-              selectedSubProjects: selectedSubProjects as WritableDeep<
-                typeof selectedSubProjects
-              >,
-            });
-          } catch (e) {
-            console.error(e);
-            taskListApi.setQueryData(queryClient, previousData, args);
-          } finally {
-            void taskListApi.invalidateQueries(queryClient, args);
-          }
-        })();
+        taskBatchUpdate.mutate({
+          boardId,
+          instructions,
+          selectedProjects: selectedProjects as WritableDeep<
+            typeof selectedProjects
+          >,
+          selectedSubProjects: selectedSubProjects as WritableDeep<
+            typeof selectedSubProjects
+          >,
+        });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
