@@ -58,6 +58,7 @@ export const taskListApi = createApi(
         },
         projection: {
           title: 1,
+          order: 1,
         },
       },
     );
@@ -80,7 +81,7 @@ export const taskListApi = createApi(
 
     return asyncMap(columns, async (c) => {
       const tasks = await Task.aggregate<
-        Pick<ITask, "_id" | "title"> & {
+        Pick<ITask, "_id" | "title" | "order"> & {
           canEdit: boolean;
           canDelete: boolean;
           assignees: (Pick<IUser, "_id" | "name" | "email"> & {
@@ -400,6 +401,12 @@ export const taskListApi = createApi(
           },
         },
         {
+          $sort: {
+            order: 1,
+            updatedAt: 1,
+          },
+        },
+        {
           $project: {
             title: 1,
             assignees: 1,
@@ -640,6 +647,7 @@ export const taskListApi = createApi(
             "subProject.name": 1,
             "status._id": 1,
             "status.title": 1,
+            order: 1,
           },
         },
       ]);

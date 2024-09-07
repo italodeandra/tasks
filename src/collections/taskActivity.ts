@@ -7,6 +7,7 @@ export enum ActivityType {
   COMMENT = "COMMENT",
   MOVE = "MOVE",
   UPDATE = "UPDATE",
+  SET = "SET",
   ASSIGN = "ASSIGN",
   CHANGE_TITLE = "CHANGE_TITLE",
   DELETE = "DELETE",

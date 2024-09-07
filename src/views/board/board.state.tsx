@@ -9,9 +9,10 @@ export const boardState = proxy({
 export type Data = {
   _id: string;
   title: string;
+  order: number;
   tasks?: {
     _id: string;
     title: string;
-    description?: string;
+    order: number;
   }[];
 }[];

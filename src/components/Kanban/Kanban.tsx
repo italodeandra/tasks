@@ -1,6 +1,6 @@
 import { ComponentType, useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { cloneDeep, find, findIndex, isEqual, remove } from "lodash-es";
+import { cloneDeep, find, findIndex, isEqual, last, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
@@ -222,6 +222,7 @@ export function Kanban<
                 _id: isomorphicObjectId().toString(),
                 title: `New ${listName}`,
                 cards: [draggingCardRef.current!.card],
+                order: (last(draft)?.order || 0) + 1,
               });
             }
           });
@@ -566,6 +567,7 @@ export function Kanban<
               _id,
               title: "",
               isNew: true,
+              order: (last(listToUpdate.cards)?.order || 0) + 1,
             },
           ];
         }
@@ -582,6 +584,7 @@ export function Kanban<
       draft.push({
         _id,
         title: "",
+        order: (last(draft)?.order || 0) + 1,
       });
     });
     setData(lists);
@@ -704,8 +707,10 @@ export function Kanban<
                 cloneDeep({
                   ...clonedCard,
                   _id: isomorphicObjectId().toString(),
+                  order: 1,
                 }),
               ],
+              order: (last(draft)?.order || 0) + 1,
             });
           }
         }
@@ -725,7 +730,7 @@ export function Kanban<
           if (toListRef && fromListRef?.cards) {
             remove(fromListRef?.cards, { _id: card._id });
             toListRef.cards = toListRef.cards || [];
-            toListRef.cards.push(cardRef);
+            toListRef.cards.unshift(cardRef);
           }
         }
       });

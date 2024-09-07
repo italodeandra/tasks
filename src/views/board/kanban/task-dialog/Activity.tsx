@@ -118,6 +118,14 @@ export function Activity({
                       </span>
                     </>
                   )}
+                  {activity.type === ActivityType.SET && activity.data && (
+                    <>
+                      set the task {activity.data.type} to{" "}
+                      <span className="font-medium text-white">
+                        {activity.data.title}
+                      </span>
+                    </>
+                  )}
                   {activity.type === ActivityType.ASSIGN && activity.data && (
                     <>
                       {activity.data.type === "add"

@@ -178,32 +178,32 @@ export const taskUpdateApi = createApi(
       }
       if (statusId) {
         await TaskActivity.insertOne({
-          type: ActivityType.MOVE,
+          type: ActivityType.SET,
           taskId: _id,
           data: {
             type: "status",
-            title: (await TaskStatus.findById(statusId, {
+            title: await TaskStatus.findById(statusId, {
               projection: {
                 title: 1,
               },
-            }))!.title,
+            }).then((title) => title?.title),
           },
           userId: user._id,
         });
       }
       if (args.projectId) {
         await TaskActivity.insertOne({
-          type: ActivityType.MOVE,
+          type: ActivityType.SET,
           taskId: _id,
           data: {
             type: "project",
             title:
               args.projectId !== "__NONE__"
-                ? (await Project.findById(isomorphicObjectId(args.projectId), {
+                ? await Project.findById(isomorphicObjectId(args.projectId), {
                     projection: {
                       name: 1,
                     },
-                  }))!.name
+                  }).then((project) => project?.name)
                 : "None",
           },
           userId: user._id,
@@ -211,20 +211,20 @@ export const taskUpdateApi = createApi(
       }
       if (args.subProjectId) {
         await TaskActivity.insertOne({
-          type: ActivityType.MOVE,
+          type: ActivityType.SET,
           taskId: _id,
           data: {
             type: "sub-project",
             title:
               args.subProjectId !== "__NONE__"
-                ? (await SubProject.findById(
+                ? await SubProject.findById(
                     isomorphicObjectId(args.subProjectId),
                     {
                       projection: {
                         name: 1,
                       },
                     },
-                  ))!.name
+                  ).then((subProject) => subProject?.name)
                 : "None",
           },
           userId: user._id,

@@ -10,9 +10,8 @@ import { TaskDialogContent } from "./task-dialog/TaskDialogContent";
 import { IList } from "../../../components/Kanban/IList";
 import { imageUploadApi } from "../../../pages/api/image-upload";
 import { taskListApi } from "../../../pages/api/task/list";
-import { find, isEqual, omit, pick } from "lodash-es";
+import { find, isEqual, pick } from "lodash-es";
 import useDebouncedValue from "@italodeandra/ui/hooks/useDebouncedValue";
-import getArrayDiff from "@italodeandra/next/utils/getArrayDiff";
 import { boardGetApi } from "../../../pages/api/board/get";
 import { parseAsString, useQueryState } from "nuqs";
 import Routes from "../../../Routes";
@@ -22,6 +21,8 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
 import { useQueryClient } from "@tanstack/react-query";
+import { generateInstructions } from "./compareColumns";
+import { WritableDeep } from "type-fest";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -69,9 +70,11 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     boardState.data = newData.map((list) => ({
       _id: list._id,
       title: list.title,
+      order: list.order,
       tasks: list.cards?.map((card) => ({
         _id: card._id,
         title: card.title,
+        order: card.order,
       })),
     }));
   }, []);
@@ -119,175 +122,72 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       taskList.data &&
       !isEqual(debouncedData, taskList.data)
     ) {
-      const isStatusOrderChanged = taskList.data.some(
-        (status, index) =>
-          debouncedData[index] && status._id !== debouncedData[index]?._id,
+      const instructions = generateInstructions(
+        taskList.data.map((column) => ({
+          ...pick(column, "_id", "title", "order"),
+          tasks: column.tasks?.map((task) =>
+            pick(task, "_id", "title", "order"),
+          ),
+        })),
+        (debouncedData as WritableDeep<typeof debouncedData>).map((column) => ({
+          ...pick(column, "_id", "title", "order"),
+          tasks: column.tasks?.map((task) =>
+            pick(task, "_id", "title", "order"),
+          ),
+        })),
       );
-      const statusChanges = getArrayDiff(
-        taskList.data.map((l) => omit(l, "tasks")),
-        debouncedData.map((l) => omit(l, "tasks")),
-        "_id",
-      );
-      const tasksChanges = debouncedData.map((debouncedList) => {
-        const list = find(taskList.data, { _id: debouncedList._id });
-        const isTasksOrderChanged = !!(
-          list &&
-          list.tasks?.some(
-            (task, index) =>
-              debouncedList.tasks?.[index] &&
-              task._id !== debouncedList.tasks[index]._id,
-          )
-        );
-        const omittedTasks =
-          list?.tasks?.map((t) => pick(t, "_id", "title")) || [];
-        const omittedTasks2 =
-          debouncedList.tasks?.map((t) => pick(t, "_id", "title")) || [];
-        return {
-          listId: debouncedList._id,
-          isTasksOrderChanged,
-          tasksChanges: getArrayDiff(omittedTasks, omittedTasks2, "_id"),
-        };
-      });
-      const tasksChangesMoved = (
-        tasksChanges as (Omit<(typeof tasksChanges)[0], "tasksChanges"> & {
-          tasksChanges: (Omit<
-            (typeof tasksChanges)[0]["tasksChanges"][0],
-            "type"
-          > & {
-            type:
-              | (typeof tasksChanges)[0]["tasksChanges"][0]["type"]
-              | "moved-out"
-              | "moved-in";
-          })[];
-        })[]
-      ).map((list, _, tasksChanges) => {
-        for (const taskChange of list.tasksChanges) {
-          if (taskChange.type === "deleted") {
-            const isTaskSomewhereElse = tasksChanges.find((status) =>
-              status.tasksChanges.find(
-                (task) =>
-                  ["inserted", "moved-in"].includes(task.type) &&
-                  task.after?._id === taskChange.before?._id,
-              ),
-            );
-            if (isTaskSomewhereElse) {
-              taskChange.type = "moved-out";
-            }
-          } else if (taskChange.type === "inserted") {
-            const isTaskSomewhereElse = tasksChanges.find((status) =>
-              status.tasksChanges.find(
-                (task) =>
-                  ["deleted", "moved-out"].includes(task.type) &&
-                  task.before?._id === taskChange.after?._id,
-              ),
-            );
-            if (isTaskSomewhereElse) {
-              taskChange.type = "moved-in";
-            }
-          }
-        }
-        return list;
-      });
 
-      (async () => {
-        const args = {
-          boardId,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        };
-        const previousData = taskListApi.getQueryData(queryClient, args);
-        taskListApi.setQueryData(
-          queryClient,
-          debouncedData.map((list) => {
-            const newTasks = list.tasks?.map((task) => {
-              const previousTask = previousData
-                ?.find((list2) =>
-                  list2.tasks?.find((task2) => task2._id === task._id),
-                )
-                ?.tasks?.find((task2) => task2._id === task._id);
-              return {
-                ...previousTask,
-                ...task,
-                canEdit: !!previousTask?.canEdit,
-                canDelete: !!previousTask?.canDelete,
-                assignees: previousTask?.assignees || [],
-              };
-            });
-            return {
-              ...list,
-              tasks: newTasks,
-            };
-          }),
-          args,
-        );
-        try {
-          await taskBatchUpdate.mutateAsync({
+      if (instructions.length) {
+        (async () => {
+          const args = {
             boardId,
-            columnOrderChange: isStatusOrderChanged
-              ? debouncedData.map((l) => l._id)
-              : undefined,
-            columnChanges: statusChanges.length
-              ? statusChanges.map((s) => {
-                  const status = (
-                    ["inserted", "updated"].includes(s.type)
-                      ? s.after
-                      : s.before
-                  )!;
-                  return {
-                    type: s.type,
-                    _id: status._id,
-                    title: ["inserted", "updated"].includes(s.type)
-                      ? status.title
-                      : undefined,
-                  };
-                })
-              : undefined,
-            tasksChanges: tasksChangesMoved.length
-              ? tasksChangesMoved
-                  .map((s) => {
-                    return {
-                      _id: s.listId,
-                      tasksOrderChange: s.isTasksOrderChanged
-                        ? debouncedData
-                            .find((l) => l._id === s.listId)
-                            ?.tasks?.map((t) => t._id)
-                        : undefined,
-                      tasks: s.tasksChanges.length
-                        ? s.tasksChanges.map((t) => {
-                            const task = (
-                              ["inserted", "updated", "moved-in"].includes(
-                                t.type,
-                              )
-                                ? t.after
-                                : t.before
-                            )!;
-                            return {
-                              _id: task._id,
-                              type: t.type,
-                              title: ["inserted", "updated"].includes(t.type)
-                                ? task.title
-                                : undefined,
-                              projectId:
-                                t.type === "inserted" &&
-                                selectedProjects[0] &&
-                                selectedProjects[0] !== "__NONE__"
-                                  ? selectedProjects[0]
-                                  : undefined,
-                            };
-                          })
-                        : undefined,
-                    };
-                  })
-                  .filter((list) => list.tasks?.length)
-              : undefined,
-          });
-        } catch (e) {
-          console.error(e);
-          taskListApi.setQueryData(queryClient, previousData, args);
-        } finally {
-          void taskListApi.invalidateQueries(queryClient, args);
-        }
-      })();
+            selectedProjects: boardState.selectedProjects,
+            selectedSubProjects: boardState.selectedSubProjects,
+          };
+          const previousData = taskListApi.getQueryData(queryClient, args);
+          taskListApi.setQueryData(
+            queryClient,
+            debouncedData.map((list) => {
+              const newTasks = list.tasks?.map((task) => {
+                const previousTask = previousData
+                  ?.find((list2) =>
+                    list2.tasks?.find((task2) => task2._id === task._id),
+                  )
+                  ?.tasks?.find((task2) => task2._id === task._id);
+                return {
+                  ...previousTask,
+                  ...task,
+                  canEdit: !!previousTask?.canEdit,
+                  canDelete: !!previousTask?.canDelete,
+                  assignees: previousTask?.assignees || [],
+                };
+              });
+              return {
+                ...list,
+                tasks: newTasks,
+              };
+            }),
+            args,
+          );
+          try {
+            await taskBatchUpdate.mutateAsync({
+              boardId,
+              instructions,
+              selectedProjects: selectedProjects as WritableDeep<
+                typeof selectedProjects
+              >,
+              selectedSubProjects: selectedSubProjects as WritableDeep<
+                typeof selectedSubProjects
+              >,
+            });
+          } catch (e) {
+            console.error(e);
+            taskListApi.setQueryData(queryClient, previousData, args);
+          } finally {
+            void taskListApi.invalidateQueries(queryClient, args);
+          }
+        })();
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedData]);
@@ -295,8 +195,8 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   const mappedData = useMemo(
     () =>
       (data || taskList.data || []).map((list) => ({
-        ...pick(list, ["_id", "title"]),
-        cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
+        ...pick(list, "_id", "title", "order"),
+        cards: list.tasks?.map((task) => pick(task, "_id", "title", "order")),
       })),
     [data, taskList.data],
   );
