@@ -2,7 +2,7 @@ import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { useForm } from "react-hook-form";
 import { useCallback } from "react";
-import { timesheetAddExpenseApi } from "../../../pages/api/timesheet/add-expense";
+import { timesheetAddExpenseApi } from "../../../../pages/api/timesheet/add-expense";
 import { parseFormattedTime } from "@italodeandra/ui/utils/formatTime";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 

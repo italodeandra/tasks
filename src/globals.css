@@ -7,3 +7,13 @@
 .tsqd-parent-container {
     pointer-events: auto;
 }
+
+@page {
+    margin: 0;
+}
+
+@media print {
+    .tsqd-parent-container {
+        display: none;
+    }
+}

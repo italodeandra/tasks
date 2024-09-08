@@ -1,4 +1,4 @@
-import { projectListWithSubProjectsApi } from "../../../pages/api/project/list-with-sub-projects";
+import { projectListWithSubProjectsApi } from "../../../../pages/api/project/list-with-sub-projects";
 import { useCallback, useEffect, useMemo } from "react";
 import DropdownMenu from "@italodeandra/ui/components/DropdownMenu";
 import Button from "@italodeandra/ui/components/Button";

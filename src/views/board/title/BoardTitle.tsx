@@ -135,7 +135,7 @@ export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
                 </ContextMenu.Item>
               )}
               {boardGet.data?.hasAdminPermission && route !== "timesheet" && (
-                <ContextMenu.Item href={Routes.BoardTimesheet(_id)}>
+                <ContextMenu.Item href={Routes.TimesheetList(_id)}>
                   View timesheet
                 </ContextMenu.Item>
               )}

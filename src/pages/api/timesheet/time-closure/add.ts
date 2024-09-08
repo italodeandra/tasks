@@ -71,7 +71,7 @@ export const timesheetTimeClosureAddApi = createApi(
       throw notFound;
     }
 
-    await Timesheet.insertOne({
+    const closure = await Timesheet.insertOne({
       type: TimesheetType.CLOSURE,
       boardId: project.boardId,
       projectId,
@@ -92,6 +92,7 @@ export const timesheetTimeClosureAddApi = createApi(
     }
 
     return {
+      _id: closure._id,
       boardId: project.boardId,
     };
   },

@@ -6,7 +6,10 @@ const Routes = {
   ResetPassword: (token: string) => `/reset-password/${token}`,
 
   Board: (_id: string) => `/board/${_id}`,
-  BoardTimesheet: (_id: string) => `/board/${_id}/timesheet`,
+  TimesheetList: (boardId: string) => `/board/${boardId}/timesheet`,
+  TimesheetClosure: (boardId: string, timesheetId: string) =>
+    `/board/${boardId}/timesheet/${timesheetId}`,
+
   Task: (boardId: string, taskId: string) => `/board/${boardId}?task=${taskId}`,
 
   Panel: "/panel",

@@ -6,10 +6,10 @@ import formatTime, {
   parseFormattedTime,
 } from "@italodeandra/ui/utils/formatTime";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
-import { timesheetGetApi } from "../../../pages/api/timesheet/get";
-import { timesheetUpdateApi } from "../../../pages/api/timesheet/update";
+import { timesheetGetApi } from "../../../../pages/api/timesheet/get";
+import { timesheetUpdateApi } from "../../../../pages/api/timesheet/update";
 import ConfirmationButton from "@italodeandra/ui/components/ConfirmationButton";
-import { timesheetDeleteApi } from "../../../pages/api/timesheet/delete";
+import { timesheetDeleteApi } from "../../../../pages/api/timesheet/delete";
 
 export function EditTimesheetDialogContent({
   dialogId,

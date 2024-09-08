@@ -1,7 +1,7 @@
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import NumericInput from "@italodeandra/ui/components/Input/NumericInput";
-import { timesheetTimeClosureGetCurrentApi } from "../../../pages/api/timesheet/time-closure/get-current";
+import { timesheetTimeClosureGetNextApi } from "../../../../pages/api/timesheet/time-closure/get-next";
 import { useForm } from "react-hook-form";
 import { useCallback, useEffect } from "react";
 import formatTime, {
@@ -9,8 +9,10 @@ import formatTime, {
 } from "@italodeandra/ui/utils/formatTime";
 import useDebounce from "@italodeandra/ui/hooks/useDebouncedValue";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
-import { timesheetTimeClosureAddApi } from "../../../pages/api/timesheet/time-closure/add";
+import { timesheetTimeClosureAddApi } from "../../../../pages/api/timesheet/time-closure/add";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
+import Routes from "../../../../Routes";
+import { useRouter } from "next/router";
 
 export function TimeClosureDialogContent({
   dialogId,
@@ -32,17 +34,16 @@ export function TimeClosureDialogContent({
       .join(";"),
     "500ms",
   );
-  const timesheetTimeClosureGetCurrent =
-    timesheetTimeClosureGetCurrentApi.useQuery({
-      projectId,
-      usersTimeMultipliers: debouncedUsersTimeMultipliers,
-    });
+  const timesheetTimeClosureGetNext = timesheetTimeClosureGetNextApi.useQuery({
+    projectId,
+    usersTimeMultipliers: debouncedUsersTimeMultipliers,
+  });
   useEffect(() => {
-    if (timesheetTimeClosureGetCurrent.data) {
+    if (timesheetTimeClosureGetNext.data) {
       if (form.watch("users")?.some((user) => !user._id)) {
         form.setValue(
           "users",
-          timesheetTimeClosureGetCurrent.data.users.map((user) => ({
+          timesheetTimeClosureGetNext.data.users.map((user) => ({
             _id: user._id,
             multiplier: user.previousMultiplier || 1,
           })),
@@ -51,26 +52,28 @@ export function TimeClosureDialogContent({
       if (!form.watch("hourlyRate")) {
         form.setValue(
           "hourlyRate",
-          timesheetTimeClosureGetCurrent.data.hourlyRate || 0,
+          timesheetTimeClosureGetNext.data.hourlyRate || 0,
         );
       }
       const newTimeClosure = formatTime(
-        timesheetTimeClosureGetCurrent.data.totalTime || 0,
+        timesheetTimeClosureGetNext.data.totalTime || 0,
       );
       if (form.watch("timeClosure") !== newTimeClosure) {
         form.setValue("timeClosure", newTimeClosure);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [timesheetTimeClosureGetCurrent.data]);
+  }, [timesheetTimeClosureGetNext.data]);
 
+  const router = useRouter();
   const timesheetTimeClosureAdd = timesheetTimeClosureAddApi.useMutation({
-    onSuccess() {
+    async onSuccess(data) {
       closeDialog(dialogId);
+      await router.push(Routes.TimesheetClosure(data.boardId, data._id));
     },
   });
 
-  const totalTime = timesheetTimeClosureGetCurrent.data?.totalTime || 0;
+  const totalTime = timesheetTimeClosureGetNext.data?.totalTime || 0;
   const timeClosure = parseFormattedTime(form.watch("timeClosure"));
   const closurePercentage = Math.round((100 / totalTime) * timeClosure);
   const totalAmount = (timeClosure / 1000 / 60 / 60) * form.watch("hourlyRate");
@@ -115,14 +118,14 @@ export function TimeClosureDialogContent({
       className="flex flex-col gap-3"
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      {(timesheetTimeClosureGetCurrent.isLoading ||
-        !!timesheetTimeClosureGetCurrent.data?.users.length) && (
+      {(timesheetTimeClosureGetNext.isLoading ||
+        !!timesheetTimeClosureGetNext.data?.users.length) && (
         <div className="text-base font-medium">Multipliers</div>
       )}
-      {timesheetTimeClosureGetCurrent.isLoading && (
+      {timesheetTimeClosureGetNext.isLoading && (
         <Skeleton className="h-[62px]" />
       )}
-      {timesheetTimeClosureGetCurrent.data?.users.map((user, index) => {
+      {timesheetTimeClosureGetNext.data?.users.map((user, index) => {
         form.register(`users.${index}.multiplier`, {
           required: "Fill with the multiplier",
         });

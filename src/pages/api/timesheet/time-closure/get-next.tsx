@@ -16,8 +16,8 @@ import filterBoolean from "@italodeandra/ui/utils/filterBoolean";
 import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
 import dayjs from "dayjs";
 
-export const timesheetTimeClosureGetCurrentApi = createApi(
-  "/api/timesheet/time-closure/get-current",
+export const timesheetTimeClosureGetNextApi = createApi(
+  "/api/timesheet/time-closure/get-next",
   async (
     args: {
       projectId: string;
@@ -117,7 +117,6 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
           pipeline: [
             {
               $project: {
-                title: 1,
                 projectId: 1,
                 subProjectId: 1,
                 secondaryProjectsIds: 1,
@@ -190,9 +189,7 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
           ...(lastClosure?.createdAt
             ? {
                 createdAt: {
-                  $gte: dayjs(lastClosure.createdAt)
-                    .subtract(2, "second")
-                    .toDate(),
+                  $gte: dayjs(lastClosure.createdAt).toDate(),
                 },
               }
             : {}),
@@ -257,4 +254,4 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
   },
 );
 
-export default timesheetTimeClosureGetCurrentApi.handler;
+export default timesheetTimeClosureGetNextApi.handler;

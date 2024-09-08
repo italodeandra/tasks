@@ -6,15 +6,15 @@ import {
   setData_authGetUser,
 } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
-import { connectDb } from "../../../db";
+import { connectDb } from "../../../../db";
 import { QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
-import Routes from "../../../Routes";
-import { boardGetApi } from "../../api/board/get";
+import Routes from "../../../../Routes";
+import { boardGetApi } from "../../../api/board/get";
 import { useRouter } from "next/router";
-import { getLayout } from "../../../views/layout/layout";
-import { BoardTitle } from "../../../views/board/title/BoardTitle";
-import { BoardTimesheet } from "../../../views/board/timesheet/BoardTimesheet";
+import { getLayout } from "../../../../views/layout/layout";
+import { BoardTitle } from "../../../../views/board/title/BoardTitle";
+import { TimesheetList } from "../../../../views/board/timesheet/list/TimesheetList";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -63,7 +63,7 @@ export default function Page() {
 
   const _id = router.query._id as string;
 
-  return <BoardTimesheet boardId={_id} />;
+  return <TimesheetList boardId={_id} />;
 }
 
 Page.getLayout = getLayout;

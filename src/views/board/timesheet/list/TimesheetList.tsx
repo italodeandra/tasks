@@ -10,9 +10,9 @@ import { FunnelIcon } from "@heroicons/react/24/outline";
 import dayjs from "dayjs";
 import formatTime from "@italodeandra/ui/utils/formatTime";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
-import { timesheetListApi } from "../../../pages/api/timesheet/list";
-import { translateTimesheetType } from "../../../utils/translateTimesheetType";
-import Routes from "../../../Routes";
+import { timesheetListApi } from "../../../../pages/api/timesheet/list";
+import { translateTimesheetType } from "../../../../utils/translateTimesheetType";
+import Routes from "../../../../Routes";
 import DatePicker from "@italodeandra/ui/components/DatePicker";
 import { useCallback, useState } from "react";
 import { ProjectFilter } from "./ProjectFilter";
@@ -22,14 +22,14 @@ import { AddExpenseDialogContent } from "./AddExpenseDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { EditTimesheetDialogContent } from "./EditTimesheetDialogContent";
 import { PencilIcon } from "@heroicons/react/24/solid";
-import { TimesheetType } from "../../../collections/timesheet";
+import { TimesheetType } from "../../../../collections/timesheet";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { TimeClosureDialogContent } from "./TimeClosureDialogContent";
-import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
-import { UserAvatarAndName } from "../../../components/UserAvatarAndName";
+import { reactQueryDialogContentProps } from "../../../../utils/reactQueryDialogContentProps";
+import { UserAvatarAndName } from "../../../../components/UserAvatarAndName";
 
-export function BoardTimesheet({ boardId }: { boardId: string }) {
+export function TimesheetList({ boardId }: { boardId: string }) {
   const [defaultFrom] = useState(() => dayjs().startOf("month").toDate());
   const [defaultTo] = useState(() => dayjs().startOf("day").toDate());
 
@@ -236,6 +236,18 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
                           onClick={handleEditTimesheetClick(timesheet._id)}
                         >
                           <PencilIcon className="h-4 w-4" />
+                        </Button>
+                      </Tooltip>
+                    )}
+                    {timesheet.type === TimesheetType.CLOSURE && (
+                      <Tooltip content="Time closure">
+                        <Button
+                          icon
+                          variant="text"
+                          className="p-1"
+                          href={Routes.TimesheetClosure(boardId, timesheet._id)}
+                        >
+                          <ArrowTopRightOnSquareIcon className="h-4 w-4" />
                         </Button>
                       </Tooltip>
                     )}
