@@ -22,6 +22,9 @@ export const timesheetStopApi = createApi(
         stoppedAt: {
           $exists: false,
         },
+        startedAt: {
+          $exists: true,
+        },
       },
       {
         projection: {
@@ -40,7 +43,7 @@ export const timesheetStopApi = createApi(
       {
         $set: {
           stoppedAt: new Date(),
-          time: new Date().getTime() - timesheet.startedAt.getTime(),
+          time: new Date().getTime() - timesheet.startedAt!.getTime(),
         },
       },
     );

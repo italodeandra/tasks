@@ -85,7 +85,7 @@ export function TaskAdditionalContent({
             {assignee.isMe ? (
               <Tooltip
                 content={
-                  !timesheetGetMyOverview.data?.myCurrentClock
+                  !timesheetGetMyOverview.data?.currentTimesheet
                     ? "Start tracking time on this task"
                     : "Stop tracking time"
                 }
@@ -97,7 +97,7 @@ export function TaskAdditionalContent({
                     "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
                     {
                       "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
-                        timesheetGetMyOverview.data?.myCurrentClock,
+                        timesheetGetMyOverview.data?.currentTimesheet,
                     },
                   )}
                   style={
@@ -109,7 +109,7 @@ export function TaskAdditionalContent({
                   }
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (timesheetGetMyOverview.data?.myCurrentClock) {
+                    if (timesheetGetMyOverview.data?.currentTimesheet) {
                       timesheetStop.mutate();
                     } else {
                       timesheetStart.mutate({ taskId: cardId });
@@ -124,10 +124,13 @@ export function TaskAdditionalContent({
                     <Loading />
                   ) : (
                     <>
-                      {timesheetGetMyOverview.data?.myCurrentClock ? (
+                      {timesheetGetMyOverview.data?.currentTimesheet ? (
                         <>
                           <Time
-                            from={timesheetGetMyOverview.data.myCurrentClock}
+                            from={
+                              timesheetGetMyOverview.data.currentTimesheet
+                                .startedAt
+                            }
                             autoUpdate
                             short
                             className="group-hover/myself:hidden"
