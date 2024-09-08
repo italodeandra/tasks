@@ -29,6 +29,7 @@ export default async function migration() {
   await TaskStatus.collection.createIndex({ boardId: 1 });
 
   const Timesheet = getTimesheet();
+  await Timesheet.collection.createIndex({ boardId: 1 });
   await Timesheet.collection.createIndex({ taskId: 1 });
   await Timesheet.collection.createIndex({ userId: 1 });
 

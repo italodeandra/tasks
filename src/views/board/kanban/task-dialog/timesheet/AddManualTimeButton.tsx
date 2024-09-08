@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import { Time } from "../../../../../components/Time";
-import { timesheetAddApi } from "../../../../../pages/api/timesheet/add";
+import { timesheetAddTaskApi } from "../../../../../pages/api/timesheet/add-task";
 
 export function AddManualTimeButton({ taskId }: { taskId: string }) {
   const form = useForm({
@@ -17,7 +17,7 @@ export function AddManualTimeButton({ taskId }: { taskId: string }) {
     },
   });
 
-  const timesheetAdd = timesheetAddApi.useMutation({
+  const timesheetAdd = timesheetAddTaskApi.useMutation({
     onSuccess() {
       form.reset();
       document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape" }));

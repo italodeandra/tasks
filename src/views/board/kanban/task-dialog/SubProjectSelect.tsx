@@ -21,9 +21,14 @@ export function SubProjectSelect({
   loading?: boolean;
   canEdit?: boolean;
 }) {
-  const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery({
-    boardId,
-  });
+  const projectListWithSubProjects = projectListWithSubProjectsApi.useQuery(
+    {
+      boardId,
+    },
+    {
+      enabled: false,
+    },
+  );
 
   const subProjects = useMemo(
     () =>

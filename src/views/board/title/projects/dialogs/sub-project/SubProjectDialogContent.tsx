@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { subProjectCreateApi } from "../../../../../../pages/api/sub-project/create";
@@ -19,65 +19,71 @@ export function SubProjectDialogContent({
     project?: { _id: string; name: string };
   };
 }) {
-  const { register, handleSubmit, watch, reset } = useForm<{ name: string }>();
+  const form = useForm<{ name: string }>();
 
   useEffect(() => {
     if (query?._id) {
-      reset({
+      form.reset({
         name: query.name,
       });
     }
-  }, [query, reset]);
+  }, [form, query]);
 
-  const subProjectCreate = subProjectCreateApi.useMutation();
-  useEffect(() => {
-    if (subProjectCreate.isSuccess) {
+  const subProjectCreate = subProjectCreateApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subProjectCreate.isSuccess]);
+    },
+  });
 
-  const subProjectUpdate = subProjectUpdateApi.useMutation();
-  useEffect(() => {
-    if (subProjectUpdate.isSuccess) {
+  const subProjectUpdate = subProjectUpdateApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subProjectUpdate.isSuccess]);
+    },
+  });
 
   const isSaving = subProjectCreate.isPending || subProjectUpdate.isPending;
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (!isSaving && query?.project?._id) {
       if (query?._id) {
         subProjectUpdate.mutate({
-          ...watch(),
+          ...form.getValues(),
           _id: query._id,
           projectId: query.project._id,
         });
       } else {
         subProjectCreate.mutate({
-          ...watch(),
+          ...form.getValues(),
           projectId: query.project._id,
         });
       }
     }
-  };
+  }, [
+    form,
+    isSaving,
+    query?._id,
+    query?.project?._id,
+    subProjectCreate,
+    subProjectUpdate,
+  ]);
 
-  const subProjectDelete = subProjectDeleteApi.useMutation();
-  useEffect(() => {
-    if (subProjectDelete.isSuccess) {
+  const subProjectDelete = subProjectDeleteApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subProjectDelete.isSuccess]);
+    },
+  });
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
       <Input
         label="Name"
-        {...register("name", { required: "Fill with the project name" })}
+        {...form.register("name", { required: "Fill with the project name" })}
         required
+        error={!!form.formState.errors.name}
+        helpText={form.formState.errors.name?.message}
       />
       <div className="flex w-full gap-2">
         {query?._id && (

@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { projectCreateApi } from "../../../../../../pages/api/project/create";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
 import { projectUpdateApi } from "../../../../../../pages/api/project/update";
@@ -20,65 +20,64 @@ export function ProjectDialogContent({
     name?: string;
   };
 }) {
-  const { register, handleSubmit, watch, reset } = useForm<{ name: string }>();
+  const form = useForm<{ name: string }>();
 
   useEffect(() => {
     if (query?._id) {
-      reset({
+      form.reset({
         name: query.name,
       });
     }
-  }, [query, reset]);
+  }, [form, query]);
 
-  const projectCreate = projectCreateApi.useMutation();
-  useEffect(() => {
-    if (projectCreate.isSuccess) {
+  const projectCreate = projectCreateApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectCreate.isSuccess]);
+    },
+  });
 
-  const projectUpdate = projectUpdateApi.useMutation();
-  useEffect(() => {
-    if (projectUpdate.isSuccess) {
+  const projectUpdate = projectUpdateApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectUpdate.isSuccess]);
+    },
+  });
 
   const isSaving = projectCreate.isPending || projectUpdate.isPending;
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     if (!isSaving) {
       if (query?._id) {
         projectUpdate.mutate({
-          ...watch(),
+          ...form.getValues(),
           _id: query._id,
           boardId,
         });
       } else {
         projectCreate.mutate({
-          ...watch(),
+          ...form.getValues(),
           boardId,
         });
       }
     }
-  };
+  }, [boardId, form, isSaving, projectCreate, projectUpdate, query?._id]);
 
-  const projectDelete = projectDeleteApi.useMutation();
-  useEffect(() => {
-    if (projectDelete.isSuccess) {
+  const projectDelete = projectDeleteApi.useMutation({
+    onSuccess: () => {
       closeDialog(dialogId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [projectDelete.isSuccess]);
+    },
+  });
 
   return (
-    <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="flex flex-col gap-2"
+      onSubmit={form.handleSubmit(onSubmit)}
+    >
       <Input
         label="Name"
-        {...register("name", { required: "Fill with the project name" })}
+        {...form.register("name", { required: "Fill with the project name" })}
         required
+        error={!!form.formState.errors.name}
+        helpText={form.formState.errors.name?.message}
       />
       <div className="flex w-full gap-2">
         {query?._id && (

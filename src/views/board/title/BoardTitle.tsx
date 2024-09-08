@@ -1,7 +1,13 @@
 import { useRouter } from "next/router";
 import { boardGetApi } from "../../../pages/api/board/get";
 import { MarkdownEditor } from "../../../components/Kanban/MarkdownEditor";
-import { useCallback, useEffect, useState } from "react";
+import {
+  MouseEvent as RMouseEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { boardUpdateApi } from "../../../pages/api/board/update";
 import Loading from "@italodeandra/ui/components/Loading";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
@@ -11,9 +17,12 @@ import { BoardPermissionsDialogContent } from "./permissions/BoardPermissionsDia
 import clsx from "@italodeandra/ui/utils/clsx";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 import { StatusesDialogContent } from "./statuses/StatusesDialogContent";
+import Routes from "../../../Routes";
+import { omit } from "lodash-es";
 
-export function BoardTitle() {
+export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
   const router = useRouter();
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   const _id = router.query._id as string;
 
@@ -32,14 +41,15 @@ export function BoardTitle() {
 
   const handleChange = useCallback(
     (value: string) => {
-      setName(value);
-      boardUpdate.mutate({
-        _id,
-        name: value,
-      });
+      if (name !== value) {
+        setName(value);
+        boardUpdate.mutate({
+          _id,
+          name: value,
+        });
+      }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [_id],
+    [_id, boardUpdate, name],
   );
 
   const handleEditPermissionsClick = useCallback(() => {
@@ -64,13 +74,30 @@ export function BoardTitle() {
     });
   }, [_id]);
 
+  const clickTimer = useRef<number>();
+  useEffect(() => {
+    if (editing) {
+      clearTimeout(clickTimer.current);
+    }
+  }, [editing]);
+  const handleClick = useCallback((event: RMouseEvent) => {
+    clearTimeout(clickTimer.current);
+    clickTimer.current = window.setTimeout(() => {
+      setEditing(false);
+      triggerRef.current?.dispatchEvent(
+        new MouseEvent("contextmenu", omit(event, "view")),
+      );
+    }, 300);
+  }, []);
+
   return (
     <>
       <div className="flex flex-wrap gap-2">
-        <div className="-mr-1 mt-[6px] text-sm">/</div>
+        <div className="-mr-1 mt-[6px] text-sm text-zinc-200">/</div>
         <ContextMenu.Root>
           <ContextMenu.Trigger>
             <MarkdownEditor
+              ref={triggerRef}
               className={clsx(
                 "mb-auto mt-[7px] rounded px-1 py-0.5 text-xs transition-colors",
                 {
@@ -85,6 +112,7 @@ export function BoardTitle() {
               editHighlight
               editing={editing}
               onChangeEditing={setEditing}
+              onClick={handleClick}
             />
           </ContextMenu.Trigger>
           {(boardGet.data?.hasAdminPermission ||
@@ -106,14 +134,26 @@ export function BoardTitle() {
                   permissions
                 </ContextMenu.Item>
               )}
+              {boardGet.data?.hasAdminPermission && route !== "timesheet" && (
+                <ContextMenu.Item href={Routes.BoardTimesheet(_id)}>
+                  View timesheet
+                </ContextMenu.Item>
+              )}
+              {boardGet.data?.hasAdminPermission && route !== "board" && (
+                <ContextMenu.Item href={Routes.Board(_id)}>
+                  View tasks
+                </ContextMenu.Item>
+              )}
             </ContextMenu.Content>
           )}
         </ContextMenu.Root>
         {boardUpdate.isPending && <Loading className="mt-2" />}
-        <Projects
-          boardId={_id}
-          canEditBoard={boardGet.data?.hasAdminPermission}
-        />
+        {route === "board" && (
+          <Projects
+            boardId={_id}
+            canEditBoard={boardGet.data?.hasAdminPermission}
+          />
+        )}
       </div>
     </>
   );

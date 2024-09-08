@@ -29,24 +29,21 @@ export function TeamEditForm({
     }
   }, [form, teamGet.data?.name, teamGet.isSuccess]);
 
-  const teamCreate = teamCreateApi.useMutation();
-  useEffect(() => {
-    if (teamCreate.isSuccess) {
+  const teamCreate = teamCreateApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, teamCreate.isSuccess]);
-  const teamUpdate = teamUpdateApi.useMutation();
-  useEffect(() => {
-    if (teamUpdate.isSuccess) {
+    },
+  });
+  const teamUpdate = teamUpdateApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, teamUpdate.isSuccess]);
-  const teamLeave = teamLeaveApi.useMutation();
-  useEffect(() => {
-    if (teamLeave.isSuccess) {
+    },
+  });
+  const teamLeave = teamLeaveApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, teamLeave.isSuccess]);
+    },
+  });
 
   const onSubmit = () => {
     if (_id === "new") {

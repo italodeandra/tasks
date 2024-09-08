@@ -5,47 +5,40 @@ import { connectDb } from "../../../db";
 import getTeam from "../../../collections/team";
 import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import getTask from "../../../collections/task";
-import getTaskColumn from "../../../collections/taskColumn";
 import { PermissionLevel } from "../../../collections/permission";
 import getTimesheet from "../../../collections/timesheet";
-import { timesheetGetTaskOverviewApi } from "./get-task-overview";
-import { timesheetGetMyOverviewApi } from "./get-my-overview";
-import { taskListApi } from "../task/list";
-import { boardState } from "../../../views/board/board.state";
+import { timesheetListApi } from "./list";
+import { timesheetGetApi } from "./get";
+import removeEmptyProperties from "@italodeandra/next/utils/removeEmptyProperties";
 
-export const timesheetAddApi = createApi(
-  "/api/timesheet/add",
-  async (args: { taskId: string; from: string; to: string }, req, res) => {
+export const timesheetUpdateApi = createApi(
+  "/api/timesheet/update",
+  async (
+    args: {
+      _id: string;
+      description?: string;
+      time?: number;
+    },
+    req,
+    res,
+  ) => {
     await connectDb();
     const user = await getUserFromCookies(req, res);
     const Team = getTeam();
     const Board = getBoard();
-    const Task = getTask();
-    const TaskColumn = getTaskColumn();
     const Timesheet = getTimesheet();
     if (!user) {
       throw unauthorized;
     }
 
-    const taskId = isomorphicObjectId(args.taskId);
+    const _id = isomorphicObjectId(args._id);
 
-    const task = await Task.findById(taskId, {
-      projection: {
-        columnId: 1,
-      },
-    });
-    if (!task) {
-      throw notFound;
-    }
-
-    const column = await TaskColumn.findById(task.columnId, {
+    const timesheet = await Timesheet.findById(_id, {
       projection: {
         boardId: 1,
-        title: 1,
       },
     });
-    if (!column) {
+    if (!timesheet) {
       throw notFound;
     }
 
@@ -55,7 +48,7 @@ export const timesheetAddApi = createApi(
     );
     const userTeamsIds = userTeams.map((t) => t._id);
     const haveWriteAccessToBoard = await Board.countDocuments({
-      _id: column.boardId,
+      _id: timesheet.boardId,
       "permissions.level": {
         $in: [PermissionLevel.WRITE, PermissionLevel.ADMIN],
       },
@@ -76,37 +69,35 @@ export const timesheetAddApi = createApi(
       throw notFound;
     }
 
-    const startedAt = new Date(args.from);
-    const stoppedAt = new Date(args.to);
+    const $set = {
+      description: args.description,
+      time: args.time,
+    };
+    removeEmptyProperties($set);
 
-    await Timesheet.insertOne({
-      taskId,
-      startedAt,
-      stoppedAt,
-      time: stoppedAt.getTime() - startedAt.getTime(),
-      userId: user._id,
-    });
+    await Timesheet.updateOne(
+      {
+        _id,
+      },
+      {
+        $set,
+      },
+    );
 
     return {
-      boardId: column.boardId,
+      boardId: timesheet.boardId,
     };
   },
   {
     mutationOptions: {
       async onSuccess(data, variables, _c, queryClient) {
-        await timesheetGetTaskOverviewApi.invalidateQueries(
-          queryClient,
-          variables,
-        );
-        await timesheetGetMyOverviewApi.invalidateQueries(queryClient);
-        await taskListApi.invalidateQueries(queryClient, {
+        await timesheetGetApi.invalidateQueries(queryClient, variables);
+        await timesheetListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
         });
       },
     },
   },
 );
 
-export default timesheetAddApi.handler;
+export default timesheetUpdateApi.handler;

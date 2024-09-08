@@ -3,6 +3,7 @@ import {
   ForwardedRef,
   forwardRef,
   KeyboardEvent,
+  MouseEvent as RMouseEvent,
   useCallback,
   useEffect,
   useRef,
@@ -26,6 +27,7 @@ function MarkdownEditorWithRef(
     editHighlight,
     placeholder,
     uploadClipboardImage,
+    onClick,
     ...props
   }: {
     value: string;
@@ -38,6 +40,7 @@ function MarkdownEditorWithRef(
     editHighlight?: boolean;
     placeholder?: string;
     uploadClipboardImage?: (image: string) => Promise<string>;
+    onClick?: (e: RMouseEvent) => void;
   },
   ref: ForwardedRef<HTMLDivElement>,
 ) {
@@ -58,7 +61,17 @@ function MarkdownEditorWithRef(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editing]);
 
-  const handleEdit = useCallback(() => {
+  const handleClick = useCallback(
+    (e: RMouseEvent) => {
+      onClick?.(e);
+      if (editOnClick) {
+        setEditing(true);
+      }
+    },
+    [editOnClick, onClick],
+  );
+
+  const handleDoubleClick = useCallback(() => {
     setEditing(true);
   }, []);
 
@@ -110,10 +123,10 @@ function MarkdownEditorWithRef(
         e.currentTarget.blur();
       }
       if (!editing && e.key === "Enter") {
-        handleEdit();
+        setEditing(true);
       }
     },
-    [editing, handleEdit],
+    [editing],
   );
 
   const handlePaste = useCallback(
@@ -189,8 +202,10 @@ function MarkdownEditorWithRef(
         className,
       )}
       data-is-editing={editing}
-      onDoubleClick={editOnDoubleClick && onChange ? handleEdit : undefined}
-      onClick={editOnClick ? handleEdit : undefined}
+      onDoubleClick={
+        editOnDoubleClick && onChange ? handleDoubleClick : undefined
+      }
+      onClick={handleClick}
       data-is-markdown=""
       onPaste={handlePaste}
     />

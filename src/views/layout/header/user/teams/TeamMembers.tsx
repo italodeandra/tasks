@@ -36,13 +36,11 @@ export function TeamMembers({
     },
   });
 
-  const teamInviteUser = teamInviteUserApi.useMutation();
-
-  useEffect(() => {
-    if (teamInviteUser.isSuccess) {
+  const teamInviteUser = teamInviteUserApi.useMutation({
+    onSuccess: () => {
       form.reset();
-    }
-  }, [form, teamInviteUser.isSuccess]);
+    },
+  });
 
   const onInvite = () => {
     const email = form.watch("email");
@@ -61,12 +59,11 @@ export function TeamMembers({
     });
   };
 
-  const teamLeave = teamLeaveApi.useMutation();
-  useEffect(() => {
-    if (teamLeave.isSuccess) {
+  const teamLeave = teamLeaveApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, teamLeave.isSuccess]);
+    },
+  });
 
   const teamUpdateMemberRole = teamUpdateMemberRoleApi.useMutation();
   const handleMemberRoleChange = useCallback(

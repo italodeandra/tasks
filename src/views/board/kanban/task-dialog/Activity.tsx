@@ -1,5 +1,5 @@
 import { taskActivityListApi } from "../../../../pages/api/task-activity/list";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { taskActivityCommentApi } from "../../../../pages/api/task-activity/comment";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import Button from "@italodeandra/ui/components/Button";
@@ -22,12 +22,11 @@ export function Activity({
   const taskActivityList = taskActivityListApi.useQuery({ taskId });
 
   const [comment, setComment] = useState("");
-  const taskActivityComment = taskActivityCommentApi.useMutation();
-  useEffect(() => {
-    if (taskActivityComment.isSuccess) {
+  const taskActivityComment = taskActivityCommentApi.useMutation({
+    onSuccess: () => {
       setComment("");
-    }
-  }, [taskActivityComment.isSuccess]);
+    },
+  });
 
   return (
     <div className="flex flex-col gap-3">

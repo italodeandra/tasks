@@ -29,24 +29,21 @@ export function StatusEditForm({
     form.setValue("title", title);
   }, [form, title]);
 
-  const taskStatusCreate = taskStatusCreateApi.useMutation();
-  useEffect(() => {
-    if (taskStatusCreate.isSuccess) {
+  const taskStatusCreate = taskStatusCreateApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, taskStatusCreate.isSuccess]);
-  const taskStatusUpdate = taskStatusUpdateApi.useMutation();
-  useEffect(() => {
-    if (taskStatusUpdate.isSuccess) {
+    },
+  });
+  const taskStatusUpdate = taskStatusUpdateApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, taskStatusUpdate.isSuccess]);
-  const taskStatusDelete = taskStatusDeleteApi.useMutation();
-  useEffect(() => {
-    if (taskStatusDelete.isSuccess) {
+    },
+  });
+  const taskStatusDelete = taskStatusDeleteApi.useMutation({
+    onSuccess: () => {
       onGoBack();
-    }
-  }, [onGoBack, taskStatusDelete.isSuccess]);
+    },
+  });
 
   const onSubmit = () => {
     if (_id === "new") {

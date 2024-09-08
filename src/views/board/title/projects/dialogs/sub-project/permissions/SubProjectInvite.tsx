@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 import clsx from "@italodeandra/ui/utils/clsx";
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
@@ -44,7 +44,11 @@ export function SubProjectInvite({
 
   const [invite, setInvite] = useState("");
   const subProjectPermissionsInviteUser =
-    subProjectPermissionsInviteUserApi.useMutation();
+    subProjectPermissionsInviteUserApi.useMutation({
+      onSuccess: () => {
+        setInvite("");
+      },
+    });
   const handleInviteUser = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -55,11 +59,6 @@ export function SubProjectInvite({
     },
     [subProjectId, subProjectPermissionsInviteUser, invite],
   );
-  useEffect(() => {
-    if (subProjectPermissionsInviteUser.isSuccess) {
-      setInvite("");
-    }
-  }, [subProjectPermissionsInviteUser.isSuccess]);
 
   const teamList = teamListApi.useQuery();
   const subProjectPermissionsInviteTeam =

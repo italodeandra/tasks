@@ -16,7 +16,7 @@ export function UserAvatar({
   return (
     <div
       className={clsx(
-        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[--bg] text-center text-xs uppercase",
+        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[--bg] text-center text-xs uppercase text-white",
         className,
       )}
       style={

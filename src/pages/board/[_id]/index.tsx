@@ -6,21 +6,21 @@ import {
   setData_authGetUser,
 } from "@italodeandra/auth/api/getUser";
 import bsonToJson from "@italodeandra/next/utils/bsonToJson";
-import { connectDb } from "../../db";
+import { connectDb } from "../../../db";
 import { QueryClient } from "@tanstack/react-query";
 import { dehydrate } from "@tanstack/query-core";
-import Routes from "../../Routes";
+import Routes from "../../../Routes";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import getBoard from "../../collections/board";
-import { PermissionLevel } from "../../collections/permission";
-import { boardGetApi } from "../api/board/get";
+import getBoard from "../../../collections/board";
+import { PermissionLevel } from "../../../collections/permission";
+import { boardGetApi } from "../../api/board/get";
 import { useRouter } from "next/router";
-import { getLayout } from "../../views/layout/layout";
-import { BoardTitle } from "../../views/board/title/BoardTitle";
-import { taskListApi } from "../api/task/list";
-import getTaskColumn from "../../collections/taskColumn";
-import getTaskStatus from "../../collections/taskStatus";
-import { BoardKanban } from "../../views/board/kanban/BoardKanban";
+import { getLayout } from "../../../views/layout/layout";
+import { BoardTitle } from "../../../views/board/title/BoardTitle";
+import { taskListApi } from "../../api/task/list";
+import getTaskColumn from "../../../collections/taskColumn";
+import getTaskStatus from "../../../collections/taskStatus";
+import { BoardKanban } from "../../../views/board/kanban/BoardKanban";
 
 export const getServerSideProps: GetServerSideProps = async ({
   req,
@@ -153,5 +153,5 @@ export default function Page() {
 
 Page.getLayout = getLayout;
 Page.layoutProps = {
-  headerContent: <BoardTitle />,
+  headerContent: <BoardTitle route="board" />,
 };

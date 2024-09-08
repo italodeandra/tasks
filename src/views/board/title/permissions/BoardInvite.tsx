@@ -1,5 +1,5 @@
 import { boardGetPermissionsApi } from "../../../../pages/api/board/get-permissions";
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 import { boardInviteUserApi } from "../../../../pages/api/board/invite-user";
 import { TeamListApi, teamListApi } from "../../../../pages/api/team/list";
 import { boardInviteTeamApi } from "../../../../pages/api/board/invite-team";
@@ -38,7 +38,11 @@ export function BoardInvite({
   }, [boardGetPermissions.data]);
 
   const [invite, setInvite] = useState("");
-  const boardInviteUser = boardInviteUserApi.useMutation();
+  const boardInviteUser = boardInviteUserApi.useMutation({
+    onSuccess: () => {
+      setInvite("");
+    },
+  });
   const handleInviteUser = useCallback(
     (e: FormEvent) => {
       e.preventDefault();
@@ -49,11 +53,6 @@ export function BoardInvite({
     },
     [boardId, boardInviteUser, invite],
   );
-  useEffect(() => {
-    if (boardInviteUser.isSuccess) {
-      setInvite("");
-    }
-  }, [boardInviteUser.isSuccess]);
 
   const teamList = teamListApi.useQuery();
   const boardInviteTeam = boardInviteTeamApi.useMutation();

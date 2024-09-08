@@ -14,9 +14,9 @@ import { timesheetGetMyOverviewApi } from "./get-my-overview";
 import { taskListApi } from "../task/list";
 import { boardState } from "../../../views/board/board.state";
 
-export const timesheetStartApi = createApi(
-  "/api/timesheet/start",
-  async (args: { taskId: string }, req, res) => {
+export const timesheetAddTaskApi = createApi(
+  "/api/timesheet/add-task",
+  async (args: { taskId: string; from: string; to: string }, req, res) => {
     await connectDb();
     const user = await getUserFromCookies(req, res);
     const Team = getTeam();
@@ -76,11 +76,16 @@ export const timesheetStartApi = createApi(
       throw notFound;
     }
 
+    const startedAt = new Date(args.from);
+    const stoppedAt = new Date(args.to);
+
     await Timesheet.insertOne({
       boardId: column.boardId,
       type: TimesheetType.TASK,
       taskId,
-      startedAt: new Date(),
+      startedAt,
+      stoppedAt,
+      time: stoppedAt.getTime() - startedAt.getTime(),
       userId: user._id,
     });
 
@@ -106,4 +111,4 @@ export const timesheetStartApi = createApi(
   },
 );
 
-export default timesheetStartApi.handler;
+export default timesheetAddTaskApi.handler;

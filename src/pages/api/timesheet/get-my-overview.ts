@@ -4,7 +4,7 @@ import { unauthorized } from "@italodeandra/next/api/errors";
 import { connectDb } from "../../../db";
 import getTimesheet from "../../../collections/timesheet";
 import dayjs from "dayjs";
-import { sumBy } from "lodash-es";
+import { last, sumBy } from "lodash-es";
 
 export const timesheetGetMyOverviewApi = createApi(
   "/api/timesheet/get-my-overview",
@@ -25,8 +25,9 @@ export const timesheetGetMyOverviewApi = createApi(
       },
       {
         projection: {
-          taskId: 1,
           startedAt: 1,
+          taskId: 1,
+          boardId: 1,
         },
       },
     );
@@ -44,13 +45,19 @@ export const timesheetGetMyOverviewApi = createApi(
       {
         projection: {
           time: 1,
+          boardId: 1,
         },
       },
     );
 
     return {
-      todayTime: sumBy(todayTimesheets, "time"),
-      myCurrentClock: currentTimesheet?.startedAt,
+      todayTime: todayTimesheets.length
+        ? {
+            total: sumBy(todayTimesheets, "time"),
+            lastBoardId: last(todayTimesheets)?.boardId,
+          }
+        : undefined,
+      currentTimesheet,
     };
   },
 );

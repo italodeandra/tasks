@@ -1,5 +1,6 @@
 import { useInterval, useUpdate } from "react-use";
 import formatTime from "@italodeandra/ui/utils/formatTime";
+import { NextSeo } from "next-seo";
 
 export function Time({
   value,
@@ -9,6 +10,7 @@ export function Time({
   interval = 1000,
   short,
   className,
+  showOnWindowTitle,
 }: {
   value?: number;
   plus?: number;
@@ -17,6 +19,7 @@ export function Time({
   autoUpdate?: boolean;
   short?: boolean;
   className?: string;
+  showOnWindowTitle?: boolean;
 }) {
   const update = useUpdate();
 
@@ -30,5 +33,10 @@ export function Time({
     time = time.split(" ")[0];
   }
 
-  return <span className={className}>{time || "0s"}</span>;
+  return (
+    <>
+      {showOnWindowTitle && time && <NextSeo title={time} />}
+      <span className={className}>{time || "0s"}</span>
+    </>
+  );
 }
