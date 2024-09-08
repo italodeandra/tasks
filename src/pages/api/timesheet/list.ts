@@ -11,6 +11,7 @@ import getSubProject, { ISubProject } from "../../../collections/subProject";
 import { PermissionLevel } from "../../../collections/permission";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
+import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
 
 export const timesheetListApi = createApi(
   "/api/timesheet/list",
@@ -33,6 +34,7 @@ export const timesheetListApi = createApi(
     const SubProject = getSubProject();
     const Board = getBoard();
     const Team = getTeam();
+    const User = getUser();
     if (!user) {
       throw unauthorized;
     }
@@ -111,6 +113,7 @@ export const timesheetListApi = createApi(
         project?: Pick<IProject, "_id" | "name">;
         subProject?: Pick<ISubProject, "_id" | "name">;
         primaryProject?: Pick<IProject, "_id" | "name">;
+        user?: Pick<IUser, "_id" | "name" | "email">;
       }
     >([
       {
@@ -243,6 +246,28 @@ export const timesheetListApi = createApi(
         },
       },
       {
+        $lookup: {
+          from: User.collection.collectionName,
+          localField: "userId",
+          foreignField: "_id",
+          as: "user",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+                email: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$user",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
         $project: {
           type: 1,
           task: 1,
@@ -253,6 +278,7 @@ export const timesheetListApi = createApi(
           project: 1,
           subProject: 1,
           primaryProject: 1,
+          user: 1,
         },
       },
       {

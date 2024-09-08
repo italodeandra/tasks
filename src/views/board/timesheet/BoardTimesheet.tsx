@@ -27,6 +27,7 @@ import fakeArray from "@italodeandra/ui/utils/fakeArray";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { TimeClosureDialogContent } from "./TimeClosureDialogContent";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
+import { UserAvatarAndName } from "../../../components/UserAvatarAndName";
 
 export function BoardTimesheet({ boardId }: { boardId: string }) {
   const [defaultFrom] = useState(() => dayjs().startOf("month").toDate());
@@ -169,15 +170,16 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
               <Table.Cell>Project</Table.Cell>
               <Table.Cell className="whitespace-nowrap">Sub-project</Table.Cell>
               <Table.Cell className="text-right">Time</Table.Cell>
-              <Table.Cell className="text-right">Created</Table.Cell>
-              <Table.Cell className="text-right">Updated</Table.Cell>
+              <Table.Cell>User</Table.Cell>
+              <Table.Cell>Created</Table.Cell>
+              <Table.Cell>Updated</Table.Cell>
               <Table.Cell />
             </Table.Row>
           </Table.Head>
           <Table.Body>
             {timesheetList.isLoading && (
               <Table.Row>
-                {fakeArray(8).map((n) => (
+                {fakeArray(9).map((n) => (
                   <Table.Cell key={n}>
                     <Skeleton className="my-0.5 h-[17px]" />
                   </Table.Cell>
@@ -186,7 +188,7 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
             )}
             {!timesheetList.isLoading && !timesheetList.data?.length && (
               <Table.Row>
-                <Table.Cell colSpan={8}>
+                <Table.Cell colSpan={9}>
                   <span className="font-normal opacity-50">
                     No timesheet found
                   </span>
@@ -211,12 +213,18 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
                     {timesheet.time && formatTime(timesheet.time)}
                   </div>
                 </Table.Cell>
-                <Table.Cell className="text-right">
-                  {dayjs(timesheet.createdAt).fromNow()}
+                <Table.Cell>
+                  {timesheet.user && (
+                    <UserAvatarAndName
+                      {...timesheet.user}
+                      className="-my-1"
+                      avatarClassName="w-5 h-5"
+                      nameClassName="mt-0"
+                    />
+                  )}
                 </Table.Cell>
-                <Table.Cell className="text-right">
-                  {dayjs(timesheet.updatedAt).fromNow()}
-                </Table.Cell>
+                <Table.Cell>{dayjs(timesheet.createdAt).fromNow()}</Table.Cell>
+                <Table.Cell>{dayjs(timesheet.updatedAt).fromNow()}</Table.Cell>
                 <Table.Cell>
                   <div className="-m-1 flex justify-end gap-1">
                     {timesheet.type === TimesheetType.EXPENSE && (
