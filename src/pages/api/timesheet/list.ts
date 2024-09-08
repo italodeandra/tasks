@@ -94,9 +94,18 @@ export const timesheetListApi = createApi(
       };
     }
     if (projectsIds?.length) {
-      filter["project._id"] = {
-        $in: projectsIds,
-      };
+      filter["$or"] = [
+        {
+          "project._id": {
+            $in: projectsIds,
+          },
+        },
+        {
+          "primaryProject._id": {
+            $in: projectsIds,
+          },
+        },
+      ];
     }
     if (subProjectsIds?.length) {
       filter["subProject._id"] = {
@@ -283,6 +292,29 @@ export const timesheetListApi = createApi(
       },
       {
         $match: filter,
+      },
+      {
+        // remove primaryProject if its id is the same as projectsIds[0]
+        $addFields: {
+          project: {
+            $cond: {
+              if: {
+                $eq: ["$primaryProject._id", projectsIds?.[0]],
+              },
+              then: "$primaryProject",
+              else: "$project",
+            },
+          },
+          primaryProject: {
+            $cond: {
+              if: {
+                $eq: ["$primaryProject._id", projectsIds?.[0]],
+              },
+              then: null,
+              else: "$primaryProject",
+            },
+          },
+        },
       },
       {
         $sort: {

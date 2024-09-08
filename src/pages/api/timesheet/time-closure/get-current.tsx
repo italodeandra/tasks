@@ -104,7 +104,9 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
     );
 
     const timesheets = await Timesheet.aggregate<
-      Pick<ITimesheet, "_id" | "userId" | "time" | "type">
+      Pick<ITimesheet, "_id" | "userId" | "time" | "type"> & {
+        projectPortion: number;
+      }
     >([
       {
         $lookup: {
@@ -128,6 +130,22 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
         $unwind: {
           path: "$task",
           preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $addFields: {
+          projectPortion: {
+            $cond: {
+              if: { $ifNull: ["$task.secondaryProjectsIds", false] },
+              then: {
+                $divide: [
+                  1,
+                  { $sum: [1, { $size: "$task.secondaryProjectsIds" }] },
+                ],
+              },
+              else: 1,
+            },
+          },
         },
       },
       {
@@ -185,6 +203,7 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
           userId: 1,
           time: 1,
           type: 1,
+          projectPortion: 1,
         },
       },
     ]);
@@ -210,13 +229,15 @@ export const timesheetTimeClosureGetCurrentApi = createApi(
     const totalTime = timesheets.reduce(
       (acc, t) =>
         acc +
-        (t.time
-          ? t.type === TimesheetType.TASK
-            ? t.time *
-              (usersTimeMultipliers?.find((u) => u._id === t.userId?.toString())
-                ?.multiplier || 1)
-            : t.time
-          : 0),
+        t.projectPortion *
+          (t.time
+            ? t.type === TimesheetType.TASK
+              ? t.time *
+                (usersTimeMultipliers?.find(
+                  (u) => u._id === t.userId?.toString(),
+                )?.multiplier || 1)
+              : t.time
+            : 0),
       0,
     );
 
