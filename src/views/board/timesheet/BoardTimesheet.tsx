@@ -23,6 +23,8 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { EditTimesheetDialogContent } from "./EditTimesheetDialogContent";
 import { PencilIcon } from "@heroicons/react/24/solid";
 import { TimesheetType } from "../../../collections/timesheet";
+import fakeArray from "@italodeandra/ui/utils/fakeArray";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
 export function BoardTimesheet({ boardId }: { boardId: string }) {
   const [from, setFrom] = useState<Date | undefined>(
@@ -119,25 +121,26 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
             />
           )}
           <div className="grow" />
-          {selectedProjects.length === 1 && (
-            <>
-              <Button
-                variant="text"
-                leading={<PlusIcon />}
-                onClick={handleAddExpenseClick}
-              >
-                Add expense
-              </Button>
-              <Button
-                variant="filled"
-                color="success"
-                leading={<CheckIcon />}
-                disabled={selectedProjects.length !== 1}
-              >
-                Time Closure
-              </Button>
-            </>
-          )}
+          {selectedProjects.length === 1 &&
+            selectedSubProjects.length === 0 && (
+              <>
+                <Button
+                  variant="text"
+                  leading={<PlusIcon />}
+                  onClick={handleAddExpenseClick}
+                >
+                  Add expense
+                </Button>
+                <Button
+                  variant="filled"
+                  color="success"
+                  leading={<CheckIcon />}
+                  disabled={selectedProjects.length !== 1}
+                >
+                  Time Closure
+                </Button>
+              </>
+            )}
         </div>
         <Table hideBorder className="rounded-lg">
           <Table.Head>
@@ -153,6 +156,24 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
             </Table.Row>
           </Table.Head>
           <Table.Body>
+            {timesheetList.isLoading && (
+              <Table.Row>
+                {fakeArray(8).map((n) => (
+                  <Table.Cell key={n}>
+                    <Skeleton className="my-0.5 h-[17px]" />
+                  </Table.Cell>
+                ))}
+              </Table.Row>
+            )}
+            {!timesheetList.isLoading && !timesheetList.data?.length && (
+              <Table.Row>
+                <Table.Cell colSpan={8}>
+                  <span className="font-normal opacity-50">
+                    No timesheet found
+                  </span>
+                </Table.Cell>
+              </Table.Row>
+            )}
             {timesheetList.data?.map((timesheet) => (
               <Table.Row key={timesheet._id}>
                 <Table.Cell>
@@ -203,92 +224,6 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
                 </Table.Cell>
               </Table.Row>
             ))}
-            {/*<Table.Row>
-              <Table.Cell>Time Closure</Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell>Majapi</Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell>
-                <div className="flex items-center justify-end gap-1 text-right font-medium text-white">
-                  {formatTime(random(100000, 10000000))}
-                </div>
-              </Table.Cell>
-              <Table.Cell className="text-right">
-                {dayjs(new Date()).subtract(1, "day").fromNow()}
-              </Table.Cell>
-              <Table.Cell className="text-right">
-                {dayjs(new Date()).subtract(1, "hour").fromNow()}
-              </Table.Cell>
-              <Table.Cell>
-                <div className="-m-1 flex justify-end gap-1">
-                  <Tooltip content="Edit Time Closure">
-                    <Button icon variant="text" className="p-1">
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-            <Table.Row>
-              <Table.Cell>Carryover Time</Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell>Majapi</Table.Cell>
-              <Table.Cell></Table.Cell>
-              <Table.Cell>
-                <div className="flex items-center justify-end gap-1 text-right font-medium text-white">
-                  {formatTime(random(100000, 10000000))}
-                </div>
-              </Table.Cell>
-              <Table.Cell className="text-right">
-                {dayjs(new Date()).subtract(1, "day").fromNow()}
-              </Table.Cell>
-              <Table.Cell className="text-right">
-                {dayjs(new Date()).subtract(1, "hour").fromNow()}
-              </Table.Cell>
-              <Table.Cell>
-                <div className="-m-1 flex justify-end gap-1">
-                  <Tooltip content="Edit Carryover Time">
-                    <Button icon variant="text" className="p-1">
-                      <PencilIcon className="h-4 w-4" />
-                    </Button>
-                  </Tooltip>
-                </div>
-              </Table.Cell>
-            </Table.Row>
-            {fakeArray(10).map((n) => (
-              <Table.Row key={n}>
-                <Table.Cell>Task</Table.Cell>
-                <Table.Cell>Implement the new Timesheet</Table.Cell>
-                <Table.Cell>Done</Table.Cell>
-                <Table.Cell>Production</Table.Cell>
-                <Table.Cell>Majapi</Table.Cell>
-                <Table.Cell>Tasks</Table.Cell>
-                <Table.Cell>
-                  <div className="flex items-center justify-end gap-1 text-right font-medium text-white">
-                    {formatTime(random(100000, 10000000))}
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="text-right">
-                  {dayjs(new Date()).subtract(1, "day").fromNow()}
-                </Table.Cell>
-                <Table.Cell className="text-right">
-                  {dayjs(new Date()).subtract(1, "hour").fromNow()}
-                </Table.Cell>
-                <Table.Cell>
-                  <div className="-m-1 flex justify-end gap-1">
-                    <Tooltip content="Open task in a new tab">
-                      <Button icon variant="text" className="p-1">
-                        <ArrowTopRightOnSquareIcon className="h-4 w-4" />
-                      </Button>
-                    </Tooltip>
-                  </div>
-                </Table.Cell>
-              </Table.Row>
-            ))}*/}
           </Table.Body>
         </Table>
       </div>
