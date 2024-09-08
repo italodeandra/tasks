@@ -13,7 +13,7 @@ export default function Dialog({ children, title, description, open, onOpenChang
           <RDialog.Content className={clsx(modalContentClassName, "ui-dialog-content", "relative p-0 focus:outline-none", contentClassName, contentProps?.className)} {...(!description ? { "aria-describedby": undefined } : {})} {...contentProps}>
             <div className={clsx("flex max-h-[85vh] w-[90vw] max-w-[450px] flex-col gap-3 overflow-auto p-4", contentOverflowClassName)}>
               <TitleWrapper>
-                <RDialog.Title className={clsx("ui-dialog-title", "-mb-1 text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50", titleClassName)}>
+                <RDialog.Title className={clsx("ui-dialog-title", "text-lg font-medium leading-none text-zinc-900 dark:text-zinc-50", titleClassName)}>
                   {title}
                 </RDialog.Title>
               </TitleWrapper>

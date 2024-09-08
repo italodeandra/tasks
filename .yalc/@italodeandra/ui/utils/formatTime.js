@@ -16,6 +16,9 @@ export default function formatTime(time) {
     return formattedTime.trim();
 }
 export function parseFormattedTime(formattedTime) {
+    if (!formattedTime) {
+        return 0;
+    }
     const timeParts = formattedTime.split(" ");
     let totalMilliseconds = 0;
     timeParts.forEach((part) => {

@@ -1,22 +1,24 @@
 import createApi from "@italodeandra/next/api/createApi";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
-import { connectDb } from "../../../db";
-import getTeam from "../../../collections/team";
-import getBoard from "../../../collections/board";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { PermissionLevel } from "../../../collections/permission";
-import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
-import { timesheetListApi } from "./list";
-import getProject from "../../../collections/project";
+import { connectDb } from "../../../../db";
+import getTeam from "../../../../collections/team";
+import getBoard from "../../../../collections/board";
+import getTimesheet, { TimesheetType } from "../../../../collections/timesheet";
+import getProject from "../../../../collections/project";
+import { PermissionLevel } from "../../../../collections/permission";
+import { timesheetListApi } from "../list";
 
-export const timesheetAddExpenseApi = createApi(
-  "/api/timesheet/add-expense",
+export const timesheetTimeClosureAddApi = createApi(
+  "/api/timesheet/time-closure/add",
   async (
     args: {
       projectId: string;
-      description: string;
       time: number;
+      hourlyRate: number;
+      carryover: number;
+      usersMultipliers: { _id: string; multiplier: number }[];
     },
     req,
     res,
@@ -70,12 +72,24 @@ export const timesheetAddExpenseApi = createApi(
     }
 
     await Timesheet.insertOne({
-      type: TimesheetType.EXPENSE,
+      type: TimesheetType.CLOSURE,
       boardId: project.boardId,
       projectId,
       time: args.time,
-      description: args.description,
+      hourlyRate: args.hourlyRate,
+      usersMultipliers: args.usersMultipliers?.map((userMultiplier) => ({
+        userId: isomorphicObjectId(userMultiplier._id),
+        multiplier: userMultiplier.multiplier,
+      })),
     });
+    if (args.carryover > 60000) {
+      await Timesheet.insertOne({
+        type: TimesheetType.CARRYOVER,
+        boardId: project.boardId,
+        projectId,
+        time: args.carryover,
+      });
+    }
 
     return {
       boardId: project.boardId,
@@ -90,4 +104,4 @@ export const timesheetAddExpenseApi = createApi(
   },
 );
 
-export default timesheetAddExpenseApi.handler;
+export default timesheetTimeClosureAddApi.handler;

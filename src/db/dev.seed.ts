@@ -134,7 +134,7 @@ export async function devSeed() {
         $set: {},
       },
     );
-    await Project.upsert(
+    const project2 = await Project.upsert(
       {
         name: "Test project 2",
         boardId: board._id,
@@ -170,12 +170,28 @@ export async function devSeed() {
       {
         $set: {
           title: "Develop tasks",
-          order: 0,
+          order: 1,
           projectId: project1._id,
           subProjectId: subProject._id,
           columnId: columDoing._id,
           statusId: statusDoing._id,
           assignees: [userId, userB._id],
+        },
+      },
+    );
+
+    const task2 = await Task.upsert(
+      {
+        _id: isomorphicObjectId("66dd2528a20a163184c7b1c8"),
+      },
+      {
+        $set: {
+          title: "Shared task",
+          order: 2,
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
         },
       },
     );
@@ -204,6 +220,23 @@ export async function devSeed() {
           boardId,
           type: TimesheetType.TASK,
           taskId: task._id,
+          startedAt: startedAt.toDate(),
+          stoppedAt: stoppedAt.toDate(),
+          time: stoppedAt.diff(startedAt, "millisecond"),
+          userId,
+        },
+      },
+    );
+
+    await Timesheet.upsert(
+      {
+        _id: isomorphicObjectId("66dd25377d4e76c43605d90b"),
+      },
+      {
+        $set: {
+          boardId,
+          type: TimesheetType.TASK,
+          taskId: task2._id,
           startedAt: startedAt.toDate(),
           stoppedAt: stoppedAt.toDate(),
           time: stoppedAt.diff(startedAt, "millisecond"),

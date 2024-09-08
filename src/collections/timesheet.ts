@@ -21,8 +21,19 @@ const timesheetSchema = onlyServer(() =>
       startedAt: types.date(),
       stoppedAt: types.date(),
       time: types.number(),
+
+      // type Expense
       description: types.string(),
       projectId: types.objectId(),
+
+      // type Closure
+      usersMultipliers: types.array(
+        types.object({
+          userId: types.objectId({ required: true }),
+          multiplier: types.number({ required: true }),
+        }),
+      ),
+      hourlyRate: types.number(),
     },
     {
       timestamps: true,

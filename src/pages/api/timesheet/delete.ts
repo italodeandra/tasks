@@ -43,10 +43,10 @@ export const timesheetDeleteApi = createApi(
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
-    const haveWriteAccessToBoard = await Board.countDocuments({
+    const haveAdminAccessToBoard = await Board.countDocuments({
       _id: timesheet.boardId,
       "permissions.level": {
-        $in: [PermissionLevel.WRITE, PermissionLevel.ADMIN],
+        $in: [PermissionLevel.ADMIN],
       },
       $or: [
         {
@@ -61,7 +61,7 @@ export const timesheetDeleteApi = createApi(
         },
       ],
     });
-    if (!haveWriteAccessToBoard) {
+    if (!haveAdminAccessToBoard) {
       throw notFound;
     }
 

@@ -44,10 +44,10 @@ export const timesheetListApi = createApi(
       { projection: { _id: 1 } },
     );
     const userTeamsIds = userTeams.map((t) => t._id);
-    const haveWriteAccessToBoard = await Board.countDocuments({
+    const haveAdminAccessToBoard = await Board.countDocuments({
       _id: boardId,
       "permissions.level": {
-        $in: [PermissionLevel.WRITE, PermissionLevel.ADMIN],
+        $in: [PermissionLevel.ADMIN],
       },
       $or: [
         {
@@ -62,7 +62,7 @@ export const timesheetListApi = createApi(
         },
       ],
     });
-    if (!haveWriteAccessToBoard) {
+    if (!haveAdminAccessToBoard) {
       throw notFound;
     }
 
@@ -110,6 +110,7 @@ export const timesheetListApi = createApi(
         task?: Pick<ITask, "_id" | "title" | "projectId">;
         project?: Pick<IProject, "_id" | "name">;
         subProject?: Pick<ISubProject, "_id" | "name">;
+        primaryProject?: Pick<IProject, "_id" | "name">;
       }
     >([
       {
@@ -132,6 +133,7 @@ export const timesheetListApi = createApi(
                 title: 1,
                 projectId: 1,
                 subProjectId: 1,
+                secondaryProjectsIds: 1,
               },
             },
           ],
@@ -143,6 +145,30 @@ export const timesheetListApi = createApi(
           preserveNullAndEmptyArrays: true,
         },
       },
+      ...(projectsIds?.length === 1
+        ? [
+            {
+              $unwind: {
+                path: "$task.secondaryProjectsIds",
+                preserveNullAndEmptyArrays: true,
+              },
+            },
+            {
+              $addFields: {
+                primaryProjectId: {
+                  $cond: {
+                    if: { $ifNull: ["$task.secondaryProjectsIds", false] },
+                    then: "$task.projectId",
+                    else: null,
+                  },
+                },
+                projectId: {
+                  $ifNull: ["$task.secondaryProjectsIds", "$projectId"],
+                },
+              },
+            },
+          ]
+        : []),
       {
         $addFields: {
           description: {
@@ -171,6 +197,27 @@ export const timesheetListApi = createApi(
       {
         $unwind: {
           path: "$project",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      {
+        $lookup: {
+          from: Project.collection.collectionName,
+          localField: "primaryProjectId",
+          foreignField: "_id",
+          as: "primaryProject",
+          pipeline: [
+            {
+              $project: {
+                name: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $unwind: {
+          path: "$primaryProject",
           preserveNullAndEmptyArrays: true,
         },
       },
@@ -205,6 +252,7 @@ export const timesheetListApi = createApi(
           time: 1,
           project: 1,
           subProject: 1,
+          primaryProject: 1,
         },
       },
       {
@@ -212,7 +260,7 @@ export const timesheetListApi = createApi(
       },
       {
         $sort: {
-          createdAt: -1,
+          createdAt: 1,
         },
       },
     ]);

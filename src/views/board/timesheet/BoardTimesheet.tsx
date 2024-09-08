@@ -25,12 +25,15 @@ import { PencilIcon } from "@heroicons/react/24/solid";
 import { TimesheetType } from "../../../collections/timesheet";
 import fakeArray from "@italodeandra/ui/utils/fakeArray";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
+import { TimeClosureDialogContent } from "./TimeClosureDialogContent";
+import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 
 export function BoardTimesheet({ boardId }: { boardId: string }) {
-  const [from, setFrom] = useState<Date | undefined>(
-    dayjs().startOf("month").toDate(),
-  );
-  const [to, setTo] = useState<Date | undefined>(dayjs().endOf("day").toDate());
+  const [defaultFrom] = useState(() => dayjs().startOf("month").toDate());
+  const [defaultTo] = useState(() => dayjs().startOf("day").toDate());
+
+  const [from, setFrom] = useState<Date | undefined>(defaultFrom);
+  const [to, setTo] = useState<Date | undefined>(defaultTo);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [selectedSubProjects, setSelectedSubProjects] = useState<string[]>([]);
 
@@ -73,6 +76,21 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
     [],
   );
 
+  const handleTimeClosureClick = useCallback(() => {
+    const _id = isomorphicObjectId().toString();
+    showDialog({
+      _id,
+      title: "Time Closure",
+      content: (
+        <TimeClosureDialogContent
+          dialogId={_id}
+          projectId={selectedProjects[0]}
+        />
+      ),
+      contentProps: reactQueryDialogContentProps,
+    });
+  }, [selectedProjects]);
+
   return (
     <div className="px-3">
       <div className="mx-auto flex max-w-screen-xl flex-col gap-3 pb-3">
@@ -83,7 +101,7 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
             {(text) => (
               <Button
                 variant="light"
-                color="gray"
+                color={!dayjs(from).isSame(defaultFrom) ? "primary" : "gray"}
                 trailing={<CalendarIcon className="ml-3" />}
               >
                 From
@@ -100,7 +118,7 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
             {(text) => (
               <Button
                 variant="light"
-                color="gray"
+                color={!dayjs(to).isSame(defaultTo) ? "primary" : "gray"}
                 trailing={<CalendarIcon className="ml-3" />}
               >
                 To<span className="font-normal">{text ? `: ${text}` : ""}</span>
@@ -136,6 +154,7 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
                   color="success"
                   leading={<CheckIcon />}
                   disabled={selectedProjects.length !== 1}
+                  onClick={handleTimeClosureClick}
                 >
                   Time Closure
                 </Button>
@@ -149,7 +168,7 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
               <Table.Cell>Description</Table.Cell>
               <Table.Cell>Project</Table.Cell>
               <Table.Cell className="whitespace-nowrap">Sub-project</Table.Cell>
-              <Table.Cell className="text-right">MaTime</Table.Cell>
+              <Table.Cell className="text-right">Time</Table.Cell>
               <Table.Cell className="text-right">Created</Table.Cell>
               <Table.Cell className="text-right">Updated</Table.Cell>
               <Table.Cell />
@@ -180,7 +199,12 @@ export function BoardTimesheet({ boardId }: { boardId: string }) {
                   {translateTimesheetType(timesheet.type)}
                 </Table.Cell>
                 <Table.Cell>{timesheet.description}</Table.Cell>
-                <Table.Cell>{timesheet.project?.name}</Table.Cell>
+                <Table.Cell>
+                  {timesheet.primaryProject
+                    ? `${timesheet.primaryProject.name} + `
+                    : ""}
+                  {timesheet.project?.name}
+                </Table.Cell>
                 <Table.Cell>{timesheet.subProject?.name}</Table.Cell>
                 <Table.Cell>
                   <div className="flex items-center justify-end gap-1 text-right font-medium text-white">

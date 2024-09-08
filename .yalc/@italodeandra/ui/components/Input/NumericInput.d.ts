@@ -1,6 +1,12 @@
-import { ComponentProps } from "react";
+import { ComponentProps, ForwardedRef } from "react";
 import { InputProps } from "./Input";
 import { NumericFormatProps } from "react-number-format";
-declare function NumericInput(props: Omit<NumericFormatProps, "customInput"> & InputProps<undefined>): import("react").JSX.Element;
+declare function NumericInput(props: Omit<NumericFormatProps, "customInput"> & InputProps<undefined>, ref: ForwardedRef<HTMLInputElement>): import("react").JSX.Element;
 export type NumericInputProps = ComponentProps<typeof NumericInput>;
-export default NumericInput;
+declare const _default: import("react").ForwardRefExoticComponent<Omit<Omit<NumericFormatProps, "customInput"> & {
+    error?: boolean;
+    loading?: boolean;
+} & import("./UnstyledInput").UnstyledInputCommonProps & {
+    select?: undefined;
+} & import("react").ClassAttributes<HTMLInputElement> & import("react").InputHTMLAttributes<HTMLInputElement>, "ref"> & import("react").RefAttributes<HTMLInputElement>>;
+export default _default;

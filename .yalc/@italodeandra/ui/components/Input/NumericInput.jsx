@@ -1,6 +1,7 @@
+import { forwardRef } from "react";
 import Input from "./Input";
 import { NumericFormat } from "react-number-format";
-function NumericInput(props) {
-    return <NumericFormat customInput={Input} {...props}/>;
+function NumericInput(props, ref) {
+    return <NumericFormat getInputRef={ref} customInput={Input} {...props}/>;
 }
-export default NumericInput;
+export default forwardRef(NumericInput);
