@@ -3,7 +3,10 @@ import { ExclamationTriangleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useCallback } from "react";
-import { setData_authGetUser, useAuthGetUser } from "@italodeandra/auth/api/getUser";
+import {
+  setData_authGetUser,
+  useAuthGetUser,
+} from "@italodeandra/auth/api/getUser";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import { deleteCookie } from "cookies-next";
 import authState, { useAuthSnapshot } from "@italodeandra/auth/auth.state";
@@ -13,8 +16,7 @@ import getInitials from "@italodeandra/ui/utils/getInitials";
 import { useAuthPanelUserStopImpersonate } from "@italodeandra/auth/api/panel/user/stop-impersonate";
 import { UserType } from "@italodeandra/auth/collections/user/User";
 import { checkUserType } from "@italodeandra/auth/collections/user/User.service";
-import Routes from "../../../../Routes";
-import { DarkModeMenuItem } from "./DarkModeMenuItem";
+import Routes from "../../../Routes";
 
 export default function UserMenu() {
   const queryClient = useQueryClient();
@@ -47,15 +49,15 @@ export default function UserMenu() {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>
-        <Button className="rounded-full p-1.5 w-9 h-9 shrink-0">
+        <Button className="h-9 w-9 shrink-0 rounded-full p-1.5">
           {isLoading ? (
-            <Loading className="w-5 h-5" />
+            <Loading className="h-5 w-5" />
           ) : user ? (
             <span className="text-sm font-medium uppercase">
               {getInitials(user.name || user.email)}
             </span>
           ) : (
-            <UserIcon className="w-5 h-5" />
+            <UserIcon className="h-5 w-5" />
           )}
         </Button>
       </DropdownMenu.Trigger>
@@ -65,7 +67,6 @@ export default function UserMenu() {
             <DropdownMenu.Label title={user.email}>
               {user.name || user.email}
             </DropdownMenu.Label>
-            <DarkModeMenuItem />
             {previousToken && (
               <DropdownMenu.Item onClick={() => stopImpersonate()}>
                 Stop impersonating
@@ -79,7 +80,7 @@ export default function UserMenu() {
             </DropdownMenu.Item>
           </>
         ) : (
-          <DropdownMenu.Item href={Routes.SignIn}>Entrar</DropdownMenu.Item>
+          <DropdownMenu.Item href={Routes.SignIn}>Sign in</DropdownMenu.Item>
         )}
       </DropdownMenu.Content>
     </DropdownMenu.Root>
