@@ -11,6 +11,7 @@ export enum ActivityType {
   ASSIGN = "ASSIGN",
   CHANGE_TITLE = "CHANGE_TITLE",
   DELETE = "DELETE",
+  TIMESHEET = "TIMESHEET",
 }
 
 const taskActivitySchema = onlyServer(() =>

@@ -91,23 +91,20 @@ export const taskActivityListApi = createApi(
           createdAt: -1,
         },
       },
-    )
-
-    return asyncMap(
-      tasks,
-      async ({ userId, ...taskActivity }) => ({
-        ...taskActivity,
-        user: {
-          ...(await User.findById(userId, {
-            projection: {
-              name: 1,
-              email: 1,
-            },
-          }))!,
-          isMe: !!user && userId.equals(user._id),
-        },
-      }),
     );
+
+    return asyncMap(tasks, async ({ userId, ...taskActivity }) => ({
+      ...taskActivity,
+      user: {
+        ...(await User.findById(userId, {
+          projection: {
+            name: 1,
+            email: 1,
+          },
+        }))!,
+        isMe: !!user && userId.equals(user._id),
+      },
+    }));
   },
   {
     queryKeyMap: (args) => [args?.taskId],
@@ -115,3 +112,5 @@ export const taskActivityListApi = createApi(
 );
 
 export default taskActivityListApi.handler;
+
+export type TaskActivityListApi = typeof taskActivityListApi.Types;

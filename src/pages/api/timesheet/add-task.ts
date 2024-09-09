@@ -13,6 +13,10 @@ import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 import { taskListApi } from "../task/list";
 import { boardState } from "../../../views/board/board.state";
+import getTaskActivity, {
+  ActivityType,
+} from "../../../collections/taskActivity";
+import { taskActivityListApi } from "../task-activity/list";
 
 export const timesheetAddTaskApi = createApi(
   "/api/timesheet/add-task",
@@ -24,6 +28,7 @@ export const timesheetAddTaskApi = createApi(
     const Task = getTask();
     const TaskColumn = getTaskColumn();
     const Timesheet = getTimesheet();
+    const TaskActivity = getTaskActivity();
     if (!user) {
       throw unauthorized;
     }
@@ -79,14 +84,27 @@ export const timesheetAddTaskApi = createApi(
     const startedAt = new Date(args.from);
     const stoppedAt = new Date(args.to);
 
-    await Timesheet.insertOne({
+    const time = stoppedAt.getTime() - startedAt.getTime();
+
+    const timesheet = await Timesheet.insertOne({
       boardId: column.boardId,
       type: TimesheetType.TASK,
       taskId,
       startedAt,
       stoppedAt,
-      time: stoppedAt.getTime() - startedAt.getTime(),
+      time,
       userId: user._id,
+    });
+
+    await TaskActivity.insertOne({
+      userId: user._id,
+      taskId,
+      type: ActivityType.TIMESHEET,
+      data: {
+        timesheetId: timesheet._id,
+        time,
+        retroactive: true,
+      },
     });
 
     return {
@@ -96,6 +114,7 @@ export const timesheetAddTaskApi = createApi(
   {
     mutationOptions: {
       async onSuccess(data, variables, _c, queryClient) {
+        await taskActivityListApi.invalidateQueries(queryClient, variables);
         await timesheetGetTaskOverviewApi.invalidateQueries(
           queryClient,
           variables,

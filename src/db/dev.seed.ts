@@ -12,6 +12,7 @@ import getUser from "@italodeandra/auth/collections/user/User";
 import getTaskActivity, { ActivityType } from "../collections/taskActivity";
 import getTimesheet, { TimesheetType } from "../collections/timesheet";
 import dayjs from "dayjs";
+import papr from "@italodeandra/next/db";
 
 export async function devSeed() {
   if (process.env.APP_ENV === "development") {
@@ -245,4 +246,6 @@ export async function devSeed() {
       },
     );
   }
+
+  await papr.updateSchemas();
 }

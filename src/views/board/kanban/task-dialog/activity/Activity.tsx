@@ -12,6 +12,7 @@ import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import dayjs from "dayjs";
 import { Comment } from "./Comment";
+import { Timesheet } from "./Timesheet";
 
 export function Activity({
   taskId,
@@ -136,6 +137,8 @@ export function Activity({
                       </span>
                     </>
                   )}
+                  {activity.type === ActivityType.TIMESHEET &&
+                    activity.data && <Timesheet {...activity} />}
                   {activity.type === ActivityType.COMMENT && activity.data && (
                     <>
                       <ChatBubbleLeftIcon className="-ml-0.5 -mt-1 inline h-4 w-4" />

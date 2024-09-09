@@ -8,6 +8,11 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { PermissionLevel } from "../../../collections/permission";
 import getTimesheet from "../../../collections/timesheet";
 import { timesheetListApi } from "./list";
+import getTaskActivity, {
+  ActivityType,
+} from "../../../collections/taskActivity";
+import { timesheetGetTaskOverviewApi } from "./get-task-overview";
+import { taskActivityListApi } from "../task-activity/list";
 
 export const timesheetDeleteApi = createApi(
   "/api/timesheet/delete",
@@ -23,6 +28,7 @@ export const timesheetDeleteApi = createApi(
     const Team = getTeam();
     const Board = getBoard();
     const Timesheet = getTimesheet();
+    const TaskActivity = getTaskActivity();
     if (!user) {
       throw unauthorized;
     }
@@ -32,6 +38,7 @@ export const timesheetDeleteApi = createApi(
     const timesheet = await Timesheet.findById(_id, {
       projection: {
         boardId: 1,
+        taskId: 1,
       },
     });
     if (!timesheet) {
@@ -69,13 +76,31 @@ export const timesheetDeleteApi = createApi(
       _id,
     });
 
+    if (timesheet.taskId) {
+      await TaskActivity.deleteOne({
+        userId: user._id,
+        taskId: timesheet.taskId,
+        type: ActivityType.TIMESHEET,
+        "data.timesheetId": _id,
+      });
+    }
+
     return {
       boardId: timesheet.boardId,
+      taskId: timesheet.taskId,
     };
   },
   {
     mutationOptions: {
       async onSuccess(data, _v, _c, queryClient) {
+        if (data.taskId) {
+          await timesheetGetTaskOverviewApi.invalidateQueries(queryClient, {
+            taskId: data.taskId,
+          });
+          await taskActivityListApi.invalidateQueries(queryClient, {
+            taskId: data.taskId,
+          });
+        }
         await timesheetListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
         });
