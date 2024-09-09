@@ -1,3 +1,4 @@
+import { ReactElement } from "react";
 import Routes from "./Routes";
 export type IAuthContext = {
     Routes: Routes;
@@ -56,6 +57,7 @@ export type IAuthContext = {
         "User is enabled"?: string;
     } & Record<string, string>;
     disableModeToggle?: boolean;
+    logo?: ReactElement;
 };
 export declare const authContextDefaultValue: {
     Routes: {

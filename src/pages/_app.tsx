@@ -57,28 +57,32 @@ function MyApp({ Component, pageProps }: AppProps) {
           {
             rel: "apple-touch-icon",
             sizes: "180x180",
-            href: "/favicons/apple-touch-icon.png",
+            href: "/icons/apple-touch-icon.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "32x32",
-            href: "/favicons/favicon-32x32.png",
+            href: "/icons/favicon-32x32.png",
           },
           {
             rel: "icon",
             type: "image/png",
             sizes: "16x16",
-            href: "/favicons/favicon-16x16.png",
-          },
-          {
-            rel: "mask-icon",
-            href: "/favicons/safari-pinned-tab.svg",
-            color: primaryColor,
+            href: "/icons/favicon-16x16.png",
           },
           {
             rel: "manifest",
-            href: "/favicons/site.webmanifest",
+            href: "/icons/site.webmanifest",
+          },
+          {
+            rel: "mask-icon",
+            href: "/icons/safari-pinned-tab.svg",
+            color: "#09090b",
+          },
+          {
+            rel: "shortcut icon",
+            href: "/favicon.ico",
           },
         ]}
         additionalMetaTags={[
@@ -92,15 +96,15 @@ function MyApp({ Component, pageProps }: AppProps) {
           },
           {
             name: "msapplication-TileColor",
-            content: primaryColor,
+            content: "#09090b",
           },
           {
             name: "msapplication-config",
-            content: "/favicons/browserconfig.xml",
+            content: "/icons/browserconfig.xml",
           },
           {
             name: "theme-color",
-            content: primaryColor,
+            content: "#ffffff",
           },
           {
             name: "viewport",
@@ -116,7 +120,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <MutationWindowCloseProtection />
         <HydrationBoundary state={pageProps.dehydratedState}>
           <Dialogs />
-          <AuthProvider Routes={routes}>
+          <AuthProvider
+            Routes={routes}
+            logo={<div className="text-4xl leading-none text-zinc-100">マ</div>}
+            disableModeToggle
+          >
             {getLayout(<Component {...pageProps} />, Component.layoutProps)}
             <ReactQueryDevtools buttonPosition="bottom-right" />
           </AuthProvider>
