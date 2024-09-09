@@ -13,6 +13,7 @@ import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 import { taskListApi } from "../task/list";
 import { boardState } from "../../../views/board/board.state";
+import { stopTask } from "./stop";
 
 export const timesheetStartApi = createApi(
   "/api/timesheet/start",
@@ -74,6 +75,27 @@ export const timesheetStartApi = createApi(
     });
     if (!haveWriteAccessToBoard) {
       throw notFound;
+    }
+
+    const timesheet = await Timesheet.findOne(
+      {
+        userId: user._id,
+        stoppedAt: {
+          $exists: false,
+        },
+        startedAt: {
+          $exists: true,
+        },
+      },
+      {
+        projection: {
+          startedAt: 1,
+          taskId: 1,
+        },
+      },
+    );
+    if (timesheet) {
+      await stopTask(timesheet, user._id);
     }
 
     await Timesheet.insertOne({
