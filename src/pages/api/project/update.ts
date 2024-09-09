@@ -10,6 +10,8 @@ import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { PermissionLevel } from "../../../collections/permission";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
+import { taskListApi } from "../task/list";
+import { boardState } from "../../../views/board/board.state";
 
 export const projectUpdateApi = createApi(
   "/api/project/update",
@@ -93,11 +95,16 @@ export const projectUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      onSuccess(_d, variables, _c, queryClient) {
-        void projectListWithSubProjectsApi.invalidateQueries(
+      async onSuccess(_d, variables, _c, queryClient) {
+        await projectListWithSubProjectsApi.invalidateQueries(
           queryClient,
           variables,
         );
+        await taskListApi.invalidateQueries(queryClient, {
+          ...variables,
+          selectedProjects: boardState.selectedProjects,
+          selectedSubProjects: boardState.selectedSubProjects,
+        });
       },
     },
   },
