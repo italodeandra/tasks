@@ -11,7 +11,7 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { ProjectSelect } from "./ProjectSelect";
 import { SubProjectSelect } from "./SubProjectSelect";
 import { Assignees } from "./assignees/Assignees";
-import { Activity } from "./Activity";
+import { Activity } from "./activity/Activity";
 import { Timesheet } from "./timesheet/Timesheet";
 import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";

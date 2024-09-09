@@ -1,19 +1,19 @@
 import createApi from "@italodeandra/next/api/createApi";
-import { connectDb } from "../../../db";
-import getTaskColumn from "../../../collections/taskColumn";
-import getTeam from "../../../collections/team";
-import getBoard from "../../../collections/board";
+import { connectDb } from "../../../../db";
+import getTaskColumn from "../../../../collections/taskColumn";
+import getTeam from "../../../../collections/team";
+import getBoard from "../../../../collections/board";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { notFound, unauthorized } from "@italodeandra/next/api/errors";
 import getTaskActivity, {
   ActivityType,
-} from "../../../collections/taskActivity";
-import getTask from "../../../collections/task";
-import { taskActivityListApi } from "./list";
+} from "../../../../collections/taskActivity";
+import getTask from "../../../../collections/task";
+import { taskActivityListApi } from "../list";
 
-export const taskActivityCommentApi = createApi(
-  "/api/task-activity/comment",
+export const taskActivityCommentAddApi = createApi(
+  "/api/task-activity/comment/add",
   async (args: { taskId: string; content: string }, req, res) => {
     await connectDb();
     const TaskActivity = getTaskActivity();
@@ -83,10 +83,10 @@ export const taskActivityCommentApi = createApi(
   {
     mutationOptions: {
       async onSuccess(_d, variables, _c, queryClient) {
-        void taskActivityListApi.invalidateQueries(queryClient, variables);
+        await taskActivityListApi.invalidateQueries(queryClient, variables);
       },
     },
   },
 );
 
-export default taskActivityCommentApi.handler;
+export default taskActivityCommentAddApi.handler;

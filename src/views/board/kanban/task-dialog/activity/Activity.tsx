@@ -1,16 +1,17 @@
-import { taskActivityListApi } from "../../../../pages/api/task-activity/list";
+import { taskActivityListApi } from "../../../../../pages/api/task-activity/list";
 import { useState } from "react";
-import { taskActivityCommentApi } from "../../../../pages/api/task-activity/comment";
+import { taskActivityCommentAddApi } from "../../../../../pages/api/task-activity/comment/add";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import Button from "@italodeandra/ui/components/Button";
 import { PaperAirplaneIcon } from "@heroicons/react/20/solid";
 import Skeleton from "@italodeandra/ui/components/Skeleton";
 import clsx from "@italodeandra/ui/utils/clsx";
-import { UserAvatar } from "../../../../components/UserAvatar";
-import { ActivityType } from "../../../../collections/taskActivity";
+import { UserAvatar } from "../../../../../components/UserAvatar";
+import { ActivityType } from "../../../../../collections/taskActivity";
 import { ChatBubbleLeftIcon } from "@heroicons/react/16/solid";
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import dayjs from "dayjs";
+import { Comment } from "./Comment";
 
 export function Activity({
   taskId,
@@ -22,7 +23,7 @@ export function Activity({
   const taskActivityList = taskActivityListApi.useQuery({ taskId });
 
   const [comment, setComment] = useState("");
-  const taskActivityComment = taskActivityCommentApi.useMutation({
+  const taskActivityComment = taskActivityCommentAddApi.useMutation({
     onSuccess: () => {
       setComment("");
     },
@@ -84,7 +85,7 @@ export function Activity({
                   activities[index - 1]?.user._id === activity.user._id,
               })}
             />
-            <div className="flex flex-1 flex-col">
+            <div className="flex flex-1 flex-col pt-0.5">
               <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
                 <div className="text-zinc-300">
                   <span
@@ -148,9 +149,11 @@ export function Activity({
                 </Tooltip>
               </div>
               {activity.type === ActivityType.COMMENT && activity.data && (
-                <div className="w-full border-b border-b-white/5 pb-1.5 text-zinc-300">
-                  {activity.data.content}
-                </div>
+                <Comment
+                  content={activity.data.content}
+                  activityId={activity._id}
+                  canEdit={activity.user.isMe}
+                />
               )}
             </div>
           </div>
