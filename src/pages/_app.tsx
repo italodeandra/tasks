@@ -1,6 +1,10 @@
 import "@fontsource-variable/inter";
 import "@italodeandra/ui/bootstrap/suppressConsoleLog";
-import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
+import {
+  focusManager,
+  HydrationBoundary,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -20,6 +24,21 @@ import "highlight.js/styles/github-dark.css";
 import getQueryClient from "@italodeandra/next/api/getQueryClient";
 import "@fontsource-variable/fira-code";
 import "react-image-crop/dist/ReactCrop.css";
+
+focusManager.setEventListener((handleFocus) => {
+  const listener = () => handleFocus();
+
+  // Listen to visibilitychange
+  if (typeof window !== "undefined" && window.addEventListener) {
+    window.addEventListener("focus", listener, false);
+  }
+
+  return () => {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("focus", listener);
+    }
+  };
+});
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
