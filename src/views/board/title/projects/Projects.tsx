@@ -4,7 +4,7 @@ import { ChevronDownIcon, PlusIcon } from "@heroicons/react/16/solid";
 import Button from "@italodeandra/ui/components/Button";
 import Checkbox from "@italodeandra/ui/components/Checkbox";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
-import { pull, pullAll, remove, uniq, xor } from "lodash-es";
+import { pull, uniq, xor } from "lodash-es";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import ContextMenu from "@italodeandra/ui/components/ContextMenu";
@@ -114,15 +114,11 @@ export function Projects({
                               [...boardState.selectedProjects],
                               project._id,
                             );
-                            boardState.selectedSubProjects = pullAll(
-                              [...boardState.selectedSubProjects],
-                              project.subProjects.map((p) => p._id),
-                            );
                           }
                         }}
                         checked={selectedProjects.includes(project._id)}
                         indeterminate={
-                          selectedProjects.includes(project._id) &&
+                          !selectedProjects.includes(project._id) &&
                           !!project.subProjects.length &&
                           project.subProjects.some((p) =>
                             selectedSubProjects.includes(p._id),
@@ -196,8 +192,7 @@ export function Projects({
                                 subProject._id,
                               )}
                               onChange={(e) => {
-                                let newSelectedSubProjects =
-                                  selectedSubProjects as string[];
+                                let newSelectedSubProjects: string[];
                                 if (e.target.checked) {
                                   newSelectedSubProjects = [
                                     ...selectedSubProjects,
@@ -212,21 +207,6 @@ export function Projects({
                                   );
                                   boardState.selectedSubProjects =
                                     newSelectedSubProjects;
-                                }
-                                if (
-                                  project.subProjects.every((p) =>
-                                    newSelectedSubProjects.includes(p._id),
-                                  )
-                                ) {
-                                  boardState.selectedProjects = uniq([
-                                    ...selectedProjects,
-                                    project._id,
-                                  ]);
-                                } else {
-                                  boardState.selectedProjects = remove(
-                                    selectedProjects,
-                                    project._id,
-                                  );
                                 }
                               }}
                             />
