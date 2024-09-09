@@ -19,6 +19,7 @@ import { MutationWindowCloseProtection } from "@italodeandra/ui/hooks/useMutatio
 import "highlight.js/styles/github-dark.css";
 import getQueryClient from "@italodeandra/next/api/getQueryClient";
 import "@fontsource-variable/fira-code";
+import "react-image-crop/dist/ReactCrop.css";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);

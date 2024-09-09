@@ -13,7 +13,7 @@ import getTimesheet, {
 import getProject from "../../../../collections/project";
 import getTask from "../../../../collections/task";
 import filterBoolean from "@italodeandra/ui/utils/filterBoolean";
-import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
+import getUser from "@italodeandra/auth/collections/user/User";
 import dayjs from "dayjs";
 
 export const timesheetTimeClosureGetNextApi = createApi(
@@ -206,22 +206,21 @@ export const timesheetTimeClosureGetNextApi = createApi(
     ]);
 
     const usersIds = filterBoolean(timesheets.map((t) => t.userId));
-    const users = await User.aggregate<Pick<IUser, "_id" | "name" | "email">>([
+    const users = await User.find(
       {
-        $match: {
-          _id: {
-            $in: usersIds,
-          },
+        _id: {
+          $in: usersIds,
         },
       },
       {
-        $project: {
+        projection: {
           name: 1,
           email: 1,
           previousMultiplier: 1,
+          profilePicture: 1,
         },
       },
-    ]);
+    );
 
     const totalTime = timesheets.reduce(
       (acc, t) =>

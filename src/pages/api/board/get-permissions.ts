@@ -57,7 +57,7 @@ export const boardGetPermissionsApi = createApi(
         user: userId
           ? {
               ...(await User.findById(userId, {
-                projection: { name: 1, email: 1 },
+                projection: { name: 1, email: 1, profilePicture: 1 },
               }))!,
               isMe: userId?.equals(user._id),
             }

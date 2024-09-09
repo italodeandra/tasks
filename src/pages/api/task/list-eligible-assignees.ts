@@ -112,7 +112,7 @@ export const taskListEligibleAssigneesApi = createApi(
 
     return [
       {
-        ...pick(user, ["_id", "name", "email"]),
+        ...pick(user, ["_id", "name", "email", "profilePicture"]),
         isMe: true,
       },
       ...(await User.find(
@@ -123,6 +123,7 @@ export const taskListEligibleAssigneesApi = createApi(
           projection: {
             name: 1,
             email: 1,
+            profilePicture: 1,
           },
         },
       )),

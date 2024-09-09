@@ -50,6 +50,7 @@ export const teamGetApi = createApi(
             projection: {
               name: 1,
               email: 1,
+              profilePicture: 1,
             },
           },
         ))!,

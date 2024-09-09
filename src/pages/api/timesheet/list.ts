@@ -122,7 +122,7 @@ export const timesheetListApi = createApi(
         project?: Pick<IProject, "_id" | "name">;
         subProject?: Pick<ISubProject, "_id" | "name">;
         primaryProject?: Pick<IProject, "_id" | "name">;
-        user?: Pick<IUser, "_id" | "name" | "email">;
+        user?: Pick<IUser, "_id" | "name" | "email" | "profilePicture">;
       }
     >([
       {
@@ -265,6 +265,7 @@ export const timesheetListApi = createApi(
               $project: {
                 name: 1,
                 email: 1,
+                profilePicture: 1,
               },
             },
           ],

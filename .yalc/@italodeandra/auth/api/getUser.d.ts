@@ -17,17 +17,19 @@ export default function getUserHandler(_args: void, req: NextApiRequest, res: Ne
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: import("bson").ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "_id" | "email" | "type" | "name">>>;
+}, "_id" | "email" | "type" | "name" | "profilePicture">>>;
 export type AuthUserGetApiResponse = InferApiResponse<typeof getUserHandler>;
-export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOptions<AuthUserGetApiResponse | null, AuthUserGetApiError>) => {
+export declare const useAuthGetUser: (required?: boolean, options?: Omit<UseQueryOptions<AuthUserGetApiResponse | null, AuthUserGetApiError>, "queryKey">) => {
     isLoading: boolean;
     data: {
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null;
     error: AuthUserGetApiError;
@@ -54,6 +56,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
     fetchStatus: import("@tanstack/react-query").FetchStatus;
@@ -63,6 +66,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null;
     error: null;
@@ -89,6 +93,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
     fetchStatus: import("@tanstack/react-query").FetchStatus;
@@ -119,6 +124,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
     fetchStatus: import("@tanstack/react-query").FetchStatus;
@@ -149,6 +155,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
     fetchStatus: import("@tanstack/react-query").FetchStatus;
@@ -179,6 +186,7 @@ export declare const useAuthGetUser: (required?: boolean, options?: UseQueryOpti
         email: string;
         type: string;
         name?: string | undefined;
+        profilePicture?: string | undefined;
         _id: string;
     } | null, AuthUserGetApiError>>;
     fetchStatus: import("@tanstack/react-query").FetchStatus;

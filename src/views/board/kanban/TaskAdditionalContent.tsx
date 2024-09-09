@@ -94,7 +94,7 @@ export function TaskAdditionalContent({
                   variant="filled"
                   rounded
                   className={clsx(
-                    "group/myself pointer-events-auto relative h-6 w-6 p-0 text-xs dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
+                    "group/myself pointer-events-auto relative h-6 w-6 overflow-hidden border-none p-0 text-xs transition-none dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
                     {
                       "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
                         timesheetGetMyOverview.data?.currentTimesheet,
@@ -102,7 +102,9 @@ export function TaskAdditionalContent({
                   )}
                   style={
                     {
-                      "--bg": userColor["600"],
+                      "--bg": !assignee.profilePicture
+                        ? userColor["600"]
+                        : undefined,
                       "--hover": userColor["500"],
                       "--active-border": userColor["400"],
                     } as Record<string, string>
@@ -141,9 +143,18 @@ export function TaskAdditionalContent({
                         </>
                       ) : (
                         <>
-                          <span className="group-hover/myself:hidden">
-                            {initials}
-                          </span>
+                          {!assignee.profilePicture ? (
+                            <span className="group-hover/myself:hidden">
+                              {initials}
+                            </span>
+                          ) : (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img
+                              src={assignee.profilePicture}
+                              alt={assignee.name}
+                              className="group-hover/myself:hidden"
+                            />
+                          )}
                           <span className="hidden group-hover/myself:block">
                             <PlayIcon className="h-4 w-4" />
                           </span>

@@ -5,6 +5,8 @@ const Routes = {
   ForgotPassword: "/forgot-password",
   ResetPassword: (token: string) => `/reset-password/${token}`,
 
+  Profile: "/profile",
+
   Board: (_id: string) => `/board/${_id}`,
   TimesheetList: (boardId: string) => `/board/${boardId}/timesheet`,
   TimesheetClosure: (boardId: string, timesheetId: string) =>

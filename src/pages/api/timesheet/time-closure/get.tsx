@@ -113,7 +113,7 @@ export const timesheetTimeClosureGetApi = createApi(
           | "secondaryProjectsIds"
         >;
         subProject?: Pick<ISubProject, "_id" | "name">;
-        user?: Pick<IUser, "_id" | "name" | "email">;
+        user?: Pick<IUser, "_id" | "name" | "email" | "profilePicture">;
       }
     >([
       {
@@ -238,6 +238,7 @@ export const timesheetTimeClosureGetApi = createApi(
               $project: {
                 name: 1,
                 email: 1,
+                profilePicture: 1,
               },
             },
           ],

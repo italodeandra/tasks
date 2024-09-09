@@ -17,6 +17,7 @@ export default function panelUserGetHandler(args: Jsonify<{
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;

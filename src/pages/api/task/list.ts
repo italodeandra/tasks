@@ -84,7 +84,10 @@ export const taskListApi = createApi(
         Pick<ITask, "_id" | "title" | "order"> & {
           canEdit: boolean;
           canDelete: boolean;
-          assignees: (Pick<IUser, "_id" | "name" | "email"> & {
+          assignees: (Pick<
+            IUser,
+            "_id" | "name" | "email" | "profilePicture"
+          > & {
             isMe: boolean;
             currentlyClocking: boolean;
           })[];
@@ -331,6 +334,7 @@ export const taskListApi = createApi(
                 $project: {
                   name: 1,
                   email: 1,
+                  profilePicture: 1,
                   isMe: {
                     $cond: {
                       if: { $eq: ["$_id", user?._id] },

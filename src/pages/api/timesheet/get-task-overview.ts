@@ -96,6 +96,7 @@ export const timesheetGetTaskOverviewApi = createApi(
           projection: {
             name: 1,
             email: 1,
+            profilePicture: 1,
           },
         }))!;
         const currentClockTimesheet = timesheets.find(

@@ -7,25 +7,29 @@ export function UserAvatar({
   name,
   email,
   className,
+  profilePicture,
 }: {
   _id: string;
   name?: string;
   email: string;
   className?: string;
+  profilePicture?: string;
 }) {
   return (
     <div
       className={clsx(
-        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[--bg] text-center text-xs uppercase text-white",
+        "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-center text-xs uppercase text-white",
         className,
       )}
       style={
         {
-          "--bg": getColorForString(_id)["600"],
+          background: profilePicture
+            ? `center / cover url(${profilePicture})`
+            : getColorForString(_id)["600"],
         } as Record<string, string>
       }
     >
-      {getInitials(name || email)}
+      {!profilePicture && getInitials(name || email)}
     </div>
   );
 }

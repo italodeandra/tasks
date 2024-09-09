@@ -25,6 +25,7 @@ import {
   getColorForString,
 } from "../../../../components/ColorPicker/colors";
 import { reactQueryDialogContentProps } from "../../../../utils/reactQueryDialogContentProps";
+import clsx from "@italodeandra/ui/utils/clsx";
 
 export function UserSection() {
   const queryClient = useQueryClient();
@@ -70,23 +71,28 @@ export function UserSection() {
         <Button
           variant="filled"
           rounded
-          className="group/myself pointer-events-auto relative h-7 w-7 p-0 text-xs uppercase dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]"
+          className={clsx(
+            "group/myself pointer-events-auto relative h-7 w-7 border-0 p-0 text-xs uppercase",
+            "before:absolute before:inset-0 before:rounded-full before:bg-white/0 before:transition hover:before:bg-white/5 active:before:bg-white/10",
+          )}
           onClick={stopPropagation}
           style={
             {
-              "--bg": userColor["600"],
-              "--hover": userColor["500"],
-              "--active-border": userColor["400"],
+              background: user?.profilePicture
+                ? `center / cover url(${user.profilePicture})`
+                : userColor["600"],
             } as Record<string, string>
           }
         >
           {isLoading ? (
             <Loading className="h-4 w-4" />
-          ) : user ? (
-            getInitials(user.name || user.email)
-          ) : (
-            <UserIcon className="h-4 w-4" />
-          )}
+          ) : !user?.profilePicture ? (
+            user ? (
+              getInitials(user.name || user.email)
+            ) : (
+              <UserIcon className="h-4 w-4" />
+            )
+          ) : null}
         </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
@@ -107,6 +113,9 @@ export function UserSection() {
             {isAdmin && (
               <DropdownMenu.Item href={Routes.Panel}>Panel</DropdownMenu.Item>
             )}
+            <DropdownMenu.Item href={Routes.Profile}>
+              Edit profile
+            </DropdownMenu.Item>
             <DropdownMenu.Item onClick={handleLogOutClick}>
               Log out
             </DropdownMenu.Item>

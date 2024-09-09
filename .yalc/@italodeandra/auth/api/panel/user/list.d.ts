@@ -17,6 +17,7 @@ export default function authPanelUserListHandler(args: {
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: import("bson").ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;

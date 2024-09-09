@@ -13,10 +13,11 @@ export default function getFullUserHandler(_args: void, req: NextApiRequest, res
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: import("bson").ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: import("../collections/user/User").UserCustomData | undefined;
-}, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData">>;
+}, "_id" | "email" | "type" | "name" | "phoneNumber" | "profilePicture" | "customData">>;
 export type AuthGetFullUserApiResponse = InferApiResponse<typeof getFullUserHandler>;
 export declare const useAuthGetFullUser: (required?: boolean) => UseQueryResult<AuthGetFullUserApiResponse, {
     code: 401;

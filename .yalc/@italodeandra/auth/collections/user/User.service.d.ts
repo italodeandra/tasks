@@ -24,6 +24,7 @@ export declare function createUser(doc: Pick<IUser, "email" | "password" | "name
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: import("./User").UserCustomData | undefined;
@@ -44,11 +45,12 @@ export declare function getUserFromCookies(req: OptionsType["req"], res: Options
     emailVerified?: Date | undefined;
     name?: string | undefined;
     phoneNumber?: string | undefined;
+    profilePicture?: string | undefined;
     tenantId?: ObjectId | undefined;
     disabled?: boolean | undefined;
     customData?: Pick<{}, never> | undefined;
-}, "_id" | "email" | "type" | "name">> | null>;
-export declare function getFullUserFromCookies(req: NextApiRequest, res: NextApiResponse, multitenantMode?: boolean): Promise<null | Pick<IUser, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData">>;
+}, "_id" | "email" | "type" | "name" | "profilePicture">> | null>;
+export declare function getFullUserFromCookies(req: NextApiRequest, res: NextApiResponse, multitenantMode?: boolean): Promise<null | Pick<IUser, "_id" | "email" | "type" | "name" | "phoneNumber" | "customData" | "profilePicture">>;
 export declare function setUserPassword(userId: IUser["_id"], plainPassword: string): Promise<void>;
 export declare const userTypeTranslations: Record<keyof IUserType, string>;
 export declare function translateUserType(userType: string): string;

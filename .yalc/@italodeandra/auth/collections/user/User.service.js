@@ -87,7 +87,7 @@ export async function getUserFromCookies(req, res, multitenantMode) {
             disabled: { $ne: true },
             ...(multitenantMode ? { tenantId } : {}),
             _id: userId,
-        }, { projection: { email: 1, type: 1, name: 1 } });
+        }, { projection: { email: 1, type: 1, name: 1, profilePicture: 1 } });
         if (!user) {
             deleteCookie("auth", { req, res });
             return null;
@@ -120,6 +120,7 @@ export async function getFullUserFromCookies(req, res, multitenantMode) {
                 name: 1,
                 phoneNumber: 1,
                 customData: 1,
+                profilePicture: 1,
             },
         });
         if (!user) {

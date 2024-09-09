@@ -9,6 +9,7 @@ export function UserAvatarAndName({
   className,
   avatarClassName,
   nameClassName,
+  profilePicture,
 }: {
   _id: string;
   name?: string;
@@ -17,6 +18,7 @@ export function UserAvatarAndName({
   className?: string;
   avatarClassName?: string;
   nameClassName?: string;
+  profilePicture?: string;
 }) {
   return (
     <div className={clsx("flex gap-1.5", className)}>
@@ -25,6 +27,7 @@ export function UserAvatarAndName({
         email={email}
         name={name}
         className={avatarClassName}
+        profilePicture={profilePicture}
       />
       <span className={clsx("mt-px", nameClassName)}>
         {name || email}

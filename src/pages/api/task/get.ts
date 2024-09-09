@@ -50,7 +50,10 @@ export const taskGetApi = createApi(
         > & {
           canEdit: boolean;
           canComment: boolean;
-          assignees: (Pick<IUser, "_id" | "name" | "email"> & {
+          assignees: (Pick<
+            IUser,
+            "_id" | "name" | "email" | "profilePicture"
+          > & {
             isMe: boolean;
           })[];
         }
@@ -232,6 +235,7 @@ export const taskGetApi = createApi(
                 $project: {
                   name: 1,
                   email: 1,
+                  profilePicture: 1,
                   isMe: {
                     $cond: {
                       if: { $eq: ["$_id", user?._id] },

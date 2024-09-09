@@ -25,6 +25,7 @@ const userSchema = onlyServer(() => schema({
         maxLength: 100,
     }),
     phoneNumber: types.string(),
+    profilePicture: types.string(),
     createdAt: types.date({ required: true }),
     updatedAt: types.date({ required: true }),
     customData: types.any(),
