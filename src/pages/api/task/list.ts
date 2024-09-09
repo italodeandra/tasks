@@ -11,7 +11,7 @@ import querify from "@italodeandra/next/utils/querify";
 import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
 import getProject, { IProject } from "../../../collections/project";
 import getSubProject, { ISubProject } from "../../../collections/subProject";
-import getTimesheet from "../../../collections/timesheet";
+import getTimesheet, { ITimesheet } from "../../../collections/timesheet";
 import { PermissionLevel } from "../../../collections/permission";
 import getTaskStatus, { ITaskStatus } from "../../../collections/taskStatus";
 
@@ -89,7 +89,7 @@ export const taskListApi = createApi(
             "_id" | "name" | "email" | "profilePicture"
           > & {
             isMe: boolean;
-            currentlyClocking: boolean;
+            currentTimesheet?: Pick<ITimesheet, "_id" | "taskId">;
           })[];
           project?: Pick<IProject, "_id" | "name">;
           subProject?: Pick<ISubProject, "_id" | "name">;
@@ -362,6 +362,7 @@ export const taskListApi = createApi(
                           {
                             $project: {
                               _id: 1,
+                              taskId: 1,
                             },
                           },
                         ],
@@ -370,8 +371,8 @@ export const taskListApi = createApi(
                     },
                     {
                       $addFields: {
-                        currentlyClocking: {
-                          $gt: [{ $size: "$timesheetMatches" }, 0],
+                        currentTimesheet: {
+                          $arrayElemAt: ["$timesheetMatches", 0],
                         },
                       },
                     },

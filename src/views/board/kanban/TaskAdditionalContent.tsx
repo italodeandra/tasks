@@ -97,7 +97,8 @@ export function TaskAdditionalContent({
                     "group/myself pointer-events-auto relative h-6 w-6 overflow-hidden border-none p-0 text-xs transition-none dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
                     {
                       "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
-                        timesheetGetMyOverview.data?.currentTimesheet,
+                        timesheetGetMyOverview.data?.currentTimesheet
+                          ?.taskId === cardId,
                     },
                   )}
                   style={
@@ -111,7 +112,10 @@ export function TaskAdditionalContent({
                   }
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (timesheetGetMyOverview.data?.currentTimesheet) {
+                    if (
+                      timesheetGetMyOverview.data?.currentTimesheet?.taskId ===
+                      cardId
+                    ) {
                       timesheetStop.mutate();
                     } else {
                       timesheetStart.mutate({ taskId: cardId });
@@ -126,7 +130,8 @@ export function TaskAdditionalContent({
                     <Loading />
                   ) : (
                     <>
-                      {timesheetGetMyOverview.data?.currentTimesheet ? (
+                      {timesheetGetMyOverview.data?.currentTimesheet?.taskId ===
+                      cardId ? (
                         <>
                           <Time
                             from={
@@ -170,7 +175,8 @@ export function TaskAdditionalContent({
                   className={clsx(
                     "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] p-0 text-xs text-white",
                     {
-                      "border-2 border-green-700": assignee.currentlyClocking,
+                      "ring-2 ring-green-700":
+                        assignee.currentTimesheet?.taskId === cardId,
                     },
                   )}
                   style={
