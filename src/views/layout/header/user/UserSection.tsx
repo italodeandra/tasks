@@ -72,7 +72,7 @@ export function UserSection() {
           variant="filled"
           rounded
           className={clsx(
-            "group/myself pointer-events-auto relative h-7 w-7 border-0 p-0 text-xs uppercase",
+            "group/myself pointer-events-auto relative h-7 w-7 border-0 p-0 text-xs uppercase text-white",
             "before:absolute before:inset-0 before:rounded-full before:bg-white/0 before:transition hover:before:bg-white/5 active:before:bg-white/10",
           )}
           onClick={stopPropagation}
