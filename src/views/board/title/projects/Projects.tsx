@@ -109,10 +109,6 @@ export function Projects({
                               ...boardState.selectedProjects,
                               project._id,
                             ]);
-                            boardState.selectedSubProjects = uniq([
-                              ...boardState.selectedSubProjects,
-                              ...project.subProjects.map((p) => p._id),
-                            ]);
                           } else {
                             boardState.selectedProjects = pull(
                               [...boardState.selectedProjects],
@@ -126,7 +122,8 @@ export function Projects({
                         }}
                         checked={selectedProjects.includes(project._id)}
                         indeterminate={
-                          !selectedProjects.includes(project._id) &&
+                          selectedProjects.includes(project._id) &&
+                          !!project.subProjects.length &&
                           project.subProjects.some((p) =>
                             selectedSubProjects.includes(p._id),
                           )
