@@ -138,7 +138,7 @@ export const taskBatchUpdateApi = createApi(
           if (op.deleteOne) {
             if (
               await Timesheet.countDocuments({
-                _id: isomorphicObjectId(op.deleteOne.filter._id),
+                taskId: isomorphicObjectId(op.deleteOne.filter._id),
               })
             ) {
               return {

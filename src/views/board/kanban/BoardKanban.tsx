@@ -44,7 +44,13 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         titleClassName: "mb-0",
         contentOverflowClassName: "max-w-screen-xl gap-4",
         title: <TaskDialogTitle taskId={openTaskId} />,
-        content: <TaskDialogContent taskId={openTaskId} boardId={boardId} />,
+        content: (
+          <TaskDialogContent
+            dialogId={dialogId}
+            taskId={openTaskId}
+            boardId={boardId}
+          />
+        ),
         closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
         onClose: () => void setOpenTaskId(null),
         contentProps: reactQueryDialogContentProps,
@@ -173,15 +179,6 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     [taskList.data],
   );
 
-  const checkCanDeleteTask = useCallback(
-    (listId: string, cardId: string) => {
-      const list2 = find(taskList.data, { _id: listId });
-      const task = find(list2?.tasks, { _id: cardId });
-      return task?.canDelete;
-    },
-    [taskList.data],
-  );
-
   return (
     <Kanban
       className="overflow-auto px-2 pb-2"
@@ -212,7 +209,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       canEditCard={checkCanEditTask}
       canDuplicateCard={boardGet.data?.hasAdminPermission}
       canMoveCardTo={boardGet.data?.hasAdminPermission}
-      canDeleteCard={checkCanDeleteTask}
+      canDeleteCard
     />
   );
 }

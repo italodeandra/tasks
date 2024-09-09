@@ -15,11 +15,14 @@ import { Activity } from "./activity/Activity";
 import { Timesheet } from "./timesheet/Timesheet";
 import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
+import { closeDialog } from "@italodeandra/ui/components/Dialog";
 
 export function TaskDialogContent({
+  dialogId,
   boardId,
   taskId,
 }: {
+  dialogId: string;
   boardId: string;
   taskId: string;
 }) {
@@ -51,6 +54,11 @@ export function TaskDialogContent({
       setSecondaryProjectsIds(task.secondaryProjectsIds || []);
     }
   }, [task]);
+  useEffect(() => {
+    if (taskGet.isError) {
+      closeDialog(dialogId);
+    }
+  }, [dialogId, taskGet.isError]);
 
   const imageUpload = imageUploadApi.useMutation();
   const uploadClipboardImage = useCallback(

@@ -25,11 +25,19 @@ export const taskActivityListApi = createApi(
 
     const taskId = isomorphicObjectId(args.taskId);
 
-    const task = await Task.findById(taskId, {
-      projection: {
-        columnId: 1,
+    const task = await Task.findOne(
+      {
+        _id: taskId,
+        archived: {
+          $ne: true,
+        },
       },
-    });
+      {
+        projection: {
+          columnId: 1,
+        },
+      },
+    );
     if (!task) {
       throw notFound;
     }

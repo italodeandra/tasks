@@ -200,7 +200,12 @@ export function TimesheetList({ boardId }: { boardId: string }) {
                 <Table.Cell>
                   {translateTimesheetType(timesheet.type)}
                 </Table.Cell>
-                <Table.Cell>{timesheet.description}</Table.Cell>
+                <Table.Cell>
+                  {timesheet.description}
+                  {timesheet.task?.archived ? (
+                    <span className="opacity-50"> (archived)</span>
+                  ) : null}
+                </Table.Cell>
                 <Table.Cell>
                   {timesheet.primaryProject
                     ? `${timesheet.primaryProject.name} + `
@@ -251,7 +256,7 @@ export function TimesheetList({ boardId }: { boardId: string }) {
                         </Button>
                       </Tooltip>
                     )}
-                    {timesheet.task && (
+                    {timesheet.task && !timesheet.task.archived && (
                       <Tooltip content="Open task in a new tab">
                         <Button
                           icon

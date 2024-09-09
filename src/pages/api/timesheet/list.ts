@@ -118,7 +118,7 @@ export const timesheetListApi = createApi(
         ITimesheet,
         "_id" | "type" | "description" | "createdAt" | "updatedAt" | "time"
       > & {
-        task?: Pick<ITask, "_id" | "title" | "projectId">;
+        task?: Pick<ITask, "_id" | "title" | "projectId" | "archived">;
         project?: Pick<IProject, "_id" | "name">;
         subProject?: Pick<ISubProject, "_id" | "name">;
         primaryProject?: Pick<IProject, "_id" | "name">;
@@ -146,6 +146,7 @@ export const timesheetListApi = createApi(
                 projectId: 1,
                 subProjectId: 1,
                 secondaryProjectsIds: 1,
+                archived: 1,
               },
             },
           ],
