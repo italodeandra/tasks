@@ -90,6 +90,17 @@ export const taskBatchUpdateApi = createApi(
       const taskOps = filterBoolean(
         await asyncMap(operations.taskOps, async (op) => {
           if (op.insertOne?.document) {
+            const column = await TaskColumn.findById(
+              isomorphicObjectId(op.insertOne.document.columnId),
+              {
+                projection: {
+                  linkedStatusId: 1,
+                },
+              },
+            );
+            if (column?.linkedStatusId) {
+              op.insertOne.document.statusId = column.linkedStatusId;
+            }
             return merge(op, {
               insertOne: {
                 document: {
