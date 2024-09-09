@@ -19,6 +19,7 @@ import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogCon
 import { StatusesDialogContent } from "./statuses/StatusesDialogContent";
 import Routes from "../../../Routes";
 import { omit } from "lodash-es";
+import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
 export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
   const router = useRouter();
@@ -28,6 +29,7 @@ export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
 
   const boardGet = boardGetApi.useQuery({ _id });
   const boardUpdate = boardUpdateApi.useMutation();
+  const authGetUser = useAuthGetUser();
 
   const [editing, setEditing] = useState(false);
   const [name, setName] = useState(boardGet.data?.name || "");
@@ -148,7 +150,7 @@ export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
           )}
         </ContextMenu.Root>
         {boardUpdate.isPending && <Loading className="mt-2" />}
-        {route === "board" && (
+        {route === "board" && authGetUser.data && (
           <Projects
             boardId={_id}
             canEditBoard={boardGet.data?.hasAdminPermission}

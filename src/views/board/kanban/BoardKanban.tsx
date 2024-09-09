@@ -22,6 +22,7 @@ import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogCon
 import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
 import { generateInstructions } from "./compareColumns";
 import { WritableDeep } from "type-fest";
+import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -32,13 +33,14 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       clearOnDefault: true,
     }),
   );
+  const authGetUser = useAuthGetUser();
 
   const { data, selectedProjects, selectedSubProjects } =
     useSnapshot(boardState);
 
   useEffect(() => {
     const dialogId = isomorphicObjectId().toString();
-    if (openTaskId) {
+    if (openTaskId && authGetUser.data) {
       showDialog({
         _id: dialogId,
         titleClassName: "mb-0",
@@ -184,7 +186,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       className="overflow-auto px-2 pb-2"
       data={mappedData}
       onChange={handleDataChange}
-      onClickCard={handleTaskClick}
+      onClickCard={authGetUser.data ? handleTaskClick : undefined}
       cardName="task"
       listName="column"
       cardAdditionalContent={TaskAdditionalContent}
