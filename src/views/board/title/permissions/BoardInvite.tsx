@@ -55,7 +55,11 @@ export function BoardInvite({
   );
 
   const teamList = teamListApi.useQuery();
-  const boardInviteTeam = boardInviteTeamApi.useMutation();
+  const boardInviteTeam = boardInviteTeamApi.useMutation({
+    onSuccess: () => {
+      setInvite("");
+    },
+  });
   const handleInviteTeam = useCallback(
     (team: TeamListApi["Response"][0]) => () => {
       boardInviteTeam.mutate({

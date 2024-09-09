@@ -62,7 +62,11 @@ export function ProjectInvite({
 
   const teamList = teamListApi.useQuery();
   const projectPermissionsInviteTeam =
-    projectPermissionsInviteTeamApi.useMutation();
+    projectPermissionsInviteTeamApi.useMutation({
+      onSuccess: () => {
+        setInvite("");
+      },
+    });
   const handleInviteTeam = useCallback(
     (team: TeamListApi["Response"][0]) => () => {
       projectPermissionsInviteTeam.mutate({
