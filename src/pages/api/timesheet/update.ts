@@ -90,9 +90,9 @@ export const timesheetUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, variables, _c, queryClient) {
-        await timesheetGetApi.invalidateQueries(queryClient, variables);
-        await timesheetListApi.invalidateQueries(queryClient, {
+      onSuccess(data, variables, _c, queryClient) {
+        void timesheetGetApi.invalidateQueries(queryClient, variables);
+        void timesheetListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
         });
       },

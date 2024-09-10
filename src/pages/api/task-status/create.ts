@@ -69,8 +69,8 @@ export const taskStatusCreateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
-        await taskStatusListApi.invalidateQueries(queryClient, variables);
+      onSuccess(_d, variables, _c, queryClient) {
+        void taskStatusListApi.invalidateQueries(queryClient, variables);
       },
     },
   },

@@ -81,14 +81,14 @@ export const timesheetStopApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
+      onSuccess(data, _v, _c, queryClient) {
         if (data.taskId) {
           void taskActivityListApi.invalidateQueries(queryClient, {
             taskId: data.taskId,
           });
         }
-        await timesheetGetTaskOverviewApi.invalidateQueries(queryClient);
-        await timesheetGetMyOverviewApi.invalidateQueries(queryClient);
+        void timesheetGetTaskOverviewApi.invalidateQueries(queryClient);
+        void timesheetGetMyOverviewApi.invalidateQueries(queryClient);
       },
     },
   },

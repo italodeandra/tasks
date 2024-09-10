@@ -285,7 +285,7 @@ export const taskUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, variables, _c, queryClient) {
+      onSuccess(data, variables, _c, queryClient) {
         void taskListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
           selectedProjects: boardState.selectedProjects,
@@ -294,7 +294,7 @@ export const taskUpdateApi = createApi(
         void taskActivityListApi.invalidateQueries(queryClient, {
           taskId: variables._id,
         });
-        await taskGetApi.invalidateQueries(queryClient, variables);
+        void taskGetApi.invalidateQueries(queryClient, variables);
       },
     },
   },

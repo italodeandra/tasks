@@ -121,11 +121,11 @@ export const boardUpdatePermissionApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
+      onSuccess(_d, variables, _c, queryClient) {
         void boardGetApi.invalidateQueries(queryClient, {
           _id: variables.boardId,
         });
-        await boardGetPermissionsApi.invalidateQueries(queryClient, {
+        void boardGetPermissionsApi.invalidateQueries(queryClient, {
           _id: variables.boardId,
         });
       },

@@ -63,10 +63,10 @@ export const teamUpdateMemberRoleApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
+      onSuccess(_d, variables, _c, queryClient) {
         void teamListApi.invalidateQueries(queryClient);
         void boardGetApi.invalidateQueries(queryClient);
-        await teamGetApi.invalidateQueries(queryClient, {
+        void teamGetApi.invalidateQueries(queryClient, {
           _id: variables.teamId,
         });
       },

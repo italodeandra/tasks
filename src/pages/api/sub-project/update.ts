@@ -144,12 +144,9 @@ export const subProjectUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
-        await projectListWithSubProjectsApi.invalidateQueries(
-          queryClient,
-          data,
-        );
-        await taskListApi.invalidateQueries(queryClient, {
+      onSuccess(data, _v, _c, queryClient) {
+        void projectListWithSubProjectsApi.invalidateQueries(queryClient, data);
+        void taskListApi.invalidateQueries(queryClient, {
           ...data,
           selectedProjects: boardState.selectedProjects,
           selectedSubProjects: boardState.selectedSubProjects,

@@ -92,16 +92,16 @@ export const timesheetDeleteApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
+      onSuccess(data, _v, _c, queryClient) {
         if (data.taskId) {
-          await timesheetGetTaskOverviewApi.invalidateQueries(queryClient, {
+          void timesheetGetTaskOverviewApi.invalidateQueries(queryClient, {
             taskId: data.taskId,
           });
-          await taskActivityListApi.invalidateQueries(queryClient, {
+          void taskActivityListApi.invalidateQueries(queryClient, {
             taskId: data.taskId,
           });
         }
-        await timesheetListApi.invalidateQueries(queryClient, {
+        void timesheetListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
         });
       },

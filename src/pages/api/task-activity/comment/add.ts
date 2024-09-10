@@ -82,8 +82,8 @@ export const taskActivityCommentAddApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
-        await taskActivityListApi.invalidateQueries(queryClient, variables);
+      onSuccess(_d, variables, _c, queryClient) {
+        void taskActivityListApi.invalidateQueries(queryClient, variables);
       },
     },
   },

@@ -98,8 +98,8 @@ export const timesheetTimeClosureAddApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
-        await timesheetListApi.invalidateQueries(queryClient, data);
+      onSuccess(data, _v, _c, queryClient) {
+        void timesheetListApi.invalidateQueries(queryClient, data);
       },
     },
   },

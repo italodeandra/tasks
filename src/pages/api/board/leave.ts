@@ -38,9 +38,9 @@ export const boardLeaveApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
+      onSuccess(_d, variables, _c, queryClient) {
         void boardGetApi.invalidateQueries(queryClient, variables);
-        await boardGetPermissionsApi.invalidateQueries(queryClient, variables);
+        void boardGetPermissionsApi.invalidateQueries(queryClient, variables);
       },
     },
   },

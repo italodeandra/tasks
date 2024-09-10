@@ -78,8 +78,8 @@ export const taskColumnUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
-        await taskColumnListApi.invalidateQueries(queryClient, data);
+      onSuccess(data, _v, _c, queryClient) {
+        void taskColumnListApi.invalidateQueries(queryClient, data);
       },
     },
   },

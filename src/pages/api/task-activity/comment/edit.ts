@@ -57,8 +57,8 @@ export const taskActivityCommentEditApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, _v, _c, queryClient) {
-        await taskActivityListApi.invalidateQueries(queryClient, data);
+      onSuccess(data, _v, _c, queryClient) {
+        void taskActivityListApi.invalidateQueries(queryClient, data);
       },
     },
   },

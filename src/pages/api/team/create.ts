@@ -33,8 +33,8 @@ export const teamCreateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, _v, _c, queryClient) {
-        await teamListApi.invalidateQueries(queryClient);
+      onSuccess(_d, _v, _c, queryClient) {
+        void teamListApi.invalidateQueries(queryClient);
       },
     },
   },

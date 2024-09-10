@@ -263,7 +263,7 @@ export const taskBatchUpdateApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, variables, _c, queryClient) {
+      onSuccess(_d, variables, _c, queryClient) {
         void taskListApi.invalidateQueries(queryClient, {
           boardId: variables.boardId,
           selectedProjects: boardState.selectedProjects,

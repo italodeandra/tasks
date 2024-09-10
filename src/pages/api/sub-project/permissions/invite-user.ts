@@ -158,9 +158,9 @@ export const subProjectPermissionsInviteUserApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, variables, _c, queryClient) {
+      onSuccess(data, variables, _c, queryClient) {
         void projectListWithSubProjectsApi.invalidateQueries(queryClient, data);
-        await subProjectPermissionsListApi.invalidateQueries(
+        void subProjectPermissionsListApi.invalidateQueries(
           queryClient,
           variables,
         );

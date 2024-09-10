@@ -112,13 +112,13 @@ export const timesheetStartApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(data, variables, _c, queryClient) {
-        await timesheetGetTaskOverviewApi.invalidateQueries(
+      onSuccess(data, variables, _c, queryClient) {
+        void timesheetGetTaskOverviewApi.invalidateQueries(
           queryClient,
           variables,
         );
-        await timesheetGetMyOverviewApi.invalidateQueries(queryClient);
-        await taskListApi.invalidateQueries(queryClient, {
+        void timesheetGetMyOverviewApi.invalidateQueries(queryClient);
+        void taskListApi.invalidateQueries(queryClient, {
           boardId: data.boardId,
           selectedProjects: boardState.selectedProjects,
           selectedSubProjects: boardState.selectedSubProjects,

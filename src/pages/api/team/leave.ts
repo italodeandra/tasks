@@ -38,9 +38,9 @@ export const teamLeaveApi = createApi(
   },
   {
     mutationOptions: {
-      async onSuccess(_d, _v, _c, queryClient) {
+      onSuccess(_d, _v, _c, queryClient) {
         void boardGetApi.invalidateQueries(queryClient);
-        await teamListApi.invalidateQueries(queryClient);
+        void teamListApi.invalidateQueries(queryClient);
       },
     },
   },
