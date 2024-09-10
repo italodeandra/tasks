@@ -52,16 +52,14 @@ export function CurrentClock() {
               <Loading />
             ) : (
               <>
+                <span className="mr-1 hidden group-hover/myself:block">
+                  <StopIcon className="h-4 w-4" />
+                </span>
                 <Time
                   from={timesheetGetMyOverview.data.currentTimesheet.startedAt}
                   autoUpdate
-                  short
-                  className="group-hover/myself:hidden"
                   showOnWindowTitle
                 />
-                <span className="hidden group-hover/myself:block">
-                  <StopIcon className="-mx-1 h-4 w-4" />
-                </span>
               </>
             )}
           </Button>
