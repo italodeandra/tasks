@@ -10,10 +10,9 @@ import { boardState } from "../../../views/board/board.state";
 import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
-import { Instruction } from "../../../views/board/kanban/compareColumns";
+import { Instruction } from "../../../views/board/kanban/generateInstructions";
 import { generateMongoBulkWrites } from "../../../views/board/kanban/generateMongoWrites";
-import { flatten, merge, pick } from "lodash-es";
-import bsonToJson from "@italodeandra/next/utils/bsonToJson";
+import { flatten, merge } from "lodash-es";
 import filterBoolean from "@italodeandra/ui/utils/filterBoolean";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getTaskStatus from "../../../collections/taskStatus";
@@ -45,18 +44,7 @@ export const taskBatchUpdateApi = createApi(
 
     const boardId = isomorphicObjectId(args.boardId);
 
-    const tasks = await taskListApi.unwrappedHandler(args, req, res);
-    const operations = generateMongoBulkWrites(
-      bsonToJson(
-        tasks.map((column) => ({
-          ...pick(column, "_id", "title", "order"),
-          tasks: column.tasks?.map((task) =>
-            pick(task, "_id", "title", "order"),
-          ),
-        })),
-      ),
-      args.instructions,
-    );
+    const operations = generateMongoBulkWrites(args.instructions);
     if (operations.columnOps.length) {
       const columnOps = filterBoolean(
         operations.columnOps.map((op) => {

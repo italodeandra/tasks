@@ -20,7 +20,7 @@ import { taskBatchUpdateApi } from "../../../pages/api/task/batch-update";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { reactQueryDialogContentProps } from "../../../utils/reactQueryDialogContentProps";
 import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
-import { generateInstructions } from "./compareColumns";
+import { generateInstructions } from "./generateInstructions";
 import { WritableDeep } from "type-fest";
 import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
 
@@ -128,7 +128,11 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       taskList.data &&
       !isEqual(debouncedData, taskList.data)
     ) {
-      if (data?.some((list) => list.tasks?.some((task) => !task.title))) {
+      if (
+        data?.some(
+          (list) => !list.title || list.tasks?.some((task) => !task.title),
+        )
+      ) {
         return;
       }
 

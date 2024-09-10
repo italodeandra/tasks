@@ -86,7 +86,7 @@ export async function devSeed() {
         },
       },
     );
-    await TaskColumn.upsert(
+    const columnDone = await TaskColumn.upsert(
       {
         title: "Done",
         boardId: board._id,
@@ -116,7 +116,7 @@ export async function devSeed() {
         $set: {},
       },
     );
-    await TaskStatus.upsert(
+    const statusDone = await TaskStatus.upsert(
       {
         title: "Done",
         boardId: board._id,
@@ -193,6 +193,38 @@ export async function devSeed() {
           secondaryProjectsIds: [project1._id],
           columnId: columDoing._id,
           statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66e0aa3f85a44b9dc61f9e1e"),
+      },
+      {
+        $set: {
+          title: "Third Doing task",
+          order: 3,
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66e0907d09610a3aae3a09b9"),
+      },
+      {
+        $set: {
+          title: "Done task",
+          order: 4,
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columnDone._id,
+          statusId: statusDone._id,
         },
       },
     );

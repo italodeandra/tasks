@@ -1,5 +1,6 @@
 /* eslint-disable no-case-declarations */
-import { Any, Column, Instruction, Task } from "./compareColumns";
+import { omit } from "lodash-es";
+import { Any, Column, Instruction, Task } from "./generateInstructions";
 
 type BulkWriteOperation = {
   insertOne?: { document: Column | Task };
@@ -10,33 +11,24 @@ type BulkWriteOperation = {
   };
 };
 
-export function generateMongoBulkWrites(
-  columns: Column[],
-  instructions: Instruction[],
-): { columnOps: BulkWriteOperation[]; taskOps: BulkWriteOperation[] } {
+export function generateMongoBulkWrites(instructions: Instruction[]): {
+  columnOps: BulkWriteOperation[];
+  taskOps: BulkWriteOperation[];
+} {
   const columnOps: BulkWriteOperation[] = [];
   const taskOps: BulkWriteOperation[] = [];
-
-  const getColumnById = (
-    columns: Column[],
-    columnId: string,
-  ): Column | undefined => {
-    return columns.find((c) => c._id === columnId);
-  };
-
-  const getTaskById = (tasks: Task[], taskId: string): Task | undefined => {
-    return tasks.find((t) => t._id === taskId);
-  };
 
   instructions.forEach((instruction) => {
     switch (instruction.type) {
       case "columnAdded":
-        const addedColumn = getColumnById(columns, instruction.columnId);
-        if (addedColumn) {
-          columnOps.push({
-            insertOne: { document: addedColumn },
-          });
-        }
+        columnOps.push({
+          insertOne: {
+            document: {
+              _id: instruction.columnId,
+              ...omit(instruction, ["type", "columnId"]),
+            },
+          },
+        });
         break;
 
       case "columnRemoved":
@@ -56,21 +48,9 @@ export function generateMongoBulkWrites(
         columnOps.push({
           updateOne: {
             filter: { _id: instruction.columnId },
-            update: { $set: instruction.changes },
+            update: { $set: omit(instruction, ["type", "columnId"]) },
           },
         });
-        break;
-
-      case "columnMoved":
-        const currentColumn = getColumnById(columns, instruction.columnId);
-        if (currentColumn) {
-          columnOps.push({
-            updateOne: {
-              filter: { _id: currentColumn._id },
-              update: { $set: { order: instruction.toIndex } },
-            },
-          });
-        }
         break;
 
       case "taskAdded":
@@ -98,73 +78,9 @@ export function generateMongoBulkWrites(
         taskOps.push({
           updateOne: {
             filter: { _id: instruction.taskId },
-            update: { $set: instruction.changes },
+            update: { $set: omit(instruction, ["type", "taskId"]) },
           },
         });
-        break;
-
-      case "taskMoved":
-        const taskColumn = getColumnById(columns, instruction.columnId);
-        if (taskColumn && taskColumn.tasks) {
-          const taskToMove = getTaskById(taskColumn.tasks, instruction.taskId);
-          const orders = taskColumn.tasks.map((task) => task.order).sort();
-
-          if (taskToMove) {
-            // Update the order of the task within the same column
-            taskOps.push({
-              updateOne: {
-                filter: { _id: taskToMove._id },
-                update: {
-                  $set: {
-                    order:
-                      orders[instruction.toIndex] ||
-                      orders[orders.length - 1] + 1,
-                  },
-                },
-              },
-            });
-          }
-        }
-        break;
-
-      case "taskMovedBetweenColumns":
-        const fromColumn = getColumnById(columns, instruction.fromColumnId);
-        const toColumn = getColumnById(columns, instruction.toColumnId);
-
-        if (fromColumn && toColumn) {
-          const taskToMove = getTaskById(
-            fromColumn.tasks || [],
-            instruction.taskId,
-          );
-
-          if (taskToMove && toColumn.tasks) {
-            const orders = toColumn.tasks.map((task) => task.order).sort();
-
-            // Update the task's columnId and order to reflect the move
-            taskOps.push({
-              updateOne: {
-                filter: { _id: taskToMove._id },
-                update: {
-                  $set: {
-                    columnId: instruction.toColumnId,
-                    order:
-                      orders[instruction.toIndex] ||
-                      orders[orders.length - 1] + 1,
-                  },
-                },
-              },
-            });
-          }
-        } else {
-          console.error(
-            `Column not found: from ${instruction.fromColumnId} to ${instruction.toColumnId}`,
-          );
-        }
-        break;
-
-      default:
-        // @ts-expect-error trust me
-        console.error(`Unknown instruction type: ${instruction.type}`);
         break;
     }
   });
