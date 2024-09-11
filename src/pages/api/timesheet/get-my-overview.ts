@@ -32,17 +32,6 @@ export const timesheetGetMyOverviewApi = createApi(
       },
     );
 
-    console.info("args", args);
-    console.info("filter", {
-      userId: user._id,
-      startedAt: {
-        $gte: dayjs(args.startOfToday).toDate(),
-      },
-      stoppedAt: {
-        $lte: dayjs(args.endOfToday).toDate(),
-      },
-    });
-
     const todayTimesheets = await Timesheet.find(
       {
         userId: user._id,
@@ -60,8 +49,6 @@ export const timesheetGetMyOverviewApi = createApi(
         },
       },
     );
-
-    console.info("todayTimesheets", todayTimesheets);
 
     return {
       todayTime: todayTimesheets.length
