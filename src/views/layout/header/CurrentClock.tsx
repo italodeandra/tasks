@@ -18,7 +18,8 @@ export function CurrentClock() {
 
   const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(
     {
-      today: dayjs().startOf("day").toISOString(),
+      startOfToday: dayjs().startOf("day").toISOString(),
+      endOfToday: dayjs().endOf("day").toISOString(),
     },
     {
       enabled: !!user,

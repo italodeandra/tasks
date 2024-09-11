@@ -50,7 +50,8 @@ export function TaskAdditionalContent({
 
   const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(
     {
-      today: dayjs().startOf("day").toISOString(),
+      startOfToday: dayjs().startOf("day").toISOString(),
+      endOfToday: dayjs().endOf("day").toISOString(),
     },
     {
       enabled: canEdit && !!task?.assignees.length,

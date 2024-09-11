@@ -8,7 +8,7 @@ import { last, sumBy } from "lodash-es";
 
 export const timesheetGetMyOverviewApi = createApi(
   "/api/timesheet/get-my-overview",
-  async (args: { today: string }, req, res) => {
+  async (args: { startOfToday: string; endOfToday: string }, req, res) => {
     await connectDb();
     const user = await getUserFromCookies(req, res);
     const Timesheet = getTimesheet();
@@ -32,14 +32,14 @@ export const timesheetGetMyOverviewApi = createApi(
       },
     );
 
-    console.info("today", args.today);
+    console.info("args", args);
     console.info("filter", {
       userId: user._id,
       startedAt: {
-        $gte: dayjs(args.today).startOf("day").toDate(),
+        $gte: dayjs(args.startOfToday).toDate(),
       },
       stoppedAt: {
-        $lte: dayjs(args.today).endOf("day").toDate(),
+        $lte: dayjs(args.endOfToday).toDate(),
       },
     });
 
@@ -47,10 +47,10 @@ export const timesheetGetMyOverviewApi = createApi(
       {
         userId: user._id,
         startedAt: {
-          $gte: dayjs(args.today).startOf("day").toDate(),
+          $gte: dayjs(args.startOfToday).toDate(),
         },
         stoppedAt: {
-          $lte: dayjs(args.today).endOf("day").toDate(),
+          $lte: dayjs(args.endOfToday).toDate(),
         },
       },
       {
