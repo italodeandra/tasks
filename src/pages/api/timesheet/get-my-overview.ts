@@ -39,7 +39,7 @@ export const timesheetGetMyOverviewApi = createApi(
           $gte: dayjs().startOf("day").toDate(),
         },
         stoppedAt: {
-          $exists: true,
+          $lte: dayjs().endOf("day").toDate(),
         },
       },
       {
