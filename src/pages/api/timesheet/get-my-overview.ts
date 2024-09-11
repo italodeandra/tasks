@@ -6,12 +6,6 @@ import getTimesheet from "../../../collections/timesheet";
 import dayjs from "dayjs";
 import { last, sumBy } from "lodash-es";
 
-// change dayjs timezone to utc
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
 export const timesheetGetMyOverviewApi = createApi(
   "/api/timesheet/get-my-overview",
   async (args: { today: string }, req, res) => {
