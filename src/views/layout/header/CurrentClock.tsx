@@ -11,13 +11,19 @@ import { Time } from "../../../components/Time";
 import { StopIcon } from "@heroicons/react/20/solid";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import Routes from "../../../Routes";
+import dayjs from "dayjs";
 
 export function CurrentClock() {
   const { data: user } = useAuthGetUser();
 
-  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(undefined, {
-    enabled: !!user,
-  });
+  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(
+    {
+      today: dayjs().startOf("day").toISOString(),
+    },
+    {
+      enabled: !!user,
+    },
+  );
   const timesheetStart = timesheetStartApi.useMutation();
   const timesheetStop = timesheetStopApi.useMutation();
 

@@ -15,6 +15,7 @@ import { StopIcon } from "@heroicons/react/20/solid";
 import { timesheetStartApi } from "../../../pages/api/timesheet/start";
 import { timesheetStopApi } from "../../../pages/api/timesheet/stop";
 import Loading from "@italodeandra/ui/components/Loading";
+import dayjs from "dayjs";
 
 export function TaskAdditionalContent({
   cardId,
@@ -47,9 +48,14 @@ export function TaskAdditionalContent({
     [cardId, taskList.data],
   );
 
-  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(undefined, {
-    enabled: canEdit && !!task?.assignees.length,
-  });
+  const timesheetGetMyOverview = timesheetGetMyOverviewApi.useQuery(
+    {
+      today: dayjs().startOf("day").toISOString(),
+    },
+    {
+      enabled: canEdit && !!task?.assignees.length,
+    },
+  );
   const timesheetStart = timesheetStartApi.useMutation();
   const timesheetStop = timesheetStopApi.useMutation();
 
