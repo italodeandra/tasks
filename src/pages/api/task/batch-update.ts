@@ -17,7 +17,6 @@ import filterBoolean from "@italodeandra/ui/utils/filterBoolean";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getTaskStatus from "../../../collections/taskStatus";
 import dayjs from "dayjs";
-import getTimesheet from "../../../collections/timesheet";
 
 export const taskBatchUpdateApi = createApi(
   "/api/task/batch-update",
@@ -36,7 +35,6 @@ export const taskBatchUpdateApi = createApi(
     const TaskColumn = getTaskColumn();
     const TaskActivity = getTaskActivity();
     const TaskStatus = getTaskStatus();
-    const Timesheet = getTimesheet();
     const user = await getUserFromCookies(req, res);
     if (!user) {
       throw unauthorized;
@@ -135,31 +133,32 @@ export const taskBatchUpdateApi = createApi(
             });
           }
           if (op.deleteOne) {
-            if (
-              await Timesheet.countDocuments({
-                taskId: isomorphicObjectId(op.deleteOne.filter._id),
-              })
-            ) {
-              return {
-                updateOne: {
-                  filter: {
-                    _id: isomorphicObjectId(op.deleteOne.filter._id),
-                  },
-                  update: {
-                    $set: {
-                      archived: true,
-                    },
-                  },
-                },
-              };
-            }
-            return merge(op, {
-              deleteOne: {
+            // task deletion is temporarily disabled, and replaced with only archiving
+            // if (
+            //   await Timesheet.countDocuments({
+            //     taskId: isomorphicObjectId(op.deleteOne.filter._id),
+            //   })
+            // ) {
+            return {
+              updateOne: {
                 filter: {
                   _id: isomorphicObjectId(op.deleteOne.filter._id),
                 },
+                update: {
+                  $set: {
+                    archived: true,
+                  },
+                },
               },
-            });
+            };
+            // }
+            // return merge(op, {
+            //   deleteOne: {
+            //     filter: {
+            //       _id: isomorphicObjectId(op.deleteOne.filter._id),
+            //     },
+            //   },
+            // });
           }
         }),
       );
