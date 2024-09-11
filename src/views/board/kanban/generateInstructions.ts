@@ -21,12 +21,14 @@ export type Column = {
 };
 
 function getOrderSorted(numbers: number[]) {
-  return numbers.sort().map((number, index, array) => {
-    if (array[index + 1] === number) {
-      return (array[index - 1] + number) / 2;
-    }
-    return number;
-  });
+  return numbers
+    .sort((a, b) => a - b)
+    .map((number, index, array) => {
+      if (array[index + 1] === number) {
+        return (array[index - 1] + number) / 2;
+      }
+      return number;
+    });
 }
 
 export type Instruction =
