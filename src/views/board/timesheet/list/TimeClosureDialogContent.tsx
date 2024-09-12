@@ -84,12 +84,12 @@ export function TimeClosureDialogContent({
       timesheetTimeClosureAdd.mutate({
         ...values,
         projectId,
-        time: timeClosure,
         usersMultipliers: values.users,
-        carryover: totalTime - timeClosure,
+        totalTime,
+        closurePercentage,
       });
     }
-  }, [form, projectId, timeClosure, timesheetTimeClosureAdd, totalTime]);
+  }, [closurePercentage, form, projectId, timesheetTimeClosureAdd, totalTime]);
 
   form.register("hourlyRate", {
     required: "Fill with the hourly rate",

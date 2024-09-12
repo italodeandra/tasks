@@ -15,9 +15,9 @@ export const timesheetTimeClosureAddApi = createApi(
   async (
     args: {
       projectId: string;
-      time: number;
+      totalTime: number;
       hourlyRate: number;
-      carryover: number;
+      closurePercentage: number;
       usersMultipliers: { _id: string; multiplier: number }[];
     },
     req,
@@ -71,23 +71,26 @@ export const timesheetTimeClosureAddApi = createApi(
       throw notFound;
     }
 
+    const time = (args.totalTime / 100) * args.closurePercentage;
+    const carryover = args.totalTime - time;
+
     const closure = await Timesheet.insertOne({
       type: TimesheetType.CLOSURE,
       boardId: project.boardId,
       projectId,
-      time: args.time,
+      time,
       hourlyRate: args.hourlyRate,
       usersMultipliers: args.usersMultipliers?.map((userMultiplier) => ({
         userId: isomorphicObjectId(userMultiplier._id),
         multiplier: userMultiplier.multiplier,
       })),
     });
-    if (args.carryover > 60000) {
+    if (carryover > 60000) {
       await Timesheet.insertOne({
         type: TimesheetType.CARRYOVER,
         boardId: project.boardId,
         projectId,
-        time: args.carryover,
+        time: carryover,
       });
     }
 

@@ -269,7 +269,7 @@ export const timesheetTimeClosureGetApi = createApi(
       timesheet.task!._id.toString(),
     );
     const groupTimesheetsByUserId = groupBy(taskTimesheets, (timesheet) =>
-      timesheet.user!.toString(),
+      timesheet.user!._id.toString(),
     );
 
     return {
@@ -314,8 +314,8 @@ export const timesheetTimeClosureGetApi = createApi(
             t.projectPortion *
               (t.time! *
                 (closure.usersMultipliers?.find((u) =>
-                  u.userId.equals(t.userId),
-                )?.multiplier || 1)),
+                  u.userId.equals(t.user?._id),
+                )?.multiplier || NaN)),
           0,
         ),
       })),
