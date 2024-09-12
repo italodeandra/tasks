@@ -76,7 +76,7 @@ export function TimesheetClosure({
                 entregas realizadas para o projeto em andamento.
               </div>
             </div>
-            <table>
+            <table contentEditable>
               <thead>
                 <tr className="text-sm text-zinc-400 [&_th]:text-left [&_th]:font-medium">
                   <th>Descrição</th>
