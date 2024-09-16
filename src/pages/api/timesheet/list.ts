@@ -279,6 +279,16 @@ export const timesheetListApi = createApi(
         },
       },
       {
+        $addFields: {
+          sortDate: { $ifNull: ["$stoppedAt", "$createdAt"] },
+        },
+      },
+      {
+        $sort: {
+          sortDate: 1,
+        },
+      },
+      {
         $project: {
           type: 1,
           task: 1,
@@ -316,11 +326,6 @@ export const timesheetListApi = createApi(
               else: "$primaryProject",
             },
           },
-        },
-      },
-      {
-        $sort: {
-          createdAt: 1,
         },
       },
     ]);

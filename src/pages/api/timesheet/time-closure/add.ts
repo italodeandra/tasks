@@ -17,7 +17,7 @@ export const timesheetTimeClosureAddApi = createApi(
       projectId: string;
       totalTime: number;
       hourlyRate: number;
-      closurePercentage: number;
+      closureTime: number;
       usersMultipliers: {
         _id: string;
         multiplier: number;
@@ -75,7 +75,7 @@ export const timesheetTimeClosureAddApi = createApi(
       throw notFound;
     }
 
-    const time = (args.totalTime / 100) * args.closurePercentage;
+    const time = args.closureTime;
     const carryover = args.totalTime - time;
 
     const closure = await Timesheet.insertOne({

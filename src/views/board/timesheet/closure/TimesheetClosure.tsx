@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import formatTime from "@italodeandra/ui/utils/formatTime";
 import { UserAvatarAndName } from "../../../../components/UserAvatarAndName";
 import { isBrowser } from "@italodeandra/ui/utils/isBrowser";
+import stripMarkdown from "../../../../utils/stripMarkdown";
 
 function timeToMoney(time: number, hourlyRate: number) {
   return (time / 1000 / 60 / 60) * hourlyRate;
@@ -62,7 +63,9 @@ export function TimesheetClosure({
           <>
             <NextSeo title={title} titleTemplate="%s - Majapi" />
             <div className="flex items-center justify-between">
-              <div className="font-medium leading-[normal]">{title}</div>
+              <div className="font-medium leading-[normal]" contentEditable>
+                {title}
+              </div>
               <div className="flex items-center gap-1 text-zinc-400 print:text-zinc-600">
                 <div className="font-sans text-2xl leading-none">マ</div>
                 <div className="text-sm leading-[normal]">Majapi</div>
@@ -88,9 +91,11 @@ export function TimesheetClosure({
               <tbody>
                 {timesheetTimeClosureGet.data.timesheets.map((timesheet) => (
                   <tr key={timesheet._id}>
-                    <td>{timesheet.description}</td>
+                    <td>{stripMarkdown(timesheet.description)}</td>
                     <td>{timesheet.project}</td>
-                    <td className="text-right">{formatTime(timesheet.time)}</td>
+                    <td className="whitespace-nowrap text-right">
+                      {formatTime(timesheet.time)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -145,7 +150,9 @@ export function TimesheetClosure({
             </div>
             <div className="flex items-center justify-between text-lg">
               <div className="font-medium">Total a pagar</div>
-              <div className="text-right">{formatMoney(totalToPay)}</div>
+              <div className="text-right" contentEditable>
+                {formatMoney(totalToPay)}
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-sm text-zinc-500">

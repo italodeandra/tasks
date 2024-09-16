@@ -166,6 +166,7 @@ export const timesheetTimeClosureGetNextApi = createApi(
           projectId: {
             $ifNull: ["$projectId", "$task.projectId"],
           },
+          sortDate: { $ifNull: ["$stoppedAt", "$createdAt"] },
         },
       },
       {
@@ -182,7 +183,7 @@ export const timesheetTimeClosureGetNextApi = createApi(
           ],
           ...(lastClosure?.createdAt
             ? {
-                createdAt: {
+                sortDate: {
                   $gte: dayjs(lastClosure.createdAt).toDate(),
                 },
               }

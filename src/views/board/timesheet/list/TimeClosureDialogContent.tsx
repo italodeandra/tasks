@@ -72,9 +72,11 @@ export function TimeClosureDialogContent({
   });
 
   const totalTime = timesheetTimeClosureGetNext.data?.totalTime || 0;
-  const timeClosure = parseFormattedTime(form.watch("timeClosure")) || 0;
-  const closurePercentage = Math.round((100 / totalTime) * timeClosure);
-  const totalAmount = (timeClosure / 1000 / 60 / 60) * form.watch("hourlyRate");
+  const closureTime = parseFormattedTime(form.watch("timeClosure")) || 0;
+  const closurePercentage = Math.round(
+    (100 / Math.round(totalTime / 2000)) * Math.round(closureTime / 2000),
+  );
+  const totalAmount = (closureTime / 1000 / 60 / 60) * form.watch("hourlyRate");
 
   const onSubmit = useCallback(() => {
     if (!timesheetTimeClosureAdd.isPending) {
@@ -84,10 +86,10 @@ export function TimeClosureDialogContent({
         projectId,
         usersMultipliers: values.users,
         totalTime,
-        closurePercentage,
+        closureTime,
       });
     }
-  }, [closurePercentage, form, projectId, timesheetTimeClosureAdd, totalTime]);
+  }, [closureTime, form, projectId, timesheetTimeClosureAdd, totalTime]);
 
   form.register("hourlyRate", {
     required: "Fill with the hourly rate",

@@ -181,6 +181,7 @@ export const timesheetTimeClosureGetApi = createApi(
           projectId: {
             $ifNull: ["$projectId", "$task.projectId"],
           },
+          sortDate: { $ifNull: ["$stoppedAt", "$createdAt"] },
         },
       },
       {
@@ -195,7 +196,7 @@ export const timesheetTimeClosureGetApi = createApi(
               primaryProjectId: closure.projectId,
             },
           ],
-          createdAt: {
+          sortDate: {
             ...(previousClosure
               ? {
                   $gte: dayjs(previousClosure.createdAt).toDate(),
@@ -314,7 +315,7 @@ export const timesheetTimeClosureGetApi = createApi(
           (acc, t) =>
             acc +
             t.projectPortion *
-              (t.time! *
+              ((t.time || 0) *
                 (closure.usersMultipliers?.find((u) =>
                   u.userId.equals(t.user?._id),
                 )?.multiplier || NaN)),
