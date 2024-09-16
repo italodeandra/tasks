@@ -22,16 +22,13 @@ export function TimeClosureDialogContent({
   projectId: string;
 }) {
   const form = useForm<{
-    users: { _id: string; multiplier: number }[];
+    users: { _id: string; multiplier: number; overheadRate: number }[];
     timeClosure: string;
     hourlyRate: number;
   }>();
 
   const debouncedUsersTimeMultipliers = useDebounce(
-    form
-      .watch("users")
-      ?.map((user) => [user._id, user.multiplier?.toString()].join(","))
-      .join(";"),
+    JSON.stringify(form.watch("users")),
     "500ms",
   );
   const timesheetTimeClosureGetNext = timesheetTimeClosureGetNextApi.useQuery({
@@ -46,6 +43,7 @@ export function TimeClosureDialogContent({
           timesheetTimeClosureGetNext.data.users.map((user) => ({
             _id: user._id,
             multiplier: user.previousMultiplier || 1,
+            overheadRate: user.previousOverheadRate || 0,
           })),
         );
       }
@@ -113,17 +111,41 @@ export function TimeClosureDialogContent({
         });
 
         return (
-          <NumericInput
-            key={user._id}
-            label={`${user.name || user.email} time multiplier`}
-            required
-            value={form.watch(`users.${index}.multiplier`)}
-            onValueChange={(value) =>
-              form.setValue(`users.${index}.multiplier`, value.floatValue || 0)
-            }
-            error={!!form.formState.errors.users?.[index]?.multiplier}
-            helpText={form.formState.errors.users?.[index]?.multiplier?.message}
-          />
+          <div key={user._id}>
+            <div>{user.name || user.email}</div>
+            <div className="flex gap-3">
+              <NumericInput
+                label="Time multiplier"
+                required
+                value={form.watch(`users.${index}.multiplier`)}
+                onValueChange={(value) =>
+                  form.setValue(
+                    `users.${index}.multiplier`,
+                    value.floatValue || 0,
+                  )
+                }
+                error={!!form.formState.errors.users?.[index]?.multiplier}
+                helpText={
+                  form.formState.errors.users?.[index]?.multiplier?.message
+                }
+              />
+              <NumericInput
+                label="Overhead rate"
+                required
+                value={form.watch(`users.${index}.overheadRate`)}
+                onValueChange={(value) =>
+                  form.setValue(
+                    `users.${index}.overheadRate`,
+                    value.floatValue || 0,
+                  )
+                }
+                error={!!form.formState.errors.users?.[index]?.overheadRate}
+                helpText={
+                  form.formState.errors.users?.[index]?.overheadRate?.message
+                }
+              />
+            </div>
+          </div>
         );
       })}
       <div className="text-base font-medium">Closure</div>

@@ -18,7 +18,11 @@ export const timesheetTimeClosureAddApi = createApi(
       totalTime: number;
       hourlyRate: number;
       closurePercentage: number;
-      usersMultipliers: { _id: string; multiplier: number }[];
+      usersMultipliers: {
+        _id: string;
+        multiplier: number;
+        overheadRate: number;
+      }[];
     },
     req,
     res,
@@ -83,6 +87,7 @@ export const timesheetTimeClosureAddApi = createApi(
       usersMultipliers: args.usersMultipliers?.map((userMultiplier) => ({
         userId: isomorphicObjectId(userMultiplier._id),
         multiplier: userMultiplier.multiplier,
+        overheadRate: userMultiplier.overheadRate,
       })),
     });
     if (carryover > 60000) {

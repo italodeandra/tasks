@@ -28,6 +28,7 @@ import Skeleton from "@italodeandra/ui/components/Skeleton";
 import { TimeClosureDialogContent } from "./TimeClosureDialogContent";
 import { reactQueryDialogContentProps } from "../../../../utils/reactQueryDialogContentProps";
 import { UserAvatarAndName } from "../../../../components/UserAvatarAndName";
+import stripMarkdown from "../../../../utils/stripMarkdown";
 
 export function TimesheetList({ boardId }: { boardId: string }) {
   const [defaultFrom] = useState(() => dayjs().startOf("month").toDate());
@@ -94,7 +95,7 @@ export function TimesheetList({ boardId }: { boardId: string }) {
 
   return (
     <div className="px-3">
-      <div className="mx-auto flex max-w-screen-xl flex-col gap-3 pb-3">
+      <div className="flex flex-col gap-3 pb-3">
         <div className="text-2xl font-medium">Timesheet</div>
         <div className="flex gap-2 rounded-lg bg-zinc-900 p-2">
           <FunnelIcon className="mx-1 my-auto h-6 w-6" />
@@ -200,8 +201,11 @@ export function TimesheetList({ boardId }: { boardId: string }) {
                 <Table.Cell>
                   {translateTimesheetType(timesheet.type)}
                 </Table.Cell>
-                <Table.Cell>
-                  {timesheet.description}
+                <Table.Cell
+                  className="max-w-[600px] truncate"
+                  title={`${stripMarkdown(timesheet.description)}${timesheet.task?.archived ? ` (archived)` : ""}`}
+                >
+                  {stripMarkdown(timesheet.description)}
                   {timesheet.task?.archived ? (
                     <span className="opacity-50"> (archived)</span>
                   ) : null}

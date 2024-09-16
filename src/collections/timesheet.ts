@@ -31,6 +31,7 @@ const timesheetSchema = onlyServer(() =>
         types.object({
           userId: types.objectId({ required: true }),
           multiplier: types.number({ required: true }),
+          overheadRate: types.number({ required: true }),
         }),
       ),
       hourlyRate: types.number(),

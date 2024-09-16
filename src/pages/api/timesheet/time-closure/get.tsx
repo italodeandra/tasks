@@ -288,16 +288,18 @@ export const timesheetTimeClosureGetApi = createApi(
           _id: taskId,
           description: timesheet[0].task!.title,
           project: timesheet[0].subProject?.name,
-          time: timesheet.reduce(
-            (acc, t) =>
+          time: timesheet.reduce((acc, t) => {
+            const userMultiplier = closure.usersMultipliers?.find((u) =>
+              u.userId.equals(t.user?._id),
+            );
+            return (
               acc +
               t.projectPortion *
                 (t.time! *
-                  (closure.usersMultipliers?.find((u) =>
-                    u.userId.equals(t.userId),
-                  )?.multiplier || 1)),
-            0,
-          ),
+                  (userMultiplier?.multiplier || 1) *
+                  (1 + (userMultiplier?.overheadRate || 0)))
+            );
+          }, 0),
         })),
         ...nonTaskTimesheets.map((timesheet) => ({
           _id: timesheet._id,

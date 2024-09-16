@@ -7,6 +7,7 @@ import { formatMoney } from "../../../../utils/formatMoney";
 import dayjs from "dayjs";
 import formatTime from "@italodeandra/ui/utils/formatTime";
 import { UserAvatarAndName } from "../../../../components/UserAvatarAndName";
+import { isBrowser } from "@italodeandra/ui/utils/isBrowser";
 
 function timeToMoney(time: number, hourlyRate: number) {
   return (time / 1000 / 60 / 60) * hourlyRate;
@@ -52,7 +53,7 @@ export function TimesheetClosure({
             variant="text"
             size="sm"
             leading={<PrinterIcon />}
-            onClick={window.print}
+            onClick={isBrowser ? window.print : undefined}
           >
             Imprimir
           </Button>

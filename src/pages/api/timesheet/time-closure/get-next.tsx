@@ -39,15 +39,9 @@ export const timesheetTimeClosureGetNextApi = createApi(
     }
 
     const projectId = isomorphicObjectId(args.projectId);
-    const usersTimeMultipliers = args.usersTimeMultipliers
-      ?.split(";")
-      .map((userMultiplier) => {
-        const split = userMultiplier.split(",");
-        return {
-          _id: split[0],
-          multiplier: parseFloat(split[1]),
-        };
-      });
+    const usersTimeMultipliers = JSON.parse(
+      args.usersTimeMultipliers || "[]",
+    ) as { _id: string; multiplier: number; overheadRate: number }[];
 
     const project = await Project.findById(projectId, {
       projection: {
@@ -216,34 +210,39 @@ export const timesheetTimeClosureGetNextApi = createApi(
         projection: {
           name: 1,
           email: 1,
-          previousMultiplier: 1,
           profilePicture: 1,
         },
       },
     );
 
-    const totalTime = timesheets.reduce(
-      (acc, t) =>
+    const totalTime = timesheets.reduce((acc, t) => {
+      const userMultiplier = usersTimeMultipliers?.find(
+        (u) => u._id === t.userId?.toString(),
+      );
+      return (
         acc +
         t.projectPortion *
           (t.time
             ? t.type === TimesheetType.TASK
               ? t.time *
-                (usersTimeMultipliers?.find(
-                  (u) => u._id === t.userId?.toString(),
-                )?.multiplier || 0)
+                (userMultiplier?.multiplier || 0) *
+                (1 + (userMultiplier?.overheadRate || 0))
               : t.time
-            : 0),
-      0,
-    );
+            : 0)
+      );
+    }, 0);
 
     return {
-      users: users.map((user) => ({
-        ...user,
-        previousMultiplier:
-          lastClosure?.usersMultipliers?.find((u) => u.userId.equals(user._id))
-            ?.multiplier || 1,
-      })),
+      users: users.map((user) => {
+        const userLastClosure = lastClosure?.usersMultipliers?.find((u) =>
+          u.userId.equals(user._id),
+        );
+        return {
+          ...user,
+          previousMultiplier: userLastClosure?.multiplier || 1,
+          previousOverheadRate: userLastClosure?.overheadRate || 0,
+        };
+      }),
       totalTime,
       hourlyRate: lastClosure?.hourlyRate,
     };
