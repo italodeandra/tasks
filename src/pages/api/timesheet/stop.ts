@@ -37,6 +37,7 @@ export async function stopTask(
     taskId: timesheet.taskId!,
     type: ActivityType.TIMESHEET,
     data: {
+      timesheetId: timesheet._id,
       time: stoppedAt.getTime() - timesheet.startedAt!.getTime(),
     },
   });
