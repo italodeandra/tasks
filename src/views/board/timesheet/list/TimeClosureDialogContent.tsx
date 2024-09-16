@@ -59,7 +59,7 @@ export function TimeClosureDialogContent({
         timesheetTimeClosureGetNext.data.totalTime || 0,
       );
       if (form.watch("timeClosure") !== newTimeClosure) {
-        form.setValue("timeClosure", newTimeClosure);
+        form.setValue("timeClosure", newTimeClosure || "0s");
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -74,7 +74,7 @@ export function TimeClosureDialogContent({
   });
 
   const totalTime = timesheetTimeClosureGetNext.data?.totalTime || 0;
-  const timeClosure = parseFormattedTime(form.watch("timeClosure"));
+  const timeClosure = parseFormattedTime(form.watch("timeClosure")) || 0;
   const closurePercentage = Math.round((100 / totalTime) * timeClosure);
   const totalAmount = (timeClosure / 1000 / 60 / 60) * form.watch("hourlyRate");
 
@@ -94,24 +94,6 @@ export function TimeClosureDialogContent({
   form.register("hourlyRate", {
     required: "Fill with the hourly rate",
   });
-
-  if (totalTime === 0) {
-    return (
-      <div className="flex flex-col gap-3">
-        <div className="rounded-lg bg-zinc-800 px-3 py-2">
-          No new timesheet for closure.
-        </div>
-        <Button
-          variant="filled"
-          color="gray"
-          className="flex-1"
-          onClick={() => closeDialog(dialogId)}
-        >
-          Close
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <form
@@ -137,7 +119,7 @@ export function TimeClosureDialogContent({
             required
             value={form.watch(`users.${index}.multiplier`)}
             onValueChange={(value) =>
-              form.setValue(`users.${index}.multiplier`, value.floatValue || 1)
+              form.setValue(`users.${index}.multiplier`, value.floatValue || 0)
             }
             error={!!form.formState.errors.users?.[index]?.multiplier}
             helpText={form.formState.errors.users?.[index]?.multiplier?.message}
@@ -145,7 +127,11 @@ export function TimeClosureDialogContent({
         );
       })}
       <div className="text-base font-medium">Closure</div>
-      <Input label="Total Time" readOnly value={formatTime(totalTime)} />
+      <Input
+        label="Total Time"
+        readOnly
+        value={formatTime(totalTime) || "0s"}
+      />
       <Input
         label="Time closure"
         required
@@ -155,7 +141,9 @@ export function TimeClosureDialogContent({
         error={!!form.formState.errors.timeClosure}
         helpText={
           form.formState.errors.timeClosure?.message ||
-          `Closure of ${closurePercentage}%.${closurePercentage < 100 ? " The rest will be added as Carryover." : ""}`
+          !isNaN(closurePercentage)
+            ? `Closure of ${closurePercentage}%.${closurePercentage < 100 ? " The rest will be added as Carryover." : ""}`
+            : undefined
         }
       />
       <NumericInput

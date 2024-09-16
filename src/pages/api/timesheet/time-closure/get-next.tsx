@@ -231,7 +231,7 @@ export const timesheetTimeClosureGetNextApi = createApi(
               ? t.time *
                 (usersTimeMultipliers?.find(
                   (u) => u._id === t.userId?.toString(),
-                )?.multiplier || 1)
+                )?.multiplier || 0)
               : t.time
             : 0),
       0,
