@@ -25,7 +25,7 @@ function getOrderSorted(numbers: number[]) {
     .sort((a, b) => a - b)
     .map((number, index, array) => {
       if (array[index + 1] === number) {
-        return (array[index - 1] + number) / 2;
+        return array[index - 1] ? (array[index - 1] + number) / 2 : number - 1;
       }
       return number;
     });
