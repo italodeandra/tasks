@@ -55,7 +55,18 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         ),
         closeButtonClassName: "bg-zinc-900 dark:hover:bg-zinc-800",
         onClose: () => void setOpenTaskId(null),
-        contentProps: reactQueryDialogContentProps,
+        contentProps: {
+          ...reactQueryDialogContentProps,
+          // noinspection JSUnusedGlobalSymbols
+          onEscapeKeyDown: (e) => {
+            if (
+              (e.target as HTMLDivElement).getAttribute("data-is-markdown") ===
+              ""
+            ) {
+              e.preventDefault();
+            }
+          },
+        },
       });
       return () => {
         closeDialog(dialogId);
