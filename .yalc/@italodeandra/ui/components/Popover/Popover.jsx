@@ -2,11 +2,11 @@ import * as RPopover from "@radix-ui/react-popover";
 import React, { forwardRef } from "react";
 import clsx from "../../utils/clsx";
 import { modalArrowClassName, modalContentClassName, } from "../../styles/Modal.classNames";
-function PopoverContentWithRef({ className, sideOffset = 4, collisionPadding = 8, children, ...props }, ref) {
+function PopoverContentWithRef({ className, sideOffset = 4, collisionPadding = 8, children, noArrow, ...props }, ref) {
     return (<RPopover.Portal>
       <RPopover.Content {...props} className={clsx(modalContentClassName, "ui-popover-content", className)} sideOffset={sideOffset} collisionPadding={collisionPadding} ref={ref}>
         {children}
-        <PopoverArrow />
+        {!noArrow && <PopoverArrow />}
       </RPopover.Content>
     </RPopover.Portal>);
 }
