@@ -27,9 +27,31 @@ export async function devSeed() {
     const TaskActivity = getTaskActivity();
     const Timesheet = getTimesheet();
 
-    const userB = (await User.findOne({
-      email: "italodeandra+b@gmail.com",
-    }))!;
+    await User.updateOne(
+      {
+        email: "italodeandra@gmail.com",
+      },
+      {
+        $set: {
+          profilePicture: "https://i.imgur.com/Bqg81fX.png",
+        },
+      },
+    );
+
+    const userB = (await User.findOneAndUpdate(
+      {
+        email: "italodeandra+b@gmail.com",
+      },
+      {
+        $set: {
+          profilePicture: "https://i.imgur.com/GUmpdgL.png",
+          name: "Cairo Andrade",
+        },
+        $unset: {
+          // profilePicture: "",
+        },
+      },
+    ))!;
 
     const boardId = isomorphicObjectId("66d1d93251475663bffb05fd");
 

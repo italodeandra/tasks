@@ -178,7 +178,7 @@ export function TaskAdditionalContent({
               <Tooltip content={assignee.name || assignee.email}>
                 <div
                   className={clsx(
-                    "pointer-events-auto flex h-6 w-6 items-center justify-center rounded-full bg-[--bg] p-0 text-xs text-white",
+                    "pointer-events-auto flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[--bg] p-0 text-xs text-white",
                     {
                       "ring-2 ring-green-700":
                         assignee.currentTimesheet?.taskId === cardId,
@@ -190,7 +190,16 @@ export function TaskAdditionalContent({
                     } as Record<string, string>
                   }
                 >
-                  {initials}
+                  {!assignee.profilePicture ? (
+                    <span>{initials}</span>
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={assignee.profilePicture}
+                      alt={assignee.name}
+                      className="group-hover/myself:hidden"
+                    />
+                  )}
                 </div>
               </Tooltip>
             )}
