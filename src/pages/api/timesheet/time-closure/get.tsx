@@ -208,6 +208,16 @@ export const timesheetTimeClosureGetApi = createApi(
         },
       },
       {
+        $group: {
+          _id: "$_id",
+          userId: { $first: "$userId" },
+          time: { $first: "$time" },
+          type: { $first: "$type" },
+          projectPortion: { $first: "$projectPortion" },
+          task: { $first: "$task" },
+        },
+      },
+      {
         $lookup: {
           from: SubProject.collection.collectionName,
           localField: "task.subProjectId",
@@ -311,16 +321,16 @@ export const timesheetTimeClosureGetApi = createApi(
       ],
       users: toPairs(groupTimesheetsByUserId).map(([, timesheet]) => ({
         ...timesheet[0].user!,
-        time: timesheet.reduce(
-          (acc, t) =>
+        time: timesheet.reduce((acc, t) => {
+          const userMultiplier = closure.usersMultipliers?.find((u) =>
+            u.userId.equals(t.user?._id),
+          );
+          return (
             acc +
             t.projectPortion *
-              ((t.time || 0) *
-                (closure.usersMultipliers?.find((u) =>
-                  u.userId.equals(t.user?._id),
-                )?.multiplier || NaN)),
-          0,
-        ),
+              ((t.time || 0) * (userMultiplier?.multiplier || NaN))
+          );
+        }, 0),
       })),
     };
   },

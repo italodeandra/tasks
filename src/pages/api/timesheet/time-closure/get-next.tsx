@@ -111,6 +111,7 @@ export const timesheetTimeClosureGetNextApi = createApi(
           pipeline: [
             {
               $project: {
+                title: 1,
                 projectId: 1,
                 subProjectId: 1,
                 secondaryProjectsIds: 1,
@@ -191,11 +192,22 @@ export const timesheetTimeClosureGetNextApi = createApi(
         },
       },
       {
+        $group: {
+          _id: "$_id",
+          userId: { $first: "$userId" },
+          time: { $first: "$time" },
+          type: { $first: "$type" },
+          projectPortion: { $first: "$projectPortion" },
+          task: { $first: "$task" },
+        },
+      },
+      {
         $project: {
           userId: 1,
           time: 1,
           type: 1,
           projectPortion: 1,
+          taskTitle: "$task.title",
         },
       },
     ]);
