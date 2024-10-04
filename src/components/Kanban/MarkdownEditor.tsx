@@ -117,52 +117,46 @@ function MarkdownEditorWithRef(
   );
 
   const handlePaste = useCallback(
-    (e: ClipboardEvent<HTMLDivElement>) => {
+    async (e: ClipboardEvent) => {
       if (uploadClipboardImage) {
         const clipboard = e.clipboardData;
         if (clipboard) {
           const items = clipboard.items;
 
-          const firstItem = items[0];
+          for (const item of Array.from(items)) {
+            if (item.type.indexOf("image") !== -1) {
+              e.preventDefault();
+              const blob = item.getAsFile();
+              if (blob) {
+                const reader = new FileReader();
+                reader.onload = async function (event) {
+                  const base64 = event.target?.result as string | undefined;
+                  if (base64) {
+                    const imageUrl = uploadClipboardImage
+                      ? await uploadClipboardImage(base64)
+                      : base64;
+                    const markdownImage = `![image](${imageUrl})`;
 
-          if (firstItem.type.indexOf("image") !== -1) {
-            e.preventDefault();
-            const blob = firstItem.getAsFile();
-            if (blob) {
-              const reader = new FileReader();
-              reader.onload = async function (event) {
-                const base64 = event.target?.result as string | undefined;
-                if (base64) {
-                  const imageUrl = uploadClipboardImage
-                    ? await uploadClipboardImage(base64)
-                    : base64;
-                  const markdownImage = `![image](${imageUrl})`;
-
-                  // Insert the markdown image at the cursor position in the contentEditable div
-                  const selection = window.getSelection();
-                  if (selection && selection.rangeCount > 0) {
-                    const range = selection.getRangeAt(0);
-                    range.deleteContents();
-
-                    // Create a new text node with the markdown image
-                    const markdownNode = document.createTextNode(markdownImage);
-                    range.insertNode(markdownNode);
-
-                    // Move the cursor to the end of the inserted text
-                    range.setStartAfter(markdownNode);
-                    range.setEndAfter(markdownNode);
-                    selection.removeAllRanges();
-                    selection.addRange(range);
+                    if (editor) {
+                      const transaction = editor.state.update({
+                        changes: {
+                          from: editor.state.selection.main.from,
+                          to: editor.state.selection.main.to,
+                          insert: markdownImage,
+                        },
+                      });
+                      editor.dispatch(transaction);
+                    }
                   }
-                }
-              };
-              reader.readAsDataURL(blob);
+                };
+                reader.readAsDataURL(blob);
+              }
             }
           }
         }
       }
     },
-    [uploadClipboardImage],
+    [uploadClipboardImage, editor],
   );
 
   if (editing) {
