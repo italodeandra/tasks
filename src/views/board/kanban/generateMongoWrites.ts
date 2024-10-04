@@ -2,8 +2,8 @@
 import { omit } from "lodash-es";
 import { Any, Column, Instruction, Task } from "./generateInstructions";
 
-type BulkWriteOperation = {
-  insertOne?: { document: Column | Task };
+type BulkWriteOperation<Doc> = {
+  insertOne?: { document: Doc };
   deleteOne?: { filter: { _id: string } };
   updateOne?: {
     filter: { _id: string };
@@ -12,11 +12,11 @@ type BulkWriteOperation = {
 };
 
 export function generateMongoBulkWrites(instructions: Instruction[]): {
-  columnOps: BulkWriteOperation[];
-  taskOps: BulkWriteOperation[];
+  columnOps: BulkWriteOperation<Column>[];
+  taskOps: BulkWriteOperation<Task>[];
 } {
-  const columnOps: BulkWriteOperation[] = [];
-  const taskOps: BulkWriteOperation[] = [];
+  const columnOps: BulkWriteOperation<Column>[] = [];
+  const taskOps: BulkWriteOperation<Task>[] = [];
 
   instructions.forEach((instruction) => {
     switch (instruction.type) {
