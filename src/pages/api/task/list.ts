@@ -408,7 +408,7 @@ export const taskListApi = createApi(
         {
           $sort: {
             priority: -1,
-            createdAt: -1,
+            createdAt: 1,
           },
         },
         {
