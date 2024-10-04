@@ -14,6 +14,9 @@ import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import { mergeRefs } from "react-merge-refs";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { markdownClassNames } from "./markdown.classNames";
+import CodeMirror, { EditorView } from "@uiw/react-codemirror";
+import { vscodeDark } from "@uiw/codemirror-theme-vscode";
+import { markdown, markdownLanguage } from "@codemirror/lang-markdown";
 
 function MarkdownEditorWithRef(
   {
@@ -46,6 +49,7 @@ function MarkdownEditorWithRef(
 ) {
   const [editing, setEditing] = useState(editingProp || false);
   const innerRef = useRef<HTMLDivElement>(null);
+  const [editor, setEditor] = useState<EditorView>();
 
   useEffect(() => {
     if (editingProp !== undefined && editingProp !== editing) {
@@ -75,58 +79,35 @@ function MarkdownEditorWithRef(
     setEditing(true);
   }, []);
 
-  useEffect(() => {
-    if (editing) {
-      innerRef.current!.innerText = value;
-      const target = innerRef.current;
-      setTimeout(() => {
-        if (target) {
-          target.focus();
-          const range = document.createRange();
-          range.selectNodeContents(target);
-          const selection = window.getSelection();
-          if (selection) {
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-        }
-      });
+  const handleBlur = useCallback(() => {
+    if (editor) {
+      setEditing(false);
+      onChange?.(editor.state.doc.toString() || "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editing]);
-
-  const handleBlur = useCallback(() => {
-    setEditing(false);
-    window.getSelection()?.removeAllRanges();
-    setTimeout(() => {
-      if (innerRef.current?.parentElement) {
-        innerRef.current.parentElement.focus();
-      }
-    });
-    const newTitle = innerRef.current!.innerText;
-    onChange?.(newTitle);
-    innerRef.current!.innerHTML = value
-      ? markdownConverter.makeHtml(value.replaceAll(" ", ""))
-      : placeholder || "";
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [editor]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (
+        editor &&
         editing &&
         (e.key === "Escape" ||
           (e.key === "Enter" && !e.shiftKey && !isTouchDevice))
       ) {
-        e.preventDefault();
-        e.currentTarget.blur();
+        const isCursorAtEnd =
+          editor.state.doc.toString().length === editor.state.selection.main.to;
+        const endsWithAList = editor.state.doc.toString()?.endsWith("- ");
+        if (!endsWithAList && isCursorAtEnd) {
+          e.preventDefault();
+          editor?.contentDOM?.blur();
+        }
       }
       if (!editing && e.key === "Enter") {
         setEditing(true);
       }
     },
-    [editing],
+    [editing, editor],
   );
 
   const handlePaste = useCallback(
@@ -177,6 +158,32 @@ function MarkdownEditorWithRef(
     },
     [uploadClipboardImage],
   );
+
+  if (editing) {
+    return (
+      <CodeMirror
+        value={value}
+        extensions={[
+          EditorView.lineWrapping,
+          markdown({ base: markdownLanguage }),
+        ]}
+        // onChange={handleChange}
+        onBlur={handleBlur}
+        theme={vscodeDark}
+        onKeyDown={handleKeyDown}
+        autoFocus
+        className="[&_.cm-editor]:bg-transparent [&_.cm-editor]:outline-0"
+        basicSetup={{
+          lineNumbers: false,
+          foldGutter: false,
+        }}
+        onCreateEditor={(editor) => {
+          setEditor(editor);
+        }}
+        onPaste={handlePaste}
+      />
+    );
+  }
 
   return (
     <div
