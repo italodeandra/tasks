@@ -55,6 +55,9 @@ export const taskColumnListApi = createApi(
     return TaskColumn.find(
       {
         boardId,
+        archived: {
+          $ne: true,
+        },
       },
       {
         sort: {
