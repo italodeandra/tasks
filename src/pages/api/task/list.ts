@@ -81,7 +81,7 @@ export const taskListApi = createApi(
 
     return asyncMap(columns, async (c) => {
       const tasks = await Task.aggregate<
-        Pick<ITask, "_id" | "title" | "order"> & {
+        Pick<ITask, "_id" | "title" | "priority"> & {
           canEdit: boolean;
           canDelete: boolean;
           assignees: (Pick<
@@ -407,8 +407,8 @@ export const taskListApi = createApi(
         },
         {
           $sort: {
-            order: 1,
-            updatedAt: 1,
+            priority: -1,
+            createdAt: -1,
           },
         },
         {
@@ -652,7 +652,7 @@ export const taskListApi = createApi(
             "subProject.name": 1,
             "status._id": 1,
             "status.title": 1,
-            order: 1,
+            priority: 1,
           },
         },
       ]);

@@ -1,10 +1,6 @@
 import "@fontsource-variable/inter";
 import "@italodeandra/ui/bootstrap/suppressConsoleLog";
-import {
-  focusManager,
-  HydrationBoundary,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { HydrationBoundary, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -24,21 +20,7 @@ import "highlight.js/styles/github-dark.css";
 import getQueryClient from "@italodeandra/next/api/getQueryClient";
 import "@fontsource-variable/fira-code";
 import "react-image-crop/dist/ReactCrop.css";
-
-focusManager.setEventListener((handleFocus) => {
-  const listener = () => handleFocus();
-
-  // Listen to visibilitychange
-  if (typeof window !== "undefined" && window.addEventListener) {
-    window.addEventListener("focus", listener, false);
-  }
-
-  return () => {
-    if (typeof window !== "undefined") {
-      window.removeEventListener("focus", listener);
-    }
-  };
-});
+import "@italodeandra/ui/bootstrap/setupFocusManager";
 
 dayjs.extend(relativeTime);
 dayjs.extend(localizedFormat);
@@ -49,11 +31,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   hydrateNavigationDrawerState(pageProps.cookies);
   hydrateAuthState(pageProps.cookies);
 
-  const queryClient = getQueryClient({
-    queries: {
-      staleTime: 2000,
-    },
-  });
+  const queryClient = getQueryClient();
 
   const getLayout = Component.getLayout || ((page) => page);
 

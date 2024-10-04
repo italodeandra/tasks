@@ -23,6 +23,7 @@ import { ColumnAdditionalActions } from "./ColumnAdditionalActions";
 import { generateInstructions } from "./generateInstructions";
 import { WritableDeep } from "type-fest";
 import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
+import preventDefault from "@italodeandra/ui/utils/preventDefault";
 
 export function BoardKanban({ boardId }: { boardId: string }) {
   const router = useRouter();
@@ -41,6 +42,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   useEffect(() => {
     const dialogId = isomorphicObjectId().toString();
     if (openTaskId && authGetUser.data) {
+      // noinspection JSUnusedGlobalSymbols
       showDialog({
         _id: dialogId,
         titleClassName: "mb-0",
@@ -57,7 +59,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
         onClose: () => void setOpenTaskId(null),
         contentProps: {
           ...reactQueryDialogContentProps,
-          // noinspection JSUnusedGlobalSymbols
+          onOpenAutoFocus: preventDefault,
           onEscapeKeyDown: (e) => {
             if (
               (e.target as HTMLDivElement).getAttribute("data-is-markdown") ===
@@ -92,7 +94,6 @@ export function BoardKanban({ boardId }: { boardId: string }) {
       tasks: list.cards?.map((card) => ({
         _id: card._id,
         title: card.title,
-        order: card.order,
       })),
     }));
   }, []);
@@ -149,16 +150,12 @@ export function BoardKanban({ boardId }: { boardId: string }) {
 
       const instructions = generateInstructions(
         taskList.data.map((column) => ({
-          ...pick(column, "_id", "title", "order"),
-          tasks: column.tasks?.map((task) =>
-            pick(task, "_id", "title", "order"),
-          ),
+          ...pick(column, ["_id", "title", "order"]),
+          tasks: column.tasks?.map((task) => pick(task, ["_id", "title"])),
         })),
         (debouncedData as WritableDeep<typeof debouncedData>).map((column) => ({
-          ...pick(column, "_id", "title", "order"),
-          tasks: column.tasks?.map((task) =>
-            pick(task, "_id", "title", "order"),
-          ),
+          ...pick(column, ["_id", "title", "order"]),
+          tasks: column.tasks?.map((task) => pick(task, ["_id", "title"])),
         })),
       );
 
@@ -181,8 +178,8 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   const mappedData = useMemo(
     () =>
       (data || taskList.data || []).map((list) => ({
-        ...pick(list, "_id", "title", "order"),
-        cards: list.tasks?.map((task) => pick(task, "_id", "title", "order")),
+        ...pick(list, ["_id", "title", "order"]),
+        cards: list.tasks?.map((task) => pick(task, ["_id", "title"])),
       })),
     [data, taskList.data],
   );
@@ -198,7 +195,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
 
   return (
     <Kanban
-      className="overflow-auto px-2 pb-2"
+      className="px-2 pb-2"
       data={mappedData}
       onChange={handleDataChange}
       onClickCard={authGetUser.data ? handleTaskClick : undefined}

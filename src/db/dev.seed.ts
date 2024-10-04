@@ -120,6 +120,90 @@ export async function devSeed() {
       },
     );
 
+    await TaskColumn.upsert(
+      {
+        title: "Column 1",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 3,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 2",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 4,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 3",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 5,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 4",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 6,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 5",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 7,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 6",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 8,
+        },
+      },
+    );
+
+    await TaskColumn.upsert(
+      {
+        title: "Column 7",
+        boardId: board._id,
+      },
+      {
+        $set: {
+          order: 9,
+        },
+      },
+    );
+
     await TaskStatus.upsert(
       {
         title: "Todo",
@@ -193,7 +277,6 @@ export async function devSeed() {
       {
         $set: {
           title: "Develop tasks",
-          order: 1,
           projectId: project1._id,
           subProjectId: subProject._id,
           columnId: columDoing._id,
@@ -210,7 +293,6 @@ export async function devSeed() {
       {
         $set: {
           title: "Shared task",
-          order: 2,
           projectId: project2._id,
           secondaryProjectsIds: [project1._id],
           columnId: columDoing._id,
@@ -226,7 +308,111 @@ export async function devSeed() {
       {
         $set: {
           title: "Third Doing task",
-          order: 3,
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1ce4cf01c33f5889fdf0"),
+      },
+      {
+        $set: {
+          title: "4 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d068114b17d98ffc796"),
+      },
+      {
+        $set: {
+          title: "5 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d01e6b035944d47655e"),
+      },
+      {
+        $set: {
+          title: "6 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d1ce052ab5753b71f3f"),
+      },
+      {
+        $set: {
+          title: "7 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d3d367c8c0819a27357"),
+      },
+      {
+        $set: {
+          title: "8 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d48dfbd3cf644be07b6"),
+      },
+      {
+        $set: {
+          title: "9 Doing task",
+          projectId: project2._id,
+          secondaryProjectsIds: [project1._id],
+          columnId: columDoing._id,
+          statusId: statusDoing._id,
+        },
+      },
+    );
+
+    await Task.upsert(
+      {
+        _id: isomorphicObjectId("66ff1d5a7e967c607d00ab36"),
+      },
+      {
+        $set: {
+          title: "10 Doing task",
           projectId: project2._id,
           secondaryProjectsIds: [project1._id],
           columnId: columDoing._id,
@@ -242,7 +428,6 @@ export async function devSeed() {
       {
         $set: {
           title: "Done task",
-          order: 4,
           projectId: project2._id,
           secondaryProjectsIds: [project1._id],
           columnId: columnDone._id,

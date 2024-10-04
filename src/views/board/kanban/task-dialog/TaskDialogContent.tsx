@@ -16,6 +16,7 @@ import { Timesheet } from "./timesheet/Timesheet";
 import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
+import { PriorityInput } from "./PriorityInput";
 
 export function TaskDialogContent({
   dialogId,
@@ -34,6 +35,7 @@ export function TaskDialogContent({
   const [secondaryProjectsIds, setSecondaryProjectsIds] = useState<string[]>(
     [],
   );
+  const [priority, setPriority] = useState<number>();
 
   const taskGet = taskGetApi.useQuery(
     {
@@ -52,6 +54,7 @@ export function TaskDialogContent({
       setProjectId(task.projectId || "");
       setSubProjectId(task.subProjectId || "");
       setSecondaryProjectsIds(task.secondaryProjectsIds || []);
+      setPriority(task.priority);
     }
   }, [task]);
   useEffect(() => {
@@ -82,6 +85,16 @@ export function TaskDialogContent({
     },
     [taskId, taskUpdate],
   );
+
+  useEffect(() => {
+    if (task && task.priority !== priority) {
+      taskUpdate.mutate({
+        _id: taskId,
+        priority,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [priority]);
 
   const labelWidthClassName = "w-40";
 
@@ -119,6 +132,26 @@ export function TaskDialogContent({
                 labelWidthClassName,
               )}
             >
+              Column
+            </div>
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+              <ColumnSelect
+                taskId={taskId}
+                boardId={boardId}
+                value={columnId}
+                onChange={setColumnId}
+                loading={taskGet.isLoading}
+                canEdit={task?.canEdit}
+              />
+            </div>
+          </div>
+          <div className="flex">
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
               Status
             </div>
             <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
@@ -139,16 +172,13 @@ export function TaskDialogContent({
                 labelWidthClassName,
               )}
             >
-              Column
+              Priority
             </div>
-            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
-              <ColumnSelect
-                taskId={taskId}
-                boardId={boardId}
-                value={columnId}
-                onChange={setColumnId}
+            <div className="flex flex-1 items-center bg-white/[0.03]">
+              <PriorityInput
+                value={priority}
+                onChange={setPriority}
                 loading={taskGet.isLoading}
-                canEdit={task?.canEdit}
               />
             </div>
           </div>

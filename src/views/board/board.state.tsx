@@ -13,6 +13,5 @@ export type Data = {
   tasks?: {
     _id: string;
     title: string;
-    order: number;
   }[];
 }[];

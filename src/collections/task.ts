@@ -11,11 +11,14 @@ const taskSchema = onlyServer(() =>
       columnId: types.objectId({ required: true }),
       projectId: types.objectId(),
       subProjectId: types.objectId(),
-      order: types.number({ required: true }),
       archived: types.boolean(),
       assignees: types.array(types.objectId()),
       priority: types.number(),
       secondaryProjectsIds: types.array(types.objectId()),
+      /**
+       * @deprecated this field will be removed in favor of "priority"
+       */
+      order: types.number(),
     },
     {
       timestamps: true,

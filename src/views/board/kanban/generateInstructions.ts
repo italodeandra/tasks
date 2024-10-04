@@ -8,7 +8,6 @@ export type Any = any;
 export type Task = {
   _id: string;
   title: string;
-  order: number;
   [key: string]: Any;
 };
 
@@ -40,7 +39,6 @@ export type Instruction =
       columnId: string;
       taskId: string;
       title: string;
-      order: number;
     }
   | { type: "taskRemoved"; taskId: string }
   | {
@@ -48,7 +46,6 @@ export type Instruction =
       columnId?: string;
       taskId: string;
       title?: string;
-      order?: number;
     };
 
 export function generateInstructions(
@@ -93,7 +90,6 @@ export function generateInstructions(
       });
     }
 
-    let newTaskIndex = 0;
     if (newColumn.tasks) {
       for (const newTask of newColumn.tasks) {
         if (sameColumnOnOldColumns?.tasks) {
@@ -107,13 +103,9 @@ export function generateInstructions(
             if (sameTaskOnOldTasks) {
               const taskClone = { ...newTask };
 
-              taskClone.order = getOrderSorted(
-                newColumn.tasks.map((task) => task.order),
-              )[newTaskIndex];
-
-              const changes: { title?: string; order?: number } = pick(
+              const changes: { title?: string } = pick(
                 getObjectDiff(sameTaskOnOldTasks, taskClone),
-                ["title", "order"],
+                ["title"],
               );
 
               if (Object.keys(changes).length) {
@@ -137,7 +129,7 @@ export function generateInstructions(
                 type: "taskAdded",
                 columnId: newColumn._id,
                 taskId: newTask._id,
-                ...pick(newTask, ["title", "order"]),
+                ...pick(newTask, ["title"]),
               });
             } else {
               const taskClone = { ...newTask };
@@ -146,34 +138,11 @@ export function generateInstructions(
                 c.tasks?.some((t) => t._id === newTask._id),
               )?._id;
 
-              if (newTaskIndex !== sameTaskOnOldTasksIndex) {
-                const prevNewTask = newColumn.tasks![newTaskIndex - 1];
-                const nextNewTask = newColumn.tasks![newTaskIndex + 1];
-
-                if (nextNewTask && prevNewTask) {
-                  if (
-                    sameTaskInAnotherNewColumn.order > nextNewTask.order ||
-                    sameTaskInAnotherNewColumn.order < prevNewTask.order
-                  ) {
-                    taskClone.order =
-                      (nextNewTask.order + prevNewTask.order) / 2;
-                  }
-                } else {
-                  taskClone.order = prevNewTask
-                    ? prevNewTask.order + 1
-                    : nextNewTask
-                      ? nextNewTask.order - 1
-                      : 1;
-                }
-              }
-
               const changes: {
                 title?: string;
-                order?: number;
                 columnId?: string;
               } = pick(getObjectDiff(sameTaskInAnotherNewColumn, taskClone), [
                 "title",
-                "order",
                 "columnId",
               ]);
 
@@ -183,9 +152,6 @@ export function generateInstructions(
                   taskId: newTask._id,
                   ...changes,
                 });
-                if (taskClone.order !== newTask.order) {
-                  newTask.order = taskClone.order;
-                }
               }
             }
           }
@@ -194,10 +160,9 @@ export function generateInstructions(
             type: "taskAdded",
             columnId: newColumn._id,
             taskId: newTask._id,
-            ...pick(newTask, ["title", "order"]),
+            ...pick(newTask, ["title"]),
           });
         }
-        newTaskIndex++;
       }
     }
     if (sameColumnOnOldColumns?.tasks) {

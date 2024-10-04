@@ -38,6 +38,7 @@ export const taskUpdateApi = createApi(
           | "assignees"
           | "title"
           | "secondaryProjectsIds"
+          | "priority"
         >
       >
     >,
@@ -139,6 +140,7 @@ export const taskUpdateApi = createApi(
           : undefined,
       assignees: args.assignees?.map(isomorphicObjectId),
       secondaryProjectsIds: args.secondaryProjectsIds?.map(isomorphicObjectId),
+      priority: args.priority,
     };
     removeEmptyProperties($set);
 
@@ -273,6 +275,17 @@ export const taskUpdateApi = createApi(
           taskId: _id,
           data: {
             title: args.title,
+          },
+          userId: user._id,
+        });
+      }
+      if (args.priority) {
+        await TaskActivity.insertOne({
+          type: ActivityType.UPDATE,
+          taskId: _id,
+          data: {
+            field: "priority",
+            description: args.priority,
           },
           userId: user._id,
         });

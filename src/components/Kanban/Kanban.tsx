@@ -1,47 +1,16 @@
 import { ComponentType, useCallback, useEffect, useRef, useState } from "react";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
-import { cloneDeep, find, findIndex, isEqual, last, remove } from "lodash-es";
+import { cloneDeep, find, isEqual, last, remove } from "lodash-es";
 import Button from "@italodeandra/ui/components/Button";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { useLatest } from "react-use";
-import { move } from "./move";
 import { ICard } from "./ICard";
 import { IList } from "./IList";
 import { Card } from "./Card";
 import { List } from "./List";
-import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import clsx from "@italodeandra/ui/utils/clsx";
 import { produce } from "immer";
 import { showNotification } from "@italodeandra/ui/components/Notifications/notifications.state";
-
-function removeDragElements() {
-  const elementsToRemove = document.querySelectorAll("[data-drag-element]");
-  for (const elementToRemove of Array.from(elementsToRemove)) {
-    elementToRemove.parentElement?.removeChild(elementToRemove);
-  }
-}
-
-function getMousePos(
-  event: MouseEvent | TouchEvent,
-): Pick<MouseEvent | Touch, "clientX" | "clientY"> {
-  const eventWithPos = (event as TouchEvent).touches?.[0]
-    ? (event as TouchEvent).touches[0]
-    : (event as TouchEvent).changedTouches?.[0]
-      ? (event as TouchEvent).changedTouches[0]
-      : (event as MouseEvent);
-  return {
-    clientX: eventWithPos.clientX,
-    clientY: eventWithPos.clientY,
-  };
-}
-
-function getMousePosTarget(
-  mousePos: Pick<MouseEvent | Touch, "clientX" | "clientY">,
-) {
-  return document.elementFromPoint(mousePos.clientX, mousePos.clientY) as
-    | HTMLDivElement
-    | undefined;
-}
 
 export function Kanban<
   CAP extends Record<string, unknown>,
@@ -61,12 +30,10 @@ export function Kanban<
   className,
   uploadClipboardImage,
   canAddList,
-  canMoveList,
   canEditList,
   canDuplicateCard,
   canAddCard,
   canEditCard,
-  canMoveCard,
   canDeleteCard,
   canMoveCardTo,
 }: {
@@ -104,7 +71,6 @@ export function Kanban<
   const [data, setData] = useState<IList[]>(dataProp);
   const dataRef = useLatest(data);
   const kanbanRef = useRef<HTMLDivElement>(null);
-  const cardClickTimeout = useRef(0);
 
   const checkCanEditCard = useCallback(
     (listId: string, cardId: string) => {
@@ -133,427 +99,12 @@ export function Kanban<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataProp]);
 
-  const [draggingCard, setDraggingCard] = useState<{
-    card: ICard;
-    list: IList;
-    originalElement: HTMLDivElement;
-    originalElementRect: DOMRect;
-    dragElement?: HTMLDivElement;
-    startMousePos: {
-      x: number;
-      y: number;
-    };
-    unstick?: boolean;
-  } | null>(null);
-  const draggingCardRef = useLatest(draggingCard);
-
-  const [draggingList, setDraggingList] = useState<{
-    list: IList;
-    originalElement: HTMLDivElement;
-    dragElement?: HTMLDivElement;
-    startMousePos: {
-      x: number;
-      y: number;
-    };
-    unstick?: boolean;
-  } | null>(null);
-  const draggingListRef = useLatest(draggingList);
-
   useEffect(() => {
-    if (
-      onChange &&
-      !isEqual(data, dataProp) &&
-      !draggingCard &&
-      !draggingList
-    ) {
+    if (onChange && !isEqual(data, dataProp)) {
       onChange(data);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, draggingCard, draggingList]);
-
-  const getMousePosTargetCardIdAndListId = useCallback(
-    (event: MouseEvent | TouchEvent) => {
-      const mousePos = getMousePos(event);
-      if (isTouchDevice) {
-        kanbanRef.current!.classList.remove("pointer-events-none");
-      }
-      const target = getMousePosTarget(mousePos);
-      if (isTouchDevice) {
-        kanbanRef.current!.classList.add("pointer-events-none");
-      }
-      const cardId = target
-        ?.closest("[data-card-id]")
-        ?.getAttribute("data-card-id");
-      const listId = target
-        ?.closest("[data-list-id]")
-        ?.getAttribute("data-list-id");
-      return {
-        cardId,
-        listId,
-        mousePos,
-        target,
-      };
-    },
-    [],
-  );
-
-  useEffect(() => {
-    if (isTouchDevice) {
-      kanbanRef.current!.classList.add("pointer-events-none");
-    }
-
-    const handleKanbanMouseUp = (event: MouseEvent | TouchEvent) => {
-      removeDragElements();
-
-      if (draggingCardRef.current) {
-        const mousePos = getMousePos(event);
-        const target = getMousePosTarget(mousePos);
-        const newListButton = target?.closest("[data-new-list-button]");
-        if (newListButton) {
-          const lists = produce(dataRef.current, (draft) => {
-            const previousList = find(draft, {
-              _id: draggingCardRef.current!.list._id,
-            });
-            if (previousList?.cards) {
-              remove(previousList.cards, {
-                _id: draggingCardRef.current!.card._id,
-              });
-              draft.push({
-                _id: isomorphicObjectId().toString(),
-                title: `New ${listName}`,
-                cards: [draggingCardRef.current!.card],
-                order: (last(draft)?.order || 0) + 1,
-              });
-            }
-          });
-          setData(lists);
-        }
-
-        draggingCardRef.current.originalElement.classList.remove("opacity-50");
-        setDraggingCard(null);
-      }
-      if (draggingListRef.current) {
-        draggingListRef.current.originalElement?.classList.remove("opacity-50");
-        setDraggingList(null);
-      }
-      document.body.classList.remove("select-none");
-    };
-
-    const handleKanbanMouseMove = (event: MouseEvent | TouchEvent) => {
-      const { cardId, listId, target, mousePos } =
-        getMousePosTargetCardIdAndListId(event);
-
-      // moving card
-      if (draggingCardRef.current) {
-        if (draggingCardRef.current.card._id !== cardId) {
-          if (draggingCardRef.current.list._id === listId) {
-            if (target && cardId) {
-              const lists = produce(dataRef.current, (draft) => {
-                const listToUpdate = find(draft, { _id: listId });
-                if (listToUpdate?.cards) {
-                  const previousIndex = findIndex(listToUpdate.cards, {
-                    _id: draggingCardRef.current!.card._id,
-                  });
-                  const nextIndex = findIndex(listToUpdate.cards, {
-                    _id: cardId,
-                  });
-                  const hoveredElementRect = target.getBoundingClientRect();
-                  const movingElementRect =
-                    draggingCardRef.current!.originalElementRect;
-                  if (
-                    movingElementRect &&
-                    ((nextIndex > previousIndex &&
-                      mousePos.clientY >
-                        hoveredElementRect.top +
-                          hoveredElementRect.height -
-                          movingElementRect.height) ||
-                      (nextIndex < previousIndex &&
-                        mousePos.clientY <
-                          hoveredElementRect.top + movingElementRect.height))
-                  ) {
-                    move(listToUpdate.cards, previousIndex, nextIndex);
-                  }
-                }
-              });
-              setData(lists);
-            }
-          } else {
-            if (listId) {
-              const lists = produce(dataRef.current, (draft) => {
-                const previousList = find(draft, {
-                  _id: draggingCardRef.current!.list._id,
-                });
-                const nextList = find(draft, { _id: listId });
-                if (previousList?.cards && nextList) {
-                  nextList.cards = nextList.cards || [];
-                  if (
-                    !nextList.cards.some(
-                      (c) => c._id === draggingCardRef.current!.card._id,
-                    )
-                  ) {
-                    remove(previousList.cards, {
-                      _id: draggingCardRef.current!.card._id,
-                    });
-                    const nextIndex = cardId
-                      ? findIndex(nextList.cards, {
-                          _id: cardId,
-                        })
-                      : nextList.cards.length;
-                    nextList.cards.splice(
-                      nextIndex,
-                      0,
-                      draggingCardRef.current!.card,
-                    );
-                  }
-                }
-              });
-              const nextList = find(lists, { _id: listId });
-              if (nextList) {
-                setDraggingCard({
-                  ...draggingCardRef.current!,
-                  list: nextList,
-                });
-              }
-              setData(lists);
-            }
-          }
-        }
-      }
-
-      // moving list
-      if (target && draggingListRef.current && listId) {
-        if (draggingListRef.current.list._id !== listId) {
-          const newData = produce(dataRef.current, (draft) => {
-            const previousIndex = findIndex(draft, {
-              _id: draggingListRef.current!.list._id,
-            });
-            const nextIndex = findIndex(draft, {
-              _id: listId,
-            });
-            const hoveredElementRect = target.getBoundingClientRect();
-            const movingElementRect =
-              draggingListRef.current!.originalElement?.getBoundingClientRect();
-            if (
-              movingElementRect &&
-              ((nextIndex > previousIndex &&
-                mousePos.clientX >
-                  hoveredElementRect.left +
-                    hoveredElementRect.width -
-                    movingElementRect.width) ||
-                (nextIndex < previousIndex &&
-                  mousePos.clientX <
-                    hoveredElementRect.left + movingElementRect.width))
-            ) {
-              move(draft, previousIndex, nextIndex);
-            }
-          });
-          setData(newData);
-        }
-      }
-
-      // dragging card element
-      if (draggingCardRef.current) {
-        const { startMousePos, originalElement } = draggingCardRef.current;
-        if (
-          Math.abs(
-            mousePos.clientX -
-              startMousePos.x +
-              (mousePos.clientY - startMousePos.y),
-          ) > 10
-        ) {
-          clearTimeout(cardClickTimeout.current);
-          draggingCardRef.current.unstick = true;
-        }
-        if (draggingCardRef.current.unstick) {
-          (document.activeElement as HTMLElement | undefined)?.blur();
-          document.body.classList.add("select-none");
-          let dragElement = draggingCardRef.current.dragElement;
-          if (!dragElement) {
-            const originalElementRect = originalElement.getBoundingClientRect();
-            dragElement = originalElement.cloneNode(true) as HTMLDivElement;
-            dragElement.setAttribute("data-drag-element", "");
-            dragElement.style.left = `${originalElementRect.left}px`;
-            dragElement.style.top = `${originalElementRect.top}px`;
-            dragElement.style.width = `${originalElementRect.width}px`;
-            dragElement.style.height = `${originalElementRect.height}px`;
-            dragElement.classList.add(
-              "fixed",
-              orientation === "horizontal" ? "rotate-6" : "rotate-1",
-              "translate-x-[--x]",
-              "translate-y-[--y]",
-              "pointer-events-none",
-              "z-10",
-              "opacity-90",
-            );
-            removeDragElements();
-            originalElement.parentElement!.prepend(dragElement);
-            setDraggingCard({
-              ...draggingCardRef.current,
-              dragElement,
-            });
-          }
-
-          dragElement.style.setProperty(
-            "--x",
-            `${mousePos.clientX - startMousePos.x}px`,
-          );
-          dragElement.style.setProperty(
-            "--y",
-            `${mousePos.clientY - startMousePos.y}px`,
-          );
-        }
-      }
-
-      // dragging list element
-      if (draggingListRef.current) {
-        const { startMousePos, originalElement } = draggingListRef.current;
-        if (
-          Math.abs(
-            mousePos.clientX -
-              startMousePos.x +
-              (mousePos.clientY - startMousePos.y),
-          ) > 10
-        ) {
-          draggingListRef.current.unstick = true;
-        }
-        if (draggingListRef.current.unstick) {
-          (document.activeElement as HTMLElement | undefined)?.blur();
-          document.body.classList.add("select-none");
-          let dragElement = draggingListRef.current.dragElement;
-          if (!dragElement) {
-            const originalElementRect = originalElement.getBoundingClientRect();
-            dragElement = originalElement.cloneNode(true) as HTMLDivElement;
-            draggingListRef.current.dragElement = dragElement;
-            dragElement.setAttribute("data-drag-element", "");
-            dragElement.style.left = `${originalElementRect.left}px`;
-            dragElement.style.top = `${originalElementRect.top}px`;
-            dragElement.style.width = `${originalElementRect.width}px`;
-            dragElement.style.height = `${originalElementRect.height}px`;
-            dragElement.classList.add(
-              "fixed",
-              orientation === "horizontal" ? "rotate-6" : "rotate-1",
-              "translate-x-[--x]",
-              "translate-y-[--y]",
-              "pointer-events-none",
-              "z-10",
-              "opacity-90",
-            );
-            removeDragElements();
-            originalElement.parentElement!.prepend(dragElement);
-            setDraggingList({
-              ...draggingListRef.current,
-              dragElement,
-            });
-          }
-
-          dragElement.style.setProperty(
-            "--x",
-            `${mousePos.clientX - startMousePos.x}px`,
-          );
-          dragElement.style.setProperty(
-            "--y",
-            `${mousePos.clientY - startMousePos.y}px`,
-          );
-        }
-      }
-    };
-
-    const handleCardMouseDown = (event: MouseEvent | TouchEvent) => {
-      const { cardId, listId, mousePos, target } =
-        getMousePosTargetCardIdAndListId(event);
-      if (target && isTouchDevice) {
-        if (!draggingCardRef.current?.unstick) {
-          if (
-            document.activeElement === target &&
-            onClickCard &&
-            !target.getAttribute("class")?.includes("pointer-events-auto")
-          ) {
-            clearTimeout(cardClickTimeout.current);
-            cardClickTimeout.current = window.setTimeout(() => {
-              onClickCard({ cardId: cardId!, listId: listId! });
-            }, 300);
-            event.preventDefault();
-          }
-          if (
-            cardId &&
-            !target.getAttribute("class")?.includes("pointer-events-auto")
-          ) {
-            target.focus();
-          }
-        }
-      }
-      if (target && target.getAttribute("data-is-editing") !== "true")
-        if (canMoveList && !cardId) {
-          if (listId) {
-            const list = find(dataRef.current, { _id: listId });
-            if (list) {
-              if (
-                !target.getAttribute("class")?.includes("pointer-events-auto")
-              ) {
-                event.preventDefault();
-                setDraggingList({
-                  list,
-                  startMousePos: {
-                    x: mousePos.clientX,
-                    y: mousePos.clientY,
-                  },
-                  originalElement: target.closest("[data-list-id]")!,
-                });
-              }
-            }
-          }
-        } else {
-          if (listId && cardId) {
-            const list = find(dataRef.current, { _id: listId });
-            if (list) {
-              const card = find(list.cards, { _id: cardId });
-              if (card) {
-                if (
-                  !target.getAttribute("class")?.includes("pointer-events-auto")
-                ) {
-                  event.preventDefault();
-                  setDraggingCard({
-                    card,
-                    list,
-                    startMousePos: {
-                      x: mousePos.clientX,
-                      y: mousePos.clientY,
-                    },
-                    originalElement: target,
-                    originalElementRect: target.getBoundingClientRect(),
-                  });
-                }
-              }
-            }
-          }
-        }
-    };
-
-    if (canMoveCard || canMoveList) {
-      document.addEventListener("mouseup", handleKanbanMouseUp);
-      document.addEventListener("touchend", handleKanbanMouseUp);
-      document.addEventListener("mouseleave", handleKanbanMouseUp);
-      document.addEventListener("touchcancel", handleKanbanMouseUp);
-      document.addEventListener("mousemove", handleKanbanMouseMove);
-      document.addEventListener("touchmove", handleKanbanMouseMove);
-      document.addEventListener("mousedown", handleCardMouseDown);
-      document.addEventListener("touchstart", handleCardMouseDown, {
-        passive: false,
-      });
-    }
-
-    return () => {
-      document.removeEventListener("mouseup", handleKanbanMouseUp);
-      document.removeEventListener("touchend", handleKanbanMouseUp);
-      document.removeEventListener("mouseleave", handleKanbanMouseUp);
-      document.removeEventListener("touchcancel", handleKanbanMouseUp);
-      document.removeEventListener("mousemove", handleKanbanMouseMove);
-      document.removeEventListener("touchmove", handleKanbanMouseMove);
-      document.removeEventListener("mousedown", handleCardMouseDown);
-      document.removeEventListener("touchstart", handleCardMouseDown);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [canMoveList]);
+  }, [data]);
 
   const handleAddNewCardClick = useCallback(
     (list: IList) => () => {
@@ -567,7 +118,6 @@ export function Kanban<
               _id,
               title: "",
               isNew: true,
-              order: (last(listToUpdate.cards)?.order || 0) + 1,
             },
           ];
         }
@@ -671,7 +221,6 @@ export function Kanban<
 
   const handleCardClick = useCallback(
     (card: ICard, list: IList) => () => {
-      setDraggingCard(null);
       onClickCard?.({
         cardId: card._id,
         listId: list._id,
@@ -707,7 +256,6 @@ export function Kanban<
                 cloneDeep({
                   ...clonedCard,
                   _id: isomorphicObjectId().toString(),
-                  order: 1,
                 }),
               ],
               order: (last(draft)?.order || 0) + 1,
@@ -720,7 +268,7 @@ export function Kanban<
     [dataRef],
   );
 
-  const handleMoveTo = useCallback(
+  const handleMoveCardToList = useCallback(
     (card: ICard, fromList: IList) => (toListId?: string) => {
       const lists = produce(dataRef.current, (draft) => {
         const fromListRef = find(draft, { _id: fromList._id });
@@ -739,26 +287,35 @@ export function Kanban<
     [dataRef],
   );
 
+  const handleListMove = useCallback(
+    (list: IList, toIndex: number) => () => {
+      const lists = produce(dataRef.current, (draft) => {
+        const listIndex = draft.findIndex((l) => l._id === list._id);
+        if (listIndex !== -1) {
+          const [removed] = draft.splice(listIndex, 1);
+          draft.splice(toIndex, 0, removed);
+        }
+      });
+      setData(lists);
+    },
+    [dataRef],
+  );
+
   return (
     <div
       className={clsx(
         "group/kanban flex gap-2 touch:flex-col",
         {
           "flex-col": orientation === "vertical",
-          "[&_*]:cursor-grab": !!draggingCard?.unstick,
         },
         className,
       )}
-      data-is-dragging={!!draggingCard?.unstick}
       ref={kanbanRef}
     >
-      {data.map((list) => (
+      {data.map((list, index, listArray) => (
         <div key={list._id.toString()} className="flex shrink-0 flex-col">
           <List
             title={list.title}
-            dragging={
-              draggingList?.dragElement && draggingList?.list._id === list._id
-            }
             onDelete={handleListDelete(list)}
             _id={list._id}
             onChangeTitle={handleListTitleChange(list)}
@@ -766,16 +323,15 @@ export function Kanban<
             listName={listName}
             additionalActions={listAdditionalActions}
             additionalProps={listAdditionalProps}
+            canMoveLeft={index > 0}
+            onMoveLeft={handleListMove(list, index - 1)}
+            canMoveRight={index < listArray.length - 1}
+            onMoveRight={handleListMove(list, index + 1)}
           >
             {list.cards?.map((card) => (
               <Card
                 key={card._id.toString()}
                 title={card.title}
-                dragging={
-                  draggingCard?.dragElement &&
-                  draggingCard?.card._id === card._id &&
-                  draggingCard?.list._id === list._id
-                }
                 onDelete={handleCardDelete(card, list)}
                 _id={card._id}
                 listId={list._id}
@@ -794,7 +350,7 @@ export function Kanban<
                 canDelete={checkCanDeleteCard(list._id, card._id)}
                 isNew={card.isNew}
                 canMoveTo={canMoveCardTo}
-                onMoveTo={handleMoveTo(card, list)}
+                onMoveTo={handleMoveCardToList(card, list)}
               />
             ))}
             {canAddCard && (

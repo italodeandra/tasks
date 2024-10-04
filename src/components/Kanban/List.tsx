@@ -6,7 +6,6 @@ import { MarkdownEditor } from "./MarkdownEditor";
 export function List<AP extends Record<string, unknown>>({
   title,
   children,
-  dragging,
   className,
   onDelete,
   onChangeTitle,
@@ -15,11 +14,14 @@ export function List<AP extends Record<string, unknown>>({
   listName,
   additionalActions: AdditionalActions,
   additionalProps,
+  canMoveLeft,
+  onMoveLeft,
+  canMoveRight,
+  onMoveRight,
   ...props
 }: {
   title: string;
   children: ReactNode;
-  dragging?: boolean;
   onDelete?: () => void;
   onChangeTitle?: (title: string) => void;
   _id: string;
@@ -27,15 +29,16 @@ export function List<AP extends Record<string, unknown>>({
   listName?: string;
   additionalActions?: ComponentType<{ listId: string } & AP>;
   additionalProps?: AP;
+  canMoveLeft?: boolean;
+  onMoveLeft?: () => void;
+  canMoveRight?: boolean;
+  onMoveRight?: () => void;
 } & HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       {...props}
       className={clsx(
         "flex min-w-40 flex-col gap-2 rounded-xl bg-zinc-900 p-2",
-        {
-          "pointer-events-none opacity-30 grayscale": dragging,
-        },
         className,
       )}
       data-list-id={_id}
@@ -54,6 +57,16 @@ export function List<AP extends Record<string, unknown>>({
           <ContextMenu.Content>
             {AdditionalActions && (
               <AdditionalActions listId={_id} {...(additionalProps as AP)} />
+            )}
+            {canMoveLeft && (
+              <ContextMenu.Item onClick={onMoveLeft}>
+                Move left
+              </ContextMenu.Item>
+            )}
+            {canMoveRight && (
+              <ContextMenu.Item onClick={onMoveRight}>
+                Move right
+              </ContextMenu.Item>
             )}
             <ContextMenu.Item onClick={onDelete}>
               Delete {listName}

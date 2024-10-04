@@ -73,7 +73,8 @@ export function Card<AP extends Record<string, unknown>>({
   const clickTimeout = useRef(0);
   const triggerRef = useRef<HTMLDivElement>(null);
 
-  const handleEdit = useCallback(() => {
+  const handleEdit = useCallback((event?: RMouseEvent) => {
+    event?.stopPropagation();
     setEditing(true);
   }, []);
 
@@ -86,10 +87,13 @@ export function Card<AP extends Record<string, unknown>>({
     [editing, handleEdit],
   );
 
-  const handleDoubleClick = useCallback(() => {
-    clearTimeout(clickTimeout.current);
-    handleEdit();
-  }, [handleEdit]);
+  const handleDoubleClick = useCallback(
+    (event: RMouseEvent) => {
+      clearTimeout(clickTimeout.current);
+      handleEdit(event);
+    },
+    [handleEdit],
+  );
 
   const handleClick = useCallback(() => {
     clearTimeout(clickTimeout.current);
@@ -99,15 +103,6 @@ export function Card<AP extends Record<string, unknown>>({
       }, 300);
     }
   }, [onClick]);
-
-  const handleMouseLeftDown = useCallback(
-    (event: RMouseEvent) => {
-      if (event.button === 0) {
-        handleClick();
-      }
-    },
-    [handleClick],
-  );
 
   useEffect(() => {
     clearTimeout(clickTimeout.current);
@@ -128,6 +123,7 @@ export function Card<AP extends Record<string, unknown>>({
   );
 
   const handleOptionsClick = useCallback((event: RMouseEvent) => {
+    event.stopPropagation();
     triggerRef.current?.dispatchEvent(
       new MouseEvent("contextmenu", omit(event, "view")),
     );
@@ -140,7 +136,7 @@ export function Card<AP extends Record<string, unknown>>({
           ref={triggerRef}
           {...props}
           className={clsx(
-            "group max-w-96 rounded-lg bg-zinc-800 shadow-md outline-none transition-colors",
+            "group select-none rounded-lg bg-zinc-800 shadow-md outline-none transition-colors sm:max-w-96",
             "ring-zinc-700 focus:ring-2 focus:ring-primary-800",
             {
               "group-data-[is-dragging=false]/kanban:hover:bg-zinc-700":
@@ -157,10 +153,9 @@ export function Card<AP extends Record<string, unknown>>({
           onKeyDown={handleKeyDown}
           tabIndex={0}
           data-card-id={_id}
-          onMouseDown={!editing ? handleMouseLeftDown : undefined}
-          onTouchStart={!editing ? handleClick : undefined}
+          onClick={!editing ? handleClick : undefined}
         >
-          <div className="pointer-events-none relative">
+          <div className="relative">
             <MarkdownEditor
               ref={editableRef}
               value={title}
@@ -192,7 +187,7 @@ export function Card<AP extends Record<string, unknown>>({
                 onTouchStart={stopPropagation}
                 onMouseDown={stopPropagation}
               >
-                <EllipsisVerticalIcon className="pointer-events-none" />
+                <EllipsisVerticalIcon />
               </Button>
             )}
             {!editing && canEdit && (
@@ -209,7 +204,7 @@ export function Card<AP extends Record<string, unknown>>({
                 onTouchStart={stopPropagation}
                 onMouseDown={stopPropagation}
               >
-                <PencilIcon className="pointer-events-none" />
+                <PencilIcon />
               </Button>
             )}
           </div>
@@ -229,9 +224,14 @@ export function Card<AP extends Record<string, unknown>>({
               <ContextMenu.SubTrigger>Move to</ContextMenu.SubTrigger>
               <ContextMenu.SubContent>
                 {lists.map((list) => (
-                  <ContextMenu.Item key={list._id} onClick={handleMoveTo(list)}>
+                  <ContextMenu.CheckboxItem
+                    checked={list._id === listId}
+                    key={list._id}
+                    onClick={handleMoveTo(list)}
+                    disabled={list._id === listId}
+                  >
                     {list.title}
-                  </ContextMenu.Item>
+                  </ContextMenu.CheckboxItem>
                 ))}
                 <ContextMenu.Item onClick={handleMoveTo()}>
                   <div className={dropdownItemIndicatorClassName}>

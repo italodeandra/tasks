@@ -60,7 +60,6 @@ export function generateMongoBulkWrites(instructions: Instruction[]): {
               _id: instruction.taskId,
               columnId: instruction.columnId,
               title: instruction.title,
-              order: instruction.order,
             },
           },
         });

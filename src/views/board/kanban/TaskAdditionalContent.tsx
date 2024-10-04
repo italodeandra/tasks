@@ -1,7 +1,7 @@
 import Tooltip from "@italodeandra/ui/components/Tooltip";
 import Button from "@italodeandra/ui/components/Button/Button";
 import stopPropagation from "@italodeandra/ui/utils/stopPropagation";
-import { PlayIcon } from "@heroicons/react/16/solid";
+import { ChevronDoubleUpIcon, PlayIcon } from "@heroicons/react/16/solid";
 import { taskListApi } from "../../../pages/api/task/list";
 import { useSnapshot } from "valtio";
 import { boardState } from "../board.state";
@@ -72,6 +72,14 @@ export function TaskAdditionalContent({
 
   return (
     <div className="flex flex-wrap justify-end gap-2 px-3 pb-3">
+      {task.priority && (
+        <Tooltip content={`Priority ${task.priority}`}>
+          <div className="flex items-center gap-0.5 rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">
+            <ChevronDoubleUpIcon className="-ml-1 h-4 w-4" />
+            <span>{task.priority}</span>
+          </div>
+        </Tooltip>
+      )}
       {task.status && (
         <div className="rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">
           {task.status.title}
@@ -101,7 +109,7 @@ export function TaskAdditionalContent({
                   variant="filled"
                   rounded
                   className={clsx(
-                    "group/myself pointer-events-auto relative h-6 w-6 overflow-hidden border-none p-0 text-xs transition-none dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
+                    "group/myself relative h-6 w-6 overflow-hidden border-none p-0 text-xs transition-none dark:bg-[--bg] dark:text-white dark:hover:bg-[--hover] dark:active:border-[--active-border]",
                     {
                       "w-auto min-w-6 px-1 dark:bg-green-700 dark:hover:bg-green-600":
                         timesheetGetMyOverview.data?.currentTimesheet
@@ -178,7 +186,7 @@ export function TaskAdditionalContent({
               <Tooltip content={assignee.name || assignee.email}>
                 <div
                   className={clsx(
-                    "pointer-events-auto flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[--bg] p-0 text-xs text-white",
+                    "flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-[--bg] p-0 text-xs text-white",
                     {
                       "ring-2 ring-green-700":
                         assignee.currentTimesheet?.taskId === cardId,
