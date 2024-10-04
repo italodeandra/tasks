@@ -87,7 +87,7 @@ function MarkdownEditorWithRef(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
 
-  const handleKeyDown = useCallback(
+  const handleKeyDownEditor = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
       if (
         editor &&
@@ -103,11 +103,17 @@ function MarkdownEditorWithRef(
           editor?.contentDOM?.blur();
         }
       }
+    },
+    [editing, editor],
+  );
+
+  const handleKeyDownRender = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
       if (!editing && e.key === "Enter") {
         setEditing(true);
       }
     },
-    [editing, editor],
+    [editing],
   );
 
   const handlePaste = useCallback(
@@ -170,7 +176,7 @@ function MarkdownEditorWithRef(
         // onChange={handleChange}
         onBlur={handleBlur}
         theme={vscodeDark}
-        onKeyDown={handleKeyDown}
+        onKeyDown={handleKeyDownEditor}
         autoFocus
         className="[&_.cm-editor]:bg-transparent [&_.cm-editor]:outline-0"
         basicSetup={{
@@ -194,9 +200,7 @@ function MarkdownEditorWithRef(
           ? markdownConverter.makeHtml(value.replaceAll(" ", ""))
           : placeholder || "",
       }}
-      onKeyDown={handleKeyDown}
-      onBlur={handleBlur}
-      contentEditable={editing}
+      onKeyDown={handleKeyDownRender}
       className={clsx(
         markdownClassNames,
         {
