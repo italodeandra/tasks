@@ -155,7 +155,8 @@ export const taskUpdateApi = createApi(
     if (args.subProjectId === "__NONE__") {
       $unset.subProjectId = "";
     }
-    if (args.priority === undefined) {
+    if ($set.priority === 0) {
+      delete $set.priority;
       $unset.priority = "";
     }
 

@@ -86,15 +86,16 @@ export function TaskDialogContent({
     [taskId, taskUpdate],
   );
 
-  useEffect(() => {
-    if (task && task.priority !== priority) {
+  const handlePriorityChange = useCallback(
+    (newPriority?: number) => {
+      setPriority(newPriority);
       taskUpdate.mutate({
         _id: taskId,
-        priority,
+        priority: newPriority || 0,
       });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [priority]);
+    },
+    [taskId, taskUpdate],
+  );
 
   const labelWidthClassName = "w-40";
 
@@ -177,7 +178,7 @@ export function TaskDialogContent({
             <div className="flex flex-1 items-center bg-white/[0.03]">
               <PriorityInput
                 value={priority}
-                onChange={setPriority}
+                onChange={handlePriorityChange}
                 loading={taskGet.isLoading}
               />
             </div>

@@ -14,7 +14,7 @@ export function ChangePriorityContextMenuItems({ taskId }: { taskId: string }) {
       if (taskGet.data) {
         let newPriority: number | undefined =
           (taskGet.data.priority || 0) + update;
-        newPriority = newPriority > 0 ? newPriority : undefined;
+        newPriority = newPriority >= 0 ? newPriority : 0;
         taskUpdate.mutate({
           _id: taskId,
           priority: newPriority,
