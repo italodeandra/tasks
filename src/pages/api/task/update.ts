@@ -155,6 +155,9 @@ export const taskUpdateApi = createApi(
     if (args.subProjectId === "__NONE__") {
       $unset.subProjectId = "";
     }
+    if (args.priority === undefined) {
+      $unset.priority = "";
+    }
 
     await Task.updateOne(
       {

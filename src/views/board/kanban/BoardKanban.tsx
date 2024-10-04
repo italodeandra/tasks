@@ -1,5 +1,5 @@
 import { TaskAdditionalContent } from "./TaskAdditionalContent";
-import { TaskAdditionalActions } from "./TaskAdditionalActions";
+import { TaskAdditionalActions } from "./task-adittional-actions/TaskAdditionalActions";
 import { Kanban } from "../../../components/Kanban/Kanban";
 import { useSnapshot } from "valtio";
 import { boardState } from "../board.state";

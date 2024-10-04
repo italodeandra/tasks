@@ -1,24 +1,25 @@
-import ContextMenu from "@italodeandra/ui/components/ContextMenu";
-import { useCallback, useMemo } from "react";
-import { xor } from "lodash-es";
-import { taskListApi } from "../../../pages/api/task/list";
 import { useSnapshot } from "valtio";
-import { boardState } from "../board.state";
-import { taskUpdateApi } from "../../../pages/api/task/update";
+import { boardState } from "../../board.state";
 import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
+import { taskListApi } from "../../../../pages/api/task/list";
+import { useCallback, useMemo } from "react";
+import { taskUpdateApi } from "../../../../pages/api/task/update";
+import { xor } from "lodash-es";
+import ContextMenu from "@italodeandra/ui/components/ContextMenu";
 
-export function TaskAdditionalActions({
+export function AssignToMeContextMenuItem({
+  boardId,
   cardId,
   listId,
-  boardId,
 }: {
+  boardId: string;
   cardId: string;
   listId: string;
-  boardId: string;
 }) {
+  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
+
   const authGetUser = useAuthGetUser();
 
-  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
   const taskList = taskListApi.useQuery({
     boardId,
     selectedProjects: selectedProjects as string[],
