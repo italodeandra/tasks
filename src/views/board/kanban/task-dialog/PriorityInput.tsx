@@ -16,7 +16,7 @@ export function PriorityInput({
 }) {
   const [innerValue, setValue] = useState<string>();
 
-  const debouncedValue = useDebouncedValue(innerValue, "600ms");
+  const debouncedValue = useDebouncedValue(innerValue, "300ms");
   useEffect(() => {
     if (value?.toString() !== debouncedValue) {
       onChange(debouncedValue ? Number(debouncedValue) : undefined);
