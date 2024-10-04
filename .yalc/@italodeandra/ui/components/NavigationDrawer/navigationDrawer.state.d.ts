@@ -7,5 +7,5 @@ declare const navigationDrawerState: {
 };
 export declare const hydrateNavigationDrawerState: (cookies?: {
     state?: string;
-}) => void;
+} | undefined) => void;
 export default navigationDrawerState;

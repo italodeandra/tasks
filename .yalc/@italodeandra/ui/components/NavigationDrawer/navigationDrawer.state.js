@@ -15,5 +15,5 @@ const navigationDrawerState = proxy({
         navigationDrawerState.isOpen = !navigationDrawerState.isOpen;
     },
 });
-export const hydrateNavigationDrawerState = createStateHydration("navigationDrawerState", navigationDrawerState);
+export const hydrateNavigationDrawerState = createStateHydration("navigationDrawerState", navigationDrawerState, ["isOpen"]);
 export default navigationDrawerState;
