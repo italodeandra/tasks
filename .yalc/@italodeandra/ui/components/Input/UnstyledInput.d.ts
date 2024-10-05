@@ -1,5 +1,4 @@
-import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
-import { Combobox } from "@headlessui/react";
+import { ComponentType, DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
 export type UnstyledInputCommonProps = {
     label?: ReactNode;
     inputClassName?: string;
@@ -12,9 +11,9 @@ export type UnstyledInputCommonProps = {
     helpText?: ReactNode;
     trailing?: ReactNode;
     leading?: ReactNode;
-    as?: typeof Combobox.Input;
+    as?: ComponentType;
     innerClassName?: string;
-    error?: boolean;
+    error?: boolean | string;
 };
 export type UnstyledInputProps<Select extends boolean | undefined> = UnstyledInputCommonProps & {
     select?: Select;

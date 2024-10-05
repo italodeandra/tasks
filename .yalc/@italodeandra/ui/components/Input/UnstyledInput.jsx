@@ -18,7 +18,7 @@ function UnstyledInput({ id, label, className, inputClassName, labelClassName, h
         <Component 
     /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     {...props} className={inputClassName} id={id} type={type} ref={ref} value={value}>
-          {select ? children : undefined}
+          {children}
         </Component>
         {trailing && <div className={trailingClassName}>{trailing}</div>}
       </div>

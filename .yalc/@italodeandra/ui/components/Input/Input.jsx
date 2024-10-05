@@ -13,7 +13,7 @@ export const defaultTrailingClassName = "pointer-events-none absolute inset-y-0 
 export const defaultLeadingClassName = "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-zinc-500 text-sm";
 export const defaultLeadingInputClassName = "pl-10";
 export const defaultTrailingInputClassName = "pr-10";
-function Input({ error, trailing, labelClassName, inputClassName, helpTextClassName, trailingClassName, leadingClassName, leadingInputClassName, trailingInputClassName, required, label, loading, readOnly, children, disabled, ...props }, ref) {
+function Input({ error, trailing, labelClassName, inputClassName, helpTextClassName, trailingClassName, leadingClassName, leadingInputClassName, trailingInputClassName, required, label, loading, readOnly, children, disabled, helpText, ...props }, ref) {
     trailing =
         trailing ||
             (error ? (<InputIcon className="text-error-500">
@@ -28,6 +28,10 @@ function Input({ error, trailing, labelClassName, inputClassName, helpTextClassN
     leadingClassName = clsx(defaultLeadingClassName, leadingClassName);
     leadingInputClassName = clsx(defaultLeadingInputClassName, leadingInputClassName);
     trailingInputClassName = clsx(defaultTrailingInputClassName, trailingInputClassName);
+    if (typeof error === "string") {
+        helpText = error;
+        error = true;
+    }
     if (error) {
         inputClassName = `${inputClassName} border-error-300 dark:border-error-500 text-error-900 dark:text-error-500 placeholder-error-300 focus:border-error-500 dark:focus:border-error-500 focus:ring-error-500`;
         helpTextClassName = `${helpTextClassName} !text-error-600 dark:!text-error-500`;
@@ -42,7 +46,7 @@ function Input({ error, trailing, labelClassName, inputClassName, helpTextClassN
     }
     return (<UnstyledInput 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    {...props} trailing={trailing} labelClassName={labelClassName} inputClassName={inputClassName} helpTextClassName={helpTextClassName} trailingClassName={trailingClassName} leadingClassName={leadingClassName} leadingInputClassName={leadingInputClassName} trailingInputClassName={trailingInputClassName} ref={ref} required={required} label={label} readOnly={readOnly} disabled={disabled} data-disabled={disabled || undefined}>
+    {...props} trailing={trailing} labelClassName={labelClassName} inputClassName={inputClassName} helpTextClassName={helpTextClassName} trailingClassName={trailingClassName} leadingClassName={leadingClassName} leadingInputClassName={leadingInputClassName} trailingInputClassName={trailingInputClassName} ref={ref} required={required} label={label} readOnly={readOnly} disabled={disabled} data-disabled={disabled || undefined} helpText={helpText}>
       {recursiveChildrenMap(children, (child) => cloneElement(child, { disabled: readOnly || disabled }))}
     </UnstyledInput>);
 }

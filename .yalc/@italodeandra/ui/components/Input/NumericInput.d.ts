@@ -4,7 +4,6 @@ import { NumericFormatProps } from "react-number-format";
 declare function NumericInput(props: Omit<NumericFormatProps, "customInput"> & InputProps<undefined>, ref: ForwardedRef<HTMLInputElement>): import("react").JSX.Element;
 export type NumericInputProps = ComponentProps<typeof NumericInput>;
 declare const _default: import("react").ForwardRefExoticComponent<Omit<Omit<NumericFormatProps, "customInput"> & {
-    error?: boolean;
     loading?: boolean;
 } & import("./UnstyledInput").UnstyledInputCommonProps & {
     select?: undefined;

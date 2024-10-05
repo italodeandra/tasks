@@ -1,6 +1,5 @@
 import { UnstyledInputProps } from "../Input/UnstyledInput";
 export type InputProps<Select extends boolean | undefined> = {
-    error?: boolean;
     loading?: boolean;
 } & UnstyledInputProps<Select>;
 export declare const defaultLabelClassName: string;
