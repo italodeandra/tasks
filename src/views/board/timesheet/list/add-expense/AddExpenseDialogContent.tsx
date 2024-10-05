@@ -7,11 +7,13 @@ import { closeDialog } from "@italodeandra/ui/components/Dialog";
 import { Controller, useForm } from "@italodeandra/ui/form2";
 import * as z from "zod";
 import { ProjectsSelect } from "./ProjectsSelect";
+import NumericInput from "@italodeandra/ui/components/Input/NumericInput";
 
 const schema = z.object({
   description: z.string().min(1, "Fill with the description"),
   time: z.string().min(1, "Fill with the time"),
   projectsIds: z.array(z.string()).min(1, "Select at least one project"),
+  overheadRate: z.number().optional(),
 });
 
 export function AddExpenseDialogContent({
@@ -60,6 +62,18 @@ export function AddExpenseDialogContent({
       />
       <Input label="Description" {...form.register("description")} />
       <Input label="Time" {...form.register("time")} />
+      <Controller
+        name="overheadRate"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <NumericInput
+            label="Overhead rate"
+            value={field.value}
+            onValueChange={(value) => field.onChange(value.floatValue || 0)}
+            error={fieldState.error?.message}
+          />
+        )}
+      />
       <div className="flex w-full gap-2">
         <Button
           variant="filled"

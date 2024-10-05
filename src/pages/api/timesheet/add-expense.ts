@@ -17,6 +17,7 @@ export const timesheetAddExpenseApi = createApi(
       projectsIds: string[];
       description: string;
       time: number;
+      overheadRate?: number;
     },
     req,
     res,
@@ -76,7 +77,10 @@ export const timesheetAddExpenseApi = createApi(
       throw notFound;
     }
 
-    const timeFraction = args.time / projects.length;
+    let timeFraction = args.time / projects.length;
+    if (args.overheadRate) {
+      timeFraction = timeFraction * (1 + args.overheadRate);
+    }
 
     for (const project of projects) {
       await Timesheet.insertOne({
