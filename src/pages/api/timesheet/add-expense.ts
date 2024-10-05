@@ -14,7 +14,7 @@ export const timesheetAddExpenseApi = createApi(
   "/api/timesheet/add-expense",
   async (
     args: {
-      projectId: string;
+      projectsIds: string[];
       description: string;
       time: number;
     },
@@ -31,14 +31,19 @@ export const timesheetAddExpenseApi = createApi(
       throw unauthorized;
     }
 
-    const projectId = isomorphicObjectId(args.projectId);
+    const projectsIds = args.projectsIds.map(isomorphicObjectId);
 
-    const project = await Project.findById(projectId, {
-      projection: {
-        boardId: 1,
+    const projects = await Project.find(
+      {
+        _id: { $in: projectsIds },
       },
-    });
-    if (!project) {
+      {
+        projection: {
+          boardId: 1,
+        },
+      },
+    );
+    if (!projects.length) {
       throw notFound;
     }
 
@@ -48,7 +53,9 @@ export const timesheetAddExpenseApi = createApi(
     );
     const userTeamsIds = userTeams.map((t) => t._id);
     const haveAdminAccessToBoard = await Board.countDocuments({
-      _id: project.boardId,
+      _id: {
+        $in: projects.map((p) => p.boardId),
+      },
       "permissions.level": {
         $in: [PermissionLevel.ADMIN],
       },
@@ -69,16 +76,20 @@ export const timesheetAddExpenseApi = createApi(
       throw notFound;
     }
 
-    await Timesheet.insertOne({
-      type: TimesheetType.EXPENSE,
-      boardId: project.boardId,
-      projectId,
-      time: args.time,
-      description: args.description,
-    });
+    const timeFraction = args.time / projects.length;
+
+    for (const project of projects) {
+      await Timesheet.insertOne({
+        type: TimesheetType.EXPENSE,
+        boardId: project.boardId,
+        projectId: project._id,
+        time: timeFraction,
+        description: args.description,
+      });
+    }
 
     return {
-      boardId: project.boardId,
+      boardId: projects[0].boardId,
     };
   },
   {

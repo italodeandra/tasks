@@ -18,7 +18,7 @@ import { useCallback, useState } from "react";
 import { ProjectFilter } from "./ProjectFilter";
 import { SubProjectFilter } from "./SubProjectFilter";
 import { showDialog } from "@italodeandra/ui/components/Dialog";
-import { AddExpenseDialogContent } from "./AddExpenseDialogContent";
+import { AddExpenseDialogContent } from "./add-expense/AddExpenseDialogContent";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import { EditTimesheetDialogContent } from "./EditTimesheetDialogContent";
 import { PencilIcon } from "@heroicons/react/24/solid";
@@ -52,14 +52,9 @@ export function TimesheetList({ boardId }: { boardId: string }) {
     showDialog({
       _id,
       title: "Add expense",
-      content: (
-        <AddExpenseDialogContent
-          dialogId={_id}
-          projectId={selectedProjects[0]}
-        />
-      ),
+      content: <AddExpenseDialogContent dialogId={_id} boardId={boardId} />,
     });
-  }, [selectedProjects]);
+  }, [boardId]);
 
   const handleEditTimesheetClick = useCallback(
     (timesheetId: string) => () => {
@@ -141,16 +136,16 @@ export function TimesheetList({ boardId }: { boardId: string }) {
             />
           )}
           <div className="grow" />
+          <Button
+            variant="text"
+            leading={<PlusIcon />}
+            onClick={handleAddExpenseClick}
+          >
+            Add expense
+          </Button>
           {selectedProjects.length === 1 &&
             selectedSubProjects.length === 0 && (
               <>
-                <Button
-                  variant="text"
-                  leading={<PlusIcon />}
-                  onClick={handleAddExpenseClick}
-                >
-                  Add expense
-                </Button>
                 <Button
                   variant="filled"
                   color="success"

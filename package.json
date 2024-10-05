@@ -22,6 +22,7 @@
     "@fontsource-variable/inter": "^5.0.20",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
+    "@hookform/resolvers": "^3.9.0",
     "@iconify/react": "^5.0.2",
     "@italodeandra/auth": "file:.yalc/@italodeandra/auth",
     "@italodeandra/next": "file:.yalc/@italodeandra/next",
@@ -72,7 +73,8 @@
     "showdown-highlight": "^3.1.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss": "^3.4.10",
-    "valtio": "^1.13.2"
+    "valtio": "^1.13.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

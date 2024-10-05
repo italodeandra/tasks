@@ -1,19 +1,29 @@
 import Input from "@italodeandra/ui/components/Input";
 import Button from "@italodeandra/ui/components/Button";
-import { useForm } from "react-hook-form";
 import { useCallback } from "react";
-import { timesheetAddExpenseApi } from "../../../../pages/api/timesheet/add-expense";
+import { timesheetAddExpenseApi } from "../../../../../pages/api/timesheet/add-expense";
 import { parseFormattedTime } from "@italodeandra/ui/utils/formatTime";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
+import { Controller, useForm } from "@italodeandra/ui/form2";
+import * as z from "zod";
+import { ProjectsSelect } from "./ProjectsSelect";
+
+const schema = z.object({
+  description: z.string().min(1, "Fill with the description"),
+  time: z.string().min(1, "Fill with the time"),
+  projectsIds: z.array(z.string()).min(1, "Select at least one project"),
+});
 
 export function AddExpenseDialogContent({
+  boardId,
   dialogId,
-  projectId,
 }: {
+  boardId: string;
   dialogId: string;
-  projectId: string;
 }) {
-  const form = useForm<{ description: string; time: string }>();
+  const form = useForm({
+    schema,
+  });
 
   const timesheetAddExpense = timesheetAddExpenseApi.useMutation({
     onSuccess() {
@@ -26,35 +36,30 @@ export function AddExpenseDialogContent({
       const values = form.getValues();
       timesheetAddExpense.mutate({
         ...values,
-        projectId,
         time: parseFormattedTime(values.time),
       });
     }
-  }, [form, projectId, timesheetAddExpense]);
+  }, [form, timesheetAddExpense]);
 
   return (
     <form
       className="flex flex-col gap-3"
       onSubmit={form.handleSubmit(onSubmit)}
     >
-      <Input
-        label="Description"
-        {...form.register("description", {
-          required: "Fill with the description",
-        })}
-        required
-        error={!!form.formState.errors.description}
-        helpText={form.formState.errors.description?.message}
+      <Controller
+        name="projectsIds"
+        control={form.control}
+        render={({ field, fieldState }) => (
+          <ProjectsSelect
+            boardId={boardId}
+            value={field.value}
+            onChange={field.onChange}
+            error={fieldState.error?.message}
+          />
+        )}
       />
-      <Input
-        label="Time"
-        {...form.register("time", {
-          required: "Fill with the time",
-        })}
-        required
-        error={!!form.formState.errors.time}
-        helpText={form.formState.errors.time?.message}
-      />
+      <Input label="Description" {...form.register("description")} />
+      <Input label="Time" {...form.register("time")} />
       <div className="flex w-full gap-2">
         <Button
           variant="filled"
