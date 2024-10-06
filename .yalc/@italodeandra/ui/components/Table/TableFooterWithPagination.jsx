@@ -32,7 +32,7 @@ export default function TableFooterWithPagination({ itemsPerPage, totalItems, cu
         <Button disabled={page === 1} onClick={handlePageClick(page - 1)}>
           {previousText}
         </Button>
-        <Button disabled={page === pageCount} onClick={handlePageClick(page + 1)}>
+        <Button disabled={page === pageCount - 1} onClick={handlePageClick(page + 1)}>
           {nextText}
         </Button>
       </div>

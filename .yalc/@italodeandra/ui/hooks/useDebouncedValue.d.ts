@@ -1,1 +1,1 @@
-export default function useDebounce<T = unknown>(value: T, delay: string): T;
+export default function useDebounce<T = unknown>(value: T, delay: string | number): T;
