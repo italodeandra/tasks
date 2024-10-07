@@ -215,6 +215,7 @@ export const timesheetTimeClosureGetApi = createApi(
           type: { $first: "$type" },
           projectPortion: { $first: "$projectPortion" },
           task: { $first: "$task" },
+          description: { $first: "$description" },
         },
       },
       {
