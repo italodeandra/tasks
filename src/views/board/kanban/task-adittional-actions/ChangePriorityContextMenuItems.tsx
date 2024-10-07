@@ -29,11 +29,12 @@ export function ChangePriorityContextMenuItems({ taskId }: { taskId: string }) {
       <ContextMenu.Item onClick={handlePriorityChange(1)}>
         Increase priority
       </ContextMenu.Item>
-      {Number(taskGet.data?.priority) > 0 && (
-        <ContextMenu.Item onClick={handlePriorityChange(-1)}>
-          Decrease priority
-        </ContextMenu.Item>
-      )}
+      <ContextMenu.Item
+        onClick={handlePriorityChange(-1)}
+        disabled={!(Number(taskGet.data?.priority) > 0)}
+      >
+        Decrease priority
+      </ContextMenu.Item>
     </>
   );
 }
