@@ -13,7 +13,7 @@ import getTimesheet, {
 import getTask, { ITask } from "../../../../collections/task";
 import dayjs from "dayjs";
 import getProject from "../../../../collections/project";
-import { groupBy, toPairs } from "lodash-es";
+import { groupBy, sortBy, toPairs } from "lodash-es";
 import getSubProject, { ISubProject } from "../../../../collections/subProject";
 import getUser, { IUser } from "@italodeandra/auth/collections/user/User";
 
@@ -96,7 +96,7 @@ export const timesheetTimeClosureGetApi = createApi(
           createdAt: 1,
         },
         sort: {
-          createdAt: 1,
+          createdAt: -1,
         },
       },
     );
@@ -295,31 +295,37 @@ export const timesheetTimeClosureGetApi = createApi(
         createdAt: closure.createdAt,
         totalTime: closure.time!,
       },
-      timesheets: [
-        ...toPairs(groupTimesheetsByTaskId).map(([taskId, timesheet]) => ({
-          _id: taskId,
-          description: timesheet[0].task!.title,
-          project: timesheet[0].subProject?.name,
-          time: timesheet.reduce((acc, t) => {
-            const userMultiplier = closure.usersMultipliers?.find((u) =>
-              u.userId.equals(t.user?._id),
-            );
-            return (
-              acc +
-              t.projectPortion *
-                (t.time! *
-                  (userMultiplier?.multiplier || 1) *
-                  (1 + (userMultiplier?.overheadRate || 0)))
-            );
-          }, 0),
-        })),
-        ...nonTaskTimesheets.map((timesheet) => ({
-          _id: timesheet._id,
-          description: timesheet.description,
-          time: timesheet.time!,
-          project: null,
-        })),
-      ],
+      timesheets: sortBy(
+        [
+          ...toPairs(groupTimesheetsByTaskId).map(([taskId, timesheet]) => ({
+            _id: taskId,
+            description: timesheet[0].task!.title,
+            project: timesheet[0].subProject?.name,
+            time: timesheet.reduce((acc, t) => {
+              const userMultiplier = closure.usersMultipliers?.find((u) =>
+                u.userId.equals(t.user?._id),
+              );
+              return (
+                acc +
+                t.projectPortion *
+                  (t.time! *
+                    (userMultiplier?.multiplier || 1) *
+                    (1 + (userMultiplier?.overheadRate || 0)))
+              );
+            }, 0),
+          })),
+          ...nonTaskTimesheets.map((timesheet) => ({
+            _id: timesheet._id,
+            description:
+              timesheet.description ||
+              (timesheet.type === TimesheetType.CARRYOVER ? "Carryover" : ""),
+            time: timesheet.time!,
+            project: null,
+          })),
+        ],
+        "description",
+        "_id",
+      ),
       users: toPairs(groupTimesheetsByUserId).map(([, timesheet]) => ({
         ...timesheet[0].user!,
         time: timesheet.reduce((acc, t) => {
