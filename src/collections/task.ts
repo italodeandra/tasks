@@ -15,6 +15,7 @@ const taskSchema = onlyServer(() =>
       assignees: types.array(types.objectId()),
       priority: types.number(),
       secondaryProjectsIds: types.array(types.objectId()),
+      dependencies: types.array(types.objectId()),
       /**
        * @deprecated this field will be removed in favor of "priority"
        */

@@ -39,6 +39,7 @@ export const taskUpdateApi = createApi(
           | "title"
           | "secondaryProjectsIds"
           | "priority"
+          | "dependencies"
         >
       >
     >,
@@ -66,6 +67,7 @@ export const taskUpdateApi = createApi(
       projection: {
         columnId: 1,
         assignees: 1,
+        dependencies: 1,
       },
     });
     if (!task) {
@@ -139,6 +141,7 @@ export const taskUpdateApi = createApi(
           ? isomorphicObjectId(args.subProjectId)
           : undefined,
       assignees: args.assignees?.map(isomorphicObjectId),
+      dependencies: args.dependencies?.map(isomorphicObjectId),
       secondaryProjectsIds: args.secondaryProjectsIds?.map(isomorphicObjectId),
       priority: args.priority,
     };
@@ -258,6 +261,32 @@ export const taskUpdateApi = createApi(
                 },
               })
             ).map((u) => u.name || u.email),
+          },
+          userId: user._id,
+        });
+      }
+      if (args.dependencies) {
+        const before =
+          task.dependencies?.map((dependency) => dependency.toString()) || [];
+        const after = args.dependencies;
+        const type = before.length > after.length ? "remove" : "add";
+        const dependencies =
+          type === "remove"
+            ? before.filter((u) => !after.includes(u))
+            : after.filter((u) => !before.includes(u));
+
+        await TaskActivity.insertOne({
+          type: ActivityType.DEPENDENCY,
+          taskId: _id,
+          data: {
+            type,
+            dependencies: (
+              await Task.find({
+                _id: {
+                  $in: dependencies.map(isomorphicObjectId),
+                },
+              })
+            ).map((u) => u.title),
           },
           userId: user._id,
         });

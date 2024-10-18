@@ -1,6 +1,6 @@
 import { TaskGetApi } from "../../../../../pages/api/task/get";
 import { taskUpdateApi } from "../../../../../pages/api/task/update";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { xor } from "lodash-es";
 import { UserAvatarAndName } from "../../../../../components/UserAvatarAndName";
 import Button from "@italodeandra/ui/components/Button";
@@ -17,11 +17,12 @@ export function Assignees({
   assignees: TaskGetApi["Response"]["assignees"];
   canEdit?: boolean;
 }) {
+  const [focused, setFocused] = useState<string>();
   const taskUpdate = taskUpdateApi.useMutation();
 
   const handleRemoveAssigneeClick = useCallback(
-    (assignee: TaskGetApi["Response"]["assignees"][0]) => () => {
-      const currentAssignees = assignees.map((a) => a._id);
+    (assignee: NonNullable<TaskGetApi["Response"]["assignees"]>[0]) => () => {
+      const currentAssignees = assignees?.map((a) => a._id);
       taskUpdate.mutate({
         _id: taskId,
         assignees: xor(currentAssignees, [assignee._id]),
@@ -32,7 +33,7 @@ export function Assignees({
 
   return (
     <div className="flex flex-wrap gap-2">
-      {assignees.map((assignee) => (
+      {assignees?.map((assignee) => (
         <div
           key={assignee._id}
           tabIndex={0}
@@ -42,12 +43,21 @@ export function Assignees({
               "focus:bg-white/[0.03]": canEdit,
             },
           )}
+          onFocus={() => setFocused(assignee._id)}
+          onBlur={() => setFocused(undefined)}
         >
-          <UserAvatarAndName {...assignee} />
+          <UserAvatarAndName {...assignee} nameClassName="mt-0.5" />
           {canEdit && (
-            <div className="group-focus:border-1 flex h-full w-0 scale-0 items-center justify-center overflow-hidden border-0 opacity-0 transition-all group-focus:w-[26px] group-focus:scale-100 group-focus:opacity-100">
+            <div
+              className={clsx(
+                "flex h-full max-w-0 scale-0 items-center justify-center overflow-hidden border-0 opacity-0 transition-all",
+                {
+                  "border-1 max-w-[60px] scale-100 opacity-100":
+                    focused === assignee._id,
+                },
+              )}
+            >
               <Button
-                as="div"
                 variant="text"
                 rounded
                 icon
@@ -57,6 +67,7 @@ export function Assignees({
                   taskUpdate.isPending && taskUpdate.variables._id === taskId
                 }
                 size="sm"
+                onFocus={() => setFocused(assignee._id)}
               >
                 <XMarkIcon />
               </Button>

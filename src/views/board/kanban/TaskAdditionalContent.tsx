@@ -15,7 +15,9 @@ import { StopIcon } from "@heroicons/react/20/solid";
 import { timesheetStartApi } from "../../../pages/api/timesheet/start";
 import { timesheetStopApi } from "../../../pages/api/timesheet/stop";
 import Loading from "@italodeandra/ui/components/Loading";
+import Text from "@italodeandra/ui/components/Text";
 import dayjs from "dayjs";
+import Routes from "../../../Routes";
 
 export function TaskAdditionalContent({
   cardId,
@@ -65,13 +67,34 @@ export function TaskAdditionalContent({
     (!task.assignees.length &&
       !task.project &&
       !task.subProject &&
-      !task.status)
+      !task.status &&
+      !task.dependencies?.length)
   ) {
     return null;
   }
 
   return (
-    <div className="flex flex-wrap justify-end gap-2 px-3 pb-3">
+    <div className="flex flex-wrap items-end justify-end gap-2 px-3 pb-3">
+      {!!task.dependencies?.length && (
+        <div className="flex flex-wrap items-start justify-start rounded-lg bg-white/5 px-1.5 py-1 text-xs">
+          <div className="mr-0.5 font-light">Depends on</div>
+          {task.dependencies.map((dependency) => (
+            <Tooltip
+              key={dependency._id}
+              content={`Column: ${dependency.column.title} - Status: ${dependency.status.title}`}
+            >
+              <Text
+                variant="link"
+                className="px-1 py-0 text-xs text-white decoration-white/30 hover:decoration-white"
+                onClick={stopPropagation}
+                href={Routes.Task(boardId, dependency._id)}
+              >
+                {dependency.title}
+              </Text>
+            </Tooltip>
+          ))}
+        </div>
+      )}
       {task.priority && (
         <Tooltip content={`Priority ${task.priority}`}>
           <div className="flex items-center gap-0.5 rounded-lg bg-white/5 px-1.5 py-1 text-center text-xs text-zinc-300">

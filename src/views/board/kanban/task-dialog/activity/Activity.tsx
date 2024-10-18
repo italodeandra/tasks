@@ -137,6 +137,17 @@ export function Activity({
                       </span>
                     </>
                   )}
+                  {activity.type === ActivityType.DEPENDENCY &&
+                    activity.data && (
+                      <>
+                        {activity.data.type === "add"
+                          ? "added dependency to"
+                          : "removed dependency from"}{" "}
+                        <span className="font-medium text-white">
+                          {activity.data.dependencies.join(", ")}
+                        </span>
+                      </>
+                    )}
                   {activity.type === ActivityType.TIMESHEET &&
                     activity.data && <Timesheet {...activity} />}
                   {activity.type === ActivityType.COMMENT && activity.data && (

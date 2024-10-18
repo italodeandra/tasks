@@ -2,7 +2,7 @@ import createApi from "@italodeandra/next/api/createApi";
 import { getUserFromCookies } from "@italodeandra/auth/collections/user/User.service";
 import getTask, { ITask } from "../../../collections/task";
 import { connectDb } from "../../../db";
-import getTaskColumn from "../../../collections/taskColumn";
+import getTaskColumn, { ITaskColumn } from "../../../collections/taskColumn";
 import asyncMap from "@italodeandra/next/utils/asyncMap";
 import getTeam from "../../../collections/team";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
@@ -90,6 +90,10 @@ export const taskListApi = createApi(
           > & {
             isMe: boolean;
             currentTimesheet?: Pick<ITimesheet, "_id" | "taskId">;
+          })[];
+          dependencies?: (Pick<ITask, "_id" | "title"> & {
+            column: Pick<ITaskColumn, "_id" | "title">;
+            status: Pick<ITaskStatus, "_id" | "title">;
           })[];
           project?: Pick<IProject, "_id" | "name">;
           subProject?: Pick<ISubProject, "_id" | "name">;
@@ -394,6 +398,62 @@ export const taskListApi = createApi(
         },
         {
           $lookup: {
+            from: Task.collection.collectionName,
+            localField: "dependencies",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $lookup: {
+                  from: TaskStatus.collection.collectionName,
+                  localField: "statusId",
+                  foreignField: "_id",
+                  as: "status",
+                  pipeline: [
+                    {
+                      $project: {
+                        title: 1,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: {
+                  path: "$status",
+                  preserveNullAndEmptyArrays: true,
+                },
+              },
+              {
+                $lookup: {
+                  from: TaskColumn.collection.collectionName,
+                  localField: "columnId",
+                  foreignField: "_id",
+                  as: "column",
+                  pipeline: [
+                    {
+                      $project: {
+                        title: 1,
+                      },
+                    },
+                  ],
+                },
+              },
+              {
+                $unwind: "$column",
+              },
+              {
+                $project: {
+                  title: 1,
+                  status: 1,
+                  column: 1,
+                },
+              },
+            ],
+            as: "dependencies",
+          },
+        },
+        {
+          $lookup: {
             from: Timesheet.collection.collectionName,
             localField: "_id",
             foreignField: "taskId",
@@ -415,6 +475,7 @@ export const taskListApi = createApi(
           $project: {
             title: 1,
             assignees: 1,
+            dependencies: 1,
             canDelete: {
               $eq: [
                 { $ifNull: [{ $arrayElemAt: ["$timesheets.total", 0] }, 0] },

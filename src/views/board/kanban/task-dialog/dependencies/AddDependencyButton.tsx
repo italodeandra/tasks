@@ -1,46 +1,43 @@
-import {
-  TaskListEligibleAssigneesApi,
-  taskListEligibleAssigneesApi,
-} from "../../../../../pages/api/task/list-eligible-assignees";
 import Popover from "@italodeandra/ui/components/Popover";
 import Button from "@italodeandra/ui/components/Button";
 import { CheckIcon, PlusIcon } from "@heroicons/react/16/solid";
 import Input from "@italodeandra/ui/components/Input";
-import { UserAvatarAndName } from "../../../../../components/UserAvatarAndName";
 import { TaskGetApi } from "../../../../../pages/api/task/get";
 import { taskUpdateApi } from "../../../../../pages/api/task/update";
 import { useCallback, useState } from "react";
 import { xor } from "lodash-es";
+import {
+  TaskSearchApi,
+  taskSearchApi,
+} from "../../../../../pages/api/task/search";
+import useDebounce from "@italodeandra/ui/hooks/useDebouncedValue";
+import Skeleton from "@italodeandra/ui/components/Skeleton";
 
-export function AddAssigneeButton({
+export function AddDependencyButton({
   taskId,
-  assignees,
+  dependencies,
 }: {
   taskId: string;
-  assignees: TaskGetApi["Response"]["assignees"];
+  dependencies: TaskGetApi["Response"]["dependencies"];
 }) {
   const [search, setSearch] = useState("");
-  const taskListEligibleAssignees = taskListEligibleAssigneesApi.useQuery({
-    taskId,
+  const debouncedSearch = useDebounce(search, 500);
+  const taskSearch = taskSearchApi.useQuery({
+    query: debouncedSearch,
+    exclude: [taskId],
   });
 
   const taskUpdate = taskUpdateApi.useMutation();
 
-  const handleAssigneeClick = useCallback(
-    (assignee: TaskListEligibleAssigneesApi["Response"][0]) => () => {
-      const currentAssignees = assignees?.map((a) => a._id);
+  const handleClick = useCallback(
+    (dependency: TaskSearchApi["Response"][0]) => () => {
+      const currentDependencies = dependencies?.map((a) => a._id);
       taskUpdate.mutate({
         _id: taskId,
-        assignees: xor(currentAssignees, [assignee._id]),
+        dependencies: xor(currentDependencies, [dependency._id]),
       });
     },
-    [assignees, taskId, taskUpdate],
-  );
-
-  const filteredEligibleAssignees = taskListEligibleAssignees.data?.filter(
-    (assignee) =>
-      assignee.name?.toLowerCase().includes(search.toLowerCase()) ||
-      assignee.email.toLowerCase().includes(search.toLowerCase()),
+    [dependencies, taskId, taskUpdate],
   );
 
   return (
@@ -61,22 +58,26 @@ export function AddAssigneeButton({
       <Popover.Content>
         <div className="flex flex-col gap-1">
           <Input
-            placeholder="Search an user"
+            placeholder="Search a task"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {filteredEligibleAssignees?.map((assignee) => (
+          {taskSearch.isLoading && <Skeleton className="h-10" />}
+          {debouncedSearch && taskSearch.data?.length === 0 && (
+            <div className="p-2 text-sm text-gray-500">No tasks found</div>
+          )}
+          {taskSearch.data?.map((dependency) => (
             <Button
-              key={assignee._id}
+              key={dependency._id}
               variant="text"
               size="sm"
               className="relative justify-start gap-1.5 pl-8 text-left"
-              onClick={handleAssigneeClick(assignee)}
+              onClick={handleClick(dependency)}
             >
-              {assignees?.some((a) => a._id === assignee._id) && (
-                <CheckIcon className="absolute left-2 top-2.5 h-4 w-4" />
+              {dependencies?.some((a) => a._id === dependency._id) && (
+                <CheckIcon className="absolute left-2 top-2 h-4 w-4" />
               )}
-              <UserAvatarAndName {...assignee} />
+              {dependency.title}
             </Button>
           ))}
         </div>

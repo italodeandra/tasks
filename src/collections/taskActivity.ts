@@ -9,6 +9,7 @@ export enum ActivityType {
   UPDATE = "UPDATE",
   SET = "SET",
   ASSIGN = "ASSIGN",
+  DEPENDENCY = "DEPENDENCY",
   CHANGE_TITLE = "CHANGE_TITLE",
   DELETE = "DELETE",
   TIMESHEET = "TIMESHEET",

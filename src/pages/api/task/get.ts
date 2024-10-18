@@ -51,12 +51,13 @@ export const taskGetApi = createApi(
         > & {
           canEdit: boolean;
           canComment: boolean;
-          assignees: (Pick<
+          assignees?: (Pick<
             IUser,
             "_id" | "name" | "email" | "profilePicture"
           > & {
             isMe: boolean;
           })[];
+          dependencies?: Pick<ITask, "_id" | "title">[];
         }
       >([
         {
@@ -248,6 +249,21 @@ export const taskGetApi = createApi(
               },
             ],
             as: "assignees",
+          },
+        },
+        {
+          $lookup: {
+            from: Task.collection.collectionName,
+            localField: "dependencies",
+            foreignField: "_id",
+            pipeline: [
+              {
+                $project: {
+                  title: 1,
+                },
+              },
+            ],
+            as: "dependencies",
           },
         },
         {
@@ -557,6 +573,7 @@ export const taskGetApi = createApi(
             projectId: 1,
             subProjectId: 1,
             assignees: 1,
+            dependencies: 1,
             secondaryProjectsIds: 1,
             priority: 1,
           },
