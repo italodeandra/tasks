@@ -17,6 +17,7 @@ import { SecondaryProjectsSelect } from "./SecondaryProjectsSelect";
 import { isTouchDevice } from "@italodeandra/ui/utils/isBrowser";
 import { closeDialog } from "@italodeandra/ui/components/Dialog";
 import { PriorityInput } from "./PriorityInput";
+import { CopyToClipboardButton } from "./CopyToClipboardButton";
 
 export function TaskDialogContent({
   dialogId,
@@ -267,6 +268,19 @@ export function TaskDialogContent({
                   canEdit={task?.canEdit}
                 />
               )}
+            </div>
+          </div>
+          <div className="flex">
+            <div
+              className={clsx(
+                "bg-white/[0.05] px-2.5 py-2",
+                labelWidthClassName,
+              )}
+            >
+              ID
+            </div>
+            <div className="flex flex-1 items-center bg-white/[0.03] px-2.5 py-2">
+              <CopyToClipboardButton content={taskId} />
             </div>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { AssignToMeContextMenuItem } from "./AssignToMeContextMenuItem";
 import { ChangePriorityContextMenuItems } from "./ChangePriorityContextMenuItems";
+import { CopyIdToClipboardMenuItem } from "./CopyIdToClipboardMenuItem";
 
 export function TaskAdditionalActions({
   cardId,
@@ -20,6 +21,7 @@ export function TaskAdditionalActions({
         listId={listId}
       />
       {canEdit && <ChangePriorityContextMenuItems taskId={cardId} />}
+      <CopyIdToClipboardMenuItem taskId={cardId} />
     </>
   );
 }
