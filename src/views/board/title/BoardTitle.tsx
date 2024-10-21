@@ -20,6 +20,7 @@ import { StatusesDialogContent } from "./statuses/StatusesDialogContent";
 import Routes from "../../../Routes";
 import { omit } from "lodash-es";
 import { useAuthGetUser } from "@italodeandra/auth/api/getUser";
+import { Assignees } from "./Assignees";
 
 export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
   const router = useRouter();
@@ -151,10 +152,13 @@ export function BoardTitle({ route }: { route: "board" | "timesheet" }) {
         </ContextMenu.Root>
         {boardUpdate.isPending && <Loading className="mt-2" />}
         {route === "board" && authGetUser.data && (
-          <Projects
-            boardId={_id}
-            canEditBoard={boardGet.data?.hasAdminPermission}
-          />
+          <>
+            <Projects
+              boardId={_id}
+              canEditBoard={boardGet.data?.hasAdminPermission}
+            />
+            <Assignees boardId={_id} />
+          </>
         )}
       </div>
     </>

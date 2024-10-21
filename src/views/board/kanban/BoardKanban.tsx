@@ -36,7 +36,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
   );
   const authGetUser = useAuthGetUser();
 
-  const { data, selectedProjects, selectedSubProjects } =
+  const { data, selectedProjects, selectedSubProjects, selectedAssignees } =
     useSnapshot(boardState);
 
   useEffect(() => {
@@ -122,6 +122,7 @@ export function BoardKanban({ boardId }: { boardId: string }) {
     boardId,
     selectedProjects: selectedProjects as string[],
     selectedSubProjects: selectedSubProjects as string[],
+    selectedAssignees: selectedAssignees as string[],
   });
   useEffect(() => {
     if (taskList.data && !isEqual(taskList.data, data)) {

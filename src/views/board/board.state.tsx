@@ -4,6 +4,7 @@ export const boardState = proxy({
   data: undefined as Data | undefined,
   selectedProjects: [] as string[],
   selectedSubProjects: [] as string[],
+  selectedAssignees: [] as string[],
 });
 
 export type Data = {

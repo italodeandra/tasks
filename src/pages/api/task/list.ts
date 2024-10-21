@@ -22,6 +22,7 @@ export const taskListApi = createApi(
       boardId: string;
       selectedProjects?: string[];
       selectedSubProjects?: string[];
+      selectedAssignees?: string[];
     },
     req,
     res,
@@ -64,7 +65,7 @@ export const taskListApi = createApi(
     );
 
     const queryArgs = querify(args);
-    const isNoneSelected = queryArgs.selectedProjects
+    const isNoneProjectsSelected = queryArgs.selectedProjects
       ?.toString()
       ?.split(",")
       ?.some((p) => p === "__NONE__");
@@ -78,6 +79,15 @@ export const taskListApi = createApi(
       ?.split(",")
       ?.filter((p) => p && p !== "__NONE__")
       ?.map(isomorphicObjectId);
+    const selectedAssignees = queryArgs.selectedAssignees
+      ?.toString()
+      ?.split(",")
+      ?.filter((p) => p && p !== "__NONE__")
+      ?.map(isomorphicObjectId);
+    const isNoneAssigneesSelected = queryArgs.selectedAssignees
+      ?.toString()
+      ?.split(",")
+      ?.some((p) => p === "__NONE__");
 
     return asyncMap(columns, async (c) => {
       const tasks = await Task.aggregate<
@@ -104,6 +114,28 @@ export const taskListApi = createApi(
           $match: {
             columnId: c._id,
             archived: { $ne: true },
+            ...(isNoneAssigneesSelected
+              ? {
+                  $or: [
+                    {
+                      assignees: {
+                        $exists: false,
+                      },
+                    },
+                    {
+                      assignees: {
+                        $size: 0,
+                      },
+                    },
+                  ],
+                }
+              : selectedAssignees?.length
+                ? {
+                    assignees: {
+                      $in: selectedAssignees,
+                    },
+                  }
+                : {}),
           },
         },
         {
@@ -214,7 +246,7 @@ export const taskListApi = createApi(
             "project.archived": { $ne: true },
             "subProject.archived": { $ne: true },
             $and: [
-              ...(isNoneSelected ||
+              ...(isNoneProjectsSelected ||
               selectedProjects?.length ||
               selectedSubProjects?.length
                 ? [
@@ -241,7 +273,7 @@ export const taskListApi = createApi(
                               },
                             ]
                           : []),
-                        ...(isNoneSelected
+                        ...(isNoneProjectsSelected
                           ? [
                               {
                                 projectId: { $exists: false },
@@ -729,6 +761,7 @@ export const taskListApi = createApi(
       args?.boardId,
       args?.selectedProjects,
       args?.selectedSubProjects,
+      args?.selectedAssignees,
     ],
   },
 );
