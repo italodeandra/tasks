@@ -63,7 +63,6 @@ export const taskGetApi = createApi(
         {
           $match: {
             _id,
-            archived: { $ne: true },
           },
         },
         {
