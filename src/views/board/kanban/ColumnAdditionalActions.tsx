@@ -46,11 +46,13 @@ export function ColumnAdditionalActions({
     [listId, taskColumnUpdate],
   );
 
-  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
+  const { selectedProjects, selectedSubProjects, selectedAssignees } =
+    useSnapshot(boardState);
   const taskList = taskListApi.useQuery({
     boardId,
     selectedProjects: selectedProjects as string[],
     selectedSubProjects: selectedSubProjects as string[],
+    selectedAssignees: selectedAssignees as string[],
   });
   const taskBatchUpdate = taskBatchUpdateApi.useMutation();
   const handleArchive = useCallback(

@@ -6,7 +6,6 @@ import getTaskColumn from "../../../collections/taskColumn";
 import isomorphicObjectId from "@italodeandra/next/utils/isomorphicObjectId";
 import getTask from "../../../collections/task";
 import { taskListApi } from "./list";
-import { boardState } from "../../../views/board/board.state";
 import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
@@ -251,11 +250,7 @@ export const taskBatchUpdateApi = createApi(
   {
     mutationOptions: {
       onSuccess(_d, variables, _c, queryClient) {
-        void taskListApi.invalidateQueries(queryClient, {
-          boardId: variables.boardId,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        });
+        void taskListApi.invalidateQueries(queryClient, variables);
       },
     },
   },

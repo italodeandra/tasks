@@ -757,12 +757,13 @@ export const taskListApi = createApi(
     });
   },
   {
-    queryKeyMap: (args) => [
-      args?.boardId,
-      args?.selectedProjects,
-      args?.selectedSubProjects,
-      args?.selectedAssignees,
-    ],
+    queryKeyMap: (args) =>
+      [
+        args?.boardId,
+        args?.selectedProjects,
+        args?.selectedSubProjects,
+        args?.selectedAssignees,
+      ].filter(Boolean),
   },
 );
 

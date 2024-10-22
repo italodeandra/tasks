@@ -119,6 +119,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       boardId: _id,
       selectedProjects: [],
       selectedSubProjects: [],
+      selectedAssignees: [],
     },
     req,
     res,

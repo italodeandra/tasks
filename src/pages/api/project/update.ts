@@ -11,7 +11,6 @@ import { PermissionLevel } from "../../../collections/permission";
 import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
 import { taskListApi } from "../task/list";
-import { boardState } from "../../../views/board/board.state";
 
 export const projectUpdateApi = createApi(
   "/api/project/update",
@@ -100,11 +99,7 @@ export const projectUpdateApi = createApi(
           queryClient,
           variables,
         );
-        void taskListApi.invalidateQueries(queryClient, {
-          ...variables,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        });
+        void taskListApi.invalidateQueries(queryClient, variables);
       },
     },
   },

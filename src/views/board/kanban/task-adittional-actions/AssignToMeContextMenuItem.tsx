@@ -16,14 +16,15 @@ export function AssignToMeContextMenuItem({
   cardId: string;
   listId: string;
 }) {
-  const { selectedProjects, selectedSubProjects } = useSnapshot(boardState);
-
   const authGetUser = useAuthGetUser();
 
+  const { selectedProjects, selectedSubProjects, selectedAssignees } =
+    useSnapshot(boardState);
   const taskList = taskListApi.useQuery({
     boardId,
     selectedProjects: selectedProjects as string[],
     selectedSubProjects: selectedSubProjects as string[],
+    selectedAssignees: selectedAssignees as string[],
   });
 
   const task = useMemo(

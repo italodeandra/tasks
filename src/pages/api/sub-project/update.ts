@@ -12,7 +12,6 @@ import getBoard from "../../../collections/board";
 import getTeam from "../../../collections/team";
 import getProject from "../../../collections/project";
 import { taskListApi } from "../task/list";
-import { boardState } from "../../../views/board/board.state";
 
 export const subProjectUpdateApi = createApi(
   "/api/sub-project/update",
@@ -146,11 +145,7 @@ export const subProjectUpdateApi = createApi(
     mutationOptions: {
       onSuccess(data, _v, _c, queryClient) {
         void projectListWithSubProjectsApi.invalidateQueries(queryClient, data);
-        void taskListApi.invalidateQueries(queryClient, {
-          ...data,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        });
+        void taskListApi.invalidateQueries(queryClient, data);
       },
     },
   },

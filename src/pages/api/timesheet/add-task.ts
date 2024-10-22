@@ -12,7 +12,6 @@ import getTimesheet, { TimesheetType } from "../../../collections/timesheet";
 import { timesheetGetTaskOverviewApi } from "./get-task-overview";
 import { timesheetGetMyOverviewApi } from "./get-my-overview";
 import { taskListApi } from "../task/list";
-import { boardState } from "../../../views/board/board.state";
 import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
@@ -120,11 +119,7 @@ export const timesheetAddTaskApi = createApi(
           variables,
         );
         void timesheetGetMyOverviewApi.invalidateQueries(queryClient);
-        void taskListApi.invalidateQueries(queryClient, {
-          boardId: data.boardId,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        });
+        void taskListApi.invalidateQueries(queryClient, data);
       },
     },
   },

@@ -13,7 +13,6 @@ import { taskGetApi } from "./get";
 import { taskListApi } from "./list";
 import { PaprUpdateFilter } from "papr/esm/mongodbTypes";
 import { WritableDeep } from "type-fest";
-import { boardState } from "../../../views/board/board.state";
 import getTaskActivity, {
   ActivityType,
 } from "../../../collections/taskActivity";
@@ -332,11 +331,7 @@ export const taskUpdateApi = createApi(
   {
     mutationOptions: {
       onSuccess(data, variables, _c, queryClient) {
-        void taskListApi.invalidateQueries(queryClient, {
-          boardId: data.boardId,
-          selectedProjects: boardState.selectedProjects,
-          selectedSubProjects: boardState.selectedSubProjects,
-        });
+        void taskListApi.invalidateQueries(queryClient, data);
         void taskActivityListApi.invalidateQueries(queryClient, {
           taskId: variables._id,
         });
