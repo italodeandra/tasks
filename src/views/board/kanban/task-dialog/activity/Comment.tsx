@@ -21,23 +21,27 @@ export function Comment({
 
   const taskActivityCommentEdit = taskActivityCommentEditApi.useMutation();
 
-  const handleOnChange = useCallback(
-    (newContent: string) => {
-      setContent(newContent);
-      taskActivityCommentEdit.mutate({
-        _id: activityId,
-        newContent,
-      });
-    },
-    [taskActivityCommentEdit, activityId],
-  );
-
   const handleDeleteClick = useCallback(() => {
     taskActivityCommentEdit.mutate({
       _id: activityId,
       newContent: "",
     });
   }, [activityId, taskActivityCommentEdit]);
+
+  const handleOnChange = useCallback(
+    (newContent: string) => {
+      setContent(newContent);
+      if (newContent.trim()) {
+        taskActivityCommentEdit.mutate({
+          _id: activityId,
+          newContent,
+        });
+      } else {
+        handleDeleteClick();
+      }
+    },
+    [taskActivityCommentEdit, activityId, handleDeleteClick],
+  );
 
   return (
     <ContextMenu.Root>
