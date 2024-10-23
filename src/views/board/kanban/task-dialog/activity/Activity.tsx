@@ -1,5 +1,5 @@
 import { taskActivityListApi } from "../../../../../pages/api/task-activity/list";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { taskActivityCommentAddApi } from "../../../../../pages/api/task-activity/comment/add";
 import Textarea from "@italodeandra/ui/components/Textarea";
 import Button from "@italodeandra/ui/components/Button";
@@ -30,6 +30,18 @@ export function Activity({
     },
   });
 
+  const handleComment = useCallback(
+    (comment: string) => () => {
+      if (comment && !taskActivityComment.isPending) {
+        taskActivityComment.mutate({
+          taskId,
+          content: comment,
+        });
+      }
+    },
+    [taskActivityComment, taskId],
+  );
+
   return (
     <div className="flex flex-col gap-3">
       <div className="text-sm font-medium">Activity</div>
@@ -43,12 +55,7 @@ export function Activity({
                 className="pointer-events-auto"
                 size="sm"
                 variant="text"
-                onClick={() => {
-                  taskActivityComment.mutate({
-                    taskId,
-                    content: comment,
-                  });
-                }}
+                onClick={handleComment(comment)}
                 loading={taskActivityComment.isPending}
               >
                 <PaperAirplaneIcon />
@@ -61,10 +68,7 @@ export function Activity({
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault();
-                taskActivityComment.mutate({
-                  taskId,
-                  content: e.currentTarget.value,
-                });
+                handleComment(e.currentTarget.value)();
               }
             }}
           />
